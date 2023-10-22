@@ -1,0 +1,130 @@
+@use 'config' as g;
+@use 'theme';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+
+    &:focus {
+        outline: 0;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--sixty-percent);
+    border: 2px solid white;
+    border-radius: 20px;
+}
+
+// selection
+::selection {
+    color: #fff;
+    background-color: #555;
+}
+
+.root {
+    overflow: hidden;
+    background-color: #121212;
+    @media (prefers-color-scheme: dark) {
+        body {
+            @include theme.dark;
+        }
+        background-color: var(--accent-color);
+    }
+    @media (prefers-color-scheme: light) {
+        body {
+            @include theme.dark;
+        }
+        background-color: var(--accent-color);
+    }
+}
+
+body {
+    overflow-x: hidden;
+
+    direction: rtl;
+}
+
+html,
+body {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        @include theme.dark;
+    }
+    main.home {
+        background-color: var(--sixty-percent);
+        color: var(--accent-color);
+    }
+}
+@media (prefers-color-scheme: light) {
+    body {
+        @include theme.light;
+    }
+    main.home {
+        background-color: var(--sixty-percent);
+        color: var(--accent-color);
+    }
+}
+
+span.logo-text {
+    color: var(--sixty-percent);
+}
+span.logo-text-white {
+    color: #009ad9;
+}
+
+.title_hero {
+    font-size: g.$TITLE_FONTSIZE_HERO;
+    font-family: 'iranBold';
+}
+.section_title {
+    font-size: clamp(1.6rem, 2.9vw + 1.3rem, 2.8rem);
+    font-family: 'iranBold';
+}
+.title {
+    font-size: g.$TITLE_FONTSIZE;
+    font-family: 'yekanBold';
+}
+.title_small {
+    font-size: g.$TITLE_FONTSIZE_SMALL;
+    font-family: 'yekanBold';
+}
+.title_smaller {
+    font-size: g.$TITLE_FONTSIZE_SMALLER;
+    font-family: 'yekan';
+}
+
+.description {
+    font-size: g.$DESCRIPTION_FONT_SIZE;
+    font-family: 'yekan';
+}
+.description_small {
+    font-size: g.$DESCRIPTION_FONT_SIZE_SMALL;
+    font-family: 'yekan';
+}
+
+.icon {
+    display: grid;
+    place-items: center;
+}
+
+// reset
+a {
+    color: unset;
+    text-decoration: none;
+    font: inherit;
+}
+button {
+    border: none;
+    margin: 0;
+    cursor: pointer;
+}

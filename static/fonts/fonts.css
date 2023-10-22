@@ -1,0 +1,30 @@
+@font-face {
+    font-family: 'iranLight';
+    src: url('/static/fonts/iran-sans/light.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'iranBold';
+    src: url('/static/fonts/iran-sans/bold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'yekanBold';
+    src: url('/static/fonts/iran-yekan/bold.woff') format('woff2');
+}
+
+@font-face {
+    font-family: 'yekan';
+    src: url('/static/fonts/iran-yekan/regular.woff') format('woff2');
+}
+
+@font-face {
+    font-family: 'number';
+    src: url('/static/fonts/vazir/vazir.eot'),
+        url('/static/fonts/vazir/vazir.woff2') format('woff2'),
+        url('/static/fonts/vazir/vazir.ttf') format('truetype'),
+        url('/static/fonts/vazir/vazir.woff') format('woff');
+    unicode-range: U+0030-0039, U+0660-0669;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');

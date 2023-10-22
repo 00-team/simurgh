@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# active the python venv if is not active already.
+if [[ -z $VIRTUAL_ENV ]]; then
+    source .env/bin/activate
+fi
+
+clear
+
+case $1 in
+run)
+    DEBUG=1 uvicorn main:app --reload --port 7700 --use-colors
+    ;;
+
+red)
+    redis-server config/redis.conf
+    ;;
+
+update_db)
+    DEBUG=1 alembic -c config/alembic.ini revision --autogenerate
+    DEBUG=1 alembic -c config/alembic.ini upgrade head
+    ;;
+
+master)
+    if [[ -z $3 ]]; then
+        echo -e "\e[31mError\e[93m:\e[0m Not Enough Arguments
+                 \r\e[32mUsage\e[93m:\e[0m ./\e[32mmanage\e[0m master"\
+                 "\e[93m<\e[90mfile.db\e[93m>\e[0m"\
+                 "\e[93m<\e[90muser_id\e[93m: \e[32m1\e[93m>\e[0m"
+        exit
+    fi
+    sqlite3 $2 "UPDATE users SET admin = '1' WHERE user_id = $3"
+    ;;
+
+release)
+    if [[ -z $2 ]]; then
+        exit
+    else
+        echo $2 > VERSION
+        if [[ -z $(git diff --name-only VERSION) ]]; then
+            echo -e "\n----------\nNo Change\n----------"
+            exit 1
+        fi
+
+        git add VERSION
+        git commit -m "release: $2"
+    fi
+    ;;
+
+delete_all_tags)
+    echo "Not Now"
+    # git tag | grep <pattern> | xargs -n 1 -i% git push origin :refs/tags/%
+    # git tag | xargs -n 1 -i% sh -c 'git push origin :% && git tag -d %'
+    ;;
+esac

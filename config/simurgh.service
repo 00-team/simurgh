@@ -1,0 +1,15 @@
+[Unit]
+Description=Simurgh Gunicorn
+After=syslog.target
+
+[Service]
+ExecStart=/simurgh/.env/bin/gunicorn --config /simurgh/config/gunicorn.py
+RuntimeDirectory=simurgh_gunicorn
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

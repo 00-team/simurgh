@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'iranLight';
+
+    src: url('./iranSans/iran-light.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'iranBold';
+
+    src: url('./iranSans/iran-bold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Vazirmatn';
+
+    src: url('./iranSans/iran-bold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'yekanBold';
+
+    src: url('./iranYekan/IRANYekanWebBold.woff') format('woff2');
+}
+@font-face {
+    font-family: 'yekan';
+
+    src: url('./iranYekan/IRANYekanWebRegular.woff') format('woff2');
+}
+
+// numbers
+@font-face {
+    font-family: 'number';
+    src: url('./vazir/Vazir.eot'), url('./vazir/Vazir.woff2') format('woff2'),
+        url('./vazir/Vazir.ttf') format('truetype'),
+        url('./vazir/Vazir.woff') format('woff');
+    unicode-range: U+0030-0039, U+0660-0669;
+}
+
+// font-family: 'Poppins', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');

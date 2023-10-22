@@ -1,0 +1,55 @@
+.general {
+    padding: 1rem;
+
+    textarea,
+    input {
+        background: transparent;
+        border: 1px solid darkorange;
+        direction: rtl;
+        font-size: 20px;
+        color: #f2f2f2;
+        resize: vertical;
+        padding: 0.5rem;
+        border-radius: 5px;
+    }
+
+    .woc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .common-card,
+        .add-card {
+            border-radius: 7px;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 400px;
+            padding: 1rem 0.8rem;
+
+            img {
+                max-width: 100%;
+                max-height: 500px;
+                object-fit: contain;
+                object-position: center;
+            }
+        }
+
+        .add-card {
+            justify-content: center;
+            align-items: center;
+            color: limegreen;
+            cursor: pointer;
+
+            svg {
+                width: 60%;
+                aspect-ratio: 1;
+
+                path {
+                    stroke-linecap: butt;
+                }
+            }
+        }
+    }
+}

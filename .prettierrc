@@ -1,0 +1,31 @@
+{
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "useTabs": false,
+    "jsxBracketSameLine": false,
+    "arrowParens": "avoid",
+    "overrides": [
+        {
+            "files": ["*.jsonc", "*.yml"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ],
+
+    "importOrderSeparation": true,
+    "importOrder": [
+        "(^react$|^react-dom)",
+        "^@00-team/utils",
+        "<THIRD_PARTY_MODULES>",
+        "^(state|jotai)",
+        "(Login|Dashboard)",
+        "(/?comps/?|/?components/?)",
+        "\\./(?!style)",
+        "/style/",
+        "(/static/|^static)"
+    ]
+}
