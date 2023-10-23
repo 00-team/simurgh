@@ -4,6 +4,7 @@ import hashlib
 import httpx
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import RedirectResponse
+from pydantic import EmailStr
 
 from db.models import UserModel, UserTable
 from db.user import user_add, user_get, user_update
@@ -18,78 +19,12 @@ router = APIRouter(
 )
 
 
-def download_picture(url: str, user: UserModel):
-    if user.picture:
-        filename = user.picture
-    else:
-        filename = hashlib.sha3_256(
-            f'{user.user_id}:{get_random_string(12)}'.encode('utf-8')
-        ).hexdigest() + '.jpg'
-
-    with open(settings.user_picture_dir / filename, 'wb') as media:
-        with httpx.stream('GET', url) as result:
-            for chunk in result.iter_bytes():
-                media.write(chunk)
-
-    return filename
-
-
-async def update_user(data: dict):
-    email = data.get('email')
-    name = data.get('name')
-    picture = data.get('picture').replace('=s96-c', '=s512-c')
-
-    created = False
-    token, token_hash = new_token()
-
-    user = await user_get(UserTable.email == email)
-    if user:
-        user_id = user.user_id
-        await user_update(
-            UserTable.user_id == user_id,
-            name=name,
-            token=token_hash
-        )
-    else:
-        created = True
-        user_id = await user_add(
-            email=email,
-            name=name,
-            token=token_hash
-        )
-        user = UserModel(user_id=user_id, name=name, email=email)
-
-    picture_filename = download_picture(picture, user)
-
-    if created or not user.picture:
-        await user_update(
-            UserTable.user_id == user.user_id,
-            picture=picture_filename
-        )
-
-    return f'{user.user_id}:{token}'
-
-
 @router.get('/login/')
-async def login(request: Request, next: str = '/dash/'):
-    url = httpx.URL(
-        'https://accounts.google.com/o/oauth2/v2/auth',
-        params={
-            'client_id': settings.google_client_id,
-            'redirect_uri': settings.google_redirect_uri,
-            'response_type': 'code',
-            'scope': ' '.join([
-                'https://www.googleapis.com/auth/userinfo.email',
-                'https://www.googleapis.com/auth/userinfo.profile',
-                # 'openid',
-            ]),
-            'access_type': 'online',
-            'prompt': 'select_account',
-            'state': next
-        }
-    )
+async def login(request: Request, email: EmailStr):
 
-    return RedirectResponse(url)
+    print(email)
+
+    return {'ok': True}
 
 
 @router.get('/gcb/', response_class=RedirectResponse)

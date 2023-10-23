@@ -5,10 +5,10 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "vite -c config/dash.ts",
-        "build": "vite build -c config/dash.ts",
-        "build:dev": "vite build -c config/dash.ts --mode development",
-        "serve": "local_api_target=1 vite -c config/dash.ts"
+        "start": "vite -c config/app.ts",
+        "build": "vite build -c config/app.ts",
+        "build:dev": "vite build -c config/app.ts --mode development",
+        "serve": "local_api_target=1 vite -c config/app.ts"
     },
     "author": "00-team",
     "license": "GPL-3",

@@ -4,9 +4,9 @@ import solidPlugin from 'vite-plugin-solid'
 import devtools from 'solid-devtools/vite'
 import { resolve } from 'path'
 
-let target = 'https://brightfuture-cyprus.com'
+let target = 'https://simurgh.00-team.org'
 if (process.env.local_api_target) {
-    target = 'http://localhost:7130'
+    target = 'http://127.0.0.1:7700'
 }
 
 console.log('api target: ' + target)
@@ -36,13 +36,13 @@ export default defineConfig(env => {
             solidPlugin({ hot: false }),
         ],
         server: {
-            port: 8130,
+            port: 8700,
             proxy: {
                 '/api/': {
                     target,
                     changeOrigin: true,
                 },
-                '/records': {
+                '/records/': {
                     target,
                     changeOrigin: true,
                 },
