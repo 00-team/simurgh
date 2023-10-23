@@ -65,11 +65,15 @@ export default () => {
                 </div>
                 <div class='row btn'>
                     <button
-                        disabled={!state.email}
+                        disabled={state.email_status != InputStatus.VALID}
                         onClick={async () => {
                             const result = await fetch(
-                                '/api/auth/login/?email=' + state.email
+                                '/api/auth/login/?email=gg&co=' + state.email
                             )
+                            if (result.ok) {
+                                console.log('ok')
+                            } else {
+                            }
                             console.log(result.status)
                             console.log(await result.json())
                         }}

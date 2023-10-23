@@ -28,12 +28,12 @@ body {
     --blue: #1771f1;
     --lightblue: #5199ff;
 
-    ::-webkit-scrollbar {
+    &::-webkit-scrollbar {
         width: 10px;
         background: #040404;
     }
 
-    ::-webkit-scrollbar-thumb {
+    &::-webkit-scrollbar-thumb {
         background-color: #171717;
         border: 2px solid #040404;
         border-radius: 20px;

@@ -14,6 +14,7 @@ import { lazy } from 'solid-js'
 
 const Login = lazy(() => import('./pages/login'))
 const Alert = lazy(() => import('./components/alert'))
+const Progress = lazy(() => import('./components/progress'))
 
 function Main() {
     return (
@@ -61,6 +62,7 @@ render(
                 </Routes>
             </Router>
             <Alert />
+            <Progress />
         </>
     ),
     document.getElementById('root')
