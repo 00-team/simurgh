@@ -69,13 +69,13 @@ export default () => {
                             httpx({
                                 url: '/api/auth/login/',
                                 method: 'GET',
+                                type: 'json',
                                 params: {
                                     email: state.email,
                                 },
-                            })
-                            httpx({
-                                url: '/records/fish.jpg/',
-                                method: 'GET',
+                                onLoad(x) {
+                                    console.log(x.response)
+                                },
                             })
                         }}
                         onMouseEnter={e => {

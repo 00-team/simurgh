@@ -3,12 +3,12 @@ import logging.config
 from datetime import date
 from logging import FileHandler
 
-from shared import settings
+from shared import config
 
 
 class WeeklyRotating(FileHandler):
     def __init__(self):
-        self.path = settings.base_dir / 'logs'
+        self.path = config.base_dir / 'logs'
         self.path.mkdir(parents=True, exist_ok=True)
 
         self.week = self.get_week()

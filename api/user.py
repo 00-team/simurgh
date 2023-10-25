@@ -8,7 +8,8 @@ from pydantic import BaseModel, EmailStr, Field, constr
 from db.models import UserModel
 from db.user import user_update
 from deps import rate_limit, user_required
-from shared.errors import no_change
+from shared.letters import Letter
+# from shared.errors import no_change
 from shared.models import OkModel
 
 router = APIRouter(
@@ -37,7 +38,7 @@ class UpdateBody(BaseModel):
 
 @router.patch(
     '/update/', response_model=OkModel,
-    openapi_extra={'errors': [no_change]}
+    openapi_extra={'errors': []}
 )
 async def update(request: Request, body: UpdateBody):
     user: UserModel = request.state.user

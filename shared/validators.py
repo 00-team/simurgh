@@ -3,7 +3,7 @@ from typing import Annotated
 
 from pydantic import AfterValidator, WithJsonSchema
 
-from shared import settings
+from shared import config
 from shared.tools import isallnum
 
 
@@ -11,7 +11,7 @@ def code_validator(value: str):
     if not isinstance(value, str):
         raise TypeError('string required')
 
-    if len(value) != settings.verification_code_len:
+    if len(value) != config.verification_code_len:
         raise ValueError('invalid code length')
 
     if not isallnum(value):

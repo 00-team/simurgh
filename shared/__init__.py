@@ -15,39 +15,42 @@ class Connection(sqlite3.Connection):
         self.execute('pragma foreign_keys=1')
 
 
-class Settings(BaseSettings):
-    base_dir: Path = Path(__file__).parent.parent
-    debug: bool = False
-
+class config:
     version: str = '0.0.1-beta'
+    base_dir: Path = Path(__file__).parent.parent
 
     sql_dir: Path = base_dir / 'db/files/'
     record_dir: Path = base_dir / 'records/'
     user_picture_dir: Path = record_dir / 'users/'
 
-    redis_pass: str
+    lang: str = 'en'
 
     verification_expire: int = 2 * 60
     verification_code_len: int = 5
 
+    page_size: int = 10
     token_len: int = 69
     token_abc: str = ascii_letters + digits + ('!@#$%^&*_+' * 2)
 
-    page_size: int = 10
+
+class Settings(BaseSettings):
+    debug: bool = False
+    redis_pass: str
 
 
 settings = Settings(_env_file='.secrets')
-settings.sql_dir.mkdir(parents=True, exist_ok=True)
-settings.record_dir.mkdir(parents=True, exist_ok=True)
-settings.user_picture_dir.mkdir(parents=True, exist_ok=True)
-(settings.base_dir / 'db/versions').mkdir(parents=True, exist_ok=True)
+
+config.sql_dir.mkdir(parents=True, exist_ok=True)
+config.record_dir.mkdir(parents=True, exist_ok=True)
+config.user_picture_dir.mkdir(parents=True, exist_ok=True)
+(config.base_dir / 'db/versions').mkdir(parents=True, exist_ok=True)
 
 
 SQL_URL = 'sqlite:///'
 if settings.debug:
-    SQL_URL += str(settings.sql_dir / 'debug.db')
+    SQL_URL += str(config.sql_dir / 'debug.db')
 else:
-    SQL_URL += str(settings.sql_dir / 'main.db')
+    SQL_URL += str(config.sql_dir / 'main.db')
 
 
 redis = Redis(

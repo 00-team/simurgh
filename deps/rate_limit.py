@@ -4,9 +4,10 @@ from fastapi import Depends, Request
 
 from db.rate_limit import rate_limit_get, rate_limit_set
 from shared import settings
-from shared.errors import rate_limited
 
 from .auth import user_required
+
+# from shared.errors import rate_limited
 
 
 def rate_limit(path_id: str, period: int, amount: int, use_id=True):
@@ -39,5 +40,5 @@ def rate_limit(path_id: str, period: int, amount: int, use_id=True):
     else:
         dep = Depends(with_ip)
 
-    dep.errors = [rate_limited]
+    # dep.errors = [rate_limited]
     return dep

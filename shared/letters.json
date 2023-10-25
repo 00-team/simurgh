@@ -1,0 +1,31 @@
+{
+    "40002": {
+        "status": 403,
+        "extra": {
+            "id": 12
+        },
+        "en": {
+            "subject": "Bad Verification",
+            "content": "invalid verification code"
+        }
+    },
+    "40004": {
+        "status": 404,
+        "extra": {
+            "item": "User",
+            "id": 12
+        },
+        "en": {
+            "subject": "Bad ID",
+            "content": "invalid {item} ID {id}"
+        },
+        "fa": {
+            "subject": "شناسه نادرست",
+            "content": "مورد: {item}\nشناسه: {id}"
+        }
+    },
+    "40005": {
+        "status": 403,
+        "en": "invalid authentication credentials"
+    }
+}

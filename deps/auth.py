@@ -8,11 +8,13 @@ from fastapi.security import HTTPBearer
 from db.models import UserModel, UserTable
 from db.rate_limit import rate_limit_get, rate_limit_set
 from db.user import user_get
-from shared.errors import bad_auth, forbidden, rate_limited
+
+# from shared.errors import bad_auth, forbidden, rate_limited
 
 user_schema = HTTPBearer(description='User Token')
 
-errors = [bad_auth, rate_limited]
+# errors = [bad_auth, rate_limited]
+errors = []
 
 
 def get_ip():
@@ -112,5 +114,5 @@ def admin_required():
             raise forbidden
 
     dep = Depends(decorator)
-    dep.errors = errors + [forbidden]
+    # dep.errors = errors + [forbidden]
     return dep

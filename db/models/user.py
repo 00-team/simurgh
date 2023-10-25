@@ -7,9 +7,10 @@ from functools import cached_property
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
 
-from shared.errors import forbidden
-
 from .common import BaseTable
+
+# from shared.errors import forbidden
+
 
 
 class AdminPerms(int, Enum):

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from sqlalchemy import BLOB, Column, Integer, String, text
 
 from db.models.user import UserPublic
-from shared import settings
+from shared import config
 
 from .common import BaseTable
 
@@ -52,7 +52,7 @@ class RecordModel(BaseModel):
 
     @cached_property
     def url(self) -> str:
-        return f'{settings.record_dir.name}/{self.name}.{self.ext}'
+        return f'{config.record_dir.name}/{self.name}.{self.ext}'
 
     @cached_property
     def name(self) -> str:
@@ -62,7 +62,7 @@ class RecordModel(BaseModel):
 
     @cached_property
     def path(self) -> Path:
-        return settings.record_dir / (self.name + '.' + self.ext)
+        return config.record_dir / (self.name + '.' + self.ext)
 
     def public(self, owner: UserPublic) -> RecordPublic:
         return RecordPublic(

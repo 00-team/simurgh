@@ -10,7 +10,7 @@ from db.models import UserModel, UserTable
 from db.user import user_add, user_get, user_update
 from deps import rate_limit
 from shared import settings
-from shared.errors import bad_auth
+from shared.letters import bad_auth, bad_id
 from shared.tools import get_random_string, new_token
 
 router = APIRouter(
@@ -20,11 +20,12 @@ router = APIRouter(
 )
 
 
-@router.get('/login/')
+@router.get('/login/', openapi_extra={'letters': [bad_auth, bad_id]})
 async def login(request: Request, email: EmailStr):
 
     print(email)
 
+    raise bad_id(item='User', id=12)
     raise bad_auth
 
     return {'ok': True}, 402

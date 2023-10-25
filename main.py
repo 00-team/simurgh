@@ -15,7 +15,9 @@ from db.models import UserModel, UserTable
 from db.user import user_get
 from deps import get_ip
 from shared import redis, settings, sqlx
-from shared.errors import Error, all_errors
+from shared.letters import Letter, all_letters
+
+# from shared.errors import Error, all_errors
 
 app = FastAPI(
     title='simurgh',
@@ -32,9 +34,9 @@ if settings.debug:
 app.include_router(api.router)
 
 
-@app.exception_handler(Error)
-async def error_exception_handler(request, exc: Error):
-    return exc.json()
+@app.exception_handler(Letter)
+async def error_exception_handler(request: Request, exc: Letter):
+    return exc.json(request.cookies.get('lang'))
 
 
 @app.on_event('startup')
@@ -67,24 +69,24 @@ for route in app.routes:
     if not isinstance(route, APIRoute):
         continue
 
-    errors = []
+    letters = []
 
     for d in route.dependencies:
-        errors.extend(getattr(d, 'errors', []))
+        letters.extend(getattr(d, 'letters', []))
 
     oid = route.path.replace('/', '_').strip('_')
     oid += '_' + '_'.join(route.methods)
     route.operation_id = oid
 
-    errors.extend((route.openapi_extra or {}).pop('errors', []))
+    letters.extend((route.openapi_extra or {}).pop('letters', []))
 
-    for e in errors:
-        route.responses[e.code] = {
-            'description': f'{e.title} - {e.status}',
+    for l in letters:
+        route.responses[l.code] = {
+            'description': f'hi',
             'content': {
                 'application/json': {
                     'schema': {
-                        '$ref': f'#/errors/{e.code}',
+                        '$ref': f'#/letters/{l.code}',
                     }
                 }
             }
@@ -102,10 +104,10 @@ def custom_openapi():
         routes=app.routes,
     )
 
-    schema['errors'] = {}
+    schema['letters'] = {}
 
-    for e in all_errors:
-        schema['errors'][e.code] = e.schema
+    for l in all_letters:
+        schema['letters'][l.code] = l.schema
 
     app.openapi_schema = schema
     return app.openapi_schema
