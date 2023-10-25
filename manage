@@ -9,7 +9,9 @@ clear
 
 case $1 in
 run)
-    DEBUG=1 uvicorn main:app --reload --port 7700 --use-colors
+    DEBUG=1 uvicorn main:app --reload \
+        --reload-include shared/letters.json \
+        --port 7700 --use-colors
     ;;
 
 red)
