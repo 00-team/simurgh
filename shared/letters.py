@@ -131,6 +131,11 @@ def letter(code):
                 'subject': v,
                 'content': ''
             }
+        elif isinstance(v, list):
+            message[k] = {
+                'subject': v.pop(0),
+                'content': '\n'.join(v),
+            }
         else:
             message[k] = {
                 'subject': v['subject'],
@@ -150,41 +155,10 @@ def letter(code):
 bad_verification = letter(40002)
 bad_auth = letter(40005)
 bad_id = letter(40004)
-# bad_id = Error(
-#     40004, 'Bad ID', 'invalid {} ID {}', 404,
-#     extra={'id': 7}
-# )
+no_change = letter(40003)
+forbidden = letter(40006)
+rate_limited = letter(40007)
+bad_args = letter(40009)
+bad_file = letter(40013)
 
-# bad_verification = Letter(
-#     40002, 'Bad Verification',
-#     'invalid verification code', 400
-# )
-#
-#
-# no_change = Error(40003, 'No Change', 'there is nothing to change', 400)
-
-# forbidden = Error(40006, 'Forbidden', 'Not Enough Permissions', 403)
-# rate_limited = Error(40007, 'Rate Limited', 'Too Many Requests', 429)
-# bad_args = Error(40009, 'Bad Args', 'invalid args', 400)
-# bad_file = Error(
-#     40013, 'Bad File',
-#     'invalid or unknown file',
-#     400
-# )
-# not_unique = Error(
-#     40014, 'Not Unique',
-#     '{} is not a unique {}',
-#     400, extra={'value': 'xxx'}
-# )
-#
-#
-# database_error = Error(50001, 'Database Error', 'Database Error', 500)
-#
-#
-# all_errors = [
-#     forbidden, bad_verification,
-#     no_change, bad_id, bad_auth, rate_limited,
-#     bad_args, bad_file, not_unique,
-#
-#     database_error
-# ]
+database_error = letter(50001)

@@ -9,6 +9,9 @@
             "content": "invalid verification code"
         }
     },
+    "40003": {
+        "en": ["No Change", "there is nothing to change"]
+    },
     "40004": {
         "status": 404,
         "extra": {
@@ -27,5 +30,23 @@
     "40005": {
         "status": 403,
         "en": "invalid authentication credentials"
+    },
+    "40006": {
+        "status": 403,
+        "en": ["Forbidden", "Not Enough Permissions"]
+    },
+    "40007": {
+        "status": 429,
+        "en": ["Rate Limited", "Too Many Requests"]
+    },
+    "40009": {
+        "en": ["Bad Args", "Invalid Arguments are Provided"]
+    },
+    "40013": {
+        "en": ["Bad File", "Invalid or unknown file"]
+    },
+    "50001": {
+        "status": 500,
+        "en": ["Database Error", "Database Failed Contact Developers"]
     }
 }
