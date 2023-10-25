@@ -5,7 +5,7 @@ import './style/alert.scss'
 import { createStore, produce } from 'solid-js/store'
 
 type AlertModel = {
-    level: 'info' | 'error' | 'success'
+    type: 'info' | 'error' | 'success'
     title: string
     detail: string
     timeout: number
@@ -38,7 +38,7 @@ function delAlert(index: number) {
 }
 
 const ALERT_ICON: {
-    [x in AlertModel['level']]: () => JSX.Element
+    [x in AlertModel['type']]: () => JSX.Element
 } = {
     info: () => <AlertInfo />,
     error: () => <AlertError />,
@@ -71,7 +71,7 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
     return (
         <div
             class='alert'
-            classList={{ [props.a.level]: true }}
+            classList={{ [props.a.type]: true }}
             onMouseEnter={() => {
                 clearInterval(interval)
             }}
@@ -80,7 +80,7 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
             }}
         >
             <div class='head'>
-                {ALERT_ICON[props.a.level]()}
+                {ALERT_ICON[props.a.type]()}
                 <span>{props.a.title}</span>
                 <button onClick={() => delAlert(props.i)}>
                     <CloseIcon />

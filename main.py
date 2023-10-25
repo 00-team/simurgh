@@ -14,7 +14,7 @@ import shared.logger
 from db.models import UserModel, UserTable
 from db.user import user_get
 from deps import get_ip
-from shared import redis, settings, sqlx
+from shared import config, redis, settings, sqlx
 from shared.letters import Letter, all_letters
 
 # from shared.errors import Error, all_errors
@@ -82,7 +82,7 @@ for route in app.routes:
 
     for l in letters:
         route.responses[l.code] = {
-            'description': f'hi',
+            'description': f'{l.message[config.lang]["subject"]} - {l.status}',
             'content': {
                 'application/json': {
                     'schema': {

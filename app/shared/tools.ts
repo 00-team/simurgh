@@ -11,6 +11,32 @@ function check_email(email: string): boolean {
     return true
 }
 
+type Detail = {
+    loc: (number | string)[]
+    msg: string
+    type: string
+}
+
+function alert_422(detail: Detail[]) {
+    // TODO: use cookies.lang for this alert
+
+    detail.forEach(item => {
+        addAlert({
+            type: 'error',
+            timeout: 10,
+            title: item.type,
+            detail: `location: ${item.loc.join('.')}\n\n${item.msg}`,
+        })
+    })
+
+    let lang = document.cookie
+        .split('; ')
+        .find(i => i.startsWith('lang='))
+        .slice(5)
+
+    console.log(lang)
+}
+
 function random_string(
     len: number,
     abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -35,6 +61,7 @@ type HttpxProps = {
         [k: string]: string | boolean | number
     }
     type?: XMLHttpRequestResponseType
+    show_notifications?: boolean
     reject?(reson?: string): void
     onReadyStateChange?(x: XMLHttpRequest): void
     onLoad?(x: XMLHttpRequest, ev: ProgressEvent): void
@@ -50,7 +77,7 @@ type HttpxProps = {
 }
 
 function httpx(props: HttpxProps) {
-    const { url, method, type, headers } = props
+    const { url, method, type, headers, show_notifications = true } = props
     let http = new XMLHttpRequest()
 
     const oul = typeof url == 'string' ? new URL(url, location.href) : url
@@ -112,6 +139,38 @@ function httpx(props: HttpxProps) {
     }
     http.onload = function (e) {
         if (props.onLoad) props.onLoad(this, e)
+        if (show_notifications && type == 'json') {
+            if (this.status == 200) {
+                let notif = this.response
+                if (notif.notification) {
+                    notif = notif.notification
+                }
+
+                if (notif.show_notification) {
+                    addAlert({
+                        type: 'success',
+                        title: notif.subject,
+                        detail: notif.content,
+                        timeout: 5,
+                    })
+                }
+                return
+            }
+
+            if (this.status == 422) {
+                alert_422(this.response.detail)
+                return
+            }
+
+            if (this.response.code) {
+                addAlert({
+                    type: 'error',
+                    title: this.response.code + ' - ' + this.response.subject,
+                    detail: this.response.content,
+                    timeout: 10,
+                })
+            }
+        }
         delProgress(puid)
     }
     http.onreadystatechange = function () {

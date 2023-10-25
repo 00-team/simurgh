@@ -17,7 +17,6 @@ from db.user import user_exists, user_public
 from deps import admin_required
 from shared import settings, sqlx
 # from shared.errors import bad_file, bad_id, no_change, not_unique
-from shared.models import IDModel, OkModel
 from shared.tools import utc_now
 
 router = APIRouter(

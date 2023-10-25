@@ -11,6 +11,7 @@ from db.user import user_add, user_get, user_update
 from deps import rate_limit
 from shared import settings
 from shared.letters import bad_auth, bad_id
+from shared.models import NotificationModel
 from shared.tools import get_random_string, new_token
 
 router = APIRouter(
@@ -20,15 +21,18 @@ router = APIRouter(
 )
 
 
-@router.get('/login/', openapi_extra={'letters': [bad_auth, bad_id]})
+@router.get(
+    '/login/', response_model=NotificationModel,
+    openapi_extra={'letters': [bad_auth, bad_id]}
+)
 async def login(request: Request, email: EmailStr):
 
     print(email)
 
-    raise bad_id(item='User', id=12)
-    raise bad_auth
-
-    return {'ok': True}, 402
+    return {
+        'subject': 'hi',
+        'content': 'gg'
+    }
 
 
 @router.get('/gcb/', response_class=RedirectResponse)
