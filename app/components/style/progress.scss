@@ -1,8 +1,21 @@
 .progress-fnd {
     position: fixed;
     display: flex;
-    background: red;
     width: 100%;
     bottom: 0;
     left: 0;
+    gap: 1rem;
+    padding: 1rem;
+
+    .progress {
+        background: #040404;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: sans-serif;
+        border: 2px solid var(--blue);
+        border-radius: 20%;
+        aspect-ratio: 1;
+        padding: 0.2rem;
+    }
 }

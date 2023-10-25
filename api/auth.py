@@ -10,6 +10,7 @@ from db.models import UserModel, UserTable
 from db.user import user_add, user_get, user_update
 from deps import rate_limit
 from shared import settings
+from shared.errors import bad_auth
 from shared.tools import get_random_string, new_token
 
 router = APIRouter(
@@ -24,7 +25,9 @@ async def login(request: Request, email: EmailStr):
 
     print(email)
 
-    return {'ok': True}
+    raise bad_auth
+
+    return {'ok': True}, 402
 
 
 @router.get('/gcb/', response_class=RedirectResponse)

@@ -1,3 +1,4 @@
+import { addAlert } from '!/components/alert'
 import { addProgress, delProgress, updateProgress } from '!/components/progress'
 
 function check_email(email: string): boolean {
@@ -8,6 +9,21 @@ function check_email(email: string): boolean {
     if (ddi == -1 || ddi == domain.length - 1 || !ddi) return false
 
     return true
+}
+
+function random_string(
+    len: number,
+    abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+) {
+    if (!abc) throw new Error('invalid alphabet')
+
+    let result = ''
+    let n = 0
+    while (n < len) {
+        result += abc.charAt(~~(Math.random() * abc.length))
+        n++
+    }
+    return result
 }
 
 type HttpxProps = {
@@ -33,11 +49,11 @@ type HttpxProps = {
     }
 }
 
-async function httpx(props: HttpxProps) {
+function httpx(props: HttpxProps) {
     const { url, method, type, headers } = props
     let http = new XMLHttpRequest()
 
-    const oul = typeof url == 'string' ? new URL(url) : url
+    const oul = typeof url == 'string' ? new URL(url, location.href) : url
 
     if (props.params) {
         Object.entries(props.params).forEach(([k, v]) =>
@@ -65,34 +81,38 @@ async function httpx(props: HttpxProps) {
         body = props.data
     }
 
-    Object.entries(headers).forEach(([key, value]) => {
-        http!.setRequestHeader(key, value)
-    })
+    if (headers) {
+        Object.entries(headers).forEach(([key, value]) => {
+            http!.setRequestHeader(key, value)
+        })
+    }
 
-    let progress_index = addProgress(0)
+    let puid = addProgress(0)
+
+    function cleanup(x: XMLHttpRequest) {
+        if (props.reject) props.reject(x.statusText)
+        delProgress(puid)
+    }
 
     http.onerror = function (e) {
         if (props.onError) props.onError(this, e)
-        delProgress(progress_index)
-        if (props.reject) props.reject(this.statusText)
+        cleanup(this)
     }
     http.ontimeout = function (e) {
         if (props.onTimeout) props.onTimeout(this, e)
-        delProgress(progress_index)
-        if (props.reject) props.reject(this.statusText)
+        cleanup(this)
     }
     http.onabort = function (e) {
         if (props.onAbort) props.onAbort(this, e)
-        delProgress(progress_index)
-        if (props.reject) props.reject(this.statusText)
+        cleanup(this)
     }
     http.onloadstart = function (e) {
         if (props.onLoadStart) props.onLoadStart(this, e)
-        delProgress(progress_index)
+        // delProgress(progress_index)
     }
     http.onload = function (e) {
         if (props.onLoad) props.onLoad(this, e)
-        delProgress(progress_index)
+        delProgress(puid)
     }
     http.onreadystatechange = function () {
         if (props.onReadyStateChange) props.onReadyStateChange(this)
@@ -101,15 +121,15 @@ async function httpx(props: HttpxProps) {
     if (props.onProgress) {
         http.onprogress = function (e) {
             props.onProgress!(this, e)
-            updateProgress(progress_index, e.loaded, e.total || e.loaded + 100)
+            updateProgress(puid, e.loaded, e.total || e.loaded + 100)
         }
     } else {
         http.onprogress = function (e) {
-            updateProgress(progress_index, e.loaded, e.total || e.loaded + 100)
+            updateProgress(puid, e.loaded, e.total || e.loaded + 100)
         }
     }
 
     http.send(body)
 }
 
-export { check_email, httpx }
+export { check_email, httpx, random_string }

@@ -1,7 +1,6 @@
 import { createStore } from 'solid-js/store'
 import './style/login.scss'
-import { Index } from 'solid-js'
-import { check_email } from '!/shared'
+import { check_email, httpx } from '!/shared'
 
 enum InputStatus {
     UNKNOWN,
@@ -66,16 +65,18 @@ export default () => {
                 <div class='row btn'>
                     <button
                         disabled={state.email_status != InputStatus.VALID}
-                        onClick={async () => {
-                            const result = await fetch(
-                                '/api/auth/login/?email=gg&co=' + state.email
-                            )
-                            if (result.ok) {
-                                console.log('ok')
-                            } else {
-                            }
-                            console.log(result.status)
-                            console.log(await result.json())
+                        onClick={() => {
+                            httpx({
+                                url: '/api/auth/login/',
+                                method: 'GET',
+                                params: {
+                                    email: state.email,
+                                },
+                            })
+                            httpx({
+                                url: '/records/fish.jpg/',
+                                method: 'GET',
+                            })
                         }}
                         onMouseEnter={e => {
                             const el = e.currentTarget

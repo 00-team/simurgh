@@ -1,59 +1,69 @@
 import { createStore, produce } from 'solid-js/store'
 import './style/progress.scss'
 
+type PUID = number
+
 type Progress = {
     total: number
     loaded: number
+    uid: number
 }
 
 type ProgressState = {
     list: Progress[]
+    total: number
 }
 
-const [progress, setProgress] = createStore<ProgressState>({ list: [] })
+const [progress, setProgress] = createStore<ProgressState>({
+    list: [],
+    total: 0,
+})
 
-function addProgress(total: number): number {
-    let index = -10
+function addProgress(total: number): PUID {
+    let uid: PUID = -1
+
     setProgress(
         produce(s => {
-            index =
-                s.list.push({
-                    total,
-                    loaded: 0,
-                }) - 1
+            s.total++
+            uid = s.total
+            s.list.push({ total: total || 1, loaded: 0, uid })
         })
     )
-    return index
+
+    return uid
 }
 
-function delProgress(index: number) {
-    if (index < 0) return
-
+function delProgress(uid: PUID) {
     setProgress(
         produce(s => {
-            if (index < s.list.length) {
-                s.list.splice(index, 1)
-            }
+            s.list = s.list.filter(i => i.uid != uid)
         })
     )
 }
 
-function updateProgress(index: number, loaded: number, total?: number) {
-    if (index < 0) return
-
+function updateProgress(uid: PUID, loaded: number, total?: number) {
     setProgress(
         produce(s => {
-            let p = s.list[index]
-            if (!p) return
-
-            p.loaded = loaded
-            if (typeof total == 'number') p.total = total
+            s.list.forEach(i => {
+                if (i.uid == uid) {
+                    i.loaded = loaded
+                    if (total) i.total = total
+                }
+            })
         })
+    )
+}
+
+export default () => {
+    return (
+        <div class='progress-fnd'>
+            {progress.list.map(({ loaded, total }) => (
+                <div class='progress'>
+                    {Math.round((100 / total) * loaded)}%
+                </div>
+            ))}
+        </div>
     )
 }
 
 export { progress, setProgress, addProgress, delProgress, updateProgress }
-
-export default () => {
-    return <div class='progress-fnd'>hi</div>
-}
