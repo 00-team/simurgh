@@ -4,15 +4,17 @@ import hashlib
 import httpx
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import RedirectResponse
-from pydantic import EmailStr
+from pydantic import BaseModel, EmailStr
 
+from api.verification import Action, verify_verification
 from db.models import UserModel, UserTable
 from db.user import user_add, user_get, user_update
 from deps import rate_limit
 from shared import settings
-from shared.letters import bad_auth, bad_id
+from shared.letters import bad_verification
 from shared.models import NotificationModel
 from shared.tools import get_random_string, new_token
+from shared.validators import VerificationCode
 
 router = APIRouter(
     prefix='/auth',
@@ -21,13 +23,19 @@ router = APIRouter(
 )
 
 
-@router.get(
-    '/login/', response_model=NotificationModel,
-    openapi_extra={'letters': [bad_auth, bad_id]}
-)
-async def login(request: Request, email: EmailStr):
+class LoginBody(BaseModel):
+    email: EmailStr
+    code: VerificationCode
 
-    print(email)
+
+@router.post(
+    '/login/', response_model=NotificationModel,
+    openapi_extra={'letters': [bad_verification]}
+)
+async def login(request: Request, body: LoginBody):
+    await verify_verification(body.email, body.code, Action.login)
+
+    print('insert a user')
 
     return {
         'subject': 'hi',

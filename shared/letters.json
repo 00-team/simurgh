@@ -1,9 +1,6 @@
 {
     "40002": {
         "status": 403,
-        "extra": {
-            "id": 12
-        },
         "en": {
             "subject": "Bad Verification",
             "content": "invalid verification code"
@@ -29,7 +26,7 @@
     },
     "40005": {
         "status": 403,
-        "en": "invalid authentication credentials"
+        "en": ["Bad Args", "invalid authentication credentials"]
     },
     "40006": {
         "status": 403,

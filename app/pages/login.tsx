@@ -1,6 +1,7 @@
 import { createStore } from 'solid-js/store'
 import './style/login.scss'
 import { check_email, httpx } from '!/shared'
+import { Match, Switch } from 'solid-js'
 
 enum InputStatus {
     UNKNOWN,
@@ -31,52 +32,111 @@ export default () => {
         <div class='login-fnd'>
             <div class='login'>
                 <h1>Login</h1>
-                <div class='row email'>
-                    <label for='login_email_input'>Email: </label>
-                    <input
-                        classList={{
-                            valid: state.email_status == InputStatus.VALID,
-                            error: state.email_status == InputStatus.ERROR,
-                        }}
-                        id='login_email_input'
-                        type='email'
-                        placeholder='test@example.com'
-                        maxlength={255}
-                        onInput={e => {
-                            let v = e.currentTarget.value
+                <Switch>
+                    <Match when={state.stage == 'email'}>
+                        <div class='row email'>
+                            <label for='login_email_input'>Email: </label>
+                            <input
+                                classList={{
+                                    valid:
+                                        state.email_status == InputStatus.VALID,
+                                    error:
+                                        state.email_status == InputStatus.ERROR,
+                                }}
+                                id='login_email_input'
+                                type='email'
+                                placeholder='test@example.com'
+                                maxlength={255}
+                                onInput={e => {
+                                    let v = e.currentTarget.value
 
-                            if (!v) {
-                                setState({
-                                    email_status: InputStatus.UNKNOWN,
-                                    email: '',
-                                })
-                                return
-                            }
+                                    if (!v) {
+                                        setState({
+                                            email_status: InputStatus.UNKNOWN,
+                                            email: '',
+                                        })
+                                        return
+                                    }
 
-                            setState({
-                                email_status: check_email(v)
-                                    ? InputStatus.VALID
-                                    : InputStatus.ERROR,
-                                email: v,
-                            })
-                        }}
-                    />
-                </div>
+                                    setState({
+                                        email_status: check_email(v)
+                                            ? InputStatus.VALID
+                                            : InputStatus.ERROR,
+                                        email: v,
+                                    })
+                                }}
+                            />
+                        </div>
+                    </Match>
+                    <Match when={state.stage == 'code'}>
+                        <div class='row code'>
+                            <label for='login_code_input'>Code: </label>
+                            <input
+                                id='login_code_input'
+                                type='text'
+                                placeholder='69420'
+                                maxlength={5}
+                                onInput={e => {
+                                    setState({
+                                        code: e.currentTarget.value,
+                                    })
+                                }}
+                            />
+                        </div>
+                    </Match>
+                </Switch>
+
                 <div class='row btn'>
                     <button
-                        disabled={state.email_status != InputStatus.VALID}
+                        disabled={
+                            state.stage == 'email'
+                                ? state.email_status != InputStatus.VALID
+                                : state.code.length != 5
+                        }
                         onClick={() => {
-                            httpx({
-                                url: '/api/auth/login/',
-                                method: 'GET',
-                                type: 'json',
-                                params: {
-                                    email: state.email,
-                                },
-                                onLoad(x) {
-                                    console.log(x.response)
-                                },
-                            })
+                            if (state.stage == 'email') {
+                                httpx({
+                                    url: '/api/auth/login/',
+                                    method: 'GET',
+                                    type: 'json',
+                                    params: {
+                                        email: state.email,
+                                    },
+                                    onLoad(x) {
+                                        if (x.status == 200) {
+                                            setState({
+                                                code: '',
+                                                stage: 'code',
+                                            })
+                                        } else {
+                                            setState({
+                                                email_status: InputStatus.ERROR,
+                                            })
+                                        }
+                                    },
+                                })
+                            } else {
+                                httpx({
+                                    url: '/api/auth/login/',
+                                    method: 'GET',
+                                    type: 'json',
+                                    params: {
+                                        email: state.email,
+                                    },
+                                    onLoad(x) {
+                                        if (x.status == 200) {
+                                            setState({
+                                                code: '',
+                                                stage: 'code',
+                                            })
+                                        } else {
+                                            setState({
+                                                email_status: InputStatus.ERROR,
+                                            })
+                                        }
+                                    },
+                                })
+                            }
                         }}
                         onMouseEnter={e => {
                             const el = e.currentTarget

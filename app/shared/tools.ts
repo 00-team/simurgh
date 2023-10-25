@@ -18,8 +18,6 @@ type Detail = {
 }
 
 function alert_422(detail: Detail[]) {
-    // TODO: use cookies.lang for this alert
-
     detail.forEach(item => {
         addAlert({
             type: 'error',
@@ -29,12 +27,14 @@ function alert_422(detail: Detail[]) {
         })
     })
 
+    /* 
+
+    TODO: use cookies.lang for this alert
     let lang = document.cookie
         .split('; ')
         .find(i => i.startsWith('lang='))
         .slice(5)
-
-    console.log(lang)
+    */
 }
 
 function random_string(
@@ -135,10 +135,11 @@ function httpx(props: HttpxProps) {
     }
     http.onloadstart = function (e) {
         if (props.onLoadStart) props.onLoadStart(this, e)
-        // delProgress(progress_index)
     }
     http.onload = function (e) {
         if (props.onLoad) props.onLoad(this, e)
+
+        delProgress(puid)
         if (show_notifications && type == 'json') {
             if (this.status == 200) {
                 let notif = this.response
@@ -154,15 +155,9 @@ function httpx(props: HttpxProps) {
                         timeout: 5,
                     })
                 }
-                return
-            }
-
-            if (this.status == 422) {
+            } else if (this.status == 422) {
                 alert_422(this.response.detail)
-                return
-            }
-
-            if (this.response.code) {
+            } else if (this.response.code) {
                 addAlert({
                     type: 'error',
                     title: this.response.code + ' - ' + this.response.subject,
@@ -171,7 +166,6 @@ function httpx(props: HttpxProps) {
                 })
             }
         }
-        delProgress(puid)
     }
     http.onreadystatechange = function () {
         if (props.onReadyStateChange) props.onReadyStateChange(this)
