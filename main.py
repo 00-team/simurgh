@@ -17,8 +17,6 @@ from deps import get_ip
 from shared import config, redis, settings, sqlx
 from shared.letters import Letter, all_letters
 
-# from shared.errors import Error, all_errors
-
 app = FastAPI(
     title='simurgh',
     version='0.0.1',
@@ -63,6 +61,12 @@ async def rapidoc(response: Response):
     allow-spec-url-load="false" allow-spec-file-load="false"
     show-method-in-nav-bar="as-colored-block" response-area-height="500px"
     show-header="false" /></body> </html>'''
+
+
+@app.get('/', response_class=HTMLResponse, include_in_schema=False)
+async def index(response: Response):
+    with open(config.base_dir / 'static/app/index.html', 'r') as f:
+        return f.read()
 
 
 for route in app.routes:

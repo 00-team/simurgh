@@ -14,7 +14,7 @@ console.log('api target: ' + target)
 export default defineConfig(env => {
     let other: Partial<UserConfig> = {}
     if (env.command == 'build') {
-        other.base = '/static/dash/'
+        other.base = '/static/app/'
     }
 
     let watch: WatcherOptions | null = null
@@ -50,7 +50,7 @@ export default defineConfig(env => {
         },
         build: {
             target: 'esnext',
-            outDir: 'static/dash/',
+            outDir: 'static/app/',
             watch,
             rollupOptions: {},
         },

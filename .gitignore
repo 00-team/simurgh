@@ -168,10 +168,6 @@ db/files/
 db/versions/
 records/
 media/
-static/style/
-static/dash/
-static/mark/
-mark/tmpl/head.html
-
+static/app/
 bun.lockb
 
