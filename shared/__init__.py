@@ -1,5 +1,6 @@
 
 
+import smtplib
 import sqlite3
 from pathlib import Path
 from string import ascii_letters, digits
@@ -37,6 +38,9 @@ class Settings(BaseSettings):
     debug: bool = False
     redis_pass: str
 
+    gmail: str
+    gmail_pass: str
+
 
 settings = Settings(_env_file='.secrets')
 
@@ -44,6 +48,9 @@ config.sql_dir.mkdir(parents=True, exist_ok=True)
 config.record_dir.mkdir(parents=True, exist_ok=True)
 config.user_picture_dir.mkdir(parents=True, exist_ok=True)
 (config.base_dir / 'db/versions').mkdir(parents=True, exist_ok=True)
+
+email_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+email_server.login(settings.gmail, settings.gmail_pass)
 
 
 SQL_URL = 'sqlite:///'
