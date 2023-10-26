@@ -40,21 +40,9 @@ if check_diff "package.json"; then
     echo $SPACER
 fi
 
-if check_diff "app/* config/webpack/*"; then
+if check_diff "app/* config/app.ts"; then
     echo "$EG build the app!"
     npm run build
-    echo $SPACER
-fi
-
-if check_diff "mark/style/*"; then
-    echo "$EG build mark style"
-    npm run style
-    echo $SPACER
-fi
-
-if check_diff "mark/script/*"; then
-    echo "$EG build mark script"
-    npm run mark
     echo $SPACER
 fi
 
