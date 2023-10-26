@@ -1,7 +1,7 @@
 SPACER="============================================================================================"
 EG="🔷"
 
-cd /simugh/
+cd /simurgh/
 source .env/bin/activate
 
 OLD_COMMIT=$(git rev-parse HEAD)
