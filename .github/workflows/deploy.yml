@@ -3,7 +3,7 @@ name: Deploy 🌩
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'VERSION'
 
