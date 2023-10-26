@@ -31,7 +31,7 @@ export default () => {
     return (
         <div class='login-fnd'>
             <div class='login'>
-                <h1>Login</h1>
+                <h1>Simurgh Login</h1>
                 <Switch>
                     <Match when={state.stage == 'email'}>
                         <div class='row email'>
