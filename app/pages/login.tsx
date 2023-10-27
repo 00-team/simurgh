@@ -157,7 +157,12 @@ export default () => {
                     </button>
                 </div>
             </div> */}
-            <div class='login-wrapper'></div>
+            <div class='login-wrapper'>
+                <aside class='detail'></aside>
+                <aside class='logo-img'>
+                    <img src='/static/images/logo.webp' alt='' />
+                </aside>
+            </div>
         </div>
     )
 }
