@@ -106,5 +106,41 @@
 
         background-color: var(--sixty-percent);
         border-radius: 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        overflow: hidden;
+
+        .logo-img {
+            flex-shrink: 0;
+            width: 50%;
+            height: 100%;
+
+            display: grid;
+            place-items: center;
+
+            background-color: #eaeaea;
+
+            img {
+                height: 50%;
+                object-fit: contain;
+
+                transform: scale(0) rotate(0);
+
+                animation: img-anim 1.8s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                    forwards;
+
+                @keyframes img-anim {
+                    from {
+                        transform: scale(0) rotate(0);
+                    }
+                    to {
+                        transform: scale(1) rotate(360deg);
+                    }
+                }
+            }
+        }
     }
 }
