@@ -18,6 +18,8 @@ type State = {
     error_message: string
 }
 
+import LogoSvg from '!/../static/images/logo.svg'
+
 export default () => {
     const [state, setState] = createStore<State>({
         stage: 'email',
@@ -168,7 +170,10 @@ export default () => {
             <div class='login-wrapper'>
                 <aside class='detail'></aside>
                 <aside class='logo-img'>
-                    <img src='/static/images/logo.webp' alt='' />
+                    <object
+                        data='/static/image/logo.svg'
+                        type='image/svg+xml'
+                    ></object>
                 </aside>
             </div>
         </div>
