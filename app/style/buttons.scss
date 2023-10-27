@@ -1,0 +1,68 @@
+.basic-button {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: none;
+
+    text-decoration: none;
+    color: inherit;
+}
+
+.arrow-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5vw;
+
+    padding: 1rem 2rem;
+    color: rgb(0, 0, 0);
+
+    background: none;
+
+    border: 2px solid;
+    border-color: black;
+    border-radius: 3px;
+
+    .label {
+        transform: translateX(-10%);
+        transition: transform 0.5s cubic-bezier(0.86, 0, 0.07, 1);
+    }
+
+    &:hover {
+        .label {
+            transform: translateX(20%);
+
+            @media screen and (max-width: 900px) {
+                transform: translateX(13%);
+            }
+        }
+
+        .icon-arrow.before {
+            opacity: 0;
+            transform: translateX(150%) scaleX(0.5);
+        }
+
+        .icon-arrow.after {
+            opacity: 1;
+            transform: translateX(50%) scaleX(1);
+        }
+    }
+
+    .icon-arrow {
+        backface-visibility: hidden;
+        transform: translateZ(0);
+        display: grid;
+        transition:
+            transform 0.5s cubic-bezier(0.86, 0, 0.07, 1),
+            opacity 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        &.before {
+            transform-origin: left center;
+        }
+
+        &.after {
+            opacity: 0;
+            transform: translateX(-100%) scaleX(0.5);
+            transform-origin: right center;
+        }
+    }
+}
