@@ -118,12 +118,15 @@
             width: 50%;
             height: 100%;
 
-            display: grid;
-            place-items: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             background-color: #eaeaea;
 
-            img {
+            transform: scaleX(-1);
+
+            object {
                 height: 50%;
                 object-fit: contain;
 
