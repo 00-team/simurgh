@@ -8,6 +8,7 @@ import 'solid-devtools'
 import './style/base.scss'
 import { user } from './stores'
 import { lazy } from 'solid-js'
+import { Test } from './pages/test'
 
 // import { lazy } from 'solid-js'
 // import { UserData } from './stores'
@@ -30,6 +31,7 @@ render(
             <Router>
                 <Routes>
                     <Route path='/' component={Main} />
+                    <Route path='/test' component={Test} />
                     {/*
                 <Route
 
