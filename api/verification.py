@@ -1,15 +1,16 @@
 
 import logging
 from dataclasses import dataclass
-from email.mime.text import MIMEText
+from email.message import EmailMessage
 from enum import Enum
 from random import choices
 from struct import Struct
 
 from pydantic import BaseModel, EmailStr
 
-from shared import config, email_server, redis, settings
+from shared import config, redis, settings
 from shared.letters import bad_verification
+from shared.tools import send_email
 
 NS = 'verification'
 
@@ -60,15 +61,6 @@ class VerificationData(BaseModel):
     action: Action
 
 
-def send_email_code(email: str, code: str):
-    msg = MIMEText(f'your login code is: {code}')
-    msg['Subject'] = '00 Team Login Code'
-    msg['from'] = settings.gmail
-    msg['To'] = email
-
-    email_server.sendmail(settings.gmail, [email], msg.as_string())
-
-
 async def verification(data: VerificationData):
     key = f'{NS}:{data.email}'
     result = await redis.get(key)
@@ -96,7 +88,18 @@ async def verification(data: VerificationData):
         config.verification_expire, nx=True
     )
 
-    send_email_code(data.email, code)
+    msg = EmailMessage()
+    msg['subject'] = '00 Team Login Code'
+    msg['form'] = '00 Team'
+    msg['to'] = data.email
+    msg.add_alternative(f'your login code is: {code}', 'text')
+    msg.add_alternative(
+        f'''
+        <p>your login code is: <span style="color: red">{code}</span></p>
+        ''',
+        'html'
+    )
+    send_email(data.email, msg)
 
     return VerificationResponse(
         expires=config.verification_expire,

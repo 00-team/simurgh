@@ -72,6 +72,12 @@ export default () => {
                         <div class='row code'>
                             <label for='login_code_input'>Code: </label>
                             <input
+                                classList={{
+                                    valid:
+                                        state.code_status == InputStatus.VALID,
+                                    error:
+                                        state.code_status == InputStatus.ERROR,
+                                }}
                                 id='login_code_input'
                                 type='text'
                                 placeholder='69420'
@@ -96,11 +102,12 @@ export default () => {
                         onClick={() => {
                             if (state.stage == 'email') {
                                 httpx({
-                                    url: '/api/auth/login/',
-                                    method: 'GET',
+                                    url: '/api/verification/',
+                                    method: 'POST',
                                     type: 'json',
-                                    params: {
+                                    json: {
                                         email: state.email,
+                                        action: 'login',
                                     },
                                     onLoad(x) {
                                         if (x.status == 200) {
@@ -118,20 +125,21 @@ export default () => {
                             } else {
                                 httpx({
                                     url: '/api/auth/login/',
-                                    method: 'GET',
+                                    method: 'POST',
                                     type: 'json',
-                                    params: {
+                                    json: {
                                         email: state.email,
+                                        code: state.code,
                                     },
                                     onLoad(x) {
                                         if (x.status == 200) {
                                             setState({
-                                                code: '',
+                                                code: 'cool',
                                                 stage: 'code',
                                             })
                                         } else {
                                             setState({
-                                                email_status: InputStatus.ERROR,
+                                                code_status: InputStatus.ERROR,
                                             })
                                         }
                                     },

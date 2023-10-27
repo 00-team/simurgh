@@ -1,11 +1,13 @@
 
+import smtplib
 import string
 from datetime import datetime
+from email.message import EmailMessage
 from hashlib import sha3_512
 from random import choices
 from secrets import choice as secret_choice
 
-from shared import config
+from shared import config, settings
 
 
 def utc_now(as_datetime: bool = False) -> int | datetime:
@@ -15,6 +17,12 @@ def utc_now(as_datetime: bool = False) -> int | datetime:
         return now
 
     return int(now.timestamp())
+
+
+def send_email(to: str, message: EmailMessage):
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        server.login(settings.gmail, settings.gmail_pass)
+        server.sendmail(settings.gmail, [to], str(message))
 
 
 def get_random_code() -> str:
