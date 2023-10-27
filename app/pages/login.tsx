@@ -30,7 +30,7 @@ export default () => {
 
     return (
         <div class='login-fnd'>
-            <div class='login'>
+            {/* <div class='login'>
                 <h1>Simurgh Login</h1>
                 <Switch>
                     <Match when={state.stage == 'email'}>
@@ -156,7 +156,8 @@ export default () => {
                         Send Code
                     </button>
                 </div>
-            </div>
+            </div> */}
+            <div class='login-wrapper'></div>
         </div>
     )
 }
