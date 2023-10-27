@@ -1,14 +1,17 @@
 /* @refresh reload */
 
 import { Route, Router, Routes } from '@solidjs/router'
-import { Show, render } from 'solid-js/web'
+import { render, Show } from 'solid-js/web'
 
 import 'solid-devtools'
 
-import './style/base.scss'
-import { user } from './stores'
 import { lazy } from 'solid-js'
 import { Test } from './pages/test'
+import { user } from './stores'
+import './style/base.scss'
+import './style/buttons.scss'
+import './style/config.scss'
+import './style/theme.scss'
 
 // import { lazy } from 'solid-js'
 // import { UserData } from './stores'

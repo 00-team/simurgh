@@ -30,7 +30,7 @@ export default () => {
 
     return (
         <div class='login-fnd'>
-            <div class='login'>
+            {/* <div class='login'>
                 <h1>Simurgh Login</h1>
                 <Switch>
                     <Match when={state.stage == 'email'}>
@@ -164,6 +164,12 @@ export default () => {
                         Send Code
                     </button>
                 </div>
+            </div> */}
+            <div class='login-wrapper'>
+                <aside class='detail'></aside>
+                <aside class='logo-img'>
+                    <img src='/static/images/logo.webp' alt='' />
+                </aside>
             </div>
         </div>
     )
