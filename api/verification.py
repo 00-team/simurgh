@@ -6,10 +6,12 @@ from enum import Enum
 from random import choices
 from struct import Struct
 
+from fastapi import Request
 from pydantic import BaseModel, EmailStr
 
 from shared import config, redis, settings
 from shared.errors import bad_verification
+from shared.models import NotificationModel
 from shared.tools import send_email
 
 NS = 'verification'
@@ -48,12 +50,7 @@ class Value:
 class VerificationResponse(BaseModel):
     expires: int
     action: Action
-
-    class Config:
-        json_schema_extra = {'example': {
-            'expires': 102,
-            'action': Action.login
-        }}
+    notification: NotificationModel
 
 
 class VerificationData(BaseModel):
@@ -61,9 +58,25 @@ class VerificationData(BaseModel):
     action: Action
 
 
-async def verification(data: VerificationData):
+already_sent = {
+    'en': NotificationModel(
+        subject='already sent',
+        content='code has been already sent to your email address'
+    )
+}
+
+code_send = {
+    'en': NotificationModel(
+        subject='code was send',
+        content='a code has been sended to your email address'
+    )
+}
+
+
+async def verification(request: Request, data: VerificationData):
     key = f'{NS}:{data.email}'
     result = await redis.get(key)
+    lang = request.cookies.get('lang', config.lang)
 
     if result:
         value = Value.from_bytes(result)
@@ -76,7 +89,8 @@ async def verification(data: VerificationData):
 
         return VerificationResponse(
             expires=await redis.ttl(key),
-            action=value.action
+            action=value.action,
+            notification=already_sent[lang]
         )
 
     code = ''.join(choices('0123456789', k=config.verification_code_len))
@@ -95,7 +109,11 @@ async def verification(data: VerificationData):
     msg.add_alternative(f'your login code is: {code}', 'text')
     msg.add_alternative(
         f'''
-        <p>your login code is: <span style="color: red">{code}</span></p>
+        <p>
+        your login code is: <span
+             style="color: lightblue;font-size:40px"
+        >{code}</span>
+        </p>
         ''',
         'html'
     )
@@ -103,7 +121,8 @@ async def verification(data: VerificationData):
 
     return VerificationResponse(
         expires=config.verification_expire,
-        action=value.action
+        action=value.action,
+        notification=code_send[lang]
     )
 
 

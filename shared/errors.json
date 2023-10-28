@@ -26,7 +26,7 @@
     },
     "40005": {
         "status": 403,
-        "en": ["Bad Args", "invalid authentication credentials"]
+        "en": ["Bad Auth", "invalid authentication credentials"]
     },
     "40006": {
         "status": 403,

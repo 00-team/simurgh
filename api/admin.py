@@ -22,7 +22,7 @@ from shared.tools import utc_now
 router = APIRouter(
     prefix='/admin',
     tags=['admin'],
-    dependencies=[admin_required()]
+    # dependencies=[admin_required(AdminPerms.V_USER)]
 )
 
 # @router.get(
