@@ -104,7 +104,7 @@
         width: clamp(0px, 100%, 1000px);
         aspect-ratio: 2/1;
 
-        background-color: var(--sixty-percent);
+        // background-color: #121212;
         border-radius: 10px;
 
         display: flex;
@@ -112,6 +112,12 @@
         justify-content: space-between;
 
         overflow: hidden;
+
+        background-color: #090909;
+
+        border: 2px solid #f2f2f2;
+        // box-shadow: 0 0 40px #000;
+        box-shadow: 9px 5px 16px 0px #8a8a8a54;
 
         .logo-img {
             flex-shrink: 0;
@@ -122,12 +128,12 @@
             align-items: center;
             justify-content: center;
 
-            background-color: #eaeaea;
+            // background-color: #eaeaea;
 
             transform: scaleX(-1);
 
-            object {
-                height: 50%;
+            img {
+                height: 70%;
                 object-fit: contain;
 
                 transform: scale(0) rotate(0);
@@ -144,6 +150,12 @@
                     }
                 }
             }
+        }
+
+        .detail {
+            width: 50%;
+            height: 100%;
+            background-color: #090909;
         }
     }
 }

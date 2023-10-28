@@ -169,10 +169,11 @@ export default () => {
             </div> */}
             <div class='login-wrapper'>
                 <aside class='logo-img'>
-                    <object
+                    <img src='/static/image/logo.svg' />
+                    {/*<object
                         data='/static/image/logo.svg'
                         type='image/svg+xml'
-                    ></object>
+                    ></object>*/}
                 </aside>
                 <aside class='detail'></aside>
             </div>
