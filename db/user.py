@@ -35,12 +35,12 @@ async def user_public(user_ids: list[int]) -> dict[int, UserPublic]:
     value = '(' + ','.join((str(i) for i in user_ids)) + ')'
     users = await sqlx.fetch_all(
         f'''
-        SELECT user_id, name, picture
+        SELECT user_id, name
         FROM users WHERE user_id IN {value}
         '''
     )
 
-    result = {-1: 'system'}
+    result = {}
 
     for u in users:
         result[u[0]] = UserPublic(**u)

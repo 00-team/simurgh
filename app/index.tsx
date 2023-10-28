@@ -19,6 +19,7 @@ import './style/theme.scss'
 const Login = lazy(() => import('./pages/login'))
 const Alert = lazy(() => import('./components/alert'))
 const Progress = lazy(() => import('./components/progress'))
+const Background = lazy(() => import('./components/background'))
 
 function Main() {
     return (
@@ -35,6 +36,7 @@ render(
                 <Routes>
                     <Route path='/' component={Main} />
                     <Route path='/test' component={Test} />
+
                     {/*
                 <Route
 
@@ -63,7 +65,9 @@ render(
                         path='/projects/:id/'
                         component={lazy(() => import('./admin/project'))}
                     />
-                </Route>*/}
+                </Route>
+
+*/}
                 </Routes>
             </Router>
             <Alert />

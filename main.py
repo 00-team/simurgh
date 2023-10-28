@@ -15,7 +15,7 @@ from db.models import UserModel, UserTable
 from db.user import user_get
 from deps import get_ip
 from shared import config, redis, settings, sqlx
-from shared.letters import Letter, all_letters
+from shared.errors import Error, all_errors
 
 app = FastAPI(
     title='simurgh',
@@ -32,8 +32,8 @@ if settings.debug:
 app.include_router(api.router)
 
 
-@app.exception_handler(Letter)
-async def error_exception_handler(request: Request, exc: Letter):
+@app.exception_handler(Error)
+async def error_exception_handler(request: Request, exc: Error):
     return exc.json(request.cookies.get('lang'))
 
 
@@ -73,24 +73,24 @@ for route in app.routes:
     if not isinstance(route, APIRoute):
         continue
 
-    letters = []
+    errors = []
 
     for d in route.dependencies:
-        letters.extend(getattr(d, 'letters', []))
+        errors.extend(getattr(d, 'errors', []))
 
     oid = route.path.replace('/', '_').strip('_')
     oid += '_' + '_'.join(route.methods)
     route.operation_id = oid
 
-    letters.extend((route.openapi_extra or {}).pop('letters', []))
+    errors.extend((route.openapi_extra or {}).pop('errors', []))
 
-    for l in letters:
-        route.responses[l.code] = {
-            'description': f'{l.message[config.lang]["subject"]} - {l.status}',
+    for e in errors:
+        route.responses[e.code] = {
+            'description': f'{e.message[config.lang]["subject"]} - {e.status}',
             'content': {
                 'application/json': {
                     'schema': {
-                        '$ref': f'#/letters/{l.code}',
+                        '$ref': f'#/errors/{e.code}',
                     }
                 }
             }
@@ -108,10 +108,10 @@ def custom_openapi():
         routes=app.routes,
     )
 
-    schema['letters'] = {}
+    schema['errors'] = {}
 
-    for l in all_letters:
-        schema['letters'][l.code] = l.schema
+    for e in all_errors:
+        schema['errors'][e.code] = e.schema
 
     app.openapi_schema = schema
     return app.openapi_schema

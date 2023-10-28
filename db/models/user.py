@@ -12,7 +12,6 @@ from .common import BaseTable
 # from shared.errors import forbidden
 
 
-
 class AdminPerms(int, Enum):
     def _generate_next_value_(name, start, count, last_values):
         return 1 << count
@@ -28,11 +27,6 @@ class AdminPerms(int, Enum):
     A_RECORD = auto()
     C_RECORD = auto()
     D_RECORD = auto()
-
-    V_PROJECT = auto()
-    A_PROJECT = auto()
-    C_PROJECT = auto()
-    D_PROJECT = auto()
 
     V_BLOG = auto()
     A_BLOG = auto()
@@ -53,9 +47,7 @@ class UserTable(BaseTable):
 
     user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, nullable=False)
-    phone = Column(String, unique=True, nullable=True)
     name = Column(String, nullable=False)
-    picture = Column(String)
     token = Column(String)
     admin = Column(String)
 
@@ -63,12 +55,10 @@ class UserTable(BaseTable):
 class UserPublic(BaseModel):
     user_id: int
     name: str
-    picture: str | None = None
 
 
 class UserModel(UserPublic):
     email: str
-    phone: str | None = None
     admin: str | None = None
     token: str | None = None
 

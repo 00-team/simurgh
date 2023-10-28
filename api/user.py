@@ -8,7 +8,6 @@ from pydantic import BaseModel, EmailStr, Field, constr
 from db.models import UserModel
 from db.user import user_update
 from deps import rate_limit, user_required
-from shared.letters import Letter
 from shared.models import NotificationModel
 
 # from shared.errors import no_change

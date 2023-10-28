@@ -11,7 +11,7 @@ from db.models import UserModel, UserTable
 from db.user import user_add, user_get, user_update
 from deps import rate_limit
 from shared import settings
-from shared.letters import bad_verification
+from shared.errors import bad_verification
 from shared.models import NotificationModel
 from shared.tools import get_random_string, new_token
 from shared.validators import VerificationCode
@@ -28,62 +28,43 @@ class LoginBody(BaseModel):
     code: VerificationCode
 
 
+class LoginResult(BaseModel):
+    user: UserModel
+    token: str
+    new_user: bool
+
+
 @router.post(
-    '/login/', response_model=NotificationModel,
-    openapi_extra={'letters': [bad_verification]}
+    '/login/', response_model=LoginResult,
+    openapi_extra={'errors': [bad_verification]}
 )
-async def login(request: Request, body: LoginBody):
+async def login(request: Request, response: Response, body: LoginBody):
     await verify_verification(body.email, body.code, Action.login)
 
-    print('insert a user')
+    new_user = False
+    token, hash_token = new_token()
 
-    return {
-        'subject': 'hi',
-        'content': 'gg'
-    }
+    user = await user_get(UserTable.email == body.email)
+    if user:
+        await user_update(
+            UserTable.user_id == user.user_id,
+            token=hash_token
+        )
+    else:
+        new_user = True
+        user_id = await user_add(
+            name='default name',
+            email=body.email,
+            token=hash_token
+        )
+        user = UserModel(
+            user_id=user_id,
+            name='default name',
+            email=body.email,
+            token=hash_token
+        )
 
-
-@router.get('/gcb/', response_class=RedirectResponse)
-async def google_callback(request: Request, response: Response):
-    next = request.query_params.get('state', '/')
-    code = request.query_params.get('code')
-    error = request.query_params.get('error')
-
-    if error:
-        return '/?error=invalid_login&google_error=' + error
-
-    result = httpx.post(
-        'https://oauth2.googleapis.com/token',
-        data={
-            'client_id': settings.google_client_id,
-            'client_secret': settings.google_client_secret,
-            'redirect_uri': settings.google_redirect_uri,
-            'code': code,
-            'grant_type': 'authorization_code',
-        }
-    )
-
-    if result.status_code != 200:
-        return '/?error=invalid_login'
-
-    result = result.json()
-    access_token = result.get('access_token')
-
-    result = httpx.get(
-        'https://www.googleapis.com/userinfo/v2/me',
-        headers={'Authorization': 'Bearer ' + access_token},
-        timeout=30
-    )
-
-    if result.status_code != 200:
-        return '/?error=invalid_login'
-
-    result = result.json()
-
-    if not result.get('verified_email'):
-        return '/?error=invalid_login'
-
-    id_token = await update_user(result)
+    id_token = f'{user.user_id}:{token}'
     response.set_cookie(
         key='Authorization',
         value=f'Bearer {id_token}',
@@ -92,4 +73,8 @@ async def google_callback(request: Request, response: Response):
         max_age=30 * 24 * 3600  # 1 month
     )
 
-    return next
+    return {
+        'user': user,
+        'token': id_token,
+        'new_user': new_user
+    }

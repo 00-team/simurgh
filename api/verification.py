@@ -9,7 +9,7 @@ from struct import Struct
 from pydantic import BaseModel, EmailStr
 
 from shared import config, redis, settings
-from shared.letters import bad_verification
+from shared.errors import bad_verification
 from shared.tools import send_email
 
 NS = 'verification'

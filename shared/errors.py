@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from shared import config
 
 
-class Letter(Exception):
+class Error(Exception):
     def __init__(
         self, code: int, message: dict,
         status=400, headers={}, extra: dict = None,
@@ -21,7 +21,7 @@ class Letter(Exception):
     @property
     def schema(self):
         scheme = {
-            'title': 'Letter',
+            'title': 'Error',
             'type': 'object',
             'required': ['code', 'status', 'subject', 'content'],
             'properties': {
@@ -89,7 +89,7 @@ class Letter(Exception):
         )
 
     def __call__(self, *, headers={}, **kwargs):
-        obj = Letter(
+        obj = Error(
             code=self.code,
             message=self.message,
             status=self.status,
@@ -100,18 +100,18 @@ class Letter(Exception):
         return obj
 
 
-with open(config.base_dir / 'shared/letters.json', 'r') as f:
+with open(config.base_dir / 'shared/errors.json', 'r') as f:
     data: dict = json.load(f)
 
 
-all_letters = []
+all_errors = []
 
 
-def letter(code):
+def error(code):
     code = str(code)
 
     if not code in data:
-        raise KeyError(f'letter with code: {code} was not found')
+        raise KeyError(f'error with code: {code} was not found')
 
     item: dict = data[code]
     status = item.pop('status', 400)
@@ -121,7 +121,7 @@ def letter(code):
         raise KeyError('headers cannot be an extra key')
 
     if config.lang not in item:
-        raise ValueError('default lang must be included in letters')
+        raise ValueError('default lang must be included in errors')
 
     message = {}
 
@@ -142,23 +142,23 @@ def letter(code):
                 'content': v.get('content', '')
             }
 
-    l = Letter(
+    l = Error(
         code=int(code),
         message=message,
         status=status,
         extra=extra,
     )
-    all_letters.append(l)
+    all_errors.append(l)
     return l
 
 
-bad_verification = letter(40002)
-bad_auth = letter(40005)
-bad_id = letter(40004)
-no_change = letter(40003)
-forbidden = letter(40006)
-rate_limited = letter(40007)
-bad_args = letter(40009)
-bad_file = letter(40013)
+bad_verification = error(40002)
+bad_auth = error(40005)
+bad_id = error(40004)
+no_change = error(40003)
+forbidden = error(40006)
+rate_limited = error(40007)
+bad_args = error(40009)
+bad_file = error(40013)
 
-database_error = letter(50001)
+database_error = error(50001)

@@ -8,12 +8,12 @@ import magic
 from fastapi import APIRouter, Form, Request, UploadFile
 from pydantic import BaseModel, constr
 
-from db.models import AdminPerms as AP
-from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
-from db.models import RecordTable, UserModel, UserPublic
-from db.project import project_add, project_delete, project_get, project_update
-from db.record import record_add, record_delete, record_exists, record_get
-from db.user import user_exists, user_public
+# from db.models import AdminPerms as AP
+# from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
+# from db.models import RecordTable, UserModel, UserPublic
+# from db.project import project_add, project_delete, project_get, project_update
+# from db.record import record_add, record_delete, record_exists, record_get
+# from db.user import user_exists, user_public
 from deps import admin_required
 from shared import settings, sqlx
 # from shared.errors import bad_file, bad_id, no_change, not_unique
