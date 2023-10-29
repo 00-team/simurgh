@@ -232,6 +232,9 @@
                         top: 50%;
                         right: 10px;
 
+                        flex-shrink: 0;
+                        white-space: nowrap;
+
                         transform: translateY(-50%);
 
                         pointer-events: none;
