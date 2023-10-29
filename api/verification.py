@@ -57,21 +57,6 @@ class VerificationData(BaseModel):
     action: Action
 
 
-# already_sent = {
-#     'en': NotificationModel(
-#         subject='already sent',
-#         content='code has been already sent to your email address'
-#     )
-# }
-#
-# code_send = {
-#     'en': NotificationModel(
-#         subject='code was send',
-#         content='a code has been sended to your email address'
-#     )
-# }
-
-
 async def verification(request: Request, data: VerificationData):
     key = f'{NS}:{data.email}'
     result = await redis.get(key)

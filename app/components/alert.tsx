@@ -6,8 +6,8 @@ import { createStore, produce } from 'solid-js/store'
 
 type AlertModel = {
     type: 'info' | 'error' | 'success'
-    title: string
-    detail: string
+    subject: string
+    content: string
     timeout: number
 }
 
@@ -81,14 +81,14 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
         >
             <div class='head'>
                 {ALERT_ICON[props.a.type]()}
-                <span>{props.a.title}</span>
+                <span>{props.a.subject}</span>
                 <button onClick={() => delAlert(props.i)}>
                     <CloseIcon />
                 </button>
             </div>
             <div class='body'>
                 <p>
-                    {props.a.detail.split('\n').map(line => (
+                    {props.a.content.split('\n').map(line => (
                         <>
                             {line}
                             <br />

@@ -22,8 +22,8 @@ function alert_422(detail: Detail[]) {
         addAlert({
             type: 'error',
             timeout: 10,
-            title: item.type,
-            detail: `location: ${item.loc.join('.')}\n\n${item.msg}`,
+            subject: item.type,
+            content: `location: ${item.loc.join('.')}\n\n${item.msg}`,
         })
     })
 
@@ -61,7 +61,7 @@ type HttpxProps = {
         [k: string]: string | boolean | number
     }
     type?: XMLHttpRequestResponseType
-    show_notifications?: boolean
+    show_messages?: boolean
     reject?(reson?: string): void
     onReadyStateChange?(x: XMLHttpRequest): void
     onLoad?(x: XMLHttpRequest, ev: ProgressEvent): void
@@ -77,7 +77,7 @@ type HttpxProps = {
 }
 
 function httpx(props: HttpxProps) {
-    const { url, method, type, headers, show_notifications = true } = props
+    const { url, method, type, headers, show_messages = true } = props
     let http = new XMLHttpRequest()
 
     const oul = typeof url == 'string' ? new URL(url, location.href) : url
@@ -140,19 +140,13 @@ function httpx(props: HttpxProps) {
         if (props.onLoad) props.onLoad(this, e)
 
         delProgress(puid)
-        if (show_notifications && type == 'json') {
+        if (show_messages && type == 'json') {
             if (this.status == 200) {
-                let notif = this.response
-                if (notif.notification) {
-                    notif = notif.notification
-                }
-
-                if (notif.show_notification) {
+                if (this.response.message) {
                     addAlert({
                         type: 'success',
-                        title: notif.subject,
-                        detail: notif.content,
                         timeout: 5,
+                        ...this.response.message,
                     })
                 }
             } else if (this.status == 422) {
@@ -160,9 +154,8 @@ function httpx(props: HttpxProps) {
             } else if (this.response.code) {
                 addAlert({
                     type: 'error',
-                    title: this.response.code + ' - ' + this.response.subject,
-                    detail: this.response.content,
                     timeout: 10,
+                    ...this.response,
                 })
             }
         }
