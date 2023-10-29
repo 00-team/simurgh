@@ -176,6 +176,8 @@
 
             color: white;
 
+            overflow: hidden;
+
             @media screen and (max-width: 768px) {
                 width: 100%;
             }
@@ -243,6 +245,8 @@
 
                     width: 0;
 
+                    transition: 0.7s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
                     animation: width-inp cubic-bezier(0.45, 0.02, 0.09, 0.98)
                         0.9s 1.1s forwards;
 
@@ -276,8 +280,16 @@
                     &.code {
                         position: absolute;
                         top: 0;
+                        right: -600px;
 
-                        transform: translateX(200%);
+                        &.active {
+                            right: 0;
+                        }
+                    }
+                    &.gmail {
+                        &:not(.active) {
+                            transform: translateX(-200%);
+                        }
                     }
 
                     span {
@@ -313,6 +325,10 @@
                     }
                 }
                 button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
                     padding: 1.5vh 0;
                     background: var(--ten-percent);
                     border-radius: 5px;
@@ -320,6 +336,9 @@
                     white-space: nowrap;
 
                     width: 0;
+
+                    position: relative;
+                    isolation: isolate;
 
                     overflow: hidden;
 
@@ -342,6 +361,30 @@
                             }
                             to {
                                 width: 100%;
+                            }
+                        }
+                    }
+
+                    span {
+                        transition: 0.7s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
+                        &.code {
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+
+                            display: grid;
+                            place-items: center;
+
+                            transform: translateX(300px);
+
+                            &.active {
+                                transform: translateX(0);
+                            }
+                        }
+                        &.gmail {
+                            &:not(.active) {
+                                transform: translateX(-300px);
                             }
                         }
                     }
