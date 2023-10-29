@@ -218,11 +218,12 @@
                 flex-direction: column;
                 gap: 6vh;
 
-                padding: 1rem 2rem;
-
-                width: 100%;
+                width: 90%;
 
                 margin-top: 6vh;
+
+                position: relative;
+                isolation: isolate;
 
                 @media screen and (max-width: 768px) {
                     padding: 1rem 0rem;
@@ -255,6 +256,30 @@
                         }
                     }
 
+                    &:focus-within {
+                        span {
+                            transform: translateY(-120%) translateX(10%)
+                                scale(0.8);
+                            top: 0;
+                            right: 0;
+                        }
+                    }
+                    &.holder {
+                        span {
+                            transform: translateY(-120%) translateX(10%)
+                                scale(0.8);
+                            top: 0;
+                            right: 0;
+                        }
+                    }
+
+                    &.code {
+                        position: absolute;
+                        top: 0;
+
+                        transform: translateX(200%);
+                    }
+
                     span {
                         display: flex;
                         align-items: center;
@@ -285,23 +310,6 @@
 
                         border: none;
                         background-color: transparent;
-                    }
-
-                    &:focus-within {
-                        span {
-                            transform: translateY(-120%) translateX(10%)
-                                scale(0.8);
-                            top: 0;
-                            right: 0;
-                        }
-                    }
-                    &.active {
-                        span {
-                            transform: translateY(-120%) translateX(10%)
-                                scale(0.8);
-                            top: 0;
-                            right: 0;
-                        }
                     }
                 }
                 button {
