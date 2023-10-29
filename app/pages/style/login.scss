@@ -136,26 +136,35 @@
                 height: 70%;
                 object-fit: contain;
 
-                transform: scale(0) rotate(0);
+                // transform: scale(0) rotate(0);
 
-                animation: img-anim 1.8s cubic-bezier(0.45, 0.02, 0.09, 0.98)
-                    forwards;
+                // animation: img-anim 1.8s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                //     forwards;
 
-                @keyframes img-anim {
-                    from {
-                        transform: scale(0) rotate(0);
-                    }
-                    to {
-                        transform: scale(1) rotate(360deg);
-                    }
-                }
+                // @keyframes img-anim {
+                //     from {
+                //         transform: scale(0) rotate(0);
+                //     }
+                //     to {
+                //         transform: scale(1) rotate(360deg);
+                //     }
+                // }
             }
         }
 
         .detail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: -5vh;
+
             width: 50%;
             height: 100%;
             background-color: #090909;
+
+            color: white;
         }
     }
 }
