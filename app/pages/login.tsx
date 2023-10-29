@@ -27,6 +27,10 @@ export default () => {
         error_message: '',
     })
 
+    const validate_gmail = async (): Promise<boolean> => {
+        return true
+    }
+
     return (
         <div class='login-fnd'>
             {/* <div class='login'>
@@ -209,7 +213,27 @@ export default () => {
                                 }}
                             />
                         </div>
-                        <button class='title_small basic-button'>
+                        <button
+                            class='title_small basic-button'
+                            onclick={() => {
+                                if (validate_gmail())
+                                    return setState(
+                                        produce(s => {
+                                            s.stage = 'code'
+                                            s.email_status = InputStatus.VALID
+                                        })
+                                    )
+                                else {
+                                    return setState(
+                                        produce(s => {
+                                            s.email_status = InputStatus.ERROR
+                                            s.error_message =
+                                                'نام کاربری وارد شده نادرست است!'
+                                        })
+                                    )
+                                }
+                            }}
+                        >
                             ارسال کد
                         </button>
                     </div>
