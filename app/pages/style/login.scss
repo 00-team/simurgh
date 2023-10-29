@@ -196,6 +196,80 @@
                     }
                 }
             }
+
+            .inps {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 6vh;
+
+                padding: 1rem 2rem;
+
+                width: 100%;
+
+                margin-top: 6vh;
+
+                .inp {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    width: 100%;
+
+                    background-color: rgb(210, 170, 27);
+                    border-radius: 5px;
+
+                    position: relative;
+                    isolation: isolate;
+
+                    span {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+
+                        position: absolute;
+                        top: 50%;
+                        right: 10px;
+
+                        transform: translateY(-50%);
+
+                        pointer-events: none;
+
+                        transition: 0.3s ease-in-out;
+                    }
+
+                    input {
+                        width: 100%;
+                        height: 100%;
+                        color: white;
+
+                        padding: 1em;
+
+                        direction: rtl;
+
+                        border: none;
+                        background-color: transparent;
+                    }
+
+                    &:focus-within {
+                        span {
+                            transform: translateY(-120%) translateX(10%)
+                                scale(0.8);
+                            top: 0;
+                            right: 0;
+                        }
+                    }
+                    &.active {
+                        span {
+                            transform: translateY(-120%) translateX(10%)
+                                scale(0.8);
+                            top: 0;
+                            right: 0;
+                        }
+                    }
+                }
+            }
         }
     }
 }
