@@ -195,7 +195,7 @@ export default () => {
                             class='inp rtl gmail'
                             classList={{
                                 holder: state.email.length >= 1,
-                                active: state.stage === 'code',
+                                active: state.stage === 'email',
                             }}
                         >
                             <span class='title_small'>
@@ -269,7 +269,18 @@ export default () => {
                                 }
                             }}
                         >
-                            ارسال کد
+                            <span
+                                class='gmail'
+                                classList={{ active: state.stage === 'email' }}
+                            >
+                                ارسال کد
+                            </span>
+                            <span
+                                classList={{ active: state.stage === 'code' }}
+                                class='code'
+                            >
+                                تایید کد
+                            </span>
                         </button>
                     </div>
                 </aside>
