@@ -1,4 +1,5 @@
-import { createStore } from 'solid-js/store'
+import { UserIcon } from '!/icon'
+import { createStore, produce } from 'solid-js/store'
 import './style/login.scss'
 
 enum InputStatus {
@@ -185,6 +186,33 @@ export default () => {
                             )
                         })}
                     </header>
+                    <div class='inps'>
+                        <div
+                            class='inp rtl'
+                            classList={{ active: state.email.length >= 1 }}
+                        >
+                            <span class='title_small'>
+                                <div class='holder'>نام کاربری</div>
+                                <div class='icon'>
+                                    <UserIcon />
+                                </div>
+                            </span>
+                            <input
+                                type='text'
+                                class='title_small'
+                                onchange={e => {
+                                    setState(
+                                        produce(s => {
+                                            s.email = e.target.value
+                                        })
+                                    )
+                                }}
+                            />
+                        </div>
+                        <button class='title_small basic-button'>
+                            ارسال کد
+                        </button>
+                    </div>
                 </aside>
             </div>
         </div>
