@@ -173,8 +173,16 @@ export default () => {
                 </aside>
                 <aside class='detail'>
                     <header class='section_title eng'>
-                        {'Simurgh Login'.split('').map(word => {
-                            return <span>{word}</span>
+                        {'Simurgh Login'.split('').map((word, index) => {
+                            return (
+                                <span
+                                    style={{
+                                        'animation-delay': `${index * 60}ms`,
+                                    }}
+                                >
+                                    {word}
+                                </span>
+                            )
                         })}
                     </header>
                 </aside>
