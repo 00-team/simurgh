@@ -1,6 +1,7 @@
 import { CodeIcon, UserIcon } from '!/icon'
 import { createStore, produce } from 'solid-js/store'
 import './style/login.scss'
+import Logo from './logo'
 
 enum InputStatus {
     UNKNOWN,
@@ -170,26 +171,16 @@ export default () => {
             </div> */}
             <div class='login-wrapper'>
                 <aside class='logo-img'>
-                    <img src='/static/image/logo.svg' />
-                    {/*<object
+                    <Logo />
+                    {/*
+                    <img src='/static/image/logo.new.svg' />
+                    <object
                         data='/static/image/logo.svg'
                         type='image/svg+xml'
                     ></object>*/}
                 </aside>
                 <aside class='detail'>
-                    <header class='section_title eng'>
-                        {'Simurgh Login'.split('').map((word, index) => {
-                            return (
-                                <span
-                                    style={{
-                                        'animation-delay': `${index * 60}ms`,
-                                    }}
-                                >
-                                    {word}
-                                </span>
-                            )
-                        })}
-                    </header>
+                    <header class='section_title eng'>Login</header>
                     <div class='inps'>
                         <div
                             class='inp rtl gmail'

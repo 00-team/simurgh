@@ -28,23 +28,6 @@
     background-color: #555;
 }
 
-.root {
-    overflow: hidden;
-    // background-color: #121212;
-    // @media (prefers-color-scheme: dark) {
-    //     body {
-    //         @include theme.dark;
-    //     }
-    //     background-color: var(--accent-color);
-    // }
-    // @media (prefers-color-scheme: light) {
-    //     body {
-    //         @include theme.dark;
-    //     }
-    //     background-color: var(--accent-color);
-    // }
-}
-
 body {
     overflow-x: hidden;
     width: 100%;
@@ -52,11 +35,10 @@ body {
     background-color: #040404;
     background-image: url(/static/image/pattern.svg);
     background-size: 320px;
-}
 
-html,
-body {
-    scroll-behavior: smooth;
+    .root {
+        overflow: hidden;
+    }
 }
 
 @media (prefers-color-scheme: dark) {

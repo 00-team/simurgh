@@ -142,8 +142,9 @@
 
             transform: scaleX(-1);
 
-            img {
-                height: 70%;
+            img,
+            svg {
+                height: 100%;
                 object-fit: contain;
 
                 // transform: scale(0) rotate(0);
@@ -186,31 +187,12 @@
                 display: flex;
                 align-items: center;
                 gap: 0.25vmin;
+                font-family: 'Graduate';
+                text-transform: uppercase;
 
                 overflow: hidden;
 
                 padding-top: 1em;
-
-                span {
-                    display: inline-block;
-
-                    transform: translateY(100%);
-                    // opacity: 0;
-
-                    animation: span-slidein 0.9s
-                        cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-
-                    @keyframes span-slidein {
-                        from {
-                            transform: translateY(400%);
-                            // opacity: 0;
-                        }
-                        to {
-                            transform: translateY(0);
-                            opacity: 1;
-                        }
-                    }
-                }
             }
 
             .inps {

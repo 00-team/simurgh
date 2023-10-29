@@ -20,7 +20,7 @@ import '/static/fonts/fonts.css'
 const Login = lazy(() => import('./pages/login'))
 const Alert = lazy(() => import('./components/alert'))
 const Progress = lazy(() => import('./components/progress'))
-const Background = lazy(() => import('./components/background'))
+// const Background = lazy(() => import('./components/background'))
 
 function Main() {
     return (
