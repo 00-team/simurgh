@@ -1,7 +1,5 @@
 import { createStore } from 'solid-js/store'
 import './style/login.scss'
-import { check_email, httpx } from '!/shared'
-import { Match, Switch } from 'solid-js'
 
 enum InputStatus {
     UNKNOWN,
@@ -17,8 +15,6 @@ type State = {
     code_status: InputStatus
     error_message: string
 }
-
-import LogoSvg from '!/../static/images/logo.svg'
 
 export default () => {
     const [state, setState] = createStore<State>({
@@ -175,7 +171,13 @@ export default () => {
                         type='image/svg+xml'
                     ></object>*/}
                 </aside>
-                <aside class='detail'></aside>
+                <aside class='detail'>
+                    <header class='section_title eng'>
+                        {'Simurgh Login'.split('').map(word => {
+                            return <span>{word}</span>
+                        })}
+                    </header>
+                </aside>
             </div>
         </div>
     )
