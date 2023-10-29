@@ -14,7 +14,7 @@ from db.models import UserModel, UserTable
 from db.user import user_get
 from deps import get_ip
 from shared import config, redis, settings, sqlx
-from shared.errors import Error, all_errors
+from shared.locale import Error, all_errors
 
 app = FastAPI(
     title='simurgh',
@@ -85,7 +85,7 @@ for route in app.routes:
 
     for e in errors:
         route.responses[e.code] = {
-            'description': f'{e.message[config.lang]["subject"]} - {e.status}',
+            'description': f'{e.messages()["subject"]} - {e.status}',
             'content': {
                 'application/json': {
                     'schema': {

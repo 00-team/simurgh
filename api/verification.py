@@ -10,8 +10,8 @@ from fastapi import Request
 from pydantic import BaseModel, EmailStr
 
 from shared import config, redis, settings
-from shared.errors import bad_verification
-from shared.models import NotificationModel
+from shared.locale import MessageResult, err_bad_verification
+from shared.locale import msg_verification_code_ok, msg_verification_code_sent
 from shared.tools import send_email
 
 NS = 'verification'
@@ -47,10 +47,9 @@ class Value:
         )
 
 
-class VerificationResponse(BaseModel):
+class VerificationResult(MessageResult):
     expires: int
     action: Action
-    notification: NotificationModel
 
 
 class VerificationData(BaseModel):
@@ -58,19 +57,19 @@ class VerificationData(BaseModel):
     action: Action
 
 
-already_sent = {
-    'en': NotificationModel(
-        subject='already sent',
-        content='code has been already sent to your email address'
-    )
-}
-
-code_send = {
-    'en': NotificationModel(
-        subject='code was send',
-        content='a code has been sended to your email address'
-    )
-}
+# already_sent = {
+#     'en': NotificationModel(
+#         subject='already sent',
+#         content='code has been already sent to your email address'
+#     )
+# }
+#
+# code_send = {
+#     'en': NotificationModel(
+#         subject='code was send',
+#         content='a code has been sended to your email address'
+#     )
+# }
 
 
 async def verification(request: Request, data: VerificationData):
@@ -85,12 +84,12 @@ async def verification(request: Request, data: VerificationData):
                 'two verifications with different action\n'
                 f'email: {data.email}\n'
             ))
-            raise bad_verification
+            raise err_bad_verification
 
-        return VerificationResponse(
+        return VerificationResult(
             expires=await redis.ttl(key),
             action=value.action,
-            notification=already_sent[lang]
+            message=msg_verification_code_sent(request)
         )
 
     code = ''.join(choices('0123456789', k=config.verification_code_len))
@@ -119,10 +118,10 @@ async def verification(request: Request, data: VerificationData):
     )
     send_email(data.email, msg)
 
-    return VerificationResponse(
+    return VerificationResult(
         expires=config.verification_expire,
         action=value.action,
-        notification=code_send[lang]
+        message=msg_verification_code_ok(request)
     )
 
 
@@ -131,11 +130,11 @@ async def verify_verification(email, code, action) -> Value:
     result = await redis.get(key)
 
     if not result:
-        raise bad_verification
+        raise err_bad_verification
 
     value = Value.from_bytes(result)
     if value.action != action:
-        raise bad_verification
+        raise err_bad_verification
 
     if code == value.code:
         await redis.delete(key)
@@ -151,4 +150,4 @@ async def verify_verification(email, code, action) -> Value:
     else:
         await redis.set(key, value.to_bytes(), xx=True, keepttl=True)
 
-    raise bad_verification
+    raise err_bad_verification

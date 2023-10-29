@@ -8,9 +8,7 @@ from pydantic import BaseModel, EmailStr, Field, constr
 from db.models import UserModel
 from db.user import user_update
 from deps import rate_limit, user_required
-from shared.models import NotificationModel
-
-# from shared.errors import no_change
+from shared.locale import MessageResult, err_no_change, msg_user_update_ok
 
 router = APIRouter(
     prefix='/user',
@@ -27,55 +25,30 @@ async def get(request: Request):
 
 
 class UpdateBody(BaseModel):
-    email: EmailStr | Literal[-1] = None
     name: constr(
         strip_whitespace=True,
         max_length=128,
         min_length=1,
         strict=True
-    ) = Field(None, examples=['Patrick Star', 'Mr Krabs'])
+    )
 
 
 @router.patch(
-    '/update/', response_model=NotificationModel,
-    openapi_extra={'errors': []}
+    '/update/', response_model=MessageResult,
+    openapi_extra={'errors': [err_no_change]}
 )
 async def update(request: Request, body: UpdateBody):
     user: UserModel = request.state.user
-    change = False
 
-    if body.email is None and body.name is None:
-        raise no_change
+    if body.name == user.name:
+        raise err_no_change
 
-    patch = {}
-    if body.email is not None:
-        if body.email == -1:
-            body.email = None
-
-        if body.email != user.email:
-            patch['email'] = body.email
-            change = True
-
-    if body.name is not None and body.name != user.name:
-        patch['name'] = body.name
-        change = True
-
-    if not change:
-        raise no_change
+    patch = {
+        'name': body.name
+    }
 
     await user_update(**patch)
-    return {'ok': True}
 
-
-class ContactBody(BaseModel):
-    subject: str
-    content: str
-
-
-@router.post('/contact/', dependencies=[rate_limit('user:contact', 3600, 1)])
-async def contact(request: Request, body: ContactBody):
-    user: UserModel = request.state.user
-
-    print(user, body)
-
-    return {'ok': True}
+    return {
+        'message': msg_user_update_ok(request)
+    }

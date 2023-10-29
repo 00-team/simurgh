@@ -7,9 +7,9 @@ from functools import cached_property
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
 
-from .common import BaseTable
+from shared.locale import err_forbidden
 
-# from shared.errors import forbidden
+from .common import BaseTable
 
 
 class AdminPerms(int, Enum):
@@ -92,4 +92,4 @@ class UserModel(UserPublic):
 
     def admin_assert(self, required_perms: int):
         if not self.admin_check(required_perms, log=True):
-            raise forbidden
+            raise err_forbidden

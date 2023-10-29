@@ -9,7 +9,7 @@ from fastapi.security.utils import get_authorization_scheme_param
 from db.models import AdminPerms, UserModel, UserTable
 from db.rate_limit import rate_limit_get, rate_limit_set
 from db.user import user_get
-from shared.errors import bad_auth, forbidden, rate_limited
+from shared.locale import err_bad_auth, err_forbidden, err_rate_limited
 
 
 class HTTPBearer(security.HTTPBearer):
@@ -20,16 +20,16 @@ class HTTPBearer(security.HTTPBearer):
         )
         scheme, credentials = get_authorization_scheme_param(authorization)
         if not (authorization and scheme and credentials):
-            raise bad_auth
+            raise err_bad_auth
         if scheme.lower() != "bearer":
-            raise bad_auth
+            raise err_bad_auth
 
         return HTTPAuthorizationCredentials(scheme=scheme, credentials=credentials)
 
 
 user_schema = HTTPBearer(description='User Token')
 
-errors = [bad_auth, rate_limited]
+errors = [err_bad_auth, err_rate_limited]
 
 
 def get_ip():
@@ -61,7 +61,7 @@ async def rate_limit(request, path_id):
     value, expire = await rate_limit_get(key)
 
     if value >= amount:
-        raise rate_limited(headers={
+        raise err_rate_limited(headers={
             'X-RateLimit-Limit': str(amount),
             'X-RateLimit-Reset-After': str(expire)
         })
@@ -85,17 +85,17 @@ def user_required():
             user_id = int(user_id)
         except ValueError:
             await rate_limit(request, 'user_token_check')
-            raise bad_auth
+            raise err_bad_auth
 
         user = await user_get(UserTable.user_id == user_id)
 
         if user is None:
             await rate_limit(request, 'user_token_check')
-            raise bad_auth
+            raise err_bad_auth
 
         if user.token != sha3_512(token.encode()).hexdigest():
             await rate_limit(request, 'user_token_check')
-            raise bad_auth
+            raise err_bad_auth
 
         request.state.user = user
         return user
@@ -111,11 +111,11 @@ def admin_required(perms: AdminPerms = None):
     async def decorator(request: Request, user: UserModel = user_required()):
         if not user.is_admin:
             await rate_limit(request, 'admin_check')
-            raise forbidden
+            raise err_forbidden
 
         if perms is not None:
             user.admin_assert(perms)
 
     dep = Depends(decorator)
-    dep.errors = errors + [forbidden]
+    dep.errors = errors + [err_forbidden]
     return dep

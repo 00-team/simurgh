@@ -4,16 +4,17 @@ import json
 from fastapi.responses import JSONResponse
 
 from shared import config
+from shared.locale.langs import MessageModel, Messages, all_langs
 
 
 class Error(Exception):
     def __init__(
-        self, code: int, message: dict,
+        self, code: int, messages: Messages,
         status=400, headers={}, extra: dict = None,
     ):
 
         self.code = code
-        self.message = message
+        self.messages = messages
         self.status = status
         self.headers = headers
         self.extra = extra
@@ -33,7 +34,7 @@ class Error(Exception):
             'example': {
                 'code': self.code,
                 'status': self.status,
-                **self.message[config.lang]
+                **self.messages()
             }
         }
 
@@ -47,11 +48,7 @@ class Error(Exception):
         }
 
         for k, v in self.extra.items():
-            if isinstance(v, (tuple, list)):
-                t = 'array'
-            elif isinstance(v, dict):
-                t = 'object'
-            elif isinstance(v, str):
+            if isinstance(v, str):
                 t = 'string'
             elif isinstance(v, (float, int)):
                 t = 'number'
@@ -68,13 +65,11 @@ class Error(Exception):
 
         return scheme
 
-    def json(self, lang: str = config.lang):
-        if lang not in self.message:
-            lang = config.lang
-
+    def json(self, lang: str = None):
         data = {
+            'status': self.status,
             'code': self.code,
-            **self.message[lang],
+            **self.messages(lang=lang),
         }
 
         if self.extra:
@@ -91,7 +86,7 @@ class Error(Exception):
     def __call__(self, *, headers={}, **kwargs):
         obj = Error(
             code=self.code,
-            message=self.message,
+            messages=self.messages,
             status=self.status,
             headers=headers or self.headers,
             extra=kwargs,
@@ -100,51 +95,25 @@ class Error(Exception):
         return obj
 
 
-with open(config.base_dir / 'shared/errors.json', 'r') as f:
-    data: dict = json.load(f)
-
-
 all_errors = []
 
 
-def error(code):
-    code = str(code)
-
-    if not code in data:
-        raise KeyError(f'error with code: {code} was not found')
-
-    item: dict = data[code]
-    status = item.pop('status', 400)
-    extra = item.pop('extra', {})
+def error(code: int, status: int, extra={}):
 
     if 'headers' in extra:
         raise KeyError('headers cannot be an extra key')
 
-    if config.lang not in item:
-        raise ValueError('default lang must be included in errors')
+    messages = Messages()
 
-    message = {}
-
-    for k, v in item.items():
-        if isinstance(v, str):
-            message[k] = {
-                'subject': v,
-                'content': ''
-            }
-        elif isinstance(v, list):
-            message[k] = {
-                'subject': v.pop(0),
-                'content': '\n'.join(v),
-            }
-        else:
-            message[k] = {
-                'subject': v['subject'],
-                'content': v.get('content', '')
-            }
+    for k, lang in all_langs.items():
+        messages[k] = dict(
+            subject=lang.errors[code][0],
+            content='\n'.join(lang.errors[code][1:])
+        )
 
     l = Error(
         code=int(code),
-        message=message,
+        messages=messages,
         status=status,
         extra=extra,
     )
@@ -152,13 +121,12 @@ def error(code):
     return l
 
 
-bad_verification = error(40002)
-bad_auth = error(40005)
-bad_id = error(40004)
-no_change = error(40003)
-forbidden = error(40006)
-rate_limited = error(40007)
-bad_args = error(40009)
-bad_file = error(40013)
-
-database_error = error(50001)
+err_bad_verification = error(40002, 403)
+err_no_change = error(40003, 400)
+err_bad_id = error(40004, 404, {'item': 'User', 'id': 12})
+err_bad_auth = error(40005, 403)
+err_forbidden = error(40006, 403)
+err_rate_limited = error(40007, 429)
+err_bad_args = error(40009, 400)
+err_bad_file = error(40013, 400)
+err_database_error = error(50001, 500)

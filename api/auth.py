@@ -11,8 +11,7 @@ from db.models import UserModel, UserTable
 from db.user import user_add, user_get, user_update
 from deps import rate_limit
 from shared import settings
-from shared.errors import bad_verification
-from shared.models import NotificationModel
+from shared.locale import err_bad_verification
 from shared.tools import get_random_string, new_token
 from shared.validators import VerificationCode
 
@@ -36,7 +35,7 @@ class LoginResult(BaseModel):
 
 @router.post(
     '/login/', response_model=LoginResult,
-    openapi_extra={'errors': [bad_verification]}
+    openapi_extra={'errors': [err_bad_verification]}
 )
 async def login(request: Request, response: Response, body: LoginBody):
     await verify_verification(body.email, body.code, Action.login)
@@ -72,6 +71,8 @@ async def login(request: Request, response: Response, body: LoginBody):
         samesite='strict',
         max_age=30 * 24 * 3600  # 1 month
     )
+
+    user.token = user.token[:32]
 
     return {
         'user': user,
