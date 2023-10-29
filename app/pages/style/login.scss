@@ -119,6 +119,16 @@
         // box-shadow: 0 0 40px #000;
         box-shadow: 9px 5px 16px 0px #8a8a8a54;
 
+        @media screen and (max-width: 768px) {
+            aspect-ratio: unset;
+            flex-direction: column;
+            height: auto;
+            width: 90%;
+            padding: 3em 1.5em;
+
+            gap: 4vh;
+        }
+
         .logo-img {
             flex-shrink: 0;
             width: 50%;
@@ -166,6 +176,10 @@
 
             color: white;
 
+            @media screen and (max-width: 768px) {
+                width: 100%;
+            }
+
             header {
                 display: flex;
                 align-items: center;
@@ -209,6 +223,10 @@
                 width: 100%;
 
                 margin-top: 6vh;
+
+                @media screen and (max-width: 768px) {
+                    padding: 1rem 0rem;
+                }
 
                 .inp {
                     display: flex;
@@ -306,6 +324,17 @@
                         }
                         to {
                             width: 65%;
+                        }
+                    }
+
+                    @media screen and (max-width: 768px) {
+                        @keyframes width-btn {
+                            from {
+                                width: 0;
+                            }
+                            to {
+                                width: 100%;
+                            }
                         }
                     }
                 }
