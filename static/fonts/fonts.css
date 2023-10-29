@@ -4,6 +4,11 @@
 }
 
 @font-face {
+    font-family: 'berkshire';
+    src: url('/static/fonts/berkshire/BerkshireSwash.ttf') format('truetype');
+}
+
+@font-face {
     font-family: 'iranBold';
     src: url('/static/fonts/iran-sans/bold.woff2') format('woff2');
 }
@@ -26,5 +31,3 @@
         url('/static/fonts/vazir/vazir.woff') format('woff');
     unicode-range: U+0030-0039, U+0660-0669;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
