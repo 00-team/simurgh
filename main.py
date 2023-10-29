@@ -1,5 +1,4 @@
 
-
 from hashlib import sha3_256, sha3_512
 from io import StringIO
 

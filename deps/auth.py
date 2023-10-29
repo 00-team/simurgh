@@ -74,14 +74,14 @@ def user_required():
 
     async def decorator(
         request: Request, response: Response,
-        token=Depends(user_schema)
+        id_token: HTTPAuthorizationCredentials = Depends(user_schema)
     ):
         state = getattr(request.state, 'user', None)
         if isinstance(state, UserModel):
             return state
 
         try:
-            user_id, token = value.split(':')
+            user_id, token = id_token.credentials.split(':')
             user_id = int(user_id)
         except ValueError:
             await rate_limit(request, 'user_token_check')
