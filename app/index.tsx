@@ -12,6 +12,7 @@ import './style/base.scss'
 import './style/buttons.scss'
 import './style/config.scss'
 import './style/theme.scss'
+import '/static/fonts/fonts.css'
 
 // import { lazy } from 'solid-js'
 // import { UserData } from './stores'
