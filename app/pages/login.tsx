@@ -1,4 +1,4 @@
-import { UserIcon } from '!/icon'
+import { CodeIcon, UserIcon } from '!/icon'
 import { createStore, produce } from 'solid-js/store'
 import './style/login.scss'
 
@@ -192,8 +192,11 @@ export default () => {
                     </header>
                     <div class='inps'>
                         <div
-                            class='inp rtl'
-                            classList={{ active: state.email.length >= 1 }}
+                            class='inp rtl gmail'
+                            classList={{
+                                holder: state.email.length >= 1,
+                                active: state.stage === 'code',
+                            }}
                         >
                             <span class='title_small'>
                                 <div class='holder'>نام کاربری</div>
@@ -213,24 +216,56 @@ export default () => {
                                 }}
                             />
                         </div>
+                        <div
+                            class='inp rtl code'
+                            classList={{
+                                holder: state.code.length >= 1,
+                                active: state.stage === 'code',
+                            }}
+                        >
+                            <span class='title_small'>
+                                <div class='holder'>کد ارسالی </div>
+                                <div class='icon'>
+                                    <CodeIcon />
+                                </div>
+                            </span>
+                            <input
+                                type='text'
+                                class='title_small'
+                                onchange={e => {
+                                    setState(
+                                        produce(s => {
+                                            s.email = e.target.value
+                                        })
+                                    )
+                                }}
+                            />
+                        </div>
                         <button
                             class='title_small basic-button'
                             onclick={() => {
-                                if (validate_gmail())
-                                    return setState(
-                                        produce(s => {
-                                            s.stage = 'code'
-                                            s.email_status = InputStatus.VALID
-                                        })
-                                    )
-                                else {
-                                    return setState(
-                                        produce(s => {
-                                            s.email_status = InputStatus.ERROR
-                                            s.error_message =
-                                                'نام کاربری وارد شده نادرست است!'
-                                        })
-                                    )
+                                if (state.stage === 'email') {
+                                    if (validate_gmail())
+                                        return setState(
+                                            produce(s => {
+                                                s.stage = 'code'
+                                                s.email_status =
+                                                    InputStatus.VALID
+                                            })
+                                        )
+                                    else {
+                                        return setState(
+                                            produce(s => {
+                                                s.email_status =
+                                                    InputStatus.ERROR
+                                                s.error_message =
+                                                    'نام کاربری وارد شده نادرست است!'
+                                            })
+                                        )
+                                    }
+                                } else {
+                                    // debug
+                                    return
                                 }
                             }}
                         >
