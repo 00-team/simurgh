@@ -119,6 +119,16 @@
         // box-shadow: 0 0 40px #000;
         box-shadow: 9px 5px 16px 0px #8a8a8a54;
 
+        @media screen and (max-width: 768px) {
+            aspect-ratio: unset;
+            flex-direction: column;
+            height: auto;
+            width: 90%;
+            padding: 3em 1.5em;
+
+            gap: 4vh;
+        }
+
         .logo-img {
             flex-shrink: 0;
             width: 50%;
@@ -136,26 +146,250 @@
                 height: 70%;
                 object-fit: contain;
 
-                transform: scale(0) rotate(0);
+                // transform: scale(0) rotate(0);
 
-                animation: img-anim 1.8s cubic-bezier(0.45, 0.02, 0.09, 0.98)
-                    forwards;
+                // animation: img-anim 1.8s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                //     forwards;
 
-                @keyframes img-anim {
-                    from {
-                        transform: scale(0) rotate(0);
-                    }
-                    to {
-                        transform: scale(1) rotate(360deg);
-                    }
-                }
+                // @keyframes img-anim {
+                //     from {
+                //         transform: scale(0) rotate(0);
+                //     }
+                //     to {
+                //         transform: scale(1) rotate(360deg);
+                //     }
+                // }
             }
         }
 
         .detail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: -5vh;
+
             width: 50%;
             height: 100%;
             background-color: #090909;
+
+            color: white;
+
+            overflow: hidden;
+
+            @media screen and (max-width: 768px) {
+                width: 100%;
+            }
+
+            header {
+                display: flex;
+                align-items: center;
+                gap: 0.25vmin;
+
+                overflow: hidden;
+
+                padding-top: 1em;
+
+                span {
+                    display: inline-block;
+
+                    transform: translateY(100%);
+                    // opacity: 0;
+
+                    animation: span-slidein 0.9s
+                        cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+
+                    @keyframes span-slidein {
+                        from {
+                            transform: translateY(400%);
+                            // opacity: 0;
+                        }
+                        to {
+                            transform: translateY(0);
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+
+            .inps {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 6vh;
+
+                width: 90%;
+
+                margin-top: 6vh;
+
+                position: relative;
+                isolation: isolate;
+
+                @media screen and (max-width: 768px) {
+                    padding: 1rem 0rem;
+                }
+
+                .inp {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    background-color: rgb(210, 170, 27);
+                    border-radius: 5px;
+
+                    position: relative;
+                    isolation: isolate;
+                    overflow: hidden;
+
+                    width: 0;
+
+                    transition: 0.7s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
+                    animation: width-inp cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                        0.9s 1.1s forwards;
+
+                    @keyframes width-inp {
+                        from {
+                            width: 0;
+                        }
+                        to {
+                            width: 100%;
+                            overflow: visible;
+                        }
+                    }
+
+                    &:focus-within {
+                        span {
+                            transform: translateY(-120%) translateX(10%)
+                                scale(0.8);
+                            top: 0;
+                            right: 0;
+                        }
+                    }
+                    &.holder {
+                        span {
+                            transform: translateY(-120%) translateX(10%)
+                                scale(0.8);
+                            top: 0;
+                            right: 0;
+                        }
+                    }
+
+                    &.code {
+                        position: absolute;
+                        top: 0;
+                        right: -600px;
+
+                        &.active {
+                            right: 0;
+                        }
+                    }
+                    &.gmail {
+                        &:not(.active) {
+                            transform: translateX(-200%);
+                        }
+                    }
+
+                    span {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+
+                        position: absolute;
+                        top: 50%;
+                        right: 10px;
+
+                        flex-shrink: 0;
+                        white-space: nowrap;
+
+                        transform: translateY(-50%);
+
+                        pointer-events: none;
+
+                        transition: 0.3s ease-in-out;
+                    }
+
+                    input {
+                        width: 100%;
+                        height: 100%;
+                        color: white;
+
+                        padding: 1em;
+
+                        direction: rtl;
+
+                        border: none;
+                        background-color: transparent;
+                    }
+                }
+                button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    padding: 1.5vh 0;
+                    background: var(--ten-percent);
+                    border-radius: 5px;
+
+                    white-space: nowrap;
+
+                    width: 0;
+
+                    position: relative;
+                    isolation: isolate;
+
+                    overflow: hidden;
+
+                    animation: width-btn cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                        0.9s 1.2s forwards;
+
+                    @keyframes width-btn {
+                        from {
+                            width: 0;
+                        }
+                        to {
+                            width: 65%;
+                        }
+                    }
+
+                    @media screen and (max-width: 768px) {
+                        @keyframes width-btn {
+                            from {
+                                width: 0;
+                            }
+                            to {
+                                width: 100%;
+                            }
+                        }
+                    }
+
+                    span {
+                        transition: 0.7s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
+                        &.code {
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+
+                            display: grid;
+                            place-items: center;
+
+                            transform: translateX(300px);
+
+                            &.active {
+                                transform: translateX(0);
+                            }
+                        }
+                        &.gmail {
+                            &:not(.active) {
+                                transform: translateX(-300px);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
-import { createStore } from 'solid-js/store'
+import { CodeIcon, UserIcon } from '!/icon'
+import { createStore, produce } from 'solid-js/store'
 import './style/login.scss'
-import { check_email, httpx } from '!/shared'
-import { Match, Switch } from 'solid-js'
 
 enum InputStatus {
     UNKNOWN,
@@ -18,8 +17,6 @@ type State = {
     error_message: string
 }
 
-import LogoSvg from '!/../static/images/logo.svg'
-
 export default () => {
     const [state, setState] = createStore<State>({
         stage: 'email',
@@ -29,6 +26,10 @@ export default () => {
         code_status: InputStatus.UNKNOWN,
         error_message: '',
     })
+
+    const validate_gmail = async (): Promise<boolean> => {
+        return true
+    }
 
     return (
         <div class='login-fnd'>
@@ -175,7 +176,114 @@ export default () => {
                         type='image/svg+xml'
                     ></object>*/}
                 </aside>
-                <aside class='detail'></aside>
+                <aside class='detail'>
+                    <header class='section_title eng'>
+                        {'Simurgh Login'.split('').map((word, index) => {
+                            return (
+                                <span
+                                    style={{
+                                        'animation-delay': `${index * 60}ms`,
+                                    }}
+                                >
+                                    {word}
+                                </span>
+                            )
+                        })}
+                    </header>
+                    <div class='inps'>
+                        <div
+                            class='inp rtl gmail'
+                            classList={{
+                                holder: state.email.length >= 1,
+                                active: state.stage === 'email',
+                            }}
+                        >
+                            <span class='title_small'>
+                                <div class='holder'>نام کاربری</div>
+                                <div class='icon'>
+                                    <UserIcon />
+                                </div>
+                            </span>
+                            <input
+                                type='text'
+                                class='title_small'
+                                onchange={e => {
+                                    setState(
+                                        produce(s => {
+                                            s.email = e.target.value
+                                        })
+                                    )
+                                }}
+                            />
+                        </div>
+                        <div
+                            class='inp rtl code'
+                            classList={{
+                                holder: state.code.length >= 1,
+                                active: state.stage === 'code',
+                            }}
+                        >
+                            <span class='title_small'>
+                                <div class='holder'>کد ارسالی </div>
+                                <div class='icon'>
+                                    <CodeIcon />
+                                </div>
+                            </span>
+                            <input
+                                type='text'
+                                class='title_small'
+                                onchange={e => {
+                                    setState(
+                                        produce(s => {
+                                            s.email = e.target.value
+                                        })
+                                    )
+                                }}
+                            />
+                        </div>
+                        <button
+                            class='title_small basic-button'
+                            onclick={() => {
+                                if (state.stage === 'email') {
+                                    if (validate_gmail())
+                                        return setState(
+                                            produce(s => {
+                                                s.stage = 'code'
+                                                s.email_status =
+                                                    InputStatus.VALID
+                                            })
+                                        )
+                                    else {
+                                        return setState(
+                                            produce(s => {
+                                                s.email_status =
+                                                    InputStatus.ERROR
+                                                s.error_message =
+                                                    'نام کاربری وارد شده نادرست است!'
+                                            })
+                                        )
+                                    }
+                                } else {
+                                    // debug
+                                    return
+                                }
+                            }}
+                        >
+                            <span
+                                class='gmail'
+                                classList={{ active: state.stage === 'email' }}
+                            >
+                                ارسال کد
+                            </span>
+                            <span
+                                classList={{ active: state.stage === 'code' }}
+                                class='code'
+                            >
+                                تایید کد
+                            </span>
+                        </button>
+                    </div>
+                </aside>
             </div>
         </div>
     )
