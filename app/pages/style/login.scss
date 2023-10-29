@@ -215,13 +215,27 @@
                     align-items: center;
                     justify-content: center;
 
-                    width: 100%;
-
                     background-color: rgb(210, 170, 27);
                     border-radius: 5px;
 
                     position: relative;
                     isolation: isolate;
+                    overflow: hidden;
+
+                    width: 0;
+
+                    animation: width-inp cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                        0.9s 1.1s forwards;
+
+                    @keyframes width-inp {
+                        from {
+                            width: 0;
+                        }
+                        to {
+                            width: 100%;
+                            overflow: visible;
+                        }
+                    }
 
                     span {
                         display: flex;
@@ -269,6 +283,29 @@
                                 scale(0.8);
                             top: 0;
                             right: 0;
+                        }
+                    }
+                }
+                button {
+                    padding: 1.5vh 0;
+                    background: var(--ten-percent);
+                    border-radius: 5px;
+
+                    white-space: nowrap;
+
+                    width: 0;
+
+                    overflow: hidden;
+
+                    animation: width-btn cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                        0.9s 1.2s forwards;
+
+                    @keyframes width-btn {
+                        from {
+                            width: 0;
+                        }
+                        to {
+                            width: 65%;
                         }
                     }
                 }
