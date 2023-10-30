@@ -1,10 +1,7 @@
 
-import json
-
 from fastapi.responses import JSONResponse
 
-from shared import config
-from shared.locale.langs import MessageModel, Messages, all_langs
+from shared.locale.langs import Messages, all_langs
 
 
 class Error(Exception):
@@ -111,14 +108,14 @@ def error(code: int, status: int, extra={}):
             content='\n'.join(lang.errors[code][1:])
         )
 
-    l = Error(
+    err = Error(
         code=int(code),
         messages=messages,
         status=status,
         extra=extra,
     )
-    all_errors.append(l)
-    return l
+    all_errors.append(err)
+    return err
 
 
 err_bad_verification = error(40002, 403)
@@ -129,4 +126,5 @@ err_forbidden = error(40006, 403)
 err_rate_limited = error(40007, 429)
 err_bad_args = error(40009, 400)
 err_bad_file = error(40013, 400)
+err_too_many_projects = error(40101, 400)
 err_database_error = error(50001, 500)

@@ -1,6 +1,6 @@
 
 from pydantic import BaseModel
-from sqlalchemy import JSON, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String
 
 from .common import BaseTable
 from .user import UserTable

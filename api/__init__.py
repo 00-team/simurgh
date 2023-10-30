@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter
 
-from api import admin, auth, user
+from api import admin, auth, project, user
 from api.verification import VerificationResult, verification
 from shared.locale import err_bad_verification
 
@@ -23,3 +23,4 @@ router.add_api_route(
 router.include_router(auth.router)
 router.include_router(admin.router)
 router.include_router(user.router)
+router.include_router(project.router)

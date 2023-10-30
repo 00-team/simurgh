@@ -5,7 +5,7 @@ from enum import Enum, auto
 from functools import cached_property
 
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 
 from shared.locale import err_forbidden
 
@@ -49,6 +49,7 @@ class UserTable(BaseTable):
     email = Column(String, unique=True, nullable=False)
     name = Column(String, nullable=False)
     token = Column(String)
+    client = Column(Boolean, server_default='false')
     admin = Column(String)
 
 
@@ -60,6 +61,7 @@ class UserPublic(BaseModel):
 class UserModel(UserPublic):
     email: str
     admin: str | None = None
+    client: bool = False
     token: str | None = None
 
     @cached_property

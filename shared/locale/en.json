@@ -12,6 +12,7 @@
         "40007": ["Rate Limited", "Too Many Requests"],
         "40009": ["Bad Args", "Invalid Arguments are Provided"],
         "40013": ["Bad File", "Invalid or unknown file"],
+        "40101": ["Too Many Projects", "You Have created too many projects"],
         "50001": ["Database Error", "Database Failed Contact Developers"]
     },
     "messages": {

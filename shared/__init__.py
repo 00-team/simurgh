@@ -28,9 +28,11 @@ class config:
     verification_expire: int = 2 * 60
     verification_code_len: int = 5
 
-    page_size: int = 10
+    page_size: int = 30
     token_len: int = 69
     token_abc: str = ascii_letters + digits + ('!@#$%^&*_+' * 2)
+
+    max_projects: int = 10
 
 
 class Settings(BaseSettings):

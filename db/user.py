@@ -20,7 +20,7 @@ async def user_get(*where) -> UserModel | None:
     return UserModel(**row)
 
 
-async def user_update(*where, **values: dict):
+async def user_update(*where, **values):
     await sqlx.execute(
         update(UserTable).where(*where),
         values
