@@ -2,9 +2,10 @@
 from fastapi import APIRouter, Request, Response
 from pydantic import BaseModel, constr
 
+from api.record import router as record_router
 from db.models import ProjectModel, ProjectTable, UserModel
 from db.project import project_add, project_delete, project_get, project_update
-from deps import rate_limit, user_required
+from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
 from shared.locale import err_bad_id, err_no_change, err_too_many_projects
 from shared.tools import new_token
@@ -14,6 +15,8 @@ router = APIRouter(
     tags=['project'],
     dependencies=[user_required(), rate_limit('projects', 60, 30)]
 )
+
+router.include_router(record_router)
 
 
 @router.get('/', response_model=list[ProjectModel])
@@ -66,19 +69,10 @@ async def create(request: Request):
 
 @router.get(
     '/{project_id}/', response_model=ProjectModel,
-    openapi_extra={'errors': [err_bad_id]}
+    dependencies=[project_required()],
 )
-async def get(request: Request, project_id: int):
-    user: UserModel = request.state.user
-
-    project = await project_get(
-        ProjectTable.project_id == project_id,
-        ProjectTable.creator == user.user_id
-    )
-    if not project:
-        raise err_bad_id(item='Project', id=project_id)
-
-    return project
+async def get(request: Request):
+    return request.state.project
 
 
 @router.delete('/{project_id}/', openapi_extra={'errors': [err_bad_id]})

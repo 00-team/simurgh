@@ -4,9 +4,9 @@ from hashlib import sha3_256
 from pathlib import Path
 
 from pydantic import BaseModel
-from sqlalchemy import BLOB, Column, Integer, String, text
+from sqlalchemy import BLOB, Column, ForeignKey, Integer, String, text
 
-from db.models.user import UserPublic
+from db.models.project import ProjectTable
 from shared import config
 
 from .common import BaseTable
@@ -19,11 +19,12 @@ class RecordTable(BaseTable):
         Integer, primary_key=True,
         index=True, autoincrement=True
     )
-    salt = Column(BLOB, nullable=False)
-    owner = Column(
-        Integer, nullable=False,
-        index=True, server_default=text('-1')
+    project = Column(
+        Integer,
+        ForeignKey(ProjectTable.project_id, ondelete='CASCADE'),
+        nullable=False
     )
+    salt = Column(BLOB, nullable=False)
     size = Column(Integer, nullable=False, server_default=text('0'))
     mime = Column(String, nullable=False, server_default='unknown')
     ext = Column(String, nullable=False)
@@ -32,27 +33,23 @@ class RecordTable(BaseTable):
 
 class RecordPublic(BaseModel):
     record_id: int
+    project: int
     size: int
     mime: str
     ext: str
     timestamp: int
     url: str
     name: str
-    owner: UserPublic
 
 
 class RecordModel(BaseModel):
     record_id: int
+    project: int
     salt: bytes
-    owner: int
     size: int
     mime: str
     ext: str
     timestamp: int
-
-    @cached_property
-    def url(self) -> str:
-        return f'{config.record_dir.name}/{self.name}.{self.ext}'
 
     @cached_property
     def name(self) -> str:
@@ -61,19 +58,23 @@ class RecordModel(BaseModel):
         ).hexdigest()
 
     @cached_property
-    def path(self) -> Path:
-        return config.record_dir / (self.name + '.' + self.ext)
+    def url(self) -> str:
+        return f'/{config.record_dir.name}/{self.project}/{self.name}.{self.ext}'
 
-    def public(self, owner: UserPublic) -> RecordPublic:
+    @cached_property
+    def path(self) -> Path:
+        return config.record_dir / f'{self.project}/{self.name}.{self.ext}'
+
+    def public(self) -> RecordPublic:
         return RecordPublic(
             record_id=self.record_id,
+            project=self.project,
             size=self.size,
             mime=self.mime,
             ext=self.ext,
             timestamp=self.timestamp,
             url=self.url,
             name=self.name,
-            owner=owner,
         )
 
 
