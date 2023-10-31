@@ -1,5 +1,4 @@
 
-from functools import cached_property
 from hashlib import sha3_256
 from pathlib import Path
 
@@ -51,17 +50,17 @@ class RecordModel(BaseModel):
     ext: str
     timestamp: int
 
-    @cached_property
+    @property
     def name(self) -> str:
         return sha3_256(
             self.record_id.to_bytes(12, byteorder='little') + self.salt
         ).hexdigest()
 
-    @cached_property
+    @property
     def url(self) -> str:
         return f'/{config.record_dir.name}/{self.project}/{self.name}.{self.ext}'
 
-    @cached_property
+    @property
     def path(self) -> Path:
         return config.record_dir / f'{self.project}/{self.name}.{self.ext}'
 

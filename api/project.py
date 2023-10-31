@@ -1,4 +1,6 @@
 
+import subprocess
+
 from fastapi import APIRouter, Request, Response
 from pydantic import BaseModel, constr
 
@@ -75,22 +77,21 @@ async def get(request: Request):
     return request.state.project
 
 
-@router.delete('/{project_id}/', openapi_extra={'errors': [err_bad_id]})
-async def delete(request: Request, project_id: int):
-    user: UserModel = request.state.user
+@router.delete(
+    '/{project_id}/',
+    dependencies=[project_required()]
+)
+async def delete(request: Request):
+    project: ProjectModel = request.state.project
 
-    project = await project_get(
-        ProjectTable.project_id == project_id,
-        ProjectTable.creator == user.user_id
-    )
-    if not project:
-        raise err_bad_id(item='Project', id=project_id)
-
-    # TODO: delete all the records releated to this project
+    path = config.record_dir / str(project.project_id)
+    if path.exists():
+        path = path.rename(config.record_dir / f'{project.project_id}.deleted')
+        subprocess.run(['rm', '-r', '-f', str(path)])
 
     await project_delete(
-        ProjectTable.project_id == project_id,
-        ProjectTable.creator == user.user_id
+        ProjectTable.project_id == project.project_id,
+        ProjectTable.creator == project.creator
     )
 
     return Response()
@@ -108,17 +109,11 @@ class UpdateBody(BaseModel):
 
 @router.patch(
     '/{project_id}/', response_model=ProjectModel,
-    openapi_extra={'errors': [err_bad_id, err_no_change]}
+    dependencies=[project_required()],
+    openapi_extra={'errors': [err_no_change]}
 )
-async def update(request: Request, project_id: int, body: UpdateBody):
-    user: UserModel = request.state.user
-
-    project = await project_get(
-        ProjectTable.project_id == project_id,
-        ProjectTable.creator == user.user_id
-    )
-    if not project:
-        raise err_bad_id(item='Project', id=project_id)
+async def update(request: Request, body: UpdateBody):
+    project: ProjectModel = request.state.project
 
     patch = {}
     change = False
@@ -136,16 +131,16 @@ async def update(request: Request, project_id: int, body: UpdateBody):
         raise err_no_change
 
     await project_update(
-        ProjectTable.project_id == project_id,
-        ProjectTable.creator == user.user_id,
+        ProjectTable.project_id == project.project_id,
+        ProjectTable.creator == project.creator,
         **patch
     )
 
     project = await project_get(
-        ProjectTable.project_id == project_id,
-        ProjectTable.creator == user.user_id
+        ProjectTable.project_id == project.project_id,
+        ProjectTable.creator == project.creator,
     )
     if not project:
-        raise err_bad_id(item='Project', id=project_id)
+        raise err_bad_id(item='Project', id=project.project_id)
 
     return project
