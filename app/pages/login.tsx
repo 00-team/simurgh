@@ -1,7 +1,7 @@
 import { CodeIcon, UserIcon } from '!/icon'
 import { createStore, produce } from 'solid-js/store'
-import './style/login.scss'
 import Logo from './logo'
+import './style/login.scss'
 
 enum InputStatus {
     UNKNOWN,
@@ -28,8 +28,10 @@ export default () => {
         error_message: '',
     })
 
-    const validate_gmail = async (): Promise<boolean> => {
-        return true
+    const validate_gmail = (): boolean => {
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+
+        return emailRegex.test(state.email)
     }
 
     return (
@@ -181,7 +183,34 @@ export default () => {
                 </aside>
                 <aside class='detail'>
                     <header class='section_title eng'>Login</header>
-                    <div class='inps'>
+                    <form
+                        onsubmit={e => {
+                            e.preventDefault()
+
+                            if (state.stage === 'email') {
+                                if (validate_gmail()) {
+                                    return setState(
+                                        produce(s => {
+                                            s.stage = 'code'
+                                            s.email_status = InputStatus.VALID
+                                        })
+                                    )
+                                } else {
+                                    return setState(
+                                        produce(s => {
+                                            s.email_status = InputStatus.ERROR
+                                            s.error_message =
+                                                'نام کاربری وارد شده نادرست است!'
+                                        })
+                                    )
+                                }
+                            } else {
+                                // debug
+                                return
+                            }
+                        }}
+                        class='inps'
+                    >
                         <div
                             class='inp rtl gmail'
                             classList={{
@@ -232,34 +261,7 @@ export default () => {
                                 }}
                             />
                         </div>
-                        <button
-                            class='title_small basic-button'
-                            onclick={() => {
-                                if (state.stage === 'email') {
-                                    if (validate_gmail())
-                                        return setState(
-                                            produce(s => {
-                                                s.stage = 'code'
-                                                s.email_status =
-                                                    InputStatus.VALID
-                                            })
-                                        )
-                                    else {
-                                        return setState(
-                                            produce(s => {
-                                                s.email_status =
-                                                    InputStatus.ERROR
-                                                s.error_message =
-                                                    'نام کاربری وارد شده نادرست است!'
-                                            })
-                                        )
-                                    }
-                                } else {
-                                    // debug
-                                    return
-                                }
-                            }}
-                        >
+                        <button class='title_small basic-button' type='submit'>
                             <span
                                 class='gmail'
                                 classList={{ active: state.stage === 'email' }}
@@ -273,7 +275,7 @@ export default () => {
                                 تایید کد
                             </span>
                         </button>
-                    </div>
+                    </form>
                 </aside>
             </div>
         </div>
