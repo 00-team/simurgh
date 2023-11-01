@@ -9,7 +9,7 @@ from pydantic import BaseModel, constr
 from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
 from db.models import RecordTable, UserModel
 from db.project import project_add, project_delete, project_get, project_update
-from db.record import record_add, record_delete
+from db.record import record_add, record_delete, record_get
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
 from shared.locale import err_bad_file, err_bad_id, err_no_change
@@ -81,3 +81,23 @@ async def add_record(request: Request, file: UploadFile):
             f.write(chunk)
 
     return record.public()
+
+
+@router.delete('/{record_id}/')
+async def delete_record(request: Request, record_id: int):
+    project: ProjectModel = request.state.project
+
+    record = await record_get(
+        RecordTable.record_id == record_id,
+        RecordTable.project == project.project_id
+    )
+    if record is None:
+        raise err_bad_id(item='Record', id=record_id)
+
+    record.path.unlink(True)
+
+    await record_delete(
+        RecordTable.record_id == record_id,
+        RecordTable.project == project.project_id
+    )
+    return Response()
