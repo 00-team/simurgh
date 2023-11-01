@@ -3,18 +3,16 @@ import mimetypes
 import os
 
 import magic
-from fastapi import APIRouter, Depends, Request, Response, UploadFile
-from pydantic import BaseModel, constr
+from fastapi import APIRouter, Request, Response, UploadFile
 
 from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
-from db.models import RecordTable, UserModel
-from db.project import project_add, project_delete, project_get, project_update
+from db.models import RecordTable
+from db.project import project_update
 from db.record import record_add, record_delete, record_get
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
-from shared.locale import err_bad_file, err_bad_id, err_no_change
-from shared.locale import err_too_many_projects
-from shared.tools import new_token, utc_now
+from shared.locale import err_bad_file, err_bad_id
+from shared.tools import utc_now
 
 router = APIRouter(
     prefix='/{project_id}/records',
@@ -73,6 +71,12 @@ async def add_record(request: Request, file: UploadFile):
     record_id = await record_add(**args)
     record.record_id = record_id
 
+    await project_update(
+        ProjectTable.project_id == project.project_id,
+        storage=project.storage + file.size,
+        records=project.records + 1
+    )
+
     if not record.path.parent.exists():
         record.path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -100,4 +104,11 @@ async def delete_record(request: Request, record_id: int):
         RecordTable.record_id == record_id,
         RecordTable.project == project.project_id
     )
+
+    await project_update(
+        ProjectTable.project_id == project.project_id,
+        storage=project.storage - record.size,
+        records=project.records - 1
+    )
+
     return Response()

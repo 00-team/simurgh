@@ -19,6 +19,9 @@ class ProjectTable(BaseTable):
         nullable=False
     )
     name = Column(String, nullable=False)
+    storage = Column(Integer, nullable=False, server_default='0')
+    blogs = Column(Integer, nullable=False, server_default='0')
+    records = Column(Integer, nullable=False, server_default='0')
     api_key = Column(String)
 
 
@@ -26,4 +29,7 @@ class ProjectModel(BaseModel):
     project_id: int
     creator: int
     name: str
+    storage: int
+    blogs: int
+    records: int
     api_key: str | None = None
