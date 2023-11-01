@@ -252,8 +252,6 @@
 
                     width: 0;
 
-                    transition: 1s cubic-bezier(0.45, 0.02, 0.09, 0.98);
-
                     animation: width-inp cubic-bezier(0.45, 0.02, 0.09, 0.98)
                         0.9s 1.1s forwards;
 
@@ -280,18 +278,30 @@
 
                     &.code {
                         position: absolute;
+
+                        background-color: color-mix(
+                            in srgb,
+                            #8e793e 50%,
+                            rgb(210, 170, 27)
+                        );
+
+                        width: 0;
+
                         top: 0;
-                        right: -600px;
+                        right: 0;
+
+                        animation: none;
+                        transition: 0.5s cubic-bezier(0.45, 0.02, 0.09, 0.98);
 
                         &.active {
-                            right: 0;
+                            width: 100%;
                         }
                     }
-                    &.gmail {
-                        &:not(.active) {
-                            transform: translateX(-200%);
-                        }
-                    }
+                    // &.gmail {
+                    //     &:not(.active) {
+                    //         transform: translateX(-200%);
+                    //     }
+                    // }
 
                     span {
                         display: flex;
@@ -373,7 +383,7 @@
                     }
 
                     span {
-                        transition: 0.7s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+                        transition: 0.5s cubic-bezier(0.45, 0.02, 0.09, 0.98);
 
                         &.code {
                             position: absolute;
