@@ -190,10 +190,10 @@ export default () => {
                             }}
                         >
                             <span class='title_small'>
-                                <div class='holder'>نام کاربری</div>
                                 <div class='icon'>
                                     <UserIcon />
                                 </div>
+                                <div class='holder'>نام کاربری</div>
                             </span>
                             <input
                                 type='text'
@@ -215,10 +215,10 @@ export default () => {
                             }}
                         >
                             <span class='title_small'>
-                                <div class='holder'>کد ارسالی </div>
                                 <div class='icon'>
                                     <CodeIcon />
                                 </div>
+                                <div class='holder'>کد ارسالی </div>
                             </span>
                             <input
                                 type='text'
