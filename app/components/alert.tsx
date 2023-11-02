@@ -1,5 +1,5 @@
 import { AlertError, AlertInfo, AlertSuccess } from '!/icon'
-import { Component, JSX, onCleanup, onMount } from 'solid-js'
+import { Component, createSignal, JSX, onCleanup, onMount } from 'solid-js'
 import './style/alert.scss'
 
 import { createStore, produce } from 'solid-js/store'
@@ -48,16 +48,20 @@ const ALERT_ICON: {
 const Alert: Component<{ a: AlertModel; i: number }> = props => {
     let interval: number
 
+    const [timeleft, setTimeleft] = createSignal(props.a.timeout)
+
     function do_timeout() {
         setAlertState(
             produce(s => {
                 let a = s.alerts[props.i]
                 if (!a) return
 
-                // a.timeout -= 1
-                if (a.timeout < 0) {
+                setTimeleft(time => time - 1)
+                if (timeleft() < 0) {
                     s.alerts.splice(props.i, 1)
                 }
+
+                console.log(timeleft)
             })
         )
     }
@@ -96,6 +100,12 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
                 </p>
             </div>
             <span class='timer'>{props.a.timeout}s</span>
+            <div
+                class='timer-line'
+                style={{
+                    width: `${100 - (timeleft() / props.a.timeout) * 100}%`,
+                }}
+            ></div>
         </div>
     )
 }
