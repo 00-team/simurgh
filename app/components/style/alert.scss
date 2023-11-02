@@ -70,6 +70,10 @@
             --color: hwb(346deg 1% 41%);
         }
 
+        svg {
+            fill: var(--color);
+        }
+
         .head {
             display: flex;
             align-items: center;
