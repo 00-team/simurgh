@@ -1,4 +1,4 @@
-import { AlertError, AlertInfo, AlertSuccess, CloseIcon } from '!/icon'
+import { AlertError, AlertInfo, AlertSuccess } from '!/icon'
 import { Component, JSX, onCleanup, onMount } from 'solid-js'
 import './style/alert.scss'
 
@@ -40,9 +40,9 @@ function delAlert(index: number) {
 const ALERT_ICON: {
     [x in AlertModel['type']]: () => JSX.Element
 } = {
-    info: () => <AlertInfo />,
-    error: () => <AlertError />,
-    success: () => <AlertSuccess />,
+    info: () => <AlertInfo size={30} />,
+    error: () => <AlertError size={30} />,
+    success: () => <AlertSuccess size={30} />,
 }
 
 const Alert: Component<{ a: AlertModel; i: number }> = props => {
