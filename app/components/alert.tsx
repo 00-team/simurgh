@@ -60,8 +60,6 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
                 if (timeleft() < 0) {
                     s.alerts.splice(props.i, 1)
                 }
-
-                console.log(timeleft)
             })
         )
     }
