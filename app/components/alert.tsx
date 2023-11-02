@@ -54,7 +54,7 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
                 let a = s.alerts[props.i]
                 if (!a) return
 
-                a.timeout -= 1
+                // a.timeout -= 1
                 if (a.timeout < 0) {
                     s.alerts.splice(props.i, 1)
                 }
@@ -78,13 +78,12 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
             onMouseLeave={() => {
                 interval = setInterval(do_timeout, 1000)
             }}
+            onClick={() => delAlert(props.i)}
         >
             <div class='head'>
                 {ALERT_ICON[props.a.type]()}
                 <span>{props.a.subject}</span>
-                <button onClick={() => delAlert(props.i)}>
-                    <CloseIcon />
-                </button>
+                <div></div>
             </div>
             <div class='body'>
                 <p>
