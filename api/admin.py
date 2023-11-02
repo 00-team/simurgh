@@ -11,7 +11,6 @@ from pydantic import BaseModel, constr
 # from db.models import AdminPerms as AP
 # from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
 # from db.models import RecordTable, UserModel, UserPublic
-# from db.user import user_exists, user_public
 from deps import admin_required
 from shared import settings, sqlx
 # from shared.errors import bad_file, bad_id, no_change, not_unique

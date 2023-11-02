@@ -1,17 +1,8 @@
 
-from sqlalchemy import insert, select, update
 
 from shared import sqlx
 
-from .models import UserModel, UserPublic, UserTable
-
-
-async def user_get(*where) -> UserModel | None:
-    row = await sqlx.fetch_one(select(UserTable).where(*where))
-    if row is None:
-        return None
-
-    return UserModel(**row)
+from .models import UserPublic
 
 
 async def user_public(user_ids: list[int]) -> dict[int, UserPublic]:

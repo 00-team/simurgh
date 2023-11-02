@@ -10,7 +10,7 @@ from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
 from db.models import RecordTable
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
-from shared.locale import err_bad_file, err_bad_id, err_database_error
+from shared.locale import err_bad_file, err_bad_id
 from shared.tools import utc_now
 
 router = APIRouter(
@@ -59,7 +59,7 @@ async def record_get(request: Request, record_id: int):
 
 @router.post(
     '/', response_model=RecordPublic,
-    openapi_extra={'errors': [err_bad_file, err_database_error]}
+    openapi_extra={'errors': [err_bad_file]}
 )
 async def record_add(request: Request, file: UploadFile):
     project: ProjectModel = request.state.project
@@ -87,8 +87,7 @@ async def record_add(request: Request, file: UploadFile):
 
     args = record.dict(exclude={'record_id'})
 
-    transaction = await sqlx.transaction()
-    try:
+    async with sqlx.transaction():
         record_id = await sqlx.execute(insert(RecordTable), args)
         record.record_id = record_id
 
@@ -102,11 +101,6 @@ async def record_add(request: Request, file: UploadFile):
                 records=project.records + 1
             )
         )
-    except Exception:
-        await transaction.rollback()
-        raise err_database_error
-    else:
-        await transaction.commit()
 
     if not record.path.parent.exists():
         record.path.parent.mkdir(parents=True, exist_ok=True)
@@ -120,7 +114,7 @@ async def record_add(request: Request, file: UploadFile):
 
 @router.delete(
     '/{record_id}/',
-    openapi_extra={'errors': [err_bad_id, err_database_error]}
+    openapi_extra={'errors': [err_bad_id]}
 )
 async def record_delete(request: Request, record_id: int):
     project: ProjectModel = request.state.project
@@ -128,8 +122,7 @@ async def record_delete(request: Request, record_id: int):
     record = await get_record(record_id, project.project_id)
     record.path.unlink(True)
 
-    ts = await sqlx.transaction()
-    try:
+    async with await sqlx.transaction():
         await sqlx.execute(delete(RecordTable).where(
             RecordTable.record_id == record_id,
             RecordTable.project == project.project_id
@@ -145,10 +138,5 @@ async def record_delete(request: Request, record_id: int):
                 records=project.records - 1
             )
         )
-    except Exception:
-        ts.rollback()
-        raise err_database_error
-    else:
-        ts.commit()
 
     return Response()

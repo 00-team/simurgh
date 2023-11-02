@@ -6,9 +6,9 @@ from fastapi import Depends, Request, Response, security
 from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.security.utils import get_authorization_scheme_param
 
-from db.models import AdminPerms, UserModel, UserTable
+from db.models import AdminPerms, UserModel
 from db.rate_limit import rate_limit_get, rate_limit_set
-from db.user import user_get
+from shared import sqlx
 from shared.locale import err_bad_auth, err_forbidden, err_rate_limited
 
 
@@ -87,11 +87,16 @@ def user_required():
             await rate_limit(request, 'user_token_check')
             raise err_bad_auth
 
-        user = await user_get(UserTable.user_id == user_id)
+        result = await sqlx.fetch_one(
+            'SELECT * FROM user WHERE user_id == :id',
+            {'id': user_id}
+        )
 
-        if user is None:
+        if result is None:
             await rate_limit(request, 'user_token_check')
             raise err_bad_auth
+
+        user = UserModel(**result)
 
         if user.token != sha3_512(token.encode()).hexdigest():
             await rate_limit(request, 'user_token_check')

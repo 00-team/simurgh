@@ -6,7 +6,6 @@ from sqlalchemy import insert, update
 
 from api.verification import Action, verify_verification
 from db.models import UserModel, UserTable
-from db.user import user_get
 from deps import rate_limit
 from shared import sqlx
 from shared.locale import err_bad_verification
@@ -41,8 +40,12 @@ async def login(request: Request, response: Response, body: LoginBody):
     new_user = False
     token, hash_token = new_token()
 
-    user = await user_get(UserTable.email == body.email)
-    if user:
+    result = await sqlx.fetch_one(
+        'SELECT * FROM user WHERE email == :email',
+        {'email': body.email}
+    )
+    if result is not None:
+        user = UserModel(**result)
         await sqlx.execute(
             update(UserTable).where(UserTable.user_id == user.user_id),
             {'token': hash_token}
