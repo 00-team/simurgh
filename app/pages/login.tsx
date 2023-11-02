@@ -255,7 +255,27 @@ export default () => {
                                     return
                                 }
                             } else {
-                                // debug
+                                httpx({
+                                    url: '/api/auth/login/',
+                                    method: 'POST',
+                                    type: 'json',
+                                    json: {
+                                        email: state.email,
+                                        code: state.code,
+                                    },
+                                    onLoad(x) {
+                                        if (x.status == 200) {
+                                            setState({
+                                                code: 'cool',
+                                                stage: 'code',
+                                            })
+                                        } else {
+                                            setState({
+                                                code_status: InputStatus.ERROR,
+                                            })
+                                        }
+                                    },
+                                })
                                 return
                             }
                         }}
@@ -306,7 +326,7 @@ export default () => {
                                 onchange={e => {
                                     setState(
                                         produce(s => {
-                                            s.email = e.target.value
+                                            s.code = e.target.value
                                         })
                                     )
                                 }}
