@@ -125,6 +125,23 @@
             right: 2px;
         }
 
+        .timer-line {
+            position: absolute;
+            z-index: 1;
+
+            bottom: 0;
+            left: 0;
+
+            height: 3px;
+            width: 30%;
+
+            background-color: var(--color);
+
+            // clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+
+            transition: width 0.1s ease-in-out;
+        }
+
         &:hover {
             .head {
                 span {
