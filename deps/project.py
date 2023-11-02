@@ -1,10 +1,11 @@
 
 
 from fastapi import Depends, Request
+from sqlalchemy import select
 
 from db.models import ProjectModel, ProjectTable, UserModel
-from db.project import project_get
 from deps.auth import user_required
+from shared import sqlx
 from shared.locale import err_bad_id
 
 
@@ -20,12 +21,14 @@ def project_required():
             else:
                 raise err_bad_id(item='Project', id=project_id)
 
-        project = await project_get(
+        result = await sqlx.fetch_one(select(ProjectTable).where(
             ProjectTable.project_id == project_id,
             ProjectTable.creator == user.user_id
-        )
-        if project is None:
+        ))
+        if result is None:
             raise err_bad_id(item='Project', id=project_id)
+
+        project = ProjectModel(**result)
 
         request.state.project = project
         return project

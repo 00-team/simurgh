@@ -1,17 +1,12 @@
 
-from hashlib import sha3_256, sha3_512
-from io import StringIO
 
 from fastapi import FastAPI, Request, Response
 from fastapi.openapi.utils import get_openapi
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse
 from fastapi.routing import APIRoute
 from fastapi.staticfiles import StaticFiles
 
 import api
-import shared.logger
-from db.models import UserModel, UserTable
-from db.user import user_get
 from deps import get_ip
 from shared import config, redis, settings, sqlx
 from shared.locale import Error, all_errors
