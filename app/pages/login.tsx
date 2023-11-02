@@ -1,4 +1,5 @@
 import { CodeIcon, UserIcon } from '!/icon'
+import { httpx } from '!/shared'
 import { createStore, produce } from 'solid-js/store'
 import Logo from './logo'
 import './style/login.scss'
@@ -189,20 +190,69 @@ export default () => {
 
                             if (state.stage === 'email') {
                                 if (validate_gmail()) {
-                                    return setState(
+                                    httpx({
+                                        url: '/api/verification/',
+                                        method: 'POST',
+                                        type: 'json',
+                                        json: {
+                                            email: state.email,
+                                            action: 'login',
+                                        },
+                                        onLoad(x) {
+                                            if (x.status == 200) {
+                                                setState({
+                                                    code: '',
+                                                    stage: 'code',
+                                                })
+                                            } else {
+                                                setState({
+                                                    email_status:
+                                                        InputStatus.ERROR,
+                                                })
+                                            }
+                                        },
+                                    })
+                                    setState(
                                         produce(s => {
                                             s.stage = 'code'
                                             s.email_status = InputStatus.VALID
                                         })
                                     )
+
+                                    return
                                 } else {
-                                    return setState(
+                                    httpx({
+                                        url: '/api/auth/login/',
+                                        method: 'POST',
+                                        type: 'json',
+                                        json: {
+                                            email: state.email,
+                                            code: state.code,
+                                        },
+                                        onLoad(x) {
+                                            if (x.status == 200) {
+                                                setState({
+                                                    code: 'cool',
+                                                    stage: 'code',
+                                                })
+                                            } else {
+                                                setState({
+                                                    code_status:
+                                                        InputStatus.ERROR,
+                                                })
+                                            }
+                                        },
+                                    })
+
+                                    setState(
                                         produce(s => {
                                             s.email_status = InputStatus.ERROR
                                             s.error_message =
                                                 'نام کاربری وارد شده نادرست است!'
                                         })
                                     )
+
+                                    return
                                 }
                             } else {
                                 // debug
@@ -227,6 +277,7 @@ export default () => {
                             <input
                                 type='text'
                                 class='title_small'
+                                name='userEmail'
                                 onchange={e => {
                                     setState(
                                         produce(s => {
