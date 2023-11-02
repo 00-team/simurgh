@@ -1,6 +1,8 @@
 
 
+import logging
 import sqlite3
+import traceback
 
 from fastapi import FastAPI, Request, Response
 from fastapi.openapi.utils import get_openapi
@@ -35,6 +37,10 @@ async def main_error_handler(request: Request, exc: Error):
 
 @app.exception_handler(sqlite3.Error)
 async def sql_error_handler(request: Request, exc: sqlite3.Error):
+    logging.critical(
+        f'database error\n{request.method} {request.url}\n'
+        f'{"".join(traceback.format_exception(exc))}'
+    )
     return err_database_error.json(request.cookies.get('lang'))
 
 
