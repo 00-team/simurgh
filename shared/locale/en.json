@@ -16,10 +16,6 @@
         "50001": ["Database Error", "Database Failed Contact Developers"]
     },
     "messages": {
-        "user_update_ok": [
-            "Successful Update",
-            "Your info has been successfully updated"
-        ],
         "verification_code_ok": [
             "code was send",
             "a code has been sended to your email address"

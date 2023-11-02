@@ -15,6 +15,5 @@ def message(key: str):
     return messages
 
 
-msg_user_update_ok = message('user_update_ok')
 msg_verification_code_ok = message('verification_code_ok')
 msg_verification_code_sent = message('verification_code_sent')

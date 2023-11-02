@@ -43,7 +43,7 @@ class AdminPerms(int, Enum):
 
 
 class UserTable(BaseTable):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, nullable=False)

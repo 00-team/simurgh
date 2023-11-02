@@ -7,7 +7,7 @@ from .user import UserTable
 
 
 class ProjectTable(BaseTable):
-    __tablename__ = 'projects'
+    __tablename__ = 'project'
 
     project_id = Column(
         Integer, primary_key=True,
