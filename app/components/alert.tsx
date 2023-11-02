@@ -99,7 +99,6 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
                     ))}
                 </p>
             </div>
-            <span class='timer'>{props.a.timeout}s</span>
             <div
                 class='timer-line'
                 style={{
