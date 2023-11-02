@@ -10,7 +10,7 @@ from db.project import project_add, project_delete, project_get, project_update
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
 from shared.locale import err_bad_id, err_no_change, err_too_many_projects
-from shared.tools import new_token
+from shared.tools import new_token, utc_now
 
 router = APIRouter(
     prefix='/projects',
@@ -58,7 +58,8 @@ async def create(request: Request):
     project_id = await project_add(
         name='new project',
         creator=user.user_id,
-        api_key=token
+        api_key=token,
+        created_at=utc_now()
     )
 
     return {
@@ -115,7 +116,9 @@ class UpdateBody(BaseModel):
 async def update(request: Request, body: UpdateBody):
     project: ProjectModel = request.state.project
 
-    patch = {}
+    patch = {
+        'edited_at': utc_now(),
+    }
     change = False
 
     if body.api_key:

@@ -11,7 +11,7 @@ from db.project import project_update
 from db.record import record_add, record_delete, record_get
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
-from shared.locale import err_bad_file, err_bad_id
+from shared.locale import err_bad_file, err_bad_id, err_database_error
 from shared.tools import utc_now
 
 router = APIRouter(
@@ -39,9 +39,23 @@ async def get_records(request: Request, page: int = 0):
     return [RecordModel(**r).public() for r in rows]
 
 
+@router.get('/{record_id}/', response_model=RecordPublic)
+async def get_record(request: Request, record_id: int):
+    project: ProjectModel = request.state.project
+
+    record = await record_get(
+        RecordTable.record_id == record_id,
+        RecordTable.project == project.project_id
+    )
+    if record is None:
+        raise err_bad_id(item='Record', id=record_id)
+
+    return record
+
+
 @router.post(
     '/', response_model=RecordPublic,
-    openapi_extra={'errors': [err_bad_file]}
+    openapi_extra={'errors': [err_bad_file, err_database_error]}
 )
 async def add_record(request: Request, file: UploadFile):
     project: ProjectModel = request.state.project
@@ -68,14 +82,22 @@ async def add_record(request: Request, file: UploadFile):
     )
 
     args = record.dict(exclude={'record_id'})
-    record_id = await record_add(**args)
-    record.record_id = record_id
 
-    await project_update(
-        ProjectTable.project_id == project.project_id,
-        storage=project.storage + file.size,
-        records=project.records + 1
-    )
+    transaction = await sqlx.transaction()
+    try:
+        record_id = await record_add(**args)
+        record.record_id = record_id
+
+        await project_update(
+            ProjectTable.project_id == project.project_id,
+            storage=project.storage + file.size,
+            records=project.records + 1
+        )
+    except Exception:
+        await transaction.rollback()
+        raise err_database_error
+    else:
+        await transaction.commit()
 
     if not record.path.parent.exists():
         record.path.parent.mkdir(parents=True, exist_ok=True)
