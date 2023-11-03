@@ -7,7 +7,10 @@ const Dashboard: Component = () => {
         <main class='dashboard'>
             <aside class='sidebar'>
                 <div class='user'>
-                    <div class='avatar'></div>
+                    <img
+                        class='user-avatar'
+                        src='/static/image/dashboard/wallpaper.webp'
+                    />
                     <p class='user-name title_small'>Sadra Taghavi</p>
                 </div>
 
