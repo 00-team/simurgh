@@ -10,13 +10,13 @@ main.dashboard {
 
     aside.sidebar {
         width: clamp(280px, 20%, 300px);
-        box-shadow: 20px 1px 15px -23px black inset;
+        box-shadow: -20px 1px 15px -23px black inset;
 
         flex-shrink: 0;
 
         display: flex;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
         flex-direction: column;
         gap: 5vh;
 
@@ -44,5 +44,17 @@ main.dashboard {
 
         overflow-y: auto;
         overflow-x: hidden;
+
+        background-size: cover;
+        background-repeat: no-repeat;
+
+        @media screen and (max-width: 768px) {
+            background-size: cover;
+            background-position: bottom center;
+        }
+
+        @media screen and (min-width: 1440px) {
+            background-size: 103% 103%;
+        }
     }
 }

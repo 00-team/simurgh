@@ -5,7 +5,16 @@ import './style/dashboard.scss'
 const Dashboard: Component = () => {
     return (
         <main class='dashboard'>
-            <aside class='sidebar'></aside>
+            <aside class='sidebar'>
+                <div class='user'>
+                    <div class='avatar'></div>
+                    <p class='user-name title_small'>Sadra Taghavi</p>
+                </div>
+
+                <div class='options'></div>
+
+                <div></div>
+            </aside>
             <aside
                 onmousemove={e => {
                     e.currentTarget.style.transition = 'none'
