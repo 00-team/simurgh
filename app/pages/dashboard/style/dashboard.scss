@@ -44,5 +44,17 @@ main.dashboard {
 
         overflow-y: auto;
         overflow-x: hidden;
+
+        background-size: cover;
+        background-repeat: no-repeat;
+
+        @media screen and (max-width: 768px) {
+            background-size: cover;
+            background-position: bottom center;
+        }
+
+        @media screen and (min-width: 1440px) {
+            background-size: 103% 103%;
+        }
     }
 }
