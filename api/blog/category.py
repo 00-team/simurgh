@@ -116,23 +116,16 @@ async def blog_category_update(
 async def blog_category_delete(request: Request, category_id: int):
     project: ProjectModel = request.state.project
 
-    result = await sqlx.fetch_one(
-        select(BlogCategoryTable)
+    # TODO: after delete the entire category directory of files
+
+    await sqlx.fetch_all(select())
+
+    await sqlx.execute(
+        delete(BlogCategoryTable)
         .where(
             BlogCategoryTable.category_id == category_id,
             BlogCategoryTable.project == project.project_id
         )
-    )
-    if not result:
-        raise err_bad_id(item='Category', id=category_id)
-
-    await sqlx.execute(
-        update(BlogCategoryTable)
-        .where(
-            BlogCategoryTable.category_id == category_id,
-            BlogCategoryTable.project == project.project_id
-        ),
-        {'label': body.label}
     )
 
     return Response()
