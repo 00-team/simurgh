@@ -3,10 +3,11 @@ import subprocess
 
 from fastapi import APIRouter, Request, Response
 from pydantic import BaseModel, constr
+from sqlalchemy import delete, insert, select, update
 
+from api.blog import router as blog_router
 from api.record import router as record_router
 from db.models import ProjectModel, ProjectTable, UserModel
-from db.project import project_add, project_delete, project_get, project_update
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
 from shared.locale import err_bad_id, err_no_change, err_too_many_projects
@@ -14,38 +15,43 @@ from shared.tools import new_token, utc_now
 
 router = APIRouter(
     prefix='/projects',
-    tags=['project'],
-    dependencies=[user_required(), rate_limit('projects', 60, 30)]
+    dependencies=[user_required()]
 )
 
 router.include_router(record_router)
+router.include_router(blog_router)
 
 
-@router.get('/', response_model=list[ProjectModel])
-async def projects(request: Request, page: int = 0):
+project_router = APIRouter(
+    tags=['project'],
+    dependencies=[rate_limit('projects', 60, 30)]
+)
+
+
+@project_router.get('/', response_model=list[ProjectModel])
+async def project_list(request: Request, page: int = 0):
     user: UserModel = request.state.user
 
     rows = await sqlx.fetch_all(
-        f'''
-        SELECT * from projects WHERE creator = :user_id
-        LIMIT {config.page_size} OFFSET {page * config.page_size}
-        ''',
-        {'user_id': user.user_id}
+        select(ProjectTable)
+        .where(ProjectTable.creator == user.user_id)
+        .limit(config.page_size)
+        .offset(page * config.page_size)
     )
 
     return [ProjectModel(**r) for r in rows]
 
 
-@router.post(
+@project_router.post(
     '/', response_model=ProjectModel,
     openapi_extra={'errors': [err_too_many_projects]}
 )
-async def create(request: Request):
+async def project_add(request: Request):
     user: UserModel = request.state.user
 
     total = (await sqlx.fetch_one(
         '''
-        SELECT COUNT(project_id) from projects WHERE creator = :user_id
+        SELECT COUNT(project_id) from project WHERE creator = :user_id
         ''',
         {'user_id': user.user_id}
     ))[0]
@@ -55,34 +61,39 @@ async def create(request: Request):
 
     token, _ = new_token()
 
-    project_id = await project_add(
-        name='new project',
+    project = ProjectModel(
+        project_id=0,
         creator=user.user_id,
-        api_key=token,
-        created_at=utc_now()
+        name='new project',
+        storage=0,
+        blogs=0,
+        records=0,
+        created_at=utc_now(),
+        edited_at=0,
+        api_key=token
     )
 
-    return {
-        'project_id': project_id,
-        'name': 'new project',
-        'creator': user.user_id,
-        'api_key': token
-    }
+    args = project.dict(exclude={'project_id'})
+
+    project_id = await sqlx.execute(insert(ProjectTable), args)
+    project.project_id = project_id
+
+    return project
 
 
-@router.get(
+@project_router.get(
     '/{project_id}/', response_model=ProjectModel,
     dependencies=[project_required()],
 )
-async def get(request: Request):
+async def project_get(request: Request):
     return request.state.project
 
 
-@router.delete(
+@project_router.delete(
     '/{project_id}/',
     dependencies=[project_required()]
 )
-async def delete(request: Request):
+async def project_delete(request: Request):
     project: ProjectModel = request.state.project
 
     path = config.record_dir / str(project.project_id)
@@ -90,10 +101,10 @@ async def delete(request: Request):
         path = path.rename(config.record_dir / f'{project.project_id}.deleted')
         subprocess.run(['rm', '-r', '-f', str(path)])
 
-    await project_delete(
+    await sqlx.execute(delete(ProjectTable).where(
         ProjectTable.project_id == project.project_id,
         ProjectTable.creator == project.creator
-    )
+    ))
 
     return Response()
 
@@ -108,12 +119,12 @@ class UpdateBody(BaseModel):
     api_key: bool = False
 
 
-@router.patch(
+@project_router.patch(
     '/{project_id}/', response_model=ProjectModel,
     dependencies=[project_required()],
     openapi_extra={'errors': [err_no_change]}
 )
-async def update(request: Request, body: UpdateBody):
+async def project_update(request: Request, body: UpdateBody):
     project: ProjectModel = request.state.project
 
     patch = {
@@ -133,17 +144,23 @@ async def update(request: Request, body: UpdateBody):
     if not change:
         raise err_no_change
 
-    await project_update(
-        ProjectTable.project_id == project.project_id,
-        ProjectTable.creator == project.creator,
-        **patch
+    await sqlx.execute(
+        update(ProjectTable)
+        .where(
+            ProjectTable.project_id == project.project_id,
+            ProjectTable.creator == project.creator,
+        ),
+        patch
     )
 
-    project = await project_get(
+    result = await sqlx.fetch_one(select(ProjectTable).where(
         ProjectTable.project_id == project.project_id,
         ProjectTable.creator == project.creator,
-    )
-    if not project:
+    ))
+    if result is None:
         raise err_bad_id(item='Project', id=project.project_id)
 
-    return project
+    return ProjectModel(**result)
+
+
+router.include_router(project_router)

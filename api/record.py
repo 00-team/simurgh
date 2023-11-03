@@ -4,60 +4,64 @@ import os
 
 import magic
 from fastapi import APIRouter, Request, Response, UploadFile
+from sqlalchemy import delete, insert, select, update
 
 from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
 from db.models import RecordTable
-from db.project import project_update
-from db.record import record_add, record_delete, record_get
-from deps import project_required, rate_limit, user_required
+from deps import project_required, rate_limit
 from shared import config, sqlx
-from shared.locale import err_bad_file, err_bad_id, err_database_error
+from shared.locale import err_bad_file, err_bad_id
 from shared.tools import utc_now
 
 router = APIRouter(
     prefix='/{project_id}/records',
+    tags=['record'],
     dependencies=[
-        user_required(),
         rate_limit('projects:records', 60, 30),
         project_required(),
     ]
 )
 
 
+async def get_record(record_id: int, project_id: int) -> RecordModel:
+    result = await sqlx.fetch_one(select(RecordTable).where(
+        RecordTable.record_id == record_id,
+        RecordTable.project == project_id
+    ))
+
+    if result is None:
+        raise err_bad_id(item='Record', id=record_id)
+
+    return RecordModel(**result)
+
+
 @router.get('/', response_model=list[RecordPublic])
-async def get_records(request: Request, page: int = 0):
+async def record_list(request: Request, page: int = 0):
     project: ProjectModel = request.state.project
 
     rows = await sqlx.fetch_all(
-        f'''
-        SELECT * from records WHERE project = :project_id
-        LIMIT {config.page_size} OFFSET {page * config.page_size}
-        ''',
-        {'project_id': project.project_id}
+        select(RecordTable)
+        .where(RecordTable.project == project.project_id)
+        .limit(config.page_size)
+        .offset(page * config.page_size)
     )
 
     return [RecordModel(**r).public() for r in rows]
 
 
 @router.get('/{record_id}/', response_model=RecordPublic)
-async def get_record(request: Request, record_id: int):
+async def record_get(request: Request, record_id: int):
     project: ProjectModel = request.state.project
 
-    record = await record_get(
-        RecordTable.record_id == record_id,
-        RecordTable.project == project.project_id
-    )
-    if record is None:
-        raise err_bad_id(item='Record', id=record_id)
-
-    return record
+    record = await get_record(record_id, project.project_id)
+    return record.public()
 
 
 @router.post(
     '/', response_model=RecordPublic,
-    openapi_extra={'errors': [err_bad_file, err_database_error]}
+    openapi_extra={'errors': [err_bad_file]}
 )
-async def add_record(request: Request, file: UploadFile):
+async def record_add(request: Request, file: UploadFile):
     project: ProjectModel = request.state.project
 
     mime = magic.from_buffer(file.file.read(2048), mime=True)
@@ -83,21 +87,20 @@ async def add_record(request: Request, file: UploadFile):
 
     args = record.dict(exclude={'record_id'})
 
-    transaction = await sqlx.transaction()
-    try:
-        record_id = await record_add(**args)
+    async with sqlx.transaction():
+        record_id = await sqlx.execute(insert(RecordTable), args)
         record.record_id = record_id
 
-        await project_update(
-            ProjectTable.project_id == project.project_id,
-            storage=project.storage + file.size,
-            records=project.records + 1
+        await sqlx.execute(
+            update(ProjectTable)
+            .where(
+                ProjectTable.project_id == project.project_id
+            ),
+            dict(
+                storage=project.storage + file.size,
+                records=project.records + 1
+            )
         )
-    except Exception:
-        await transaction.rollback()
-        raise err_database_error
-    else:
-        await transaction.commit()
 
     if not record.path.parent.exists():
         record.path.parent.mkdir(parents=True, exist_ok=True)
@@ -109,28 +112,31 @@ async def add_record(request: Request, file: UploadFile):
     return record.public()
 
 
-@router.delete('/{record_id}/')
-async def delete_record(request: Request, record_id: int):
+@router.delete(
+    '/{record_id}/',
+    openapi_extra={'errors': [err_bad_id]}
+)
+async def record_delete(request: Request, record_id: int):
     project: ProjectModel = request.state.project
 
-    record = await record_get(
-        RecordTable.record_id == record_id,
-        RecordTable.project == project.project_id
-    )
-    if record is None:
-        raise err_bad_id(item='Record', id=record_id)
-
+    record = await get_record(record_id, project.project_id)
     record.path.unlink(True)
 
-    await record_delete(
-        RecordTable.record_id == record_id,
-        RecordTable.project == project.project_id
-    )
+    async with await sqlx.transaction():
+        await sqlx.execute(delete(RecordTable).where(
+            RecordTable.record_id == record_id,
+            RecordTable.project == project.project_id
+        ))
 
-    await project_update(
-        ProjectTable.project_id == project.project_id,
-        storage=project.storage - record.size,
-        records=project.records - 1
-    )
+        await sqlx.execute(
+            update(ProjectTable)
+            .where(
+                ProjectTable.project_id == project.project_id
+            ),
+            dict(
+                storage=project.storage - record.size,
+                records=project.records - 1
+            )
+        )
 
     return Response()

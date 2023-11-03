@@ -1,18 +1,15 @@
 
-import hashlib
 
-import httpx
 from fastapi import APIRouter, Request, Response
-from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr
+from sqlalchemy import insert, update
 
 from api.verification import Action, verify_verification
 from db.models import UserModel, UserTable
-from db.user import user_add, user_get, user_update
 from deps import rate_limit
-from shared import settings
+from shared import sqlx
 from shared.locale import err_bad_verification
-from shared.tools import get_random_string, new_token
+from shared.tools import new_token
 from shared.validators import VerificationCode
 
 router = APIRouter(
@@ -43,25 +40,29 @@ async def login(request: Request, response: Response, body: LoginBody):
     new_user = False
     token, hash_token = new_token()
 
-    user = await user_get(UserTable.email == body.email)
-    if user:
-        await user_update(
-            UserTable.user_id == user.user_id,
-            token=hash_token
+    result = await sqlx.fetch_one(
+        'SELECT * FROM user WHERE email == :email',
+        {'email': body.email}
+    )
+    if result is not None:
+        user = UserModel(**result)
+        await sqlx.execute(
+            update(UserTable).where(UserTable.user_id == user.user_id),
+            {'token': hash_token}
         )
     else:
         new_user = True
-        user_id = await user_add(
-            name='default name',
-            email=body.email,
-            token=hash_token
-        )
         user = UserModel(
-            user_id=user_id,
+            user_id=0,
             name='default name',
             email=body.email,
             token=hash_token
         )
+        user_id = await sqlx.execute(
+            insert(UserTable),
+            user.dict(exclude={'user_id'})
+        )
+        user.user_id = user_id
 
     id_token = f'{user.user_id}:{token}'
     response.set_cookie(

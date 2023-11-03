@@ -12,7 +12,7 @@ from .common import BaseTable
 
 
 class RecordTable(BaseTable):
-    __tablename__ = 'records'
+    __tablename__ = 'record'
 
     record_id = Column(
         Integer, primary_key=True,

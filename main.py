@@ -1,20 +1,19 @@
 
-from hashlib import sha3_256, sha3_512
-from io import StringIO
+
+import logging
+import sqlite3
+import traceback
 
 from fastapi import FastAPI, Request, Response
 from fastapi.openapi.utils import get_openapi
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse
 from fastapi.routing import APIRoute
 from fastapi.staticfiles import StaticFiles
 
 import api
-import shared.logger
-from db.models import UserModel, UserTable
-from db.user import user_get
 from deps import get_ip
 from shared import config, redis, settings, sqlx
-from shared.locale import Error, all_errors
+from shared.locale import Error, all_errors, err_database_error
 
 app = FastAPI(
     title='simurgh',
@@ -32,8 +31,17 @@ app.include_router(api.router)
 
 
 @app.exception_handler(Error)
-async def error_exception_handler(request: Request, exc: Error):
+async def main_error_handler(request: Request, exc: Error):
     return exc.json(request.cookies.get('lang'))
+
+
+@app.exception_handler(sqlite3.Error)
+async def sql_error_handler(request: Request, exc: sqlite3.Error):
+    logging.critical(
+        f'database error\n{request.method} {request.url}\n'
+        f'{"".join(traceback.format_exception(exc))}'
+    )
+    return err_database_error.json(request.cookies.get('lang'))
 
 
 @app.on_event('startup')
@@ -72,7 +80,7 @@ for route in app.routes:
     if not isinstance(route, APIRoute):
         continue
 
-    errors = []
+    errors = [err_database_error]
 
     for d in route.dependencies:
         errors.extend(getattr(d, 'errors', []))

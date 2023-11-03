@@ -8,6 +8,8 @@ from databases import Database
 from pydantic_settings import BaseSettings
 from redis.asyncio import Redis
 
+import shared.logger
+
 
 class Connection(sqlite3.Connection):
     def __init__(self, *args, **kwargs):

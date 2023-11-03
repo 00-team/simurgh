@@ -1,14 +1,13 @@
 
-import logging
-from typing import Literal
 
-from fastapi import APIRouter, Request
-from pydantic import BaseModel, EmailStr, Field, constr
+from fastapi import APIRouter, Request, Response
+from pydantic import BaseModel, constr
+from sqlalchemy import update
 
-from db.models import UserModel
-from db.user import user_update
+from db.models import UserModel, UserTable
 from deps import rate_limit, user_required
-from shared.locale import MessageResult, err_no_change, msg_user_update_ok
+from shared import sqlx
+from shared.locale import MessageResult, err_no_change
 
 router = APIRouter(
     prefix='/user',
@@ -18,7 +17,7 @@ router = APIRouter(
 
 
 @router.get('/', response_model=UserModel)
-async def get(request: Request):
+async def user_get(request: Request):
     user: UserModel = request.state.user
     user.token = user.token[:32]
     return user
@@ -37,7 +36,7 @@ class UpdateBody(BaseModel):
     '/update/', response_model=MessageResult,
     openapi_extra={'errors': [err_no_change]}
 )
-async def update(request: Request, body: UpdateBody):
+async def user_update(request: Request, body: UpdateBody):
     user: UserModel = request.state.user
 
     if body.name == user.name:
@@ -47,8 +46,9 @@ async def update(request: Request, body: UpdateBody):
         'name': body.name
     }
 
-    await user_update(**patch)
+    await sqlx.execute(
+        update(UserTable).where(UserTable.user_id == user.user_id),
+        patch
+    )
 
-    return {
-        'message': msg_user_update_ok(request)
-    }
+    return Response()

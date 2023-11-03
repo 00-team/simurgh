@@ -2,17 +2,17 @@ import logging
 import logging.config
 from datetime import date
 from logging import FileHandler
+from pathlib import Path
 
-from shared import config
+LOG_DIR = Path(__file__).parent.parent / 'logs'
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class WeeklyRotating(FileHandler):
     def __init__(self):
-        self.path = config.base_dir / 'logs'
-        self.path.mkdir(parents=True, exist_ok=True)
 
         self.week = self.get_week()
-        filename = str(self.path / f'{self.week}.log')
+        filename = str(LOG_DIR / f'{self.week}.log')
 
         super().__init__(filename, 'a', 'utf-8')
 
@@ -29,8 +29,8 @@ class WeeklyRotating(FileHandler):
                     self.stream.close()
                     self.stream = None
 
-                self.path.mkdir(parents=True, exist_ok=True)
-                self.baseFilename = str(self.path / f'{week}.log')
+                LOG_DIR.mkdir(parents=True, exist_ok=True)
+                self.baseFilename = str(LOG_DIR / f'{week}.log')
 
                 self.week = week
                 if not self.delay:
