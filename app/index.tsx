@@ -20,6 +20,7 @@ import '/static/fonts/fonts.css'
 const Login = lazy(() => import('./pages/login'))
 const Alert = lazy(() => import('./components/alert'))
 const Progress = lazy(() => import('./components/progress'))
+const Dashboard = lazy(() => import('./pages/dashboard'))
 // const Background = lazy(() => import('./components/background'))
 
 function Main() {
@@ -37,6 +38,8 @@ render(
                 <Routes>
                     <Route path='/' component={Main} />
                     <Route path='/test' component={Test} />
+
+                    <Route path={'/dashboard'} component={Dashboard} />
 
                     {/*
                 <Route

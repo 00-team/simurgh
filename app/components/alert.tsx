@@ -1,5 +1,5 @@
-import { AlertError, AlertInfo, AlertSuccess, CloseIcon } from '!/icon'
-import { Component, JSX, onCleanup, onMount } from 'solid-js'
+import { AlertError, AlertInfo, AlertSuccess } from '!/icon'
+import { Component, createSignal, JSX, onCleanup, onMount } from 'solid-js'
 import './style/alert.scss'
 
 import { createStore, produce } from 'solid-js/store'
@@ -40,13 +40,15 @@ function delAlert(index: number) {
 const ALERT_ICON: {
     [x in AlertModel['type']]: () => JSX.Element
 } = {
-    info: () => <AlertInfo />,
-    error: () => <AlertError />,
-    success: () => <AlertSuccess />,
+    info: () => <AlertInfo size={30} />,
+    error: () => <AlertError size={30} />,
+    success: () => <AlertSuccess size={30} />,
 }
 
 const Alert: Component<{ a: AlertModel; i: number }> = props => {
     let interval: number
+
+    const [timeleft, setTimeleft] = createSignal(props.a.timeout)
 
     function do_timeout() {
         setAlertState(
@@ -54,8 +56,8 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
                 let a = s.alerts[props.i]
                 if (!a) return
 
-                a.timeout -= 1
-                if (a.timeout < 0) {
+                setTimeleft(time => time - 1)
+                if (timeleft() < 0) {
                     s.alerts.splice(props.i, 1)
                 }
             })
@@ -78,13 +80,12 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
             onMouseLeave={() => {
                 interval = setInterval(do_timeout, 1000)
             }}
+            onClick={() => delAlert(props.i)}
         >
             <div class='head'>
                 {ALERT_ICON[props.a.type]()}
                 <span>{props.a.subject}</span>
-                <button onClick={() => delAlert(props.i)}>
-                    <CloseIcon />
-                </button>
+                <div></div>
             </div>
             <div class='body'>
                 <p>
@@ -96,7 +97,12 @@ const Alert: Component<{ a: AlertModel; i: number }> = props => {
                     ))}
                 </p>
             </div>
-            <span class='timer'>{props.a.timeout}s</span>
+            <div
+                class='timer-line'
+                style={{
+                    width: `${100 - (timeleft() / props.a.timeout) * 100}%`,
+                }}
+            ></div>
         </div>
     )
 }
