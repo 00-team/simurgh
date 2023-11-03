@@ -8,15 +8,15 @@ from sqlalchemy import delete, insert, select, update
 
 from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
 from db.models import RecordTable
-from deps import project_required, rate_limit, user_required
+from deps import project_required, rate_limit
 from shared import config, sqlx
 from shared.locale import err_bad_file, err_bad_id
 from shared.tools import utc_now
 
 router = APIRouter(
     prefix='/{project_id}/records',
+    tags=['record'],
     dependencies=[
-        user_required(),
         rate_limit('projects:records', 60, 30),
         project_required(),
     ]

@@ -10,6 +10,11 @@
         "40005": ["Bad Auth", "invalid authentication credentials"],
         "40006": ["Forbidden", "Not Enough Permissions"],
         "40007": ["Rate Limited", "Too Many Requests"],
+        "40008": [
+            "Already Exists",
+            "{item} with {key}: '{value}' already exists",
+            "try to use a different slug"
+        ],
         "40009": ["Bad Args", "Invalid Arguments are Provided"],
         "40013": ["Bad File", "Invalid or unknown file"],
         "40101": ["Too Many Projects", "You Have created too many projects"],

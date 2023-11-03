@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel
 from sqlalchemy import JSON, Column, ForeignKey, Integer, String
+from sqlalchemy import UniqueConstraint
 
 from db.models.project import ProjectTable
 from db.models.record import RecordTable
@@ -19,12 +20,16 @@ class BlogCategoryTable(BaseTable):
         ForeignKey(ProjectTable.project_id, ondelete='CASCADE'),
         nullable=False
     )
-    slug = Column(String, nullable=False, unique=True, index=True)
+    slug = Column(String, nullable=False, index=True)
     label = Column(JSON, nullable=False, server_default='{}')
+    __table_args__ = (
+        UniqueConstraint('project', 'slug'),
+    )
 
 
 class BlogCategoryModel(BaseModel):
     category_id: int
+    project: int
     slug: str
     label: dict[str, str]
 
@@ -33,7 +38,7 @@ class BlogTable(BaseTable):
     __tablename__ = 'blog'
 
     blog_id = Column(Integer, primary_key=True, autoincrement=True)
-    slug = Column(String, nullable=False, unique=True, index=True)
+    slug = Column(String, nullable=False, index=True)
     project = Column(
         Integer,
         ForeignKey(ProjectTable.project_id, ondelete='CASCADE'),
@@ -57,11 +62,15 @@ class BlogTable(BaseTable):
         ForeignKey(RecordTable.record_id, ondelete='SET NULL'),
     )
     read_time = Column(Integer, nullable=False, server_default='0')
+    __table_args__ = (
+        UniqueConstraint('project', 'slug'),
+    )
 
 
 class BlogModel(BaseModel):
     blog_id: int
     slug: str
+    project: int
     author: int | None
     category: int
     created_at: int

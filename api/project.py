@@ -15,15 +15,20 @@ from shared.tools import new_token, utc_now
 
 router = APIRouter(
     prefix='/projects',
-    tags=['project'],
-    dependencies=[user_required(), rate_limit('projects', 60, 30)]
+    dependencies=[user_required()]
 )
 
 router.include_router(record_router)
 router.include_router(blog_router)
 
 
-@router.get('/', response_model=list[ProjectModel])
+project_router = APIRouter(
+    tags=['project'],
+    dependencies=[rate_limit('projects', 60, 30)]
+)
+
+
+@project_router.get('/', response_model=list[ProjectModel])
 async def project_list(request: Request, page: int = 0):
     user: UserModel = request.state.user
 
@@ -37,7 +42,7 @@ async def project_list(request: Request, page: int = 0):
     return [ProjectModel(**r) for r in rows]
 
 
-@router.post(
+@project_router.post(
     '/', response_model=ProjectModel,
     openapi_extra={'errors': [err_too_many_projects]}
 )
@@ -46,7 +51,7 @@ async def project_add(request: Request):
 
     total = (await sqlx.fetch_one(
         '''
-        SELECT COUNT(project_id) from projects WHERE creator = :user_id
+        SELECT COUNT(project_id) from project WHERE creator = :user_id
         ''',
         {'user_id': user.user_id}
     ))[0]
@@ -76,7 +81,7 @@ async def project_add(request: Request):
     return project
 
 
-@router.get(
+@project_router.get(
     '/{project_id}/', response_model=ProjectModel,
     dependencies=[project_required()],
 )
@@ -84,7 +89,7 @@ async def project_get(request: Request):
     return request.state.project
 
 
-@router.delete(
+@project_router.delete(
     '/{project_id}/',
     dependencies=[project_required()]
 )
@@ -114,7 +119,7 @@ class UpdateBody(BaseModel):
     api_key: bool = False
 
 
-@router.patch(
+@project_router.patch(
     '/{project_id}/', response_model=ProjectModel,
     dependencies=[project_required()],
     openapi_extra={'errors': [err_no_change]}
@@ -156,3 +161,6 @@ async def project_update(request: Request, body: UpdateBody):
         raise err_bad_id(item='Project', id=project.project_id)
 
     return ProjectModel(**result)
+
+
+router.include_router(project_router)
