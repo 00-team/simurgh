@@ -10,7 +10,7 @@ main.dashboard {
 
     transform: scale(2);
 
-    animation: zoomout-main 1.7s 0.1s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+    animation: zoomout-main 1.5s 0.1s cubic-bezier(0.45, 0.02, 0.09, 0.98)
         forwards;
 
     @keyframes zoomout-main {
