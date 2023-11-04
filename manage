@@ -31,7 +31,18 @@ master)
                  "\e[93m<\e[90muser_id\e[93m: \e[32m1\e[93m>\e[0m"
         exit
     fi
-    sqlite3 $2 "UPDATE users SET admin = '1' WHERE user_id = $3"
+    sqlite3 $2 "UPDATE user SET admin = '1' WHERE user_id = $3"
+    ;;
+
+client)
+    if [[ -z $3 ]]; then
+        echo -e "\e[31mError\e[93m:\e[0m Not Enough Arguments
+                 \r\e[32mUsage\e[93m:\e[0m ./\e[32mmanage\e[0m client"\
+                 "\e[93m<\e[90mfile.db\e[93m>\e[0m"\
+                 "\e[93m<\e[90muser_id\e[93m: \e[32m1\e[93m>\e[0m"
+        exit
+    fi
+    sqlite3 $2 "UPDATE user SET client = true WHERE user_id = $3"
     ;;
 
 release)

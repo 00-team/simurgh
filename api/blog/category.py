@@ -2,17 +2,13 @@
 from sqlite3 import IntegrityError
 
 from fastapi import APIRouter, Query, Request, Response
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import BaseModel, validator
 from sqlalchemy import delete, insert, select, update
 
-from db.models import BlogCategoryModel, BlogCategoryTable, BlogContentModel
-from db.models import BlogContentTable, BlogModel, BlogTable, BlogTagModel
-from db.models import BlogTagTable, ProjectModel, ProjectTable
-from deps import project_required, rate_limit, user_required
+from db.models import BlogCategoryModel, BlogCategoryTable, ProjectModel
 from shared import config, sqlx
-from shared.locale import err_already_exists, err_bad_file, err_bad_id
-from shared.tools import utc_now
-from shared.validators import LangCode, Slug, lang_validator
+from shared.locale import err_already_exists, err_bad_id
+from shared.validators import Slug, lang_validator
 
 router = APIRouter(
     prefix='/categories',
@@ -20,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.get('/categories/', response_model=list[BlogCategoryModel])
+@router.get('/', response_model=list[BlogCategoryModel])
 async def blog_category_list(request: Request, page: int = 0):
     project: ProjectModel = request.state.project
 
@@ -35,7 +31,7 @@ async def blog_category_list(request: Request, page: int = 0):
 
 
 @router.post(
-    '/categories/', response_model=BlogCategoryModel,
+    '/', response_model=BlogCategoryModel,
     openapi_extra={'errors': [err_already_exists]}
 )
 async def blog_category_add(request: Request, slug=Query(annotation=Slug)):
@@ -79,7 +75,7 @@ class UpdateBody(BaseModel):
 
 
 @router.patch(
-    '/categories/{category_id}/',
+    '/{category_id}/',
     openapi_extra={'errors': [err_bad_id]}
 )
 async def blog_category_update(
@@ -110,15 +106,11 @@ async def blog_category_update(
 
 
 @router.delete(
-    '/categories/{category_id}/',
+    '/{category_id}/',
     openapi_extra={'errors': [err_bad_id]}
 )
 async def blog_category_delete(request: Request, category_id: int):
     project: ProjectModel = request.state.project
-
-    # TODO: after delete the entire category directory of files
-
-    await sqlx.fetch_all(select())
 
     await sqlx.execute(
         delete(BlogCategoryTable)

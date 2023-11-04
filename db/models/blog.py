@@ -51,8 +51,7 @@ class BlogTable(BaseTable):
     )
     category = Column(
         Integer,
-        ForeignKey(BlogCategoryTable.category_id, ondelete='CASCADE'),
-        nullable=False,
+        ForeignKey(BlogCategoryTable.category_id, ondelete='SET NULL'),
         index=True,
     )
     created_at = Column(Integer, nullable=False, server_default='0')
@@ -77,6 +76,9 @@ class BlogModel(BaseModel):
     edited_at: int
     thumbnail: int | None
     read_time: int
+
+    class Config:
+        from_attributes = True
 
 
 class BlogContentTable(BaseTable):

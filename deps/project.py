@@ -6,7 +6,7 @@ from sqlalchemy import select
 from db.models import ProjectModel, ProjectTable, UserModel
 from deps.auth import user_required
 from shared import sqlx
-from shared.locale import err_bad_id
+from shared.locale import err_bad_id, err_forbidden
 
 
 def project_required():
@@ -14,6 +14,9 @@ def project_required():
         request: Request, project_id: int,
         user: UserModel = user_required()
     ):
+        if not user.client:
+            raise err_forbidden
+
         project: ProjectModel = getattr(request.state, 'project', None)
         if project is not None and project.project_id == project_id:
             if project.creator == user.user_id:
@@ -34,5 +37,5 @@ def project_required():
         return project
 
     dep = Depends(inner)
-    dep.errors = [err_bad_id]
+    dep.errors = [err_bad_id, err_forbidden]
     return dep

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Request, Response
 from sqlalchemy import delete, insert, select, update
 
-from api.blog import category
+from api.blog import blog, category
 from db.models import BlogCategoryModel, BlogCategoryTable, BlogContentModel
 from db.models import BlogContentTable, BlogModel, BlogTable, BlogTagModel
 from db.models import BlogTagTable, ProjectModel, ProjectTable
@@ -20,3 +20,4 @@ router = APIRouter(
 )
 
 router.include_router(category.router)
+router.include_router(blog.router)

@@ -10,7 +10,8 @@ from api.record import router as record_router
 from db.models import ProjectModel, ProjectTable, UserModel
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
-from shared.locale import err_bad_id, err_no_change, err_too_many_projects
+from shared.locale import err_bad_id, err_forbidden, err_no_change
+from shared.locale import err_too_many_projects
 from shared.tools import new_token, utc_now
 
 router = APIRouter(
@@ -28,9 +29,14 @@ project_router = APIRouter(
 )
 
 
-@project_router.get('/', response_model=list[ProjectModel])
+@project_router.get(
+    '/', response_model=list[ProjectModel],
+    openapi_extra={'errors': [err_forbidden]}
+)
 async def project_list(request: Request, page: int = 0):
     user: UserModel = request.state.user
+    if not user.client:
+        raise err_forbidden
 
     rows = await sqlx.fetch_all(
         select(ProjectTable)
@@ -44,10 +50,12 @@ async def project_list(request: Request, page: int = 0):
 
 @project_router.post(
     '/', response_model=ProjectModel,
-    openapi_extra={'errors': [err_too_many_projects]}
+    openapi_extra={'errors': [err_too_many_projects, err_forbidden]}
 )
 async def project_add(request: Request):
     user: UserModel = request.state.user
+    if not user.client:
+        raise err_forbidden
 
     total = (await sqlx.fetch_one(
         '''
