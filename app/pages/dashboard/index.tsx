@@ -1,9 +1,21 @@
 import { ProjectIcon } from '!/icons/dashboard'
-import { Component } from 'solid-js'
+import { Component, JSXElement } from 'solid-js'
 
 import './style/dashboard.scss'
 
 const Dashboard: Component = () => {
+    type sectionRow = {
+        title: string
+        Icon: ({ size }) => JSXElement
+    }
+
+    const sidebarRows: sectionRow[] = [
+        {
+            title: 'Projects',
+            Icon: ProjectIcon,
+        },
+    ]
+
     return (
         <main class='dashboard'>
             <aside class='sidebar'>
@@ -16,36 +28,20 @@ const Dashboard: Component = () => {
                 </div>
 
                 <div class='options'>
-                    <div class='option '>
-                        <div class='icon'>
-                            <ProjectIcon />
-                        </div>
-                        <span class='title' data-text='Projects'>
-                            Projects
-                            <div class='line'></div>
-                        </span>
-                        <div></div>
-                    </div>
-                    <div class='option '>
-                        <div class='icon'>
-                            <ProjectIcon />
-                        </div>
-                        <span class='title' data-text='Projects'>
-                            Projects
-                            <div class='line'></div>
-                        </span>
-                        <div></div>
-                    </div>
-                    <div class='option '>
-                        <div class='icon'>
-                            <ProjectIcon />
-                        </div>
-                        <span class='title' data-text='Projects'>
-                            Projects
-                            <div class='line'></div>
-                        </span>
-                        <div></div>
-                    </div>
+                    {sidebarRows.map(({ title, Icon }) => {
+                        return (
+                            <div class='option '>
+                                <div class='icon'>
+                                    <Icon size={25} />
+                                </div>
+                                <span class='title' data-text={title}>
+                                    {title}
+                                    <div class='line'></div>
+                                </span>
+                                <div></div>
+                            </div>
+                        )
+                    })}
                 </div>
 
                 <div class='exit title'>
