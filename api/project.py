@@ -10,8 +10,7 @@ from api.record import router as record_router
 from db.models import ProjectModel, ProjectTable, UserModel
 from deps import project_required, rate_limit, user_required
 from shared import config, sqlx
-from shared.locale import err_bad_id, err_forbidden, err_no_change
-from shared.locale import err_too_many_projects
+from shared.locale import err_bad_id, err_forbidden, err_too_many_projects
 from shared.tools import new_token, utc_now
 
 router = APIRouter(
@@ -129,8 +128,7 @@ class UpdateBody(BaseModel):
 
 @project_router.patch(
     '/{project_id}/', response_model=ProjectModel,
-    dependencies=[project_required()],
-    openapi_extra={'errors': [err_no_change]}
+    dependencies=[project_required()]
 )
 async def project_update(request: Request, body: UpdateBody):
     project: ProjectModel = request.state.project
@@ -138,19 +136,29 @@ async def project_update(request: Request, body: UpdateBody):
     patch = {
         'edited_at': utc_now(),
     }
-    change = False
 
     if body.api_key:
-        change = True
         token, _ = new_token()
         patch['api_key'] = token
 
     if body.name and body.name != project.name:
-        change = True
         patch['name'] = body.name
 
-    if not change:
-        raise err_no_change
+    blog_count = (
+        await sqlx.fetch_one(
+            'SELECT COUNT(blog_id) FROM blog WHERE project = :id ',
+            {'id': project.project_id}
+        )
+    )[0]
+    patch['blogs'] = blog_count
+
+    record_stats = (await sqlx.fetch_one('''
+        SELECT COUNT(record_id), SUM(size) FROM
+        record WHERE project = :id
+        ''', {'id': project.project_id}))
+
+    patch['records'] = record_stats[0]
+    patch['storage'] = record_stats[1] or 0
 
     await sqlx.execute(
         update(ProjectTable)
