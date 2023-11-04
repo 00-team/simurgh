@@ -25,10 +25,45 @@ const Dashboard: Component = () => {
                         </span>
                         <div></div>
                     </div>
+                    <div class='option '>
+                        <div class='icon'>
+                            <ProjectIcon />
+                        </div>
+                        <span class='title' data-text='Projects'>
+                            Projects
+                        </span>
+                        <div></div>
+                    </div>
+                    <div class='option '>
+                        <div class='icon'>
+                            <ProjectIcon />
+                        </div>
+                        <span class='title' data-text='Projects'>
+                            Projects
+                        </span>
+                        <div></div>
+                    </div>
+                    <div class='option '>
+                        <div class='icon'>
+                            <ProjectIcon />
+                        </div>
+                        <span class='title' data-text='Projects'>
+                            Projects
+                        </span>
+                        <div></div>
+                    </div>
                 </div>
 
-                <div></div>
+                <div class='exit title'>
+                    <object
+                        data='/static/svg/dashboard/door.svg'
+                        type='image/svg+xml'
+                    ></object>
+                    Exit
+                    <div></div>
+                </div>
             </aside>
+
             <aside
                 onmousemove={e => {
                     e.currentTarget.style.transition = 'none'
