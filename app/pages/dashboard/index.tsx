@@ -22,6 +22,7 @@ const Dashboard: Component = () => {
                         </div>
                         <span class='title' data-text='Projects'>
                             Projects
+                            <div class='line'></div>
                         </span>
                         <div></div>
                     </div>
@@ -31,6 +32,7 @@ const Dashboard: Component = () => {
                         </div>
                         <span class='title' data-text='Projects'>
                             Projects
+                            <div class='line'></div>
                         </span>
                         <div></div>
                     </div>
@@ -40,15 +42,7 @@ const Dashboard: Component = () => {
                         </div>
                         <span class='title' data-text='Projects'>
                             Projects
-                        </span>
-                        <div></div>
-                    </div>
-                    <div class='option '>
-                        <div class='icon'>
-                            <ProjectIcon />
-                        </div>
-                        <span class='title' data-text='Projects'>
-                            Projects
+                            <div class='line'></div>
                         </span>
                         <div></div>
                     </div>
