@@ -79,12 +79,27 @@ main.dashboard {
 
                 cursor: pointer;
 
+                perspective: 1000px;
+                transform: skewX(60deg);
+
+                animation: option-skew 0.7s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+                    forwards;
+
+                @keyframes option-skew {
+                    from {
+                        transform: skewX(60deg);
+                    }
+                    to {
+                        transform: skewX(0deg);
+                    }
+                }
+
                 span {
                     position: relative;
                     display: flex;
                     flex-direction: column;
                     line-height: 1;
-                    transition: color 0ms 200ms;
+                    transition: color 200ms;
 
                     font-family: 'Graduate';
 
@@ -110,9 +125,8 @@ main.dashboard {
                     }
                 }
                 &:hover {
-                    transition-delay: 0ms;
-
                     span {
+                        transition-delay: 0ms;
                         color: transparent;
                         user-select: none;
                         &::after,
@@ -122,6 +136,26 @@ main.dashboard {
                         }
                     }
                 }
+            }
+        }
+
+        .exit {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: auto;
+
+            color: var(--alert-error);
+            font-family: 'Graduate';
+            font-weight: bold;
+
+            width: 100%;
+            padding: 1rem;
+            cursor: pointer;
+
+            object {
+                width: 30px;
             }
         }
     }
