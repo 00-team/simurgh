@@ -8,6 +8,20 @@ main.dashboard {
 
     overflow: hidden;
 
+    transform: scale(2);
+
+    animation: zoomout-main 1.7s 0.1s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+        forwards;
+
+    @keyframes zoomout-main {
+        from {
+            transform: scale(2);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
     aside.sidebar {
         width: clamp(280px, 20%, 300px);
         box-shadow: -20px 1px 15px -23px black inset;
