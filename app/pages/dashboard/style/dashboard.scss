@@ -16,9 +16,9 @@ main.dashboard {
 
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         flex-direction: column;
-        gap: 5vh;
+        gap: 8vh;
 
         background-color: white;
 
@@ -53,6 +53,75 @@ main.dashboard {
                     25% 100%,
                     0% 50%
                 );
+            }
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+
+            margin-top: 4vh;
+
+            .option {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                padding: 1rem;
+
+                position: relative;
+
+                width: 100%;
+
+                cursor: pointer;
+
+                span {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    line-height: 1;
+                    transition: color 0ms 200ms;
+
+                    font-family: 'Graduate';
+
+                    &::before,
+                    &::after {
+                        position: absolute;
+                        content: attr(data-text);
+                        height: calc(0.5em);
+                        overflow: hidden;
+                        left: 0;
+                        right: 0;
+                        color: var(--text-color);
+                        transition:
+                            color 200ms ease-in-out,
+                            transform 200ms ease-in-out;
+                        user-select: none;
+                    }
+
+                    &::after {
+                        bottom: 0;
+                        display: flex;
+                        align-items: flex-end;
+                    }
+                }
+                &:hover {
+                    transition-delay: 0ms;
+
+                    span {
+                        color: transparent;
+                        user-select: none;
+                        &::after,
+                        &::before {
+                            color: black;
+                            transform: skewX(15deg);
+                        }
+                    }
+                }
             }
         }
     }
