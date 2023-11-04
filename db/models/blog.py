@@ -71,7 +71,7 @@ class BlogModel(BaseModel):
     slug: str
     project: int
     author: int | None
-    category: int
+    category: int | None
     created_at: int
     edited_at: int
     thumbnail: int | None

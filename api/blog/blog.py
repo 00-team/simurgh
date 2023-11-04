@@ -77,4 +77,10 @@ async def blog_add(request: Request, body: AddBody):
     except IntegrityError:
         raise err_already_exists(item='Blog', key='slug', value=body.slug)
 
+    await sqlx.execute(
+        update(ProjectTable)
+        .where(ProjectTable.project_id == project.project_id),
+        {'blogs': project.blogs + 1}
+    )
+
     return blog
