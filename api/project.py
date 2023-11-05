@@ -174,7 +174,7 @@ async def project_update(request: Request, body: UpdateBody):
         ProjectTable.creator == project.creator,
     ))
     if result is None:
-        raise err_bad_id(item='Project', id=project.project_id)
+        raise err_bad_id(item='project', id=project.project_id)
 
     return ProjectModel(**result)
 

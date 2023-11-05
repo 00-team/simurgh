@@ -30,7 +30,7 @@ async def get_record(record_id: int, project_id: int) -> RecordModel:
     ))
 
     if result is None:
-        raise err_bad_id(item='Record', id=record_id)
+        raise err_bad_id(item='record', id=record_id)
 
     return RecordModel(**result)
 

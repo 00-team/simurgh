@@ -52,7 +52,7 @@ async def blog_category_add(request: Request, slug=Query(annotation=Slug)):
         )
         category.category_id = category_id
     except IntegrityError:
-        raise err_already_exists(item='Category', key='slug', value=slug)
+        raise err_already_exists(item='category', key='slug', value=slug)
 
     return category
 
@@ -91,7 +91,7 @@ async def blog_category_update(
         )
     )
     if not result:
-        raise err_bad_id(item='Category', id=category_id)
+        raise err_bad_id(item='category', id=category_id)
 
     await sqlx.execute(
         update(BlogCategoryTable)

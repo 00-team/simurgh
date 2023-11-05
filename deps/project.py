@@ -22,14 +22,14 @@ def project_required():
             if project.creator == user.user_id:
                 return project
             else:
-                raise err_bad_id(item='Project', id=project_id)
+                raise err_bad_id(item='project', id=project_id)
 
         result = await sqlx.fetch_one(select(ProjectTable).where(
             ProjectTable.project_id == project_id,
             ProjectTable.creator == user.user_id
         ))
         if result is None:
-            raise err_bad_id(item='Project', id=project_id)
+            raise err_bad_id(item='project', id=project_id)
 
         project = ProjectModel(**result)
 
