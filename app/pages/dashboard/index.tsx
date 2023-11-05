@@ -1,4 +1,4 @@
-import { ProjectIcon } from '!/icons/dashboard'
+import { ExitIcon, ProjectIcon } from '!/icons/dashboard'
 import { Component, JSXElement } from 'solid-js'
 
 import './style/dashboard.scss'
@@ -45,10 +45,7 @@ const Dashboard: Component = () => {
                 </div>
 
                 <div class='exit title'>
-                    <object
-                        data='/static/svg/dashboard/door.svg'
-                        type='image/svg+xml'
-                    ></object>
+                    <ExitIcon size={30} />
                     Exit
                     <div></div>
                 </div>
