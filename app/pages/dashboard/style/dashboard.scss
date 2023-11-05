@@ -4,23 +4,7 @@ main.dashboard {
 
     display: flex;
 
-    background-color: black;
-
     overflow: hidden;
-
-    transform: scale(2);
-
-    animation: zoomout-main 1.5s 0.1s cubic-bezier(0.45, 0.02, 0.09, 0.98)
-        forwards;
-
-    @keyframes zoomout-main {
-        from {
-            transform: scale(2);
-        }
-        to {
-            transform: scale(1);
-        }
-    }
 
     aside.sidebar {
         width: clamp(280px, 20%, 300px);
@@ -92,22 +76,9 @@ main.dashboard {
                 cursor: pointer;
 
                 perspective: 1000px;
-                transform: skewX(60deg);
-
-                animation: option-skew 0.7s cubic-bezier(0.45, 0.02, 0.09, 0.98)
-                    forwards;
 
                 position: relative;
                 isolation: isolate;
-
-                @keyframes option-skew {
-                    from {
-                        transform: skewX(60deg);
-                    }
-                    to {
-                        transform: skewX(0deg);
-                    }
-                }
 
                 span {
                     position: relative;
@@ -206,17 +177,5 @@ main.dashboard {
 
         overflow-y: auto;
         overflow-x: hidden;
-
-        background-size: cover;
-        background-repeat: no-repeat;
-
-        @media screen and (max-width: 768px) {
-            background-size: cover;
-            background-position: bottom center;
-        }
-
-        @media screen and (min-width: 1440px) {
-            background-size: 103% 103%;
-        }
     }
 }
