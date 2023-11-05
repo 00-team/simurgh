@@ -65,11 +65,18 @@ const Dashboard: Component = () => {
                     e.currentTarget.style.backgroundPosition = '0 0'
                 }}
                 class='wrapper'
-                style={{
-                    'background-image':
-                        'url(/static/image/dashboard/wallpaper.webp)',
-                }}
-            ></aside>
+            >
+                <div
+                    class='card-container'
+                    style={{
+                        'background-image':
+                            'url(/static/svg/dashboard/card.png)',
+                    }}
+                >
+                    <div class='bg'></div>
+                    <img src='' alt='' />
+                </div>
+            </aside>
         </main>
     )
 }
