@@ -1,4 +1,4 @@
-import { ProjectIcon } from '!/icons/dashboard'
+import { ExitIcon, ProjectIcon } from '!/icons/dashboard'
 import { Component, JSXElement } from 'solid-js'
 
 import './style/dashboard.scss'
@@ -45,10 +45,7 @@ const Dashboard: Component = () => {
                 </div>
 
                 <div class='exit title'>
-                    <object
-                        data='/static/svg/dashboard/door.svg'
-                        type='image/svg+xml'
-                    ></object>
+                    <ExitIcon size={30} />
                     Exit
                     <div></div>
                 </div>
@@ -68,11 +65,18 @@ const Dashboard: Component = () => {
                     e.currentTarget.style.backgroundPosition = '0 0'
                 }}
                 class='wrapper'
-                style={{
-                    'background-image':
-                        'url(/static/image/dashboard/wallpaper.webp)',
-                }}
-            ></aside>
+            >
+                <div
+                    class='card-container'
+                    style={{
+                        'background-image':
+                            'url(/static/svg/dashboard/card.png)',
+                    }}
+                >
+                    <div class='bg'></div>
+                    <img src='' alt='' />
+                </div>
+            </aside>
         </main>
     )
 }
