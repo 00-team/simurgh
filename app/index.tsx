@@ -6,7 +6,6 @@ import { render, Show } from 'solid-js/web'
 import 'solid-devtools'
 
 import { lazy } from 'solid-js'
-import { Test } from './pages/test'
 import { user } from './stores'
 import './style/base.scss'
 import './style/buttons.scss'
@@ -21,6 +20,7 @@ const Login = lazy(() => import('./pages/login'))
 const Alert = lazy(() => import('./components/alert'))
 const Progress = lazy(() => import('./components/progress'))
 const Dashboard = lazy(() => import('./pages/dashboard'))
+const BlogEditor = lazy(() => import('./pages/blog-editor'))
 // const Background = lazy(() => import('./components/background'))
 
 function Main() {
@@ -37,7 +37,7 @@ render(
             <Router>
                 <Routes>
                     <Route path='/' component={Main} />
-                    <Route path='/test' component={Test} />
+                    <Route path='/blog-editor' component={BlogEditor} />
 
                     <Route path={'/dashboard'} component={Dashboard} />
 
