@@ -12,6 +12,7 @@ import './style/buttons.scss'
 import './style/config.scss'
 import './style/theme.scss'
 import '/static/fonts/fonts.css'
+import Projects from './pages/dashboard/projects'
 
 // import { lazy } from 'solid-js'
 // import { UserData } from './stores'
@@ -39,7 +40,9 @@ render(
                     <Route path='/' component={Main} />
                     <Route path='/blog-editor' component={BlogEditor} />
 
-                    <Route path={'/dashboard'} component={Dashboard} />
+                    <Route path={'/dashboard'} component={Dashboard}>
+                        <Route path={'projects'} component={Projects} />
+                    </Route>
 
                     {/*
                 <Route
