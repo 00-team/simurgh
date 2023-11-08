@@ -1,42 +1,51 @@
+import { createStore, produce } from 'solid-js/store'
 import './style/blog-editor.scss'
+import { onCleanup, onMount } from 'solid-js'
 
+// let observer: MutationObserver
 export default () => {
     let editor: HTMLDivElement
+    const [state, setState] = createStore({
+        blocks: [{}, {}],
+    })
+
+    onMount(() => {
+        // observer = new MutationObserver(() => {
+        //     setState({ html: editor.innerHTML })
+        // })
+        //
+        // observer.observe(editor, {
+        //     subtree: true,
+        //     childList: true,
+        //     characterData: true,
+        // })
+    })
+
+    onCleanup(() => {
+        // observer.disconnect()
+    })
 
     return (
         <div class='blog-editor-fnd'>
             <div class='header'>Header</div>
             <div class='content'>
-                <div
-                    class='editor'
-                    ref={editor}
-                    // tabindex={0}
-                    // onfocus={() => {
-                    //     let input = document.createElement('textarea')
-                    //     input.setAttribute('tabindex', '0')
-                    //     input.classList.add('hidden-input')
-                    //     input.value = editor.innerText
-                    //     input.oninput = () => {
-                    //         editor.innerText = input.value
-                    //     }
-                    //     input.onblur = () => input.remove()
-                    //
-                    //     document.body.appendChild(input)
-                    //     input.focus()
-                    // }}
-                >
-                    <p
-                        contenteditable
-                        oninput={e => {
-                            console.log(e.currentTarget.innerHTML)
+                <div class='editor' ref={editor}>
+                    {state.blocks.map((_, i) => (
+                        <div class='block'>
+                            <p contenteditable>block number: {i}</p>
+                        </div>
+                    ))}
+                    <button
+                        onclick={() => {
+                            setState(
+                                produce(s => {
+                                    s.blocks.push({})
+                                })
+                            )
                         }}
                     >
-                        first part
-                        <span>Secods part</span>
-                        in bet
-                        <b>bold</b>
-                        after adasd
-                    </p>
+                        Add Block
+                    </button>
                 </div>
                 <div class='sidebar'>
                     <div class='config'>config</div>

@@ -37,6 +37,21 @@
             width: 100%;
             height: 100%;
             padding: 1rem;
+            gap: 1rem;
+            display: flex;
+            flex-direction: column;
+
+            .block {
+                border: 2px solid olive;
+                border-radius: 5px;
+
+                p {
+                    display: inline-block;
+                    caret-color: green;
+                    font-size: 18px;
+                    font-family: monospace;
+                }
+            }
         }
     }
 }
