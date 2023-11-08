@@ -42,6 +42,7 @@ render(
 
                     <Route path={'/dashboard'} component={Dashboard}>
                         <Route path={'projects'} component={Projects} />
+                        <Route path={'/'} component={() => <></>} />
                     </Route>
 
                     {/*
