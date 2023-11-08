@@ -20,32 +20,45 @@ section.projects {
         letter-spacing: 3px;
     }
 
-    .project-card {
-        width: 300px;
-        aspect-ratio: 1/1.5;
-        clip-path: polygon(
-            0% 0%,
-            35% 0,
-            40% 4%,
-            60% 4%,
-            65% 0,
-            100% 0,
-            100% 43%,
-            93% 48%,
-            93% 55%,
-            100% 60%,
-            100% 100%,
-            65% 100%,
-            60% 96%,
-            40% 96%,
-            35% 100%,
-            0% 100%,
-            0 58%,
-            6% 53%,
-            6% 47%,
-            0 43%
-        );
+    .projects-wrapper {
+        width: 100%;
+        height: auto;
 
-        background-color: white;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+
+        column-gap: calc(3vw + 5px);
+        row-gap: calc(5vh + 5px);
+
+        .project-card {
+            width: 300px;
+            aspect-ratio: 1/1.5;
+            clip-path: polygon(
+                0% 0%,
+                35% 0,
+                40% 4%,
+                60% 4%,
+                65% 0,
+                100% 0,
+                100% 43%,
+                93% 48%,
+                93% 55%,
+                100% 60%,
+                100% 100%,
+                65% 100%,
+                60% 96%,
+                40% 96%,
+                35% 100%,
+                0% 100%,
+                0 58%,
+                6% 53%,
+                6% 47%,
+                0 43%
+            );
+
+            background-color: white;
+        }
     }
 }
