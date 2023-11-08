@@ -1,10 +1,18 @@
 import { ExitIcon, ProjectIcon } from '!/icons/dashboard'
-import { Link, Outlet } from '@solidjs/router'
-import { Component, JSXElement } from 'solid-js'
+import { user } from '!/stores'
+import { Link, Outlet, useNavigate } from '@solidjs/router'
+import { Component, JSXElement, onMount } from 'solid-js'
 
 import './style/dashboard.scss'
 
 const Dashboard: Component = () => {
+    // TODO: uncomment this later
+    // const navigate = useNavigate()
+
+    // onMount(() => {
+    //     if (!user || !user.user_id) return navigate('/')
+    // })
+
     return (
         <main class='dashboard'>
             <Sidebar />
