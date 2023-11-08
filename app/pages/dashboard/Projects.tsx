@@ -5,7 +5,10 @@ import './style/projects.scss'
 const Projects: Component = () => {
     return (
         <section class='projects'>
-            <div class='project-card'>project</div>
+            <header class='section_title'>projects</header>
+            <div class='projects-wrapper'>
+                <div class='project-card'></div>
+            </div>
         </section>
     )
 }
