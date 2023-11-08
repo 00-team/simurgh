@@ -9,10 +9,19 @@ section.projects {
     align-items: center;
     justify-content: flex-start;
 
+    padding: 5vh 3vw;
+
+    backdrop-filter: blur(1px);
+
     gap: 8vh;
 
+    header {
+        font-family: 'alien';
+        letter-spacing: 3px;
+    }
+
     .project-card {
-        width: 400px;
+        width: 300px;
         aspect-ratio: 1/1.5;
         clip-path: polygon(
             0% 0%,
@@ -36,5 +45,7 @@ section.projects {
             6% 47%,
             0 43%
         );
+
+        background-color: white;
     }
 }
