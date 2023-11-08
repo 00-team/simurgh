@@ -27,6 +27,10 @@
     font-family: 'yekan';
     src: url('/static/fonts/iran-yekan/regular.woff') format('woff2');
 }
+@font-face {
+    font-family: 'alien';
+    src: url('/static/fonts/alien-ai/AlienAi-mLxP5.ttf') format('truetype');
+}
 
 @font-face {
     font-family: 'number';
