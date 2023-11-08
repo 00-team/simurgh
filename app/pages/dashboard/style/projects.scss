@@ -30,9 +30,18 @@ section.projects {
         justify-content: center;
 
         column-gap: calc(3vw + 5px);
-        row-gap: calc(5vh + 5px);
+        row-gap: calc(3vh + 5px);
 
         .project-card {
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            gap: 4vh;
+
+            padding: 1.5em 1em;
+            color: black;
+
             width: 300px;
             aspect-ratio: 1/1.5;
             clip-path: polygon(
