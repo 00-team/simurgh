@@ -4,6 +4,7 @@ import {
     PriceIcon,
     QrCodeIcon,
 } from '!/icons/dashboard'
+import { Link } from '@solidjs/router'
 import { Component } from 'solid-js'
 
 import './style/projects.scss'
@@ -43,7 +44,7 @@ export const Projects: Component = () => {
         <section class='projects'>
             <header class='section_title'>projects</header>
             <div class='projects-wrapper'>
-                <div class='project-card'>
+                <Link href='/dashboard/project/1' class='project-card'>
                     <img
                         class='project-img'
                         src='https://picsum.photos/500/500'
@@ -80,7 +81,7 @@ export const Projects: Component = () => {
                             <p class='data title_small'>1</p>
                         </div>
                     </div>
-                </div>
+                </Link>
             </div>
         </section>
     )
