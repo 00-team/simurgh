@@ -1,4 +1,4 @@
-import { ExitIcon, ProjectIcon } from '!/icons/dashboard'
+import { BlogIcon, ExitIcon, ProjectIcon } from '!/icons/dashboard'
 import { user } from '!/stores'
 import { Link, Outlet, useNavigate } from '@solidjs/router'
 import { Component, JSXElement, onMount } from 'solid-js'
@@ -35,6 +35,11 @@ const Sidebar: Component = () => {
             title: 'Projects',
             Icon: ProjectIcon,
             link: 'projects',
+        },
+        {
+            title: 'Blogs',
+            Icon: BlogIcon,
+            link: 'blogs',
         },
     ]
 
