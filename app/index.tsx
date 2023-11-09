@@ -6,6 +6,7 @@ import { render, Show } from 'solid-js/web'
 import 'solid-devtools'
 
 import { lazy } from 'solid-js'
+import { Project } from './pages/dashboard/project'
 import { Projects } from './pages/dashboard/projects'
 import { user } from './stores'
 import './style/base.scss'
@@ -42,6 +43,7 @@ render(
 
                     <Route path={'/dashboard'} component={Dashboard}>
                         <Route path={'projects'} component={Projects} />
+                        <Route path={'project/:id'} component={Project} />
                         <Route path={'/'} component={() => <></>} />
                     </Route>
 
