@@ -44,7 +44,7 @@ export const Projects: Component = () => {
         <section class='projects'>
             <header class='section_title'>projects</header>
             <div class='projects-wrapper'>
-                <Link href='/dashboard/project/1' class='project-card'>
+                <Link href='/project/1' class='project-card'>
                     <img
                         class='project-img'
                         src='https://picsum.photos/500/500'
