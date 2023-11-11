@@ -3,7 +3,7 @@ import { ImageIcon } from '!/icons/editor'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { Link } from '@solidjs/router'
-import { Component, createEffect, createSignal, onMount } from 'solid-js'
+import { Component, createSignal, onMount } from 'solid-js'
 
 import './style/projects.scss'
 
@@ -20,6 +20,32 @@ export const Projects: Component = () => {
             },
         })
     })
+
+    function getProjectRecord(id: number): string {
+        httpx({
+            url: `/api/projects/${id}/records/`,
+            method: 'GET',
+            type: 'json',
+            onLoad(x) {
+                if (x.status === 200) {
+                    if (x.response.length >= 1) {
+                        let url = x.response[0].url
+                        console.log(url)
+
+                        let img = document.querySelector(
+                            `img.project-img#img${id}`
+                        ) as HTMLImageElement
+
+                        img.src = url
+                    }
+                } else {
+                    return
+                }
+            },
+        })
+
+        return ''
+    }
 
     function numberToDate(date: number) {
         let dateToMilisec = date * 1000
@@ -38,6 +64,8 @@ export const Projects: Component = () => {
             <div class='projects-wrapper'>
                 {projects().map(
                     ({ name, project_id, created_at, storage, records }) => {
+                        getProjectRecord(project_id)
+
                         return (
                             <Link
                                 href={`/project/${project_id}`}
@@ -45,7 +73,8 @@ export const Projects: Component = () => {
                             >
                                 <img
                                     class='project-img'
-                                    src='https://picsum.photos/500/500'
+                                    id={`img${project_id.toString()}`}
+                                    src={'/static/image/dashboard/img.webp'}
                                     alt=''
                                 />
                                 <h3 class='title'>{name}</h3>
