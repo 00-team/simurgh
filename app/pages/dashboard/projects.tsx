@@ -29,24 +29,8 @@ export const Projects: Component = () => {
             dateToMilisec + Dateoffset * -60
         ).toLocaleDateString('fa')
 
-        console.log(newDate)
-
         return newDate
     }
-
-    createEffect(() => {
-        console.log(projects())
-    })
-
-    // project_id: number
-    // creator: number
-    // name: string
-    // storage: string
-    // blogs: string
-    // records: number
-    // created_at: number
-    // edited_at: number
-    // api_key: string | null
 
     return (
         <section class='projects'>
