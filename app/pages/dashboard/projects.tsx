@@ -68,7 +68,7 @@ export const Projects: Component = () => {
                                 <div class='project-data'>
                                     <div class='row '>
                                         <p class='holder title_smaller'>
-                                            <QrCodeIcon size={23} />
+                                            <QrCodeIcon size={22} />
                                             code
                                         </p>
                                         <p class='data title_small'>
@@ -77,7 +77,7 @@ export const Projects: Component = () => {
                                     </div>
                                     <div class='row '>
                                         <p class='holder title_smaller'>
-                                            <CalenderIcon size={23} />
+                                            <CalenderIcon size={22} />
                                             Created At
                                         </p>
                                         <p class='data title_small'>
