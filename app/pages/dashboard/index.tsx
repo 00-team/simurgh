@@ -1,13 +1,12 @@
 import { BlogIcon, ExitIcon, ProjectIcon } from '!/icons/dashboard'
-import { user } from '!/stores'
+import { setUser } from '!/stores'
 import { Link, Outlet, useNavigate } from '@solidjs/router'
-import { Component, JSXElement, onMount } from 'solid-js'
+import { Component, JSXElement } from 'solid-js'
 
 import './style/dashboard.scss'
 
 const Dashboard: Component = () => {
     // TODO: uncomment this later
-    // const navigate = useNavigate()
 
     // onMount(() => {
     //     if (!user || !user.user_id) return navigate('/')
@@ -24,6 +23,8 @@ const Dashboard: Component = () => {
 }
 
 const Sidebar: Component = () => {
+    const navigate = useNavigate()
+
     type sectionRow = {
         title: string
         Icon: ({ size }) => JSXElement
@@ -70,11 +71,28 @@ const Sidebar: Component = () => {
                 })}
             </div>
 
-            <div class='exit title'>
+            <button
+                class='exit title'
+                onclick={() => {
+                    setUser({
+                        user_id: 0,
+                        name: '',
+                        email: '',
+                        picture: null,
+                        phone: null,
+                        admin: null,
+                        token: null,
+                        perms: 0n,
+                    })
+                    navigate('/login')
+
+                    return
+                }}
+            >
                 <ExitIcon size={30} />
                 Exit
                 <div></div>
-            </div>
+            </button>
         </aside>
     )
 }

@@ -1,9 +1,5 @@
-import {
-    AreaIcon,
-    LocationIcon,
-    PriceIcon,
-    QrCodeIcon,
-} from '!/icons/dashboard'
+import { CalenderIcon, PcIcon, QrCodeIcon } from '!/icons/dashboard'
+import { ImageIcon } from '!/icons/editor'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { Link } from '@solidjs/router'
@@ -25,63 +21,106 @@ export const Projects: Component = () => {
         })
     })
 
-    console.log(projects())
+    function getProjectRecord(id: number): string {
+        httpx({
+            url: `/api/projects/${id}/records/`,
+            method: 'GET',
+            type: 'json',
+            onLoad(x) {
+                if (x.status === 200) {
+                    if (x.response.length >= 1) {
+                        let url = x.response[0].url
+                        console.log(url)
 
-    // type ProjectModel = {
-    //     project_id: number
-    //     title: string
-    //     description: string
-    //     features: string[]
-    //     sector: string
-    //     latitude: number
-    //     longitude: number
-    //     payment_terms: string
-    //     prices: PriceModel[]
-    //     images: ImagesModel
-    // }
+                        let img = document.querySelector(
+                            `img.project-img#img${id}`
+                        ) as HTMLImageElement
+
+                        img.src = url
+                    }
+                } else {
+                    return
+                }
+            },
+        })
+
+        return ''
+    }
+
+    function numberToDate(date: number) {
+        let dateToMilisec = date * 1000
+        let Dateoffset = new Date().getTimezoneOffset()
+
+        let newDate = new Date(
+            dateToMilisec + Dateoffset * -60
+        ).toLocaleDateString('fa')
+
+        return newDate
+    }
 
     return (
         <section class='projects'>
             <header class='section_title'>projects</header>
             <div class='projects-wrapper'>
-                <Link href='/project/1' class='project-card'>
-                    <img
-                        class='project-img'
-                        src='https://picsum.photos/500/500'
-                        alt=''
-                    />
-                    <h3 class='title'>lorem ipsum</h3>
-                    <div class='project-data'>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <QrCodeIcon size={23} />
-                                code
-                            </p>
-                            <p class='data title_small'>1</p>
-                        </div>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <LocationIcon size={23} />
-                                location
-                            </p>
-                            <p class='data title_smaller'>عباس اباد</p>
-                        </div>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <AreaIcon size={25} />
-                                area
-                            </p>
-                            <p class='data title_small'>1</p>
-                        </div>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <PriceIcon size={25} />
-                                price start
-                            </p>
-                            <p class='data title_small'>1</p>
-                        </div>
-                    </div>
-                </Link>
+                {projects().map(
+                    ({ name, project_id, created_at, storage, records }) => {
+                        getProjectRecord(project_id)
+
+                        return (
+                            <Link
+                                href={`/project/${project_id}`}
+                                class='project-card'
+                            >
+                                <img
+                                    class='project-img'
+                                    id={`img${project_id.toString()}`}
+                                    src={'/static/image/dashboard/img.webp'}
+                                    alt=''
+                                />
+                                <h3 class='title'>{name}</h3>
+                                <div class='project-data'>
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <QrCodeIcon size={22} />
+                                            code
+                                        </p>
+                                        <p class='data title_small'>
+                                            {project_id}
+                                        </p>
+                                    </div>
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <CalenderIcon size={22} />
+                                            Created At
+                                        </p>
+                                        <p class='data title_small'>
+                                            {numberToDate(created_at)}
+                                        </p>
+                                    </div>
+
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <ImageIcon size={23} />
+                                            images
+                                        </p>
+                                        <p class='data title_small'>
+                                            {records}
+                                        </p>
+                                    </div>
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <PcIcon size={23} />
+                                            Space Taken
+                                        </p>
+                                        <p class='data title_small'>
+                                            {storage}{' '}
+                                        </p>
+                                    </div>
+                                </div>
+                            </Link>
+                        )
+                    }
+                )}
             </div>
         </section>
     )
