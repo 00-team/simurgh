@@ -42,14 +42,54 @@
             flex-direction: column;
 
             .block {
-                border: 2px solid olive;
-                border-radius: 5px;
-
-                p {
-                    display: inline-block;
-                    caret-color: green;
+                &.text {
                     font-size: 18px;
-                    font-family: monospace;
+
+                    .placeholder {
+                        opacity: 0.6;
+                        user-select: none;
+                        pointer-events: none;
+                        position: absolute;
+                    }
+
+                    p {
+                        display: inline-block;
+                    }
+                }
+
+                &.empty {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+
+                    .blocks {
+                        display: flex;
+                        gap: 1rem;
+
+                        .select-btn {
+                            cursor: pointer;
+                            background: transparent;
+                            padding: 0.1rem 1rem;
+                            display: flex;
+                            border-radius: 5px;
+                            align-items: center;
+                            border: 1px solid red;
+                            display: flex;
+                            gap: 0.2rem;
+                            font-size: 20px;
+
+                            svg {
+                                width: 24px;
+                                height: 24px;
+                            }
+                        }
+                    }
+                }
+
+                &.active {
+                    border: 2px solid blueviolet;
+                    border-radius: 5px;
+                    padding: 1rem;
                 }
             }
         }
