@@ -3,8 +3,6 @@
 import { Route, Router, Routes } from '@solidjs/router'
 import { render, Show } from 'solid-js/web'
 
-import 'solid-devtools'
-
 import { lazy } from 'solid-js'
 import { Project } from './pages/dashboard/project'
 import { Projects } from './pages/dashboard/projects'
