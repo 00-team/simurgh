@@ -4,28 +4,28 @@ import {
     PriceIcon,
     QrCodeIcon,
 } from '!/icons/dashboard'
+import { httpx } from '!/shared'
+import { ProjectModel } from '!/types'
 import { Link } from '@solidjs/router'
-import { Component } from 'solid-js'
+import { Component, createSignal, onMount } from 'solid-js'
 
 import './style/projects.scss'
 
 export const Projects: Component = () => {
-    // TODO: uncomment this later
-    // onMount(() => {
-    //     if (!user || !user.token) return
+    const [projects, setProjects] = createSignal<ProjectModel[]>([])
 
-    //     httpx({
-    //         url: '/api/verification/',
-    //         method: 'POST',
-    //         type: 'json',
-    //         headers: {
-    //             authorization: user.token,
-    //         },
-    //         onLoad(x) {
-    //             console.log(x)
-    //         },
-    //     })
-    // })
+    onMount(() => {
+        httpx({
+            url: '/api/projects/',
+            method: 'GET',
+            type: 'json',
+            onLoad(x) {
+                if (x.status === 200) return setProjects(x.response)
+            },
+        })
+    })
+
+    console.log(projects())
 
     // type ProjectModel = {
     //     project_id: number
@@ -44,7 +44,7 @@ export const Projects: Component = () => {
         <section class='projects'>
             <header class='section_title'>projects</header>
             <div class='projects-wrapper'>
-                <Link href='/dashboard/project/1' class='project-card'>
+                <Link href='/project/1' class='project-card'>
                     <img
                         class='project-img'
                         src='https://picsum.photos/500/500'

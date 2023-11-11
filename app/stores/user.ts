@@ -103,7 +103,7 @@ const UserData: RouteDataFunc<never, Resource<UserModel>> = () => {
     const [data] = createResource(async () => {
         const res = await fetch('/api/user/')
         if (!res.ok) {
-            location.replace('/api/auth/login/?next=' + location.pathname)
+            location.replace('/login' + location.pathname)
             return user
         }
 
