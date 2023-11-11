@@ -2,8 +2,10 @@ import {
     AreaIcon,
     CalenderIcon,
     LocationIcon,
+    PcIcon,
     QrCodeIcon,
 } from '!/icons/dashboard'
+import { ImageIcon } from '!/icons/editor'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { Link } from '@solidjs/router'
@@ -80,19 +82,20 @@ export const Projects: Component = () => {
                                 {numberToDate(1699694646)}
                             </p>
                         </div>
+
                         <div class='row '>
                             <p class='holder title_smaller'>
-                                <LocationIcon size={23} />
-                                location
+                                <ImageIcon size={23} />
+                                images
                             </p>
-                            <p class='data title_smaller'>عباس اباد</p>
+                            <p class='data title_small'>1</p>
                         </div>
                         <div class='row '>
                             <p class='holder title_smaller'>
-                                <AreaIcon size={25} />
-                                area
+                                <PcIcon size={23} />
+                                Space Taken
                             </p>
-                            <p class='data title_small'>1</p>
+                            <p class='data title_smaller'>عباس اباد</p>
                         </div>
                     </div>
                 </Link>
