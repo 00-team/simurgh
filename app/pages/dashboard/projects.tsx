@@ -1,13 +1,13 @@
 import {
     AreaIcon,
+    CalenderIcon,
     LocationIcon,
-    PriceIcon,
     QrCodeIcon,
 } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { Link } from '@solidjs/router'
-import { Component, createSignal, onMount } from 'solid-js'
+import { Component, createEffect, createSignal, onMount } from 'solid-js'
 
 import './style/projects.scss'
 
@@ -25,20 +25,32 @@ export const Projects: Component = () => {
         })
     })
 
-    console.log(projects())
+    function numberToDate(date: number) {
+        let dateToMilisec = date * 1000
+        let Dateoffset = new Date().getTimezoneOffset()
 
-    // type ProjectModel = {
-    //     project_id: number
-    //     title: string
-    //     description: string
-    //     features: string[]
-    //     sector: string
-    //     latitude: number
-    //     longitude: number
-    //     payment_terms: string
-    //     prices: PriceModel[]
-    //     images: ImagesModel
-    // }
+        let newDate = new Date(
+            dateToMilisec + Dateoffset * -60
+        ).toLocaleDateString('fa')
+
+        console.log(newDate)
+
+        return newDate
+    }
+
+    createEffect(() => {
+        console.log(projects())
+    })
+
+    // project_id: number
+    // creator: number
+    // name: string
+    // storage: string
+    // blogs: string
+    // records: number
+    // created_at: number
+    // edited_at: number
+    // api_key: string | null
 
     return (
         <section class='projects'>
@@ -61,6 +73,15 @@ export const Projects: Component = () => {
                         </div>
                         <div class='row '>
                             <p class='holder title_smaller'>
+                                <CalenderIcon size={23} />
+                                Created At
+                            </p>
+                            <p class='data title_small'>
+                                {numberToDate(1699694646)}
+                            </p>
+                        </div>
+                        <div class='row '>
+                            <p class='holder title_smaller'>
                                 <LocationIcon size={23} />
                                 location
                             </p>
@@ -70,13 +91,6 @@ export const Projects: Component = () => {
                             <p class='holder title_smaller'>
                                 <AreaIcon size={25} />
                                 area
-                            </p>
-                            <p class='data title_small'>1</p>
-                        </div>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <PriceIcon size={25} />
-                                price start
                             </p>
                             <p class='data title_small'>1</p>
                         </div>
