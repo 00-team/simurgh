@@ -56,7 +56,7 @@ const Sidebar: Component = () => {
             <div class='options'>
                 {sidebarRows.map(({ title, Icon, link }) => {
                     return (
-                        <Link href={`/dashboard/${link}`} class='option '>
+                        <Link href={`/${link}`} class='option '>
                             <div class='icon'>
                                 <Icon size={25} />
                             </div>
