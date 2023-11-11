@@ -129,6 +129,7 @@ export default () => {
                                                 code: 'cool',
                                                 stage: 'code',
                                             })
+                                            console.log(x.response)
                                         } else {
                                             setState({
                                                 code_status: InputStatus.ERROR,
