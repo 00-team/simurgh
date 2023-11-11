@@ -1,10 +1,4 @@
-import {
-    AreaIcon,
-    CalenderIcon,
-    LocationIcon,
-    PcIcon,
-    QrCodeIcon,
-} from '!/icons/dashboard'
+import { CalenderIcon, PcIcon, QrCodeIcon } from '!/icons/dashboard'
 import { ImageIcon } from '!/icons/editor'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
@@ -58,47 +52,62 @@ export const Projects: Component = () => {
         <section class='projects'>
             <header class='section_title'>projects</header>
             <div class='projects-wrapper'>
-                <Link href='/project/1' class='project-card'>
-                    <img
-                        class='project-img'
-                        src='https://picsum.photos/500/500'
-                        alt=''
-                    />
-                    <h3 class='title'>lorem ipsum</h3>
-                    <div class='project-data'>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <QrCodeIcon size={23} />
-                                code
-                            </p>
-                            <p class='data title_small'>1</p>
-                        </div>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <CalenderIcon size={23} />
-                                Created At
-                            </p>
-                            <p class='data title_small'>
-                                {numberToDate(1699694646)}
-                            </p>
-                        </div>
+                {projects().map(
+                    ({ name, project_id, created_at, storage, records }) => {
+                        return (
+                            <Link
+                                href={`/project/${project_id}`}
+                                class='project-card'
+                            >
+                                <img
+                                    class='project-img'
+                                    src='https://picsum.photos/500/500'
+                                    alt=''
+                                />
+                                <h3 class='title'>{name}</h3>
+                                <div class='project-data'>
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <QrCodeIcon size={23} />
+                                            code
+                                        </p>
+                                        <p class='data title_small'>
+                                            {project_id}
+                                        </p>
+                                    </div>
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <CalenderIcon size={23} />
+                                            Created At
+                                        </p>
+                                        <p class='data title_small'>
+                                            {numberToDate(created_at)}
+                                        </p>
+                                    </div>
 
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <ImageIcon size={23} />
-                                images
-                            </p>
-                            <p class='data title_small'>1</p>
-                        </div>
-                        <div class='row '>
-                            <p class='holder title_smaller'>
-                                <PcIcon size={23} />
-                                Space Taken
-                            </p>
-                            <p class='data title_smaller'>عباس اباد</p>
-                        </div>
-                    </div>
-                </Link>
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <ImageIcon size={23} />
+                                            images
+                                        </p>
+                                        <p class='data title_small'>
+                                            {records}
+                                        </p>
+                                    </div>
+                                    <div class='row '>
+                                        <p class='holder title_smaller'>
+                                            <PcIcon size={23} />
+                                            Space Taken
+                                        </p>
+                                        <p class='data title_small'>
+                                            {storage}{' '}
+                                        </p>
+                                    </div>
+                                </div>
+                            </Link>
+                        )
+                    }
+                )}
             </div>
         </section>
     )
