@@ -60,7 +60,8 @@ async def rate_limit(request, path_id):
 
     value, expire = await rate_limit_get(key)
 
-    if value >= amount:
+    # TODO: debug only
+    if value >= amount and False:
         raise err_rate_limited(headers={
             'X-RateLimit-Limit': str(amount),
             'X-RateLimit-Reset-After': str(expire)
