@@ -74,7 +74,6 @@ export type UserAdmin = {
 
 export type UserExtra = {
     email: string
-    phone: string | null
     token: string | null
     admin: string | null
 }
@@ -86,7 +85,6 @@ const [user, setUser] = createStore<UserModel>({
     name: '',
     email: '',
     picture: null,
-    phone: null,
     admin: null,
     token: null,
     perms: 0n,
@@ -103,7 +101,6 @@ const UserData: RouteDataFunc<never, Resource<UserModel>> = () => {
     const [data] = createResource(async () => {
         const res = await fetch('/api/user/')
         if (!res.ok) {
-            location.replace('/login' + location.pathname)
             return user
         }
 
