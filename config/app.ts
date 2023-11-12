@@ -1,7 +1,6 @@
 import { UserConfig, defineConfig } from 'vite'
 import type { WatcherOptions } from 'rollup'
 import solidPlugin from 'vite-plugin-solid'
-import devtools from 'solid-devtools/vite'
 import { resolve } from 'path'
 
 let target = 'https://simurgh.00-team.org'
@@ -26,15 +25,7 @@ export default defineConfig(env => {
 
     return {
         ...other,
-        plugins: [
-            devtools({
-                autoname: true,
-                locator: {
-                    key: 'Meta',
-                },
-            }),
-            solidPlugin({ hot: false }),
-        ],
+        plugins: [solidPlugin({ hot: false })],
         server: {
             port: 8700,
             proxy: {

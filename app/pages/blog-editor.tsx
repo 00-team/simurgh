@@ -1,6 +1,6 @@
 import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import './style/blog-editor.scss'
-import { Component, createSignal, onMount } from 'solid-js'
+import { Component, createEffect, createSignal, onMount } from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
 // import { onCleanup, onMount } from 'solid-js'
 
@@ -43,19 +43,24 @@ const BLOCK_COSMETIC: BlockCosmeticMap = {
 
 type StateModel = {
     blocks: Block[]
-    active_block: number
+    active: {
+        id: number
+        type: Block['type']
+    }
 }
 
-// let observer: MutationObserver
+let editor: HTMLDivElement
 export default () => {
-    let editor: HTMLDivElement
     const [state, setState] = createStore<StateModel>({
         blocks: [
             { type: 'text', html: '' },
             DEFAULT_BLOCKS.empty,
             { type: 'text', html: 'asdasd<br/>sss' },
         ],
-        active_block: 0,
+        active: {
+            id: 0,
+            type: 'text',
+        },
     })
 
     // onMount(() => {})
@@ -70,10 +75,12 @@ export default () => {
                         <div
                             class='block'
                             classList={{
-                                active: i == state.active_block,
+                                active: i == state.active.id,
                                 [b.type]: true,
                             }}
-                            onMouseDown={() => setState({ active_block: i })}
+                            onMouseDown={() =>
+                                setState({ active: { id: i, type: b.type } })
+                            }
                         >
                             {block_map[b.type]({
                                 setState,
@@ -90,7 +97,8 @@ export default () => {
                                     let new_id = s.blocks.push({
                                         type: 'empty',
                                     })
-                                    s.active_block = new_id - 1
+                                    s.active.id = new_id - 1
+                                    s.active.type = 'empty'
                                 })
                             )
                         }}
@@ -99,7 +107,14 @@ export default () => {
                     </button>
                 </div>
                 <div class='sidebar'>
-                    <div class='config'>config</div>
+                    <div class='config'>
+                        {config_map[state.active.type]({
+                            state,
+                            setState,
+                            id: state.active.id,
+                            block: state.blocks[state.active.id] as never,
+                        })}
+                    </div>
                     <div class='actions'></div>
                 </div>
             </div>
@@ -130,6 +145,7 @@ const EmptyComp: BlockComponent<EmptyBlock> = props => {
                             props.setState(
                                 produce(s => {
                                     s.blocks[props.id] = DEFAULT_BLOCKS[t]
+                                    s.active.type = t as Block['type']
                                 })
                             )
                         }}
@@ -150,8 +166,21 @@ const TextComp: BlockComponent<TextBlock> = props => {
         <>
             {placeholder() && <span class='placeholder'>Enter Text Here</span>}
             <p
+                id={`block_paragraph_${props.id}`}
                 onInput={e => {
+                    if (props.state.active.id != props.id) {
+                        props.setState({
+                            active: { id: props.id, type: props.block.type },
+                        })
+                    }
                     setPlaceholder(!e.currentTarget.innerHTML)
+                }}
+                onFocus={() => {
+                    if (props.state.active.id != props.id) {
+                        props.setState({
+                            active: { id: props.id, type: props.block.type },
+                        })
+                    }
                 }}
                 contenteditable={true}
                 onBlur={e => {
@@ -176,4 +205,119 @@ const block_map: BlockMap = {
     empty: EmptyComp,
     text: TextComp,
     image: ImageComp,
+}
+
+const ImageConf: BlockComponent<ImageBlock> = props => {
+    return <>{props.block.type}</>
+}
+
+const TextConf: BlockComponent<TextBlock> = props => {
+    let id = props.state.active.id
+    let p = editor.querySelector<HTMLParagraphElement>(
+        '.block.text p#block_paragraph_' + id
+    )
+    function surround(tag: 'b' | 'em' | 'u') {
+        let selection = document.getSelection()
+
+        let wrap: Node = document.createElement(tag)
+        let range = selection.getRangeAt(0)
+
+        let content = range.extractContents()
+        content.childNodes.forEach(e => {
+            if (e.nodeType === Node.TEXT_NODE && !e.textContent) e.remove()
+        })
+
+        if (!content.childNodes.length) return
+
+        function check_nodes(n: Node): boolean {
+            // n.childNodes.forEach(e => {
+            // if (e.nodeType === Node.TEXT_NODE && !e.textContent) e.remove()
+            // if (e.nodeName !== 'BR' && !e.childNodes.length) e.remove()
+            // })
+
+            if (n.childNodes.length != 1) return false
+
+            let target = n.childNodes[0]
+
+            if (target.nodeName === tag.toUpperCase()) {
+                wrap = document.createDocumentFragment()
+                let frag = document.createDocumentFragment()
+                target.childNodes.forEach(e => frag.appendChild(e.cloneNode()))
+                n.appendChild(frag)
+                target.remove()
+                return true
+            } else {
+                check_nodes(target)
+            }
+        }
+
+        check_nodes(content)
+        if (!content.childNodes.length) return
+        wrap.appendChild(content)
+        range.insertNode(wrap)
+    }
+
+    function clear() {
+        let selection = document.getSelection()
+        let range = selection.getRangeAt(0)
+        let content = range.extractContents()
+        let new_content = document.createDocumentFragment()
+
+        function update_content(n: Node) {
+            n.childNodes.forEach(e => {
+                if (e.nodeType === Node.TEXT_NODE || e.nodeName === 'BR') {
+                    new_content.appendChild(e.cloneNode())
+                } else {
+                    update_content(e)
+                }
+            })
+        }
+
+        update_content(content)
+        range.insertNode(new_content)
+    }
+
+    return (
+        <div class='text'>
+            <button
+                onmousedown={e => e.preventDefault()}
+                onClick={() => clear()}
+            >
+                Clear
+            </button>
+            <button
+                onmousedown={e => e.preventDefault()}
+                onClick={() => surround('b')}
+            >
+                BOLD
+            </button>
+            <button
+                onmousedown={e => e.preventDefault()}
+                onClick={() => surround('em')}
+            >
+                Italic
+            </button>
+            <button
+                onmousedown={e => e.preventDefault()}
+                onClick={() => surround('u')}
+            >
+                Underline
+            </button>
+            <button
+                onmousedown={e => e.preventDefault()}
+                onClick={() => {
+                    p.style.direction =
+                        p.style.direction == 'rtl' ? 'ltr' : 'rtl'
+                }}
+            >
+                Toggle Dir
+            </button>
+        </div>
+    )
+}
+
+const config_map: BlockMap = {
+    empty: () => <></>,
+    image: ImageConf,
+    text: TextConf,
 }
