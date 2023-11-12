@@ -6,6 +6,5 @@ import './style/project.scss'
 export const Project: Component = ({}) => {
     const param = useParams<{ id: string }>()
 
-    console.log(param.id)
-    return <section class='project-container'>project</section>
+    return <section class='project-container'>{param.id}</section>
 }
