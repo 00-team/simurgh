@@ -1,6 +1,8 @@
 import Logo from '!/components/logo'
 import { CodeIcon, UserIcon } from '!/icon'
 import { httpx } from '!/shared'
+import { user } from '!/stores'
+import { useNavigate } from '@solidjs/router'
 import { createStore, produce } from 'solid-js/store'
 
 import './style/login.scss'
@@ -21,6 +23,8 @@ type State = {
 }
 
 export default () => {
+    const navigate = useNavigate()
+
     const [state, setState] = createStore<State>({
         stage: 'email',
         email: '',
@@ -35,6 +39,8 @@ export default () => {
 
         return emailRegex.test(state.email)
     }
+
+    if (user && user.user_id !== 0) navigate('/')
 
     return (
         <div class='login-fnd'>
