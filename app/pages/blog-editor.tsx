@@ -55,10 +55,10 @@ export default () => {
         blocks: [
             { type: 'text', html: '' },
             DEFAULT_BLOCKS.empty,
-            { type: 'text', html: 'asdasd<br/>sss' },
+            { type: 'text', html: 'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS' },
         ],
         active: {
-            id: 0,
+            id: 2,
             type: 'text',
         },
     })
@@ -211,50 +211,102 @@ const ImageConf: BlockComponent<ImageBlock> = props => {
     return <>{props.block.type}</>
 }
 
+var nnn = 0
 const TextConf: BlockComponent<TextBlock> = props => {
     let id = props.state.active.id
     let p = editor.querySelector<HTMLParagraphElement>(
         '.block.text p#block_paragraph_' + id
     )
-    function surround(tag: 'b' | 'em' | 'u') {
+
+    function surround(style: Partial<CSSStyleDeclaration>) {
+        nnn++
         let selection = document.getSelection()
 
-        let wrap: Node = document.createElement(tag)
+        // let wrap = document.createElement('span')
+        // wrap.id = 'x_' + nnn
         let range = selection.getRangeAt(0)
 
         let content = range.extractContents()
-        content.childNodes.forEach(e => {
-            if (e.nodeType === Node.TEXT_NODE && !e.textContent) e.remove()
-        })
 
-        if (!content.childNodes.length) return
+        let container = document.createDocumentFragment()
 
-        function check_nodes(n: Node): boolean {
-            // n.childNodes.forEach(e => {
-            // if (e.nodeType === Node.TEXT_NODE && !e.textContent) e.remove()
-            // if (e.nodeName !== 'BR' && !e.childNodes.length) e.remove()
-            // })
-
-            if (n.childNodes.length != 1) return false
-
-            let target = n.childNodes[0]
-
-            if (target.nodeName === tag.toUpperCase()) {
-                wrap = document.createDocumentFragment()
-                let frag = document.createDocumentFragment()
-                target.childNodes.forEach(e => frag.appendChild(e.cloneNode()))
-                n.appendChild(frag)
-                target.remove()
-                return true
-            } else {
-                check_nodes(target)
-            }
+        function is_span(node: Node): node is HTMLSpanElement {
+            return node.nodeName === 'SPAN'
         }
 
-        check_nodes(content)
-        if (!content.childNodes.length) return
-        wrap.appendChild(content)
-        range.insertNode(wrap)
+        function apply_style(element: HTMLElement) {
+            Object.entries(style).forEach(([k, v]) => {
+                element.style.setProperty(k, `${v}`)
+            })
+        }
+
+        content.childNodes.forEach(element => {
+            let e = element.cloneNode()
+            console.log(e)
+
+            if (e.nodeType === Node.TEXT_NODE) {
+                let p = document.createElement('span')
+                p.className = '1'
+                p.appendChild(e)
+                apply_style(p)
+                container.appendChild(p)
+            } else if (is_span(e)) {
+                apply_style(e)
+                container.appendChild(e)
+            } else {
+                container.appendChild(e)
+            }
+        })
+
+        range.insertNode(container)
+
+        // console.log('===============')
+        // console.log(
+        //     selection.anchorNode.cloneNode(),
+        //     selection.anchorNode.parentNode.cloneNode()
+        // )
+        // console.log(
+        //     selection.focusNode.cloneNode(),
+        //     selection.focusNode.parentNode.cloneNode()
+        // )
+        // console.log('------------------------------')
+        // content.childNodes.forEach(e => {
+        //     console.log(e.cloneNode())
+        // })
+        // wrap.appendChild(content)
+        // range.insertNode(wrap)
+        // console.log(content.textContent)
+
+        // content.childNodes.forEach(e => {
+        //     if (e.nodeType === Node.TEXT_NODE && !e.textContent) {
+        //         console.log(e.cloneNode())
+        //         e.remove()
+        //     }
+        // })
+
+        // if (!content.childNodes.length) return
+
+        // function check_nodes(n: Node): boolean {
+        //     if (n.childNodes.length != 1) return false
+        //
+        //     let target = n.childNodes[0]
+        //
+        //     if (target.nodeName === tag.toUpperCase()) {
+        //         wrap = document.createDocumentFragment()
+        //         let frag = document.createDocumentFragment()
+        //         target.childNodes.forEach(e => frag.appendChild(e.cloneNode()))
+        //         n.appendChild(frag)
+        //         target.remove()
+        //         return true
+        //     } else {
+        //         check_nodes(target)
+        //     }
+        // }
+        //
+        // check_nodes(content)
+        // if (!content.childNodes.length) return
+        // wrap.appendChild(content)
+        // range.insertNode(wrap)
     }
 
     function clear() {
@@ -287,19 +339,19 @@ const TextConf: BlockComponent<TextBlock> = props => {
             </button>
             <button
                 onmousedown={e => e.preventDefault()}
-                onClick={() => surround('b')}
+                onClick={() => surround({ fontSize: '20px' })}
             >
                 BOLD
             </button>
             <button
                 onmousedown={e => e.preventDefault()}
-                onClick={() => surround('em')}
+                onClick={() => surround({ fontStyle: 'italic' })}
             >
                 Italic
             </button>
             <button
                 onmousedown={e => e.preventDefault()}
-                onClick={() => surround('u')}
+                onClick={() => surround({ color: 'red' })}
             >
                 Underline
             </button>
