@@ -1,16 +1,14 @@
-import { BlogIcon, ExitIcon, ProjectIcon } from '!/icons/dashboard'
-import { setUser } from '!/stores'
+import { BlogIcon, ExitIcon, PersonIcon, ProjectIcon } from '!/icons/dashboard'
+import { setUser, user } from '!/stores'
 import { Link, Outlet, useNavigate } from '@solidjs/router'
 import { Component, JSXElement } from 'solid-js'
 
 import './style/dashboard.scss'
 
 const Dashboard: Component = () => {
-    // TODO: uncomment this later
+    const navigate = useNavigate()
 
-    // onMount(() => {
-    //     if (!user || !user.user_id) return navigate('/')
-    // })
+    if (user && user.user_id === 0) navigate('/login')
 
     return (
         <main class='dashboard'>
@@ -23,8 +21,6 @@ const Dashboard: Component = () => {
 }
 
 const Sidebar: Component = () => {
-    const navigate = useNavigate()
-
     type sectionRow = {
         title: string
         Icon: ({ size }) => JSXElement
@@ -32,6 +28,11 @@ const Sidebar: Component = () => {
     }
 
     const sidebarRows: sectionRow[] = [
+        {
+            title: 'My Info',
+            Icon: PersonIcon,
+            link: 'info',
+        },
         {
             title: 'Projects',
             Icon: ProjectIcon,
@@ -49,9 +50,11 @@ const Sidebar: Component = () => {
             <div class='user'>
                 <img
                     class='user-avatar'
-                    src='/static/image/dashboard/wallpaper.webp'
+                    src={
+                        user.picture || '/static/image/dashboard/wallpaper.webp'
+                    }
                 />
-                <p class='user-name title'>Sadra Taghavi</p>
+                <p class='user-name title'>{user.name}</p>
             </div>
 
             <div class='options'>
@@ -74,6 +77,8 @@ const Sidebar: Component = () => {
             <button
                 class='exit title'
                 onclick={() => {
+                    document.cookie =
+                        'Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
                     setUser({
                         user_id: 0,
                         name: '',
@@ -84,7 +89,8 @@ const Sidebar: Component = () => {
                         token: null,
                         perms: 0n,
                     })
-                    navigate('/login')
+                    console.log(user)
+                    // navigate('/login')
 
                     return
                 }}
