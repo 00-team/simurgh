@@ -3,7 +3,7 @@
 import { Route, Router, Routes } from '@solidjs/router'
 import { render } from 'solid-js/web'
 
-import { lazy } from 'solid-js'
+import { lazy, Show } from 'solid-js'
 import { Project } from './pages/dashboard/project'
 import { Projects } from './pages/dashboard/projects'
 import { user, UserData } from './stores'
@@ -24,7 +24,11 @@ const BlogEditor = lazy(() => import('./pages/blog-editor'))
 // const Background = lazy(() => import('./components/background'))
 
 function Main() {
-    return <Dashboard />
+    return (
+        <Show fallback={<Login />} when={user.user_id}>
+            <Dashboard />
+        </Show>
+    )
 }
 
 render(
@@ -32,19 +36,13 @@ render(
         <>
             <Router>
                 <Routes>
-                    <Route
-                        path='/'
-                        data={user.user_id !== 0 && UserData}
-                        component={Main}
-                    >
+                    <Route path='/blog-editor' component={BlogEditor} />
+
+                    <Route path='/' data={UserData} component={Main}>
                         <Route path={'projects'} component={Projects} />
                         <Route path={'project/:id'} component={Project} />
                         <Route path={'*'} component={() => <></>} />
                     </Route>
-
-                    <Route path={'/login'} component={Login} />
-
-                    <Route path='/blog-editor' component={BlogEditor} />
 
                     {/*
                 <Route
