@@ -30,7 +30,6 @@ export const Projects: Component = () => {
                 if (x.status === 200) {
                     if (x.response.length >= 1) {
                         let url = x.response[0].url
-                        console.log(url)
 
                         let img = document.querySelector(
                             `img.project-img#img${id}`
