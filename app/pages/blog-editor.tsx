@@ -55,7 +55,7 @@ export default () => {
         blocks: [
             { type: 'text', html: '' },
             DEFAULT_BLOCKS.empty,
-            { type: 'text', html: 'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS' },
+            { type: 'text', html: '1234567890' },
         ],
         active: {
             id: 2,
@@ -218,6 +218,125 @@ const TextConf: BlockComponent<TextBlock> = props => {
         '.block.text p#block_paragraph_' + id
     )
 
+    function group() {
+        let selection = document.getSelection()
+        let range = selection.getRangeAt(0)
+        if (range.collapsed) return
+
+        let g = document.createElement('span')
+        let sp = range.startContainer.parentElement
+        let ep = range.endContainer.parentElement
+        let content = range.extractContents()
+        let frag = document.createDocumentFragment()
+
+        let p = sp as HTMLParagraphElement
+
+        if (sp.tagName == 'SPAN') {
+            p = sp.parentElement as HTMLParagraphElement
+            let start = sp.cloneNode(false) as HTMLSpanElement
+            for (let n of sp.childNodes) {
+                if (n === range.startContainer) {
+                    if (range.startOffset) {
+                        start.append(n.textContent.slice(0, range.startOffset))
+                    }
+                    break
+                }
+
+                start.appendChild(n)
+            }
+            frag.appendChild(start)
+            sp.remove()
+        }
+
+        content.childNodes.forEach(n => {
+            if (n.nodeName === 'SPAN') {
+                n.replaceWith(...n.childNodes)
+            }
+        })
+
+        g.appendChild(content)
+        frag.appendChild(g)
+
+        if (ep.tagName == 'SPAN') {
+            let end = ep.cloneNode(false) as HTMLSpanElement
+            console.log(ep.cloneNode(true), range.endContainer.cloneNode(true))
+            let append = false
+            for (let n of ep.childNodes) {
+                console.log(n)
+
+                if (append) end.appendChild(n)
+
+                if (n === range.endContainer) {
+                    end.append(n.textContent.slice(range.startOffset))
+                    append = true
+                }
+            }
+            console.log(end.cloneNode(true))
+            frag.appendChild(end)
+            range.insertNode(frag)
+            // p.insertBefore(frag, ep)
+            ep.remove()
+        } else {
+            range.insertNode(frag)
+            // p.insertBefore(frag, range.startContainer)
+        }
+
+        // console.log(range.startContainer, sp, range.startOffset)
+
+        // if (sp === ep) {
+        //     if (sp.tagName === 'SPAN') {
+        //         let start = sp.cloneNode(false) as HTMLSpanElement
+        //         let end = ep.cloneNode(false) as HTMLSpanElement
+        //         let last = false
+        //         let content = range.extractContents()
+        //
+        //         for (let n of sp.childNodes) {
+        //             if (n === range.startContainer) {
+        //                 last = true
+        //                 if (range.startOffset) {
+        //                     start.append(
+        //                         n.textContent.slice(0, range.startOffset)
+        //                     )
+        //                     n = document.createTextNode(
+        //                         n.textContent.slice(range.startOffset)
+        //                     )
+        //                 }
+        //             }
+        //
+        //             if (last) {
+        //                 end.appendChild(n)
+        //             } else {
+        //                 start.appendChild(n)
+        //             }
+        //         }
+        //
+
+        //
+        //         let frag = document.createDocumentFragment()
+        //         frag.append(start, g, end)
+        //
+        //         if (!start.innerHTML) start.remove()
+        //         if (!end.innerHTML) end.remove()
+        //
+        //         sp.parentElement.insertBefore(frag, sp)
+        //
+        //         sp.remove()
+        //         ep.remove()
+        //     } else {
+        //         let content = range.extractContents()
+        //         content.childNodes.forEach(n => {
+        //             if (n.nodeName === 'SPAN') {
+        //                 n.replaceWith(...n.childNodes)
+        //             }
+        //         })
+        //         g.appendChild(content)
+        //         range.insertNode(g)
+        //     }
+        // } else {
+        //     console.log('NOT IMPELEMENTED')
+        // }
+    }
+
     function surround(style: Partial<CSSStyleDeclaration>) {
         nnn++
         let selection = document.getSelection()
@@ -227,7 +346,6 @@ const TextConf: BlockComponent<TextBlock> = props => {
         let range = selection.getRangeAt(0)
 
         let content = range.extractContents()
-
         let container = document.createDocumentFragment()
 
         function is_span(node: Node): node is HTMLSpanElement {
@@ -242,7 +360,7 @@ const TextConf: BlockComponent<TextBlock> = props => {
 
         content.childNodes.forEach(element => {
             let e = element.cloneNode()
-            console.log(e)
+            // console.log(e)
 
             if (e.nodeType === Node.TEXT_NODE) {
                 let p = document.createElement('span')
@@ -336,6 +454,12 @@ const TextConf: BlockComponent<TextBlock> = props => {
                 onClick={() => clear()}
             >
                 Clear
+            </button>
+            <button
+                onmousedown={e => e.preventDefault()}
+                onClick={() => group()}
+            >
+                new Group
             </button>
             <button
                 onmousedown={e => e.preventDefault()}
