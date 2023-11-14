@@ -55,7 +55,10 @@ export default () => {
         blocks: [
             { type: 'text', html: '' },
             DEFAULT_BLOCKS.empty,
-            { type: 'text', html: '1234567890' },
+            {
+                type: 'text',
+                html: `12<br /><br /><br /><br />345<br /><br /><br /><br />213`,
+            },
         ],
         active: {
             id: 2,
@@ -223,63 +226,171 @@ const TextConf: BlockComponent<TextBlock> = props => {
         let range = selection.getRangeAt(0)
         if (range.collapsed) return
 
-        let g = document.createElement('span')
-        let sp = range.startContainer.parentElement
-        let ep = range.endContainer.parentElement
-        let content = range.extractContents()
-        let frag = document.createDocumentFragment()
+        let sc = range.startContainer
+        let ec = range.endContainer
 
-        let p = sp as HTMLParagraphElement
+        console.log(sc, ec, range.startOffset, range.endOffset)
 
-        if (sp.tagName == 'SPAN') {
-            p = sp.parentElement as HTMLParagraphElement
-            let start = sp.cloneNode(false) as HTMLSpanElement
-            for (let n of sp.childNodes) {
-                if (n === range.startContainer) {
-                    if (range.startOffset) {
-                        start.append(n.textContent.slice(0, range.startOffset))
+        // console.log(range.toString())
+
+        let content: string[] = ['']
+        let i = 0
+        let start_idx = 0
+        let start_pos = 0
+        let end_idx = 0
+        let end_pos = 0
+
+        if (sc == p) sc = p.childNodes[range.startOffset]
+        if (ec == p) ec = p.childNodes[range.endOffset]
+
+        for (let n of p.childNodes) {
+            if (n.nodeType === Node.TEXT_NODE) {
+                content[i] += n.textContent
+            } else if (n.nodeName === 'BR') {
+                content[i] += '\n'
+            } else if (n.nodeName === 'SPAN') {
+                content.push('')
+                i++
+                n.childNodes.forEach(e => {
+                    if (e.nodeType === Node.TEXT_NODE) {
+                        content[i] += e.textContent
+                    } else if (e.nodeName === 'BR') {
+                        content[i] += '\n'
                     }
-                    break
-                }
-
-                start.appendChild(n)
+                })
+                content.push('')
+                i++
             }
-            frag.appendChild(start)
-            sp.remove()
+
+            if (n === sc || n.contains(sc)) {
+                start_idx = i
+                if (n.nodeName == 'SPAN') start_idx--
+
+                if (n === sc) {
+                    start_pos = range.startOffset
+                } else {
+                    for (let e of n.childNodes) {
+                        if (e == sc) {
+                            start_pos += range.startOffset
+                            break
+                        }
+
+                        if (e.nodeType === Node.TEXT_NODE) {
+                            start_pos += e.textContent.length
+                        } else if (e.nodeName === 'BR') {
+                            start_pos += 1
+                        }
+                    }
+                }
+            }
+
+            if (n === ec || n.contains(ec)) {
+                end_idx = i
+                if (n.nodeName == 'SPAN') end_idx--
+
+                if (n === ec) {
+                    end_pos = range.endOffset
+                } else {
+                    for (let e of n.childNodes) {
+                        if (e == ec) {
+                            end_pos += range.endOffset
+                            break
+                        }
+
+                        if (e.nodeType === Node.TEXT_NODE) {
+                            end_pos += e.textContent.length
+                        } else if (e.nodeName === 'BR') {
+                            end_pos += 1
+                        }
+                    }
+                }
+            }
         }
 
-        content.childNodes.forEach(n => {
-            if (n.nodeName === 'SPAN') {
-                n.replaceWith(...n.childNodes)
+        console.log(content)
+        let new_content = []
+        let x = -1
+        console.log(start_idx, start_pos)
+        console.log(end_idx, end_pos)
+        content.forEach((g, i) => {
+            if (i == start_idx) {
+                new_content.push(g.slice(0, start_pos))
+                if (i == end_idx) {
+                    new_content.push(g.slice(start_pos, end_pos))
+                    new_content.push(g.slice(end_pos))
+                } else {
+                    x = new_content.push(g.slice(start_pos)) - 1
+                }
+            } else if (i == end_idx) {
+                console.log('end', new_content[x], g)
+                new_content[x] += g.slice(0, end_pos)
+                new_content.push(g.slice(end_pos))
+                x = -1
+            } else if (x > -1) {
+                new_content[x] += g
+            } else {
+                new_content.push(g)
             }
         })
+        console.log(new_content)
 
-        g.appendChild(content)
-        frag.appendChild(g)
-
-        if (ep.tagName == 'SPAN') {
-            let end = ep.cloneNode(false) as HTMLSpanElement
-            console.log(ep.cloneNode(true), range.endContainer.cloneNode(true))
-            let append = false
-            for (let n of ep.childNodes) {
-                console.log(n)
-
-                if (append) end.appendChild(n)
-
-                if (n === range.endContainer) {
-                    end.append(n.textContent.slice(range.startOffset))
-                    append = true
-                }
-            }
-            console.log(end.cloneNode(true))
-            frag.appendChild(end)
-            range.insertNode(frag)
-            // p.insertBefore(frag, ep)
-            ep.remove()
-        } else {
-            range.insertNode(frag)
-            // p.insertBefore(frag, range.startContainer)
-        }
+        // let g = document.createElement('span')
+        // let sp = range.startContainer.parentElement
+        // let ep = range.endContainer.parentElement
+        // let frag = document.createDocumentFragment()
+        // let end: HTMLSpanElement
+        // let start: HTMLSpanElement
+        // let p = sp as HTMLParagraphElement
+        //
+        // console.log(range.startOffset, range.endOffset)
+        //
+        // if (sp.tagName == 'SPAN') {
+        //     p = sp.parentElement as HTMLParagraphElement
+        //     start = sp.cloneNode(false) as HTMLSpanElement
+        //     for (let n of sp.childNodes) {
+        //         if (n === range.startContainer) {
+        //             if (range.startOffset) {
+        //                 start.append(n.textContent.slice(0, range.startOffset))
+        //             }
+        //             break
+        //         }
+        //
+        //         start.appendChild(n.cloneNode(true))
+        //     }
+        // }
+        //
+        // if (ep.tagName == 'SPAN') {
+        //     end = ep.cloneNode(false) as HTMLSpanElement
+        //     console.log(ep.cloneNode(true), range.endContainer.cloneNode(true))
+        //     console.log('-------')
+        //     let append = false
+        //     for (let n of ep.childNodes) {
+        //         if (append) end.appendChild(n.cloneNode(true))
+        //
+        //         if (n === range.endContainer) {
+        //             end.append(n.textContent.slice(range.startOffset))
+        //             append = true
+        //         }
+        //     }
+        //     console.log('-------')
+        //     console.log(end.cloneNode(true))
+        // }
+        //
+        // let content = range.extractContents()
+        // content.childNodes.forEach(n => {
+        //     if (n.nodeName === 'SPAN') {
+        //         n.replaceWith(...n.childNodes)
+        //     }
+        // })
+        //
+        // g.appendChild(content)
+        //
+        // if (start) frag.appendChild(start)
+        // frag.appendChild(g)
+        // if (end) frag.appendChild(end)
+        //
+        // if (sp.nodeName == 'SPAN') sp.replaceWith(frag)
+        // else range.insertNode(frag)
 
         // console.log(range.startContainer, sp, range.startOffset)
 
