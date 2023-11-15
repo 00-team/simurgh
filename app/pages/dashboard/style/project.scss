@@ -1,0 +1,75 @@
+section.project-container {
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 5vh 3vw;
+
+    position: relative;
+    isolation: isolate;
+
+    .project-bg {
+        position: absolute;
+        z-index: -1;
+
+        width: 100%;
+
+        transform: translateX(500px);
+        height: 15px;
+
+        background-color: white;
+
+        animation: height-change 2s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+            forwards;
+
+        @keyframes height-change {
+            0% {
+                transform: translateX(-1000px);
+                height: 15px;
+                background-color: white;
+            }
+            25% {
+                transform: translateX(0);
+                height: 15px;
+                background-color: white;
+            }
+            30% {
+                transform: translateX(0);
+                height: 15px;
+                background-color: white;
+            }
+            60% {
+                transform: translateX(0);
+                height: 15px;
+                background-color: white;
+            }
+            100% {
+                transform: translateX(0);
+                height: 100%;
+                background-color: transparent;
+            }
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+
+            path {
+                opacity: 1;
+                fill: #000000;
+                fill-opacity: 0;
+                stroke: white;
+                stroke-width: 1;
+                stroke-dasharray: none;
+                stroke-opacity: 1;
+                paint-order: markers fill stroke;
+            }
+        }
+    }
+}
