@@ -57,7 +57,8 @@ export default () => {
             DEFAULT_BLOCKS.empty,
             {
                 type: 'text',
-                html: `12<br /><br /><br /><br />345<br /><br /><br /><br />213`,
+                // html: `12<br /><br /><br /><br />345<br /><br /><br /><br />213`,
+                html: `12<span>asdadada</span>asdasdadads123123<span>ass<br />asdasd </span> asd`,
             },
         ],
         active: {
@@ -222,18 +223,135 @@ const TextConf: BlockComponent<TextBlock> = props => {
     )
 
     function group() {
+        type ContentStr = string | ContentStr[]
+        let test = [
+            '000000',
+            '\n',
+            ['222000', '222111', '\n', '222333'],
+            '333333',
+            '\n',
+            ['555000', '555111', '\n', '555333'],
+        ]
+
+        type SliceIdx = ([number, number] | [number])[]
+
+        let sl: SliceIdx = [[2, 4], [1, 0], [3]]
+
+        function rec_splice(
+            arr: ContentStr,
+            idx: SliceIdx
+        ): [ContentStr, ContentStr] {
+            let [b, f] = idx.shift()
+            if (idx.length) {
+                let [s, e] = rec_splice(arr[i], idx)
+                console.log(s, e, i)
+
+                // if (typeof s === 'string') s = [s]
+                // if (typeof e === 'string') e = [e]
+
+                return [
+                    [...arr.slice(0, i), s],
+                    [e, ...arr.slice(i + 1)],
+                ]
+            } else {
+                // FIXME: this is wrong
+                return [arr.slice(0, b), arr.slice(b, f), arr.slice()]
+            }
+        }
+
+        console.log(test, [...sl], rec_splice(test, sl))
+
+        return
+
         let selection = document.getSelection()
+        if (!selection.rangeCount) return
         let range = selection.getRangeAt(0)
         if (range.collapsed) return
 
         let sc = range.startContainer
         let ec = range.endContainer
 
-        console.log(sc, ec, range.startOffset, range.endOffset)
+        function add(node: Node): ContentStr {
+            if (node.nodeType == Node.TEXT_NODE) {
+                return node.textContent
+            } else if (node.nodeName === 'BR') {
+                return '\n'
+            } else if (node.nodeName === 'SPAN') {
+                return Array.from(node.childNodes).map(add)
+            }
+        }
 
-        // console.log(range.toString())
+        let content = Array.from(p.childNodes).map(add)
+        let start_index: number[] = []
+        let start_offset = range.startOffset
 
-        let content: string[] = ['']
+        let end_index: number[] = []
+        let end_offset = range.endOffset
+
+        if (sc == p) {
+            sc = p.childNodes[start_offset]
+            start_offset = 0
+        }
+        if (ec == p) {
+            ec = p.childNodes[end_offset]
+            end_offset = 0
+        }
+
+        function idx(node: Node, target: Node): number[] {
+            for (let [i, n] of node.childNodes.entries()) {
+                if (n == target) {
+                    return [i]
+                }
+
+                if (n.contains(target)) {
+                    return [i, ...idx(n, target)]
+                }
+            }
+
+            throw new Error('unreachable')
+        }
+
+        for (let [i, n] of p.childNodes.entries()) {
+            if (n == sc) {
+                start_index = [i, start_offset]
+            } else if (n.contains(sc)) {
+                start_index = [i, ...idx(n, sc), start_offset]
+            }
+
+            if (n == ec) {
+                end_index = [i, end_offset]
+            } else if (n.contains(ec)) {
+                end_index = [i, ...idx(n, ec), end_offset]
+            }
+        }
+
+        console.log(content)
+        console.log('-------')
+        console.log(start_index)
+        console.log('-------')
+        console.log(end_index)
+
+        // let start: string[] = []
+        // let middle: string[] = []
+        // let end: string = []
+        //
+        // let halfway: -1 | 0 | 1 = -1
+        // for (let [i, c] of content.entries()) {
+        //     if (i == start_index[0]) {
+        //         halfway = 0
+        //     }
+        //
+        //     if (halfway == -1) {
+        //         start.push(c)
+        //     } else if (halfway == 0) {
+        //         middle.push(c)
+        //     } else {
+        //         end.push(c)
+        //     }
+        // }
+
+        return
+
         let i = 0
         let start_idx = 0
         let start_pos = 0
