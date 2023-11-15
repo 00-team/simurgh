@@ -112,7 +112,7 @@ export const Projects: Component = () => {
                                         </p>
                                         <p class='data title_small'>
                                             {Math.floor(+storage / 1024)}{' '}
-                                            <span>mb</span>
+                                            <span>kb</span>
                                         </p>
                                     </div>
                                 </div>
