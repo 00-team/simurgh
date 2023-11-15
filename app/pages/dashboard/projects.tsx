@@ -1,5 +1,4 @@
-import { CalenderIcon, PcIcon, QrCodeIcon } from '!/icons/dashboard'
-import { ImageIcon } from '!/icons/editor'
+import { CalenderIcon, ImageIcon, PcIcon, QrCodeIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { Link } from '@solidjs/router'
@@ -99,20 +98,21 @@ export const Projects: Component = () => {
 
                                     <div class='row '>
                                         <p class='holder title_smaller'>
-                                            <ImageIcon size={23} />
+                                            <ImageIcon size={22} />
                                             images
                                         </p>
                                         <p class='data title_small'>
                                             {records}
                                         </p>
                                     </div>
-                                    <div class='row '>
+                                    <div class='row byte'>
                                         <p class='holder title_smaller'>
                                             <PcIcon size={23} />
                                             Space Taken
                                         </p>
                                         <p class='data title_small'>
-                                            {storage}{' '}
+                                            {Math.floor(+storage / 1024)}{' '}
+                                            <span>kb</span>
                                         </p>
                                     </div>
                                 </div>

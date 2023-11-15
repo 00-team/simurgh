@@ -105,6 +105,12 @@ section.projects {
 
                         text-transform: capitalize;
                     }
+
+                    &.byte {
+                        span {
+                            font-size: 0.7em;
+                        }
+                    }
                 }
             }
         }
