@@ -15,12 +15,15 @@ section.project-container {
     isolation: isolate;
 
     .project-bg {
+        $projectTransform: -1500px;
+        $projectHeight: 90%;
+
         position: absolute;
         z-index: -1;
 
         width: 90%;
 
-        transform: translateX(500px);
+        transform: translateX($projectTransform);
         height: 15px;
 
         background-color: white;
@@ -30,7 +33,7 @@ section.project-container {
 
         @keyframes project-anim {
             0% {
-                transform: translateX(-1500px);
+                transform: translateX($projectTransform);
                 height: 15px;
                 background-color: white;
             }
@@ -51,7 +54,7 @@ section.project-container {
             }
             100% {
                 transform: translateX(0);
-                height: 90%;
+                height: $projectHeight;
                 background-color: transparent;
             }
         }
