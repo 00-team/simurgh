@@ -18,19 +18,19 @@ section.project-container {
         position: absolute;
         z-index: -1;
 
-        width: 100%;
+        width: 90%;
 
         transform: translateX(500px);
         height: 15px;
 
         background-color: white;
 
-        animation: height-change 2s cubic-bezier(0.45, 0.02, 0.09, 0.98)
+        animation: project-anim 1.5s cubic-bezier(0.45, 0.02, 0.09, 0.98)
             forwards;
 
-        @keyframes height-change {
+        @keyframes project-anim {
             0% {
-                transform: translateX(-1000px);
+                transform: translateX(-1500px);
                 height: 15px;
                 background-color: white;
             }
@@ -39,19 +39,19 @@ section.project-container {
                 height: 15px;
                 background-color: white;
             }
-            30% {
+            40% {
                 transform: translateX(0);
                 height: 15px;
                 background-color: white;
             }
-            60% {
+            50% {
                 transform: translateX(0);
                 height: 15px;
                 background-color: white;
             }
             100% {
                 transform: translateX(0);
-                height: 100%;
+                height: 90%;
                 background-color: transparent;
             }
         }
