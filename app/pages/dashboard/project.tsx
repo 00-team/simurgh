@@ -1,6 +1,6 @@
 import { Typing } from '!/components/typing'
 import { useParams } from '@solidjs/router'
-import { Component } from 'solid-js'
+import { Component, createSignal } from 'solid-js'
 
 import './style/project.scss'
 
