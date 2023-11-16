@@ -14,7 +14,7 @@ section.project-container {
     position: relative;
     isolation: isolate;
 
-    .project-bg {
+    .project-wrapper {
         $projectTransform: -1500px;
         $projectHeight: 90%;
 
@@ -27,6 +27,9 @@ section.project-container {
         height: 15px;
 
         background-color: white;
+
+        position: relative;
+        isolation: isolate;
 
         animation: project-anim 1.5s cubic-bezier(0.45, 0.02, 0.09, 0.98)
             forwards;
@@ -63,6 +66,9 @@ section.project-container {
             width: 100%;
             height: 100%;
 
+            position: absolute;
+            z-index: -1;
+
             path {
                 opacity: 1;
                 fill: #000000;
@@ -73,6 +79,17 @@ section.project-container {
                 stroke-opacity: 1;
                 paint-order: markers fill stroke;
             }
+        }
+
+        .project-data {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            padding: 5vh 3vw;
         }
     }
 }
