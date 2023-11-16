@@ -1,3 +1,4 @@
+import { Typing } from '!/components/typing'
 import { useParams } from '@solidjs/router'
 import { Component } from 'solid-js'
 
@@ -28,7 +29,13 @@ export const Project: Component = ({}) => {
                 </svg>
 
                 <article class='project-data'>
-                    <header class='title_hero'>lorem ipsum</header>
+                    <header class='title_hero'>
+                        <Typing
+                            sentence='lorem ipsum'
+                            delay={2000}
+                            speed={100}
+                        />
+                    </header>
                 </article>
             </div>
         </section>
