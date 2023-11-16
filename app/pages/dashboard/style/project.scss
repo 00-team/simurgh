@@ -27,9 +27,11 @@ section.project-container {
         height: 15px;
 
         background-color: white;
+        backdrop-filter: blur(3px);
 
         position: relative;
         isolation: isolate;
+        overflow: hidden;
 
         animation: project-anim 1.5s cubic-bezier(0.45, 0.02, 0.09, 0.98)
             forwards;
