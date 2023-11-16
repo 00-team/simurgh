@@ -8,7 +8,7 @@ export const Project: Component = ({}) => {
 
     return (
         <section class='project-container'>
-            <div class='project-bg'>
+            <div class='project-wrapper'>
                 <svg
                     preserveAspectRatio='none'
                     viewBox='0 0 179.40504 120.05453'
@@ -26,6 +26,10 @@ export const Project: Component = ({}) => {
                         />
                     </g>
                 </svg>
+
+                <article class='project-data'>
+                    <header class='title_hero'>lorem ipsum</header>
+                </article>
             </div>
         </section>
     )
