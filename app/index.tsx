@@ -37,7 +37,6 @@ render(
             <Router>
                 <Routes>
                     <Route path='/blog-editor' component={BlogEditor} />
-                    <Route path='/test' component={Project} />
 
                     <Route path='/' data={UserData} component={Main}>
                         <Route path={'projects'} component={Projects} />
