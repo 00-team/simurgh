@@ -3,11 +3,17 @@ import { Component, createSignal, onCleanup, onMount } from 'solid-js'
 interface HackEffectProps {
     sentence: string
     delay?: number
+
+    onfinish?: () => void | void
 }
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-export const HackEffect: Component<HackEffectProps> = ({ sentence, delay }) => {
+export const HackEffect: Component<HackEffectProps> = ({
+    sentence,
+    delay,
+    onfinish,
+}) => {
     const [Text, setText] = createSignal(sentence)
 
     let iteration = 0
@@ -36,6 +42,7 @@ export const HackEffect: Component<HackEffectProps> = ({ sentence, delay }) => {
 
                 setTimeout(() => {
                     if (iteration >= sentence.length) {
+                        onfinish()
                         clearInterval(interval)
                     }
 
@@ -62,6 +69,7 @@ export const HackEffect: Component<HackEffectProps> = ({ sentence, delay }) => {
                 })
 
                 if (iteration >= sentence.length) {
+                    onfinish()
                     clearInterval(interval)
                 }
 
