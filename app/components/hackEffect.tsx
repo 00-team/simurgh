@@ -42,7 +42,7 @@ export const HackEffect: Component<HackEffectProps> = ({
 
                 setTimeout(() => {
                     if (iteration >= sentence.length) {
-                        onfinish()
+                        onfinish && onfinish()
                         clearInterval(interval)
                     }
 
@@ -69,7 +69,7 @@ export const HackEffect: Component<HackEffectProps> = ({
                 })
 
                 if (iteration >= sentence.length) {
-                    onfinish()
+                    onfinish && onfinish()
                     clearInterval(interval)
                 }
 
