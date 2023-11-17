@@ -1,62 +1,93 @@
 import { HackEffect } from '!/components/HackEffect'
 import { Typing } from '!/components/typing'
+import { httpx } from '!/shared'
+import { ProjectModel } from '!/types'
 import { useParams } from '@solidjs/router'
-import { Component } from 'solid-js'
+import { Component, createEffect, createSignal, onMount } from 'solid-js'
 
 import './style/project.scss'
 
 export const Project: Component = ({}) => {
     const param = useParams<{ id: string }>()
 
+    const [project, setProject] = createSignal<ProjectModel | null>()
+
+    function numberToDate(date: number) {
+        let dateToMilisec = date * 1000
+        let Dateoffset = new Date().getTimezoneOffset()
+
+        let newDate = new Date(
+            dateToMilisec + Dateoffset * -60
+        ).toLocaleDateString('US')
+
+        return newDate
+    }
+
+    onMount(() => {
+        if (!param || !param.id) return
+
+        httpx({
+            url: `/api/projects/${param.id}/`,
+            method: 'GET',
+            type: 'json',
+            onLoad(x) {
+                if (x.status === 200) return setProject(x.response)
+            },
+        })
+    })
+
+    createEffect(() => {
+        console.log(project())
+    })
+
     return (
         <section class='project-container'>
-            <div class='project-wrapper'>
-                <BgSvg />
-                <article class='project-data'>
-                    <header class='title_hero'>
-                        <Typing
-                            sentence='lorem ipsum'
-                            delay={1300}
-                            speed={75}
-                        />
-                    </header>
-                    <div class='project-details'>
-                        <div class='details title'>
-                            <DetailRow
-                                holder='creator'
-                                data='abbas taghavi'
-                                delay={2000}
+            {project() && project().api_key ? (
+                <div class='project-wrapper'>
+                    <BgSvg />
+                    <article class='project-data'>
+                        <header class='title_hero'>
+                            <Typing
+                                sentence='lorem ipsum'
+                                delay={1300}
+                                speed={75}
                             />
-                            <DetailRow
-                                holder='storage'
-                                data='abbas taghavi'
-                                delay={2500}
-                            />
-                            <DetailRow
-                                holder='blogs'
-                                data='abbas taghavi'
-                                delay={3000}
-                            />
-                            <DetailRow
-                                holder='records'
-                                data='abbas taghavi'
-                                delay={3500}
-                            />
-                            <DetailRow
-                                holder='created at'
-                                data='abbas taghavi'
-                                delay={4000}
-                            />
-                            <DetailRow
-                                holder='edited at'
-                                data='abbas taghavi'
-                                delay={4500}
-                            />
+                        </header>
+                        <div class='project-details'>
+                            <div class='details title'>
+                                <DetailRow
+                                    holder='storage'
+                                    data={`${project().storage.toString()} byte`}
+                                    delay={1500}
+                                />
+                                <DetailRow
+                                    holder='blogs'
+                                    data={project().blogs.toString()}
+                                    delay={2000}
+                                />
+                                <DetailRow
+                                    holder='records'
+                                    data={project().records.toString()}
+                                    delay={2500}
+                                />
+                                <DetailRow
+                                    holder='created at'
+                                    data={numberToDate(project().created_at)}
+                                    delay={3000}
+                                />
+                                <DetailRow
+                                    holder='edited at'
+                                    data={project().edited_at.toString()}
+                                    delay={3500}
+                                />
+                            </div>
+                            <div class='project-records'></div>
                         </div>
-                        <div class='project-records'></div>
-                    </div>
-                </article>
-            </div>
+                    </article>
+                </div>
+            ) : (
+                <div class='loading-project'></div>
+            )}
         </section>
     )
 }
