@@ -7,7 +7,7 @@ interface HackEffectProps {
     onfinish?: () => void | void
 }
 
-const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/'
 
 export const HackEffect: Component<HackEffectProps> = ({
     sentence,
