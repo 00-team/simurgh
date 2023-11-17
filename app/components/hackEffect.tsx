@@ -16,32 +16,32 @@ export const HackEffect: Component<HackEffectProps> = ({ sentence, delay }) => {
 
     onMount(() => {
         if (delay) {
-            interval = setTimeout(() => {
-                setInterval(() => {
-                    setText(text => {
-                        let newText = text
-                            .split('')
-                            .map((_, index) => {
-                                if (index < iteration) {
-                                    return sentence[index]
-                                }
+            interval = setInterval(() => {
+                setText(text => {
+                    let newText = text
+                        .split('')
+                        .map((_, index) => {
+                            if (index < iteration) {
+                                return sentence[index]
+                            }
 
-                                return letters[
-                                    Math.floor(Math.random() * letters.length)
-                                ]
-                            })
-                            .join('')
+                            return letters[
+                                Math.floor(Math.random() * letters.length)
+                            ]
+                        })
+                        .join('')
 
-                        return newText
-                    })
+                    return newText
+                })
 
+                setTimeout(() => {
                     if (iteration >= sentence.length) {
                         clearInterval(interval)
                     }
 
                     iteration += 1 / 3
-                }, 30)
-            }, delay)
+                }, delay)
+            }, 30)
         } else {
             interval = setInterval(() => {
                 setText(text => {
