@@ -63,22 +63,22 @@ export const Project: Component = ({}) => {
                                 <DetailRow
                                     holder='blogs'
                                     data={project().blogs.toString()}
-                                    delay={2000}
+                                    delay={1600}
                                 />
                                 <DetailRow
                                     holder='records'
                                     data={project().records.toString()}
-                                    delay={2500}
+                                    delay={1700}
                                 />
                                 <DetailRow
                                     holder='created at'
                                     data={numberToDate(project().created_at)}
-                                    delay={3000}
+                                    delay={1800}
                                 />
                                 <DetailRow
                                     holder='edited at'
                                     data={project().edited_at.toString()}
-                                    delay={3500}
+                                    delay={1900}
                                 />
                             </div>
                             <div class='project-records'></div>

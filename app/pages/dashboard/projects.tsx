@@ -51,7 +51,7 @@ export const Projects: Component = () => {
 
         let newDate = new Date(
             dateToMilisec + Dateoffset * -60
-        ).toLocaleDateString('fa')
+        ).toLocaleDateString('US')
 
         return newDate
     }
