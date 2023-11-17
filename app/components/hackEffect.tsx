@@ -1,0 +1,76 @@
+import { Component, createSignal, onCleanup, onMount } from 'solid-js'
+
+interface HackEffectProps {
+    sentence: string
+    delay?: number
+}
+
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+export const HackEffect: Component<HackEffectProps> = ({ sentence, delay }) => {
+    const [Text, setText] = createSignal(sentence)
+
+    let iteration = 0
+
+    let interval
+
+    onMount(() => {
+        if (delay) {
+            interval = setTimeout(() => {
+                setInterval(() => {
+                    setText(text => {
+                        let newText = text
+                            .split('')
+                            .map((_, index) => {
+                                if (index < iteration) {
+                                    return sentence[index]
+                                }
+
+                                return letters[
+                                    Math.floor(Math.random() * letters.length)
+                                ]
+                            })
+                            .join('')
+
+                        return newText
+                    })
+
+                    if (iteration >= sentence.length) {
+                        clearInterval(interval)
+                    }
+
+                    iteration += 1 / 3
+                }, 30)
+            }, delay)
+        } else {
+            interval = setInterval(() => {
+                setText(text => {
+                    let newText = text
+                        .split('')
+                        .map((_, index) => {
+                            if (index < iteration) {
+                                return sentence[index]
+                            }
+
+                            return letters[
+                                Math.floor(Math.random() * letters.length)
+                            ]
+                        })
+                        .join('')
+
+                    return newText
+                })
+
+                if (iteration >= sentence.length) {
+                    clearInterval(interval)
+                }
+
+                iteration += 1 / 3
+            }, 30)
+        }
+    })
+    onCleanup(() => {
+        clearInterval(interval)
+    })
+    return <span class='effect-word'>{Text()}</span>
+}
