@@ -83,15 +83,52 @@ section.project-container {
             }
         }
 
-        .project-data {
+        article.project-data {
             width: 100%;
             height: 100%;
 
             display: flex;
             align-items: center;
             flex-direction: column;
+            gap: 4vh;
 
             padding: 5vh 3vw;
+
+            header {
+                height: 2em;
+            }
+
+            .project-details {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                width: 100%;
+                flex: 1 0 0;
+
+                margin-top: 4vh;
+
+                .details {
+                    width: clamp(0px, 50%, 500px);
+
+                    height: 100%;
+
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 2vh;
+
+                    font-family: 'graduate';
+
+                    .detail-row {
+                        width: 100%;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+                }
+            }
         }
     }
 }
