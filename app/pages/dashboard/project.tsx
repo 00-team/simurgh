@@ -16,8 +16,8 @@ export const Project: Component = ({}) => {
                     <header class='title_hero'>
                         <Typing
                             sentence='lorem ipsum'
-                            delay={2000}
-                            speed={100}
+                            delay={1300}
+                            speed={75}
                         />
                     </header>
                     <div class='project-details'>
@@ -25,19 +25,33 @@ export const Project: Component = ({}) => {
                             <DetailRow
                                 holder='creator'
                                 data='abbas taghavi'
+                                delay={2000}
+                            />
+                            <DetailRow
+                                holder='storage'
+                                data='abbas taghavi'
+                                delay={2500}
+                            />
+                            <DetailRow
+                                holder='blogs'
+                                data='abbas taghavi'
                                 delay={3000}
                             />
-                            {/* <DetailRow holder='storage' data='abbas taghavi' />
-                            <DetailRow holder='blogs' data='abbas taghavi' />
-                            <DetailRow holder='records' data='abbas taghavi' />
+                            <DetailRow
+                                holder='records'
+                                data='abbas taghavi'
+                                delay={3500}
+                            />
                             <DetailRow
                                 holder='created at'
                                 data='abbas taghavi'
+                                delay={4000}
                             />
                             <DetailRow
                                 holder='edited at'
                                 data='abbas taghavi'
-                            /> */}
+                                delay={4500}
+                            />
                         </div>
                         <div class='project-records'></div>
                     </div>
@@ -67,9 +81,11 @@ const DetailRow: Component<DetailRowProps> = ({ holder, data, delay }) => {
     return (
         <div class='detail-row'>
             <div class='holder'>
-                <HackEffect sentence={holder} delay={2000} />
+                <HackEffect sentence={holder} delay={delay} />
             </div>
-            <div class='data'>{data}</div>
+            <div class='data'>
+                <HackEffect sentence={data} delay={delay + 100} />
+            </div>
         </div>
     )
 }
