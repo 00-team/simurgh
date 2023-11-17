@@ -1,3 +1,4 @@
+import { HackEffect } from '!/components/HackEffect'
 import { Typing } from '!/components/typing'
 import { useParams } from '@solidjs/router'
 import { Component } from 'solid-js'
@@ -21,8 +22,12 @@ export const Project: Component = ({}) => {
                     </header>
                     <div class='project-details'>
                         <div class='details title'>
-                            <DetailRow holder='creator' data='abbas taghavi' />
-                            <DetailRow holder='storage' data='abbas taghavi' />
+                            <DetailRow
+                                holder='creator'
+                                data='abbas taghavi'
+                                delay={3000}
+                            />
+                            {/* <DetailRow holder='storage' data='abbas taghavi' />
                             <DetailRow holder='blogs' data='abbas taghavi' />
                             <DetailRow holder='records' data='abbas taghavi' />
                             <DetailRow
@@ -32,7 +37,7 @@ export const Project: Component = ({}) => {
                             <DetailRow
                                 holder='edited at'
                                 data='abbas taghavi'
-                            />
+                            /> */}
                         </div>
                         <div class='project-records'></div>
                     </div>
@@ -45,6 +50,7 @@ export const Project: Component = ({}) => {
 interface DetailRowProps {
     holder: string
     data: string
+    delay?: number
 }
 
 // project_id: number
@@ -57,10 +63,12 @@ interface DetailRowProps {
 // edited_at: number
 // api_key: string | null
 
-const DetailRow: Component<DetailRowProps> = ({ holder, data }) => {
+const DetailRow: Component<DetailRowProps> = ({ holder, data, delay }) => {
     return (
         <div class='detail-row'>
-            <div class='holder'>{holder}</div>
+            <div class='holder'>
+                <HackEffect sentence={holder} delay={2000} />
+            </div>
             <div class='data'>{data}</div>
         </div>
     )
