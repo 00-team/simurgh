@@ -3,7 +3,13 @@ import { Typing } from '!/components/typing'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { useParams } from '@solidjs/router'
-import { Component, createEffect, createSignal, onMount } from 'solid-js'
+import {
+    Component,
+    createEffect,
+    createSignal,
+    onCleanup,
+    onMount,
+} from 'solid-js'
 
 import './style/project.scss'
 
@@ -11,6 +17,11 @@ export const Project: Component = ({}) => {
     const param = useParams<{ id: string }>()
 
     const [project, setProject] = createSignal<ProjectModel | null>()
+    const [audio, setAudio] = createSignal<HTMLAudioElement | null>(
+        new Audio('/static/audio/typing.mp3')
+    )
+
+    let interval
 
     function numberToDate(date: number) {
         let dateToMilisec = date * 1000
@@ -21,6 +32,13 @@ export const Project: Component = ({}) => {
         ).toLocaleDateString('US')
 
         return newDate
+    }
+
+    const playAudio = () => {
+        audio().play()
+    }
+    const pauseAudio = () => {
+        audio().pause()
     }
 
     onMount(() => {
@@ -37,7 +55,17 @@ export const Project: Component = ({}) => {
     })
 
     createEffect(() => {
-        console.log(project())
+        if (project() && project().api_key) {
+            interval = setTimeout(() => {
+                playAudio()
+            }, 1200)
+        }
+    })
+
+    onCleanup(() => {
+        pauseAudio()
+        setAudio(null)
+        clearInterval(interval)
     })
 
     return (
