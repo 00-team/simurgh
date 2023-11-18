@@ -18,8 +18,7 @@ section.project-container {
         $projectTransform: -1500px;
         $projectHeight: 90%;
 
-        position: absolute;
-        z-index: -1;
+        position: relative;
 
         width: 90%;
 
@@ -146,7 +145,7 @@ section.project-container {
                     width: 0%;
                     height: 2em;
 
-                    background-color: #ffc107;
+                    background-color: var(--ten-percent);
 
                     clip-path: polygon(0 0, 86% 0, 100% 100%, 14% 100%);
 
@@ -216,5 +215,9 @@ section.project-container {
                 }
             }
         }
+    }
+
+    .project-loading {
+        width: 1;
     }
 }
