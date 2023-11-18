@@ -241,7 +241,7 @@ section.project-container {
 
             span {
                 display: inline-block;
-                transform: translateX(100%);
+                transform: translateX(100%) scale(0.8);
 
                 margin-right: 5px;
 
@@ -249,7 +249,7 @@ section.project-container {
 
                 &.active {
                     margin-right: 1px;
-                    transform: translateX(0);
+                    transform: translateX(0) scale(1);
                 }
             }
         }
