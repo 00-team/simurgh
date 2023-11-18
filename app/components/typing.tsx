@@ -16,9 +16,6 @@ export const Typing: Component<TypingProps> = ({
     delay,
 }) => {
     const [text, setText] = createSignal('')
-    const [audio, setAudio] = createSignal<HTMLAudioElement | null>(
-        new Audio('/static/audio/typing.mp3')
-    )
 
     let cursor: HTMLElement
 
@@ -37,30 +34,19 @@ export const Typing: Component<TypingProps> = ({
             timer = setTimeout(type, speed)
         } else {
             cursor.style.animationIterationCount = `1`
-            pauseAudio()
         }
-    }
-
-    const playAudio = () => {
-        audio().play()
-    }
-    const pauseAudio = () => {
-        audio().pause()
     }
 
     if (delay) {
         setTimeout(() => {
             type()
-            playAudio()
         }, delay)
     } else {
         type()
-        playAudio()
     }
 
     onCleanup(() => {
         clearTimeout(timer)
-        setAudio(null)
     })
 
     return (
