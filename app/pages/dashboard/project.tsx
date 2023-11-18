@@ -1,6 +1,4 @@
 import { HackEffect } from '!/components/HackEffect'
-import { Typing } from '!/components/typing'
-import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { useParams } from '@solidjs/router'
@@ -71,7 +69,7 @@ export const Project: Component = ({}) => {
 
     return (
         <section class='project-container'>
-            {project() && project().api_key ? (
+            {/* {project() && project().api_key ? (
                 <div class='project-wrapper'>
                     <BgSvg />
                     <article class='project-data'>
@@ -131,9 +129,9 @@ export const Project: Component = ({}) => {
                         </div>
                     </article>
                 </div>
-            ) : (
-                <ProjectLoading />
-            )}
+            ) : ( */}
+            <ProjectLoading />
+            {/* )} */}
         </section>
     )
 }
@@ -186,6 +184,76 @@ const BgSvg = () => {
     )
 }
 
+const sentence = 'LOADING...'
+const letters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'
 const ProjectLoading = () => {
-    return <div class='project-loading'></div>
+    const [iterator, setiterator] = createSignal(0)
+
+    let words
+
+    let interval
+    let loopDelay
+
+    const runLoop = () => {
+        let intervalId = setInterval(() => {
+            words.forEach((el: HTMLElement, index) => {
+                if (index < iterator()) {
+                    el.innerText = sentence[index]
+                    el.style.opacity = '1'
+
+                    if (!el.className.includes('active')) {
+                        el.className += ' active '
+                    }
+
+                    return
+                }
+
+                el.style.opacity = Math.random().toString()
+
+                return (el.innerText =
+                    letters[Math.floor(Math.random() * letters.length)])
+            })
+
+            setiterator(s => (s += 1 / 3))
+
+            if (iterator() >= words.length) {
+                clearInterval(intervalId)
+
+                setTimeout(() => {
+                    words.forEach((element: HTMLElement) => {
+                        let newClass = element.className.replace('active', '')
+
+                        element.className = newClass
+                    })
+
+                    setiterator(0)
+                    runLoop()
+                }, 1000)
+            }
+        }, 20)
+    }
+
+    onMount(() => {
+        words = document.querySelectorAll('.loading-word')
+
+        if (!words) return
+
+        runLoop()
+    })
+    onCleanup(() => {
+        clearInterval(interval)
+        clearTimeout(loopDelay)
+    })
+    return (
+        <div class='project-loading section_title'>
+            <div class='words-wrapper'>
+                {'LOADING...'.split('').map((word, index) => (
+                    <span class='loading-word' id={`word${index}`}>
+                        {word}
+                    </span>
+                ))}
+            </div>
+        </div>
+    )
 }
