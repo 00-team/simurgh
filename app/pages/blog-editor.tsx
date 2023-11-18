@@ -222,47 +222,7 @@ const TextConf: BlockComponent<TextBlock> = props => {
         '.block.text p#block_paragraph_' + id
     )
 
-    function group() {
-        type ContentStr = string | ContentStr[]
-        let test = [
-            '000000',
-            '\n',
-            ['222000', '222111', '\n', '222333'],
-            '333333',
-            '\n',
-            ['555000', '555111', '\n', '555333'],
-        ]
-
-        type SliceIdx = ([number, number] | [number])[]
-
-        let sl: SliceIdx = [[2, 4], [1, 0], [3]]
-
-        function rec_splice(
-            arr: ContentStr,
-            idx: SliceIdx
-        ): [ContentStr, ContentStr] {
-            let [b, f] = idx.shift()
-            if (idx.length) {
-                let [s, e] = rec_splice(arr[i], idx)
-                console.log(s, e, i)
-
-                // if (typeof s === 'string') s = [s]
-                // if (typeof e === 'string') e = [e]
-
-                return [
-                    [...arr.slice(0, i), s],
-                    [e, ...arr.slice(i + 1)],
-                ]
-            } else {
-                // FIXME: this is wrong
-                return [arr.slice(0, b), arr.slice(b, f), arr.slice()]
-            }
-        }
-
-        console.log(test, [...sl], rec_splice(test, sl))
-
-        return
-
+    function new_group() {
         let selection = document.getSelection()
         if (!selection.rangeCount) return
         let range = selection.getRangeAt(0)
@@ -271,21 +231,15 @@ const TextConf: BlockComponent<TextBlock> = props => {
         let sc = range.startContainer
         let ec = range.endContainer
 
-        function add(node: Node): ContentStr {
-            if (node.nodeType == Node.TEXT_NODE) {
-                return node.textContent
-            } else if (node.nodeName === 'BR') {
-                return '\n'
-            } else if (node.nodeName === 'SPAN') {
-                return Array.from(node.childNodes).map(add)
-            }
+        type GroupData = {
+            style: string
         }
 
-        let content = Array.from(p.childNodes).map(add)
-        let start_index: number[] = []
-        let start_offset = range.startOffset
+        let content = ''
+        let groups: number[] = []
+        let data: GroupData[] = []
 
-        let end_index: number[] = []
+        let start_offset = range.startOffset
         let end_offset = range.endOffset
 
         if (sc == p) {
@@ -297,39 +251,122 @@ const TextConf: BlockComponent<TextBlock> = props => {
             end_offset = 0
         }
 
-        function idx(node: Node, target: Node): number[] {
-            for (let [i, n] of node.childNodes.entries()) {
-                if (n == target) {
-                    return [i]
-                }
+        return
 
-                if (n.contains(target)) {
-                    return [i, ...idx(n, target)]
-                }
-            }
-
-            throw new Error('unreachable')
-        }
-
-        for (let [i, n] of p.childNodes.entries()) {
-            if (n == sc) {
-                start_index = [i, start_offset]
-            } else if (n.contains(sc)) {
-                start_index = [i, ...idx(n, sc), start_offset]
-            }
-
-            if (n == ec) {
-                end_index = [i, end_offset]
-            } else if (n.contains(ec)) {
-                end_index = [i, ...idx(n, ec), end_offset]
-            }
-        }
-
-        console.log(content)
-        console.log('-------')
-        console.log(start_index)
-        console.log('-------')
-        console.log(end_index)
+        // type Content = string | Content[]
+        // let test: Content = [
+        //     '000000',
+        //     '\n',
+        //     ['222000', '222111', '\n', '222333'],
+        //     '333333',
+        //     '\n',
+        //     ['555000', '555111', '\n', '555333'],
+        // ]
+        //
+        // let sl = [2, 1, 3]
+        // let el = [4, 0]
+        //
+        // function rec_splice(arr: Content, idx: number[]): [Content, Content] {
+        //     let i = idx.shift()
+        //
+        //     if (idx.length) {
+        //         let [s, e] = rec_splice(arr[i], idx)
+        //
+        //         return [
+        //             [...arr.slice(0, i), s],
+        //             [e, ...arr.slice(i + 1)],
+        //         ]
+        //     } else {
+        //         return [arr.slice(0, i), arr.slice(i)]
+        //     }
+        // }
+        //
+        // function get_idx(start: number[], end: number[]): number[] {
+        //     let s = start.shift()
+        //     let e = end.shift()
+        //     if (s === undefined || e === undefined) return end
+        //     let i = e - s
+        //     if (i < 0) return end
+        //
+        //     if (i) {
+        //         return [i, ...end]
+        //     } else {
+        //         return [0, ...get_idx(start, end)]
+        //     }
+        // }
+        //
+        // let [start, midend] = rec_splice(test, [...sl])
+        // let mel = get_idx(sl, el)
+        // console.log(mel)
+        // let [middle, end] = rec_splice(midend, [...mel])
+        //
+        // let selection = document.getSelection()
+        // if (!selection.rangeCount) return
+        // let range = selection.getRangeAt(0)
+        // if (range.collapsed) return
+        //
+        // let sc = range.startContainer
+        // let ec = range.endContainer
+        //
+        // function add(node: Node): ContentStr {
+        //     if (node.nodeType == Node.TEXT_NODE) {
+        //         return node.textContent
+        //     } else if (node.nodeName === 'BR') {
+        //         return '\n'
+        //     } else if (node.nodeName === 'SPAN') {
+        //         return Array.from(node.childNodes).map(add)
+        //     }
+        // }
+        //
+        // let content = Array.from(p.childNodes).map(add)
+        // let start_index: number[] = []
+        // let start_offset = range.startOffset
+        //
+        // let end_index: number[] = []
+        // let end_offset = range.endOffset
+        //
+        // if (sc == p) {
+        //     sc = p.childNodes[start_offset]
+        //     start_offset = 0
+        // }
+        // if (ec == p) {
+        //     ec = p.childNodes[end_offset]
+        //     end_offset = 0
+        // }
+        //
+        // function idx(node: Node, target: Node): number[] {
+        //     for (let [i, n] of node.childNodes.entries()) {
+        //         if (n == target) {
+        //             return [i]
+        //         }
+        //
+        //         if (n.contains(target)) {
+        //             return [i, ...idx(n, target)]
+        //         }
+        //     }
+        //
+        //     throw new Error('unreachable')
+        // }
+        //
+        // for (let [i, n] of p.childNodes.entries()) {
+        //     if (n == sc) {
+        //         start_index = [i, start_offset]
+        //     } else if (n.contains(sc)) {
+        //         start_index = [i, ...idx(n, sc), start_offset]
+        //     }
+        //
+        //     if (n == ec) {
+        //         end_index = [i, end_offset]
+        //     } else if (n.contains(ec)) {
+        //         end_index = [i, ...idx(n, ec), end_offset]
+        //     }
+        // }
+        //
+        // console.log(content)
+        // console.log('-------')
+        // console.log(start_index)
+        // console.log('-------')
+        // console.log(end_index)
 
         // let start: string[] = []
         // let middle: string[] = []
@@ -350,107 +387,107 @@ const TextConf: BlockComponent<TextBlock> = props => {
         //     }
         // }
 
-        return
+        // return
 
-        let i = 0
-        let start_idx = 0
-        let start_pos = 0
-        let end_idx = 0
-        let end_pos = 0
-
-        if (sc == p) sc = p.childNodes[range.startOffset]
-        if (ec == p) ec = p.childNodes[range.endOffset]
-
-        for (let n of p.childNodes) {
-            if (n.nodeType === Node.TEXT_NODE) {
-                content[i] += n.textContent
-            } else if (n.nodeName === 'BR') {
-                content[i] += '\n'
-            } else if (n.nodeName === 'SPAN') {
-                content.push('')
-                i++
-                n.childNodes.forEach(e => {
-                    if (e.nodeType === Node.TEXT_NODE) {
-                        content[i] += e.textContent
-                    } else if (e.nodeName === 'BR') {
-                        content[i] += '\n'
-                    }
-                })
-                content.push('')
-                i++
-            }
-
-            if (n === sc || n.contains(sc)) {
-                start_idx = i
-                if (n.nodeName == 'SPAN') start_idx--
-
-                if (n === sc) {
-                    start_pos = range.startOffset
-                } else {
-                    for (let e of n.childNodes) {
-                        if (e == sc) {
-                            start_pos += range.startOffset
-                            break
-                        }
-
-                        if (e.nodeType === Node.TEXT_NODE) {
-                            start_pos += e.textContent.length
-                        } else if (e.nodeName === 'BR') {
-                            start_pos += 1
-                        }
-                    }
-                }
-            }
-
-            if (n === ec || n.contains(ec)) {
-                end_idx = i
-                if (n.nodeName == 'SPAN') end_idx--
-
-                if (n === ec) {
-                    end_pos = range.endOffset
-                } else {
-                    for (let e of n.childNodes) {
-                        if (e == ec) {
-                            end_pos += range.endOffset
-                            break
-                        }
-
-                        if (e.nodeType === Node.TEXT_NODE) {
-                            end_pos += e.textContent.length
-                        } else if (e.nodeName === 'BR') {
-                            end_pos += 1
-                        }
-                    }
-                }
-            }
-        }
-
-        console.log(content)
-        let new_content = []
-        let x = -1
-        console.log(start_idx, start_pos)
-        console.log(end_idx, end_pos)
-        content.forEach((g, i) => {
-            if (i == start_idx) {
-                new_content.push(g.slice(0, start_pos))
-                if (i == end_idx) {
-                    new_content.push(g.slice(start_pos, end_pos))
-                    new_content.push(g.slice(end_pos))
-                } else {
-                    x = new_content.push(g.slice(start_pos)) - 1
-                }
-            } else if (i == end_idx) {
-                console.log('end', new_content[x], g)
-                new_content[x] += g.slice(0, end_pos)
-                new_content.push(g.slice(end_pos))
-                x = -1
-            } else if (x > -1) {
-                new_content[x] += g
-            } else {
-                new_content.push(g)
-            }
-        })
-        console.log(new_content)
+        // let i = 0
+        // let start_idx = 0
+        // let start_pos = 0
+        // let end_idx = 0
+        // let end_pos = 0
+        //
+        // if (sc == p) sc = p.childNodes[range.startOffset]
+        // if (ec == p) ec = p.childNodes[range.endOffset]
+        //
+        // for (let n of p.childNodes) {
+        //     if (n.nodeType === Node.TEXT_NODE) {
+        //         content[i] += n.textContent
+        //     } else if (n.nodeName === 'BR') {
+        //         content[i] += '\n'
+        //     } else if (n.nodeName === 'SPAN') {
+        //         content.push('')
+        //         i++
+        //         n.childNodes.forEach(e => {
+        //             if (e.nodeType === Node.TEXT_NODE) {
+        //                 content[i] += e.textContent
+        //             } else if (e.nodeName === 'BR') {
+        //                 content[i] += '\n'
+        //             }
+        //         })
+        //         content.push('')
+        //         i++
+        //     }
+        //
+        //     if (n === sc || n.contains(sc)) {
+        //         start_idx = i
+        //         if (n.nodeName == 'SPAN') start_idx--
+        //
+        //         if (n === sc) {
+        //             start_pos = range.startOffset
+        //         } else {
+        //             for (let e of n.childNodes) {
+        //                 if (e == sc) {
+        //                     start_pos += range.startOffset
+        //                     break
+        //                 }
+        //
+        //                 if (e.nodeType === Node.TEXT_NODE) {
+        //                     start_pos += e.textContent.length
+        //                 } else if (e.nodeName === 'BR') {
+        //                     start_pos += 1
+        //                 }
+        //             }
+        //         }
+        //     }
+        //
+        //     if (n === ec || n.contains(ec)) {
+        //         end_idx = i
+        //         if (n.nodeName == 'SPAN') end_idx--
+        //
+        //         if (n === ec) {
+        //             end_pos = range.endOffset
+        //         } else {
+        //             for (let e of n.childNodes) {
+        //                 if (e == ec) {
+        //                     end_pos += range.endOffset
+        //                     break
+        //                 }
+        //
+        //                 if (e.nodeType === Node.TEXT_NODE) {
+        //                     end_pos += e.textContent.length
+        //                 } else if (e.nodeName === 'BR') {
+        //                     end_pos += 1
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        //
+        // console.log(content)
+        // let new_content = []
+        // let x = -1
+        // console.log(start_idx, start_pos)
+        // console.log(end_idx, end_pos)
+        // content.forEach((g, i) => {
+        //     if (i == start_idx) {
+        //         new_content.push(g.slice(0, start_pos))
+        //         if (i == end_idx) {
+        //             new_content.push(g.slice(start_pos, end_pos))
+        //             new_content.push(g.slice(end_pos))
+        //         } else {
+        //             x = new_content.push(g.slice(start_pos)) - 1
+        //         }
+        //     } else if (i == end_idx) {
+        //         console.log('end', new_content[x], g)
+        //         new_content[x] += g.slice(0, end_pos)
+        //         new_content.push(g.slice(end_pos))
+        //         x = -1
+        //     } else if (x > -1) {
+        //         new_content[x] += g
+        //     } else {
+        //         new_content.push(g)
+        //     }
+        // })
+        // console.log(new_content)
 
         // let g = document.createElement('span')
         // let sp = range.startContainer.parentElement
@@ -686,7 +723,7 @@ const TextConf: BlockComponent<TextBlock> = props => {
             </button>
             <button
                 onmousedown={e => e.preventDefault()}
-                onClick={() => group()}
+                onClick={() => new_group()}
             >
                 new Group
             </button>
