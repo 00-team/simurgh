@@ -218,6 +218,40 @@ section.project-container {
     }
 
     .project-loading {
-        width: 1;
+        width: 100%;
+        height: 100%;
+
+        backdrop-filter: blur(1px);
+
+        font-family: 'graduate';
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .words-wrapper {
+            margin: auto;
+
+            position: absolute;
+            inset: 0;
+
+            height: 2em;
+            width: 150px;
+
+            white-space: nowrap;
+
+            span {
+                display: inline-block;
+                transform: translateX(100%);
+
+                margin-right: 5px;
+
+                transition: all 500ms;
+
+                &.active {
+                    margin-right: 1px;
+                    transform: translateX(0);
+                }
+            }
+        }
     }
 }
