@@ -132,7 +132,7 @@ export const Project: Component = ({}) => {
                     </article>
                 </div>
             ) : (
-                <div class='loading-project'></div>
+                <ProjectLoading />
             )}
         </section>
     )
@@ -184,4 +184,8 @@ const BgSvg = () => {
             </g>
         </svg>
     )
+}
+
+const ProjectLoading = () => {
+    return <div class='project-loading'></div>
 }
