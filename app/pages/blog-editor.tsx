@@ -1,6 +1,13 @@
 import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import './style/blog-editor.scss'
-import { Component, createEffect, createSignal, onMount } from 'solid-js'
+import {
+    Component,
+    Show,
+    createEffect,
+    createSignal,
+    onCleanup,
+    onMount,
+} from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
 // import { onCleanup, onMount } from 'solid-js'
 
@@ -58,7 +65,7 @@ export default () => {
             {
                 type: 'text',
                 // html: `12<br /><br /><br /><br />345<br /><br /><br /><br />213`,
-                html: `12<span>asdadada</span>asdasdadads123123<span>ass<br />asdasd </span> asd`,
+                html: `01<span><br/><br/>2345678<br/></span>very cool<span>ass<br />asdas</span>asd`,
             },
         ],
         active: {
@@ -186,7 +193,12 @@ const TextComp: BlockComponent<TextBlock> = props => {
                         })
                     }
                 }}
-                contenteditable={true}
+                contenteditable={
+                    // @ts-ignore checking for firefox
+                    typeof InstallTrigger !== 'undefined'
+                        ? true
+                        : 'plaintext-only'
+                }
                 onBlur={e => {
                     props.setState(
                         produce(s => {
@@ -215,12 +227,61 @@ const ImageConf: BlockComponent<ImageBlock> = props => {
     return <>{props.block.type}</>
 }
 
-var nnn = 0
 const TextConf: BlockComponent<TextBlock> = props => {
     let id = props.state.active.id
     let p = editor.querySelector<HTMLParagraphElement>(
         '.block.text p#block_paragraph_' + id
     )
+    const [target, setTarget] = createStore<{ span: HTMLSpanElement | null }>(
+        null
+    )
+
+    onMount(() => {
+        document.onselectionchange = () => {
+            let s = document.getSelection()
+            if (!s.rangeCount) return
+            let r = s.getRangeAt(0)
+            if (!r.collapsed) return
+            let node = r.startContainer
+
+            console.log(node, node.parentElement)
+
+            setTarget({ span: null })
+
+            if (!p.contains(node)) return
+
+            if (node instanceof HTMLSpanElement) {
+                setTarget({
+                    span: document.querySelector(
+                        `.block.text p#block_paragraph_${id} span#g${node.id}`
+                    ),
+                })
+                return
+            }
+
+            if (node.parentElement instanceof HTMLSpanElement) {
+                setTarget({
+                    span: document.querySelector(
+                        `.block.text p#block_paragraph_${id} span#g${node.parentElement.id}`
+                    ),
+                })
+                return
+            }
+        }
+
+        // p.onclick = e => {
+        //     if (e.target instanceof HTMLSpanElement) {
+        //         setTarget({ span: e.target })
+        //     } else {
+        //         setTarget({ span: null })
+        //     }
+        // }
+    })
+
+    onCleanup(() => {
+        // p.onclick = null
+        document.onselectionchange = null
+    })
 
     function new_group() {
         let selection = document.getSelection()
@@ -231,6 +292,18 @@ const TextConf: BlockComponent<TextBlock> = props => {
         let sc = range.startContainer
         let ec = range.endContainer
 
+        let soff = range.startOffset
+        let eoff = range.endOffset
+
+        if (sc.childNodes.length > soff) {
+            sc = sc.childNodes[soff]
+            soff = 0
+        }
+        if (ec.childNodes.length > eoff) {
+            ec = ec.childNodes[eoff]
+            eoff = 0
+        }
+
         type GroupData = {
             style: string
         }
@@ -238,512 +311,86 @@ const TextConf: BlockComponent<TextBlock> = props => {
         let content = ''
         let groups: number[] = []
         let data: GroupData[] = []
+        let outrange = -1
 
-        let start_offset = range.startOffset
-        let end_offset = range.endOffset
-
-        if (sc == p) {
-            sc = p.childNodes[start_offset]
-            start_offset = 0
-        }
-        if (ec == p) {
-            ec = p.childNodes[end_offset]
-            end_offset = 0
-        }
-
-        return
-
-        // type Content = string | Content[]
-        // let test: Content = [
-        //     '000000',
-        //     '\n',
-        //     ['222000', '222111', '\n', '222333'],
-        //     '333333',
-        //     '\n',
-        //     ['555000', '555111', '\n', '555333'],
-        // ]
-        //
-        // let sl = [2, 1, 3]
-        // let el = [4, 0]
-        //
-        // function rec_splice(arr: Content, idx: number[]): [Content, Content] {
-        //     let i = idx.shift()
-        //
-        //     if (idx.length) {
-        //         let [s, e] = rec_splice(arr[i], idx)
-        //
-        //         return [
-        //             [...arr.slice(0, i), s],
-        //             [e, ...arr.slice(i + 1)],
-        //         ]
-        //     } else {
-        //         return [arr.slice(0, i), arr.slice(i)]
-        //     }
-        // }
-        //
-        // function get_idx(start: number[], end: number[]): number[] {
-        //     let s = start.shift()
-        //     let e = end.shift()
-        //     if (s === undefined || e === undefined) return end
-        //     let i = e - s
-        //     if (i < 0) return end
-        //
-        //     if (i) {
-        //         return [i, ...end]
-        //     } else {
-        //         return [0, ...get_idx(start, end)]
-        //     }
-        // }
-        //
-        // let [start, midend] = rec_splice(test, [...sl])
-        // let mel = get_idx(sl, el)
-        // console.log(mel)
-        // let [middle, end] = rec_splice(midend, [...mel])
-        //
-        // let selection = document.getSelection()
-        // if (!selection.rangeCount) return
-        // let range = selection.getRangeAt(0)
-        // if (range.collapsed) return
-        //
-        // let sc = range.startContainer
-        // let ec = range.endContainer
-        //
-        // function add(node: Node): ContentStr {
-        //     if (node.nodeType == Node.TEXT_NODE) {
-        //         return node.textContent
-        //     } else if (node.nodeName === 'BR') {
-        //         return '\n'
-        //     } else if (node.nodeName === 'SPAN') {
-        //         return Array.from(node.childNodes).map(add)
-        //     }
-        // }
-        //
-        // let content = Array.from(p.childNodes).map(add)
-        // let start_index: number[] = []
-        // let start_offset = range.startOffset
-        //
-        // let end_index: number[] = []
-        // let end_offset = range.endOffset
-        //
-        // if (sc == p) {
-        //     sc = p.childNodes[start_offset]
-        //     start_offset = 0
-        // }
-        // if (ec == p) {
-        //     ec = p.childNodes[end_offset]
-        //     end_offset = 0
-        // }
-        //
-        // function idx(node: Node, target: Node): number[] {
-        //     for (let [i, n] of node.childNodes.entries()) {
-        //         if (n == target) {
-        //             return [i]
-        //         }
-        //
-        //         if (n.contains(target)) {
-        //             return [i, ...idx(n, target)]
-        //         }
-        //     }
-        //
-        //     throw new Error('unreachable')
-        // }
-        //
-        // for (let [i, n] of p.childNodes.entries()) {
-        //     if (n == sc) {
-        //         start_index = [i, start_offset]
-        //     } else if (n.contains(sc)) {
-        //         start_index = [i, ...idx(n, sc), start_offset]
-        //     }
-        //
-        //     if (n == ec) {
-        //         end_index = [i, end_offset]
-        //     } else if (n.contains(ec)) {
-        //         end_index = [i, ...idx(n, ec), end_offset]
-        //     }
-        // }
-        //
-        // console.log(content)
-        // console.log('-------')
-        // console.log(start_index)
-        // console.log('-------')
-        // console.log(end_index)
-
-        // let start: string[] = []
-        // let middle: string[] = []
-        // let end: string = []
-        //
-        // let halfway: -1 | 0 | 1 = -1
-        // for (let [i, c] of content.entries()) {
-        //     if (i == start_index[0]) {
-        //         halfway = 0
-        //     }
-        //
-        //     if (halfway == -1) {
-        //         start.push(c)
-        //     } else if (halfway == 0) {
-        //         middle.push(c)
-        //     } else {
-        //         end.push(c)
-        //     }
-        // }
-
-        // return
-
-        // let i = 0
-        // let start_idx = 0
-        // let start_pos = 0
-        // let end_idx = 0
-        // let end_pos = 0
-        //
-        // if (sc == p) sc = p.childNodes[range.startOffset]
-        // if (ec == p) ec = p.childNodes[range.endOffset]
-        //
-        // for (let n of p.childNodes) {
-        //     if (n.nodeType === Node.TEXT_NODE) {
-        //         content[i] += n.textContent
-        //     } else if (n.nodeName === 'BR') {
-        //         content[i] += '\n'
-        //     } else if (n.nodeName === 'SPAN') {
-        //         content.push('')
-        //         i++
-        //         n.childNodes.forEach(e => {
-        //             if (e.nodeType === Node.TEXT_NODE) {
-        //                 content[i] += e.textContent
-        //             } else if (e.nodeName === 'BR') {
-        //                 content[i] += '\n'
-        //             }
-        //         })
-        //         content.push('')
-        //         i++
-        //     }
-        //
-        //     if (n === sc || n.contains(sc)) {
-        //         start_idx = i
-        //         if (n.nodeName == 'SPAN') start_idx--
-        //
-        //         if (n === sc) {
-        //             start_pos = range.startOffset
-        //         } else {
-        //             for (let e of n.childNodes) {
-        //                 if (e == sc) {
-        //                     start_pos += range.startOffset
-        //                     break
-        //                 }
-        //
-        //                 if (e.nodeType === Node.TEXT_NODE) {
-        //                     start_pos += e.textContent.length
-        //                 } else if (e.nodeName === 'BR') {
-        //                     start_pos += 1
-        //                 }
-        //             }
-        //         }
-        //     }
-        //
-        //     if (n === ec || n.contains(ec)) {
-        //         end_idx = i
-        //         if (n.nodeName == 'SPAN') end_idx--
-        //
-        //         if (n === ec) {
-        //             end_pos = range.endOffset
-        //         } else {
-        //             for (let e of n.childNodes) {
-        //                 if (e == ec) {
-        //                     end_pos += range.endOffset
-        //                     break
-        //                 }
-        //
-        //                 if (e.nodeType === Node.TEXT_NODE) {
-        //                     end_pos += e.textContent.length
-        //                 } else if (e.nodeName === 'BR') {
-        //                     end_pos += 1
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        //
-        // console.log(content)
-        // let new_content = []
-        // let x = -1
-        // console.log(start_idx, start_pos)
-        // console.log(end_idx, end_pos)
-        // content.forEach((g, i) => {
-        //     if (i == start_idx) {
-        //         new_content.push(g.slice(0, start_pos))
-        //         if (i == end_idx) {
-        //             new_content.push(g.slice(start_pos, end_pos))
-        //             new_content.push(g.slice(end_pos))
-        //         } else {
-        //             x = new_content.push(g.slice(start_pos)) - 1
-        //         }
-        //     } else if (i == end_idx) {
-        //         console.log('end', new_content[x], g)
-        //         new_content[x] += g.slice(0, end_pos)
-        //         new_content.push(g.slice(end_pos))
-        //         x = -1
-        //     } else if (x > -1) {
-        //         new_content[x] += g
-        //     } else {
-        //         new_content.push(g)
-        //     }
-        // })
-        // console.log(new_content)
-
-        // let g = document.createElement('span')
-        // let sp = range.startContainer.parentElement
-        // let ep = range.endContainer.parentElement
-        // let frag = document.createDocumentFragment()
-        // let end: HTMLSpanElement
-        // let start: HTMLSpanElement
-        // let p = sp as HTMLParagraphElement
-        //
-        // console.log(range.startOffset, range.endOffset)
-        //
-        // if (sp.tagName == 'SPAN') {
-        //     p = sp.parentElement as HTMLParagraphElement
-        //     start = sp.cloneNode(false) as HTMLSpanElement
-        //     for (let n of sp.childNodes) {
-        //         if (n === range.startContainer) {
-        //             if (range.startOffset) {
-        //                 start.append(n.textContent.slice(0, range.startOffset))
-        //             }
-        //             break
-        //         }
-        //
-        //         start.appendChild(n.cloneNode(true))
-        //     }
-        // }
-        //
-        // if (ep.tagName == 'SPAN') {
-        //     end = ep.cloneNode(false) as HTMLSpanElement
-        //     console.log(ep.cloneNode(true), range.endContainer.cloneNode(true))
-        //     console.log('-------')
-        //     let append = false
-        //     for (let n of ep.childNodes) {
-        //         if (append) end.appendChild(n.cloneNode(true))
-        //
-        //         if (n === range.endContainer) {
-        //             end.append(n.textContent.slice(range.startOffset))
-        //             append = true
-        //         }
-        //     }
-        //     console.log('-------')
-        //     console.log(end.cloneNode(true))
-        // }
-        //
-        // let content = range.extractContents()
-        // content.childNodes.forEach(n => {
-        //     if (n.nodeName === 'SPAN') {
-        //         n.replaceWith(...n.childNodes)
-        //     }
-        // })
-        //
-        // g.appendChild(content)
-        //
-        // if (start) frag.appendChild(start)
-        // frag.appendChild(g)
-        // if (end) frag.appendChild(end)
-        //
-        // if (sp.nodeName == 'SPAN') sp.replaceWith(frag)
-        // else range.insertNode(frag)
-
-        // console.log(range.startContainer, sp, range.startOffset)
-
-        // if (sp === ep) {
-        //     if (sp.tagName === 'SPAN') {
-        //         let start = sp.cloneNode(false) as HTMLSpanElement
-        //         let end = ep.cloneNode(false) as HTMLSpanElement
-        //         let last = false
-        //         let content = range.extractContents()
-        //
-        //         for (let n of sp.childNodes) {
-        //             if (n === range.startContainer) {
-        //                 last = true
-        //                 if (range.startOffset) {
-        //                     start.append(
-        //                         n.textContent.slice(0, range.startOffset)
-        //                     )
-        //                     n = document.createTextNode(
-        //                         n.textContent.slice(range.startOffset)
-        //                     )
-        //                 }
-        //             }
-        //
-        //             if (last) {
-        //                 end.appendChild(n)
-        //             } else {
-        //                 start.appendChild(n)
-        //             }
-        //         }
-        //
-
-        //
-        //         let frag = document.createDocumentFragment()
-        //         frag.append(start, g, end)
-        //
-        //         if (!start.innerHTML) start.remove()
-        //         if (!end.innerHTML) end.remove()
-        //
-        //         sp.parentElement.insertBefore(frag, sp)
-        //
-        //         sp.remove()
-        //         ep.remove()
-        //     } else {
-        //         let content = range.extractContents()
-        //         content.childNodes.forEach(n => {
-        //             if (n.nodeName === 'SPAN') {
-        //                 n.replaceWith(...n.childNodes)
-        //             }
-        //         })
-        //         g.appendChild(content)
-        //         range.insertNode(g)
-        //     }
-        // } else {
-        //     console.log('NOT IMPELEMENTED')
-        // }
-    }
-
-    function surround(style: Partial<CSSStyleDeclaration>) {
-        nnn++
-        let selection = document.getSelection()
-
-        // let wrap = document.createElement('span')
-        // wrap.id = 'x_' + nnn
-        let range = selection.getRangeAt(0)
-
-        let content = range.extractContents()
-        let container = document.createDocumentFragment()
-
-        function is_span(node: Node): node is HTMLSpanElement {
-            return node.nodeName === 'SPAN'
-        }
-
-        function apply_style(element: HTMLElement) {
-            Object.entries(style).forEach(([k, v]) => {
-                element.style.setProperty(k, `${v}`)
-            })
-        }
-
-        content.childNodes.forEach(element => {
-            let e = element.cloneNode()
-            // console.log(e)
-
-            if (e.nodeType === Node.TEXT_NODE) {
-                let p = document.createElement('span')
-                p.className = '1'
-                p.appendChild(e)
-                apply_style(p)
-                container.appendChild(p)
-            } else if (is_span(e)) {
-                apply_style(e)
-                container.appendChild(e)
-            } else {
-                container.appendChild(e)
+        for (let n of p.childNodes) {
+            if (n == sc) {
+                groups.push(content.length + soff)
+                outrange = 0
             }
-        })
 
-        range.insertNode(container)
+            if (!outrange && n == ec) {
+                groups.push(content.length + eoff)
+                outrange = 1
+            }
 
-        // console.log('===============')
-        // console.log(
-        //     selection.anchorNode.cloneNode(),
-        //     selection.anchorNode.parentNode.cloneNode()
-        // )
-        // console.log(
-        //     selection.focusNode.cloneNode(),
-        //     selection.focusNode.parentNode.cloneNode()
-        // )
-        // console.log('------------------------------')
-        // content.childNodes.forEach(e => {
-        //     console.log(e.cloneNode())
-        // })
-        // wrap.appendChild(content)
-        // range.insertNode(wrap)
-        // console.log(content.textContent)
-
-        // content.childNodes.forEach(e => {
-        //     if (e.nodeType === Node.TEXT_NODE && !e.textContent) {
-        //         console.log(e.cloneNode())
-        //         e.remove()
-        //     }
-        // })
-
-        // if (!content.childNodes.length) return
-
-        // function check_nodes(n: Node): boolean {
-        //     if (n.childNodes.length != 1) return false
-        //
-        //     let target = n.childNodes[0]
-        //
-        //     if (target.nodeName === tag.toUpperCase()) {
-        //         wrap = document.createDocumentFragment()
-        //         let frag = document.createDocumentFragment()
-        //         target.childNodes.forEach(e => frag.appendChild(e.cloneNode()))
-        //         n.appendChild(frag)
-        //         target.remove()
-        //         return true
-        //     } else {
-        //         check_nodes(target)
-        //     }
-        // }
-        //
-        // check_nodes(content)
-        // if (!content.childNodes.length) return
-        // wrap.appendChild(content)
-        // range.insertNode(wrap)
-    }
-
-    function clear() {
-        let selection = document.getSelection()
-        let range = selection.getRangeAt(0)
-        let content = range.extractContents()
-        let new_content = document.createDocumentFragment()
-
-        function update_content(n: Node) {
-            n.childNodes.forEach(e => {
-                if (e.nodeType === Node.TEXT_NODE || e.nodeName === 'BR') {
-                    new_content.appendChild(e.cloneNode())
-                } else {
-                    update_content(e)
+            if (n.nodeType == Node.TEXT_NODE) {
+                content += n.textContent
+            } else if (n.nodeName == 'BR') {
+                content += '\n'
+            } else if (n.nodeName == 'SPAN') {
+                if (outrange) {
+                    groups.push(content.length)
                 }
-            })
+
+                for (let e of n.childNodes) {
+                    if (e == sc) {
+                        groups.push(content.length + soff)
+                        outrange = 0
+                    }
+
+                    if (!outrange && e == ec) {
+                        groups.push(content.length + eoff)
+                        outrange = 1
+                    }
+
+                    if (e.nodeType == Node.TEXT_NODE) {
+                        content += e.textContent
+                    } else if (e.nodeName == 'BR') {
+                        content += '\n'
+                    } else {
+                        content += e.textContent
+                    }
+                }
+                if (outrange) groups.push(content.length)
+            } else {
+                content += n.textContent
+            }
         }
 
-        update_content(content)
-        range.insertNode(new_content)
+        let grouped_content: string[][] = []
+
+        let last_g = 0
+        for (let [i, g] of groups.entries()) {
+            grouped_content.push(content.slice(last_g, g).split('\n'))
+            last_g = g
+            if (i == groups.length - 1) {
+                grouped_content.push(content.slice(last_g).split('\n'))
+            }
+        }
+
+        p.innerHTML = ''
+        grouped_content.forEach(g => {
+            if (!g.length || (g.length == 1 && !g[0])) return
+
+            let span = document.createElement('span')
+            span.id = 'g' + p.childNodes.length
+            g.forEach((t, i) => {
+                span.append(t)
+                if (i === g.length - 1) return
+                span.append(document.createElement('br'))
+            })
+            p.append(span)
+        })
     }
 
     return (
         <div class='text'>
             <button
                 onmousedown={e => e.preventDefault()}
-                onClick={() => clear()}
-            >
-                Clear
-            </button>
-            <button
-                onmousedown={e => e.preventDefault()}
                 onClick={() => new_group()}
             >
                 new Group
-            </button>
-            <button
-                onmousedown={e => e.preventDefault()}
-                onClick={() => surround({ fontSize: '20px' })}
-            >
-                BOLD
-            </button>
-            <button
-                onmousedown={e => e.preventDefault()}
-                onClick={() => surround({ fontStyle: 'italic' })}
-            >
-                Italic
-            </button>
-            <button
-                onmousedown={e => e.preventDefault()}
-                onClick={() => surround({ color: 'red' })}
-            >
-                Underline
             </button>
             <button
                 onmousedown={e => e.preventDefault()}
@@ -754,6 +401,20 @@ const TextConf: BlockComponent<TextBlock> = props => {
             >
                 Toggle Dir
             </button>
+            <Show when={target.span != null}>
+                <input
+                    type='color'
+                    onInput={e => {
+                        let color = e.currentTarget.value
+                        target.span.setAttribute('style', `color:${color};`)
+                        // target.span.style.color = e.currentTarget.value
+                        // console.log(span)
+                        // target.style.setProperty('color', e.currentTarget.value)
+                        // target.style = 'color: ' + e.currentTarget.value
+                        // target.style.color = e.currentTarget.value
+                    }}
+                />
+            </Show>
         </div>
     )
 }

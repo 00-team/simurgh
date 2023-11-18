@@ -1,4 +1,4 @@
-import { HackEffect } from '!/components/HackEffect'
+import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
 import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
