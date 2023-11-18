@@ -1,5 +1,6 @@
 import { HackEffect } from '!/components/HackEffect'
 import { Typing } from '!/components/typing'
+import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { useParams } from '@solidjs/router'
@@ -116,6 +117,18 @@ export const Project: Component = ({}) => {
                             </div>
                             <div class='project-records'></div>
                         </div>
+                        <div class='project-actions'>
+                            <button class='delete-project title_hero basic-button'>
+                                <DeleteIcon />
+                                DELETE
+                            </button>
+                            <button class='edit-project title_hero basic-button'>
+                                <span>
+                                    <EditIcon />
+                                    EDIT
+                                </span>
+                            </button>
+                        </div>
                     </article>
                 </div>
             ) : (
@@ -160,6 +173,7 @@ const BgSvg = () => {
             xmlns='http://www.w3.org/2000/svg'
             width='300'
             height='300'
+            class='project-bg-svg'
         >
             <g id='layer1' transform='translate(-13.374746,-84.437063)'>
                 <path
