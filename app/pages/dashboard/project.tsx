@@ -1,4 +1,6 @@
 import { HackEffect } from '!/components/HackEffect'
+import { Typing } from '!/components/typing'
+import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
 import { useParams } from '@solidjs/router'
@@ -69,7 +71,7 @@ export const Project: Component = ({}) => {
 
     return (
         <section class='project-container'>
-            {/* {project() && project().api_key ? (
+            {project() && project().api_key ? (
                 <div class='project-wrapper'>
                     <BgSvg />
                     <article class='project-data'>
@@ -129,9 +131,9 @@ export const Project: Component = ({}) => {
                         </div>
                     </article>
                 </div>
-            ) : ( */}
-            <ProjectLoading />
-            {/* )} */}
+            ) : (
+                <ProjectLoading />
+            )}
         </section>
     )
 }
