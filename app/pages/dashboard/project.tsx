@@ -86,27 +86,32 @@ export const Project: Component = ({}) => {
                                 <DetailRow
                                     holder='storage'
                                     data={`${project().storage.toString()} byte`}
-                                    delay={1500}
+                                    holderDelay={1200}
+                                    dataDelay={2200}
                                 />
                                 <DetailRow
                                     holder='blogs'
                                     data={project().blogs.toString()}
-                                    delay={1600}
+                                    holderDelay={1300}
+                                    dataDelay={2300}
                                 />
                                 <DetailRow
                                     holder='records'
                                     data={project().records.toString()}
-                                    delay={1700}
+                                    holderDelay={1400}
+                                    dataDelay={2400}
                                 />
                                 <DetailRow
                                     holder='created at'
                                     data={numberToDate(project().created_at)}
-                                    delay={1800}
+                                    holderDelay={1500}
+                                    dataDelay={2500}
                                 />
                                 <DetailRow
                                     holder='edited at'
                                     data={project().edited_at.toString()}
-                                    delay={1900}
+                                    holderDelay={1600}
+                                    dataDelay={2600}
                                 />
                             </div>
                             <div class='project-records'></div>
@@ -122,28 +127,24 @@ export const Project: Component = ({}) => {
 
 interface DetailRowProps {
     holder: string
+    holderDelay?: number
     data: string
-    delay?: number
+    dataDelay?: number
 }
 
-// project_id: number
-// creator: number
-// name: string
-// storage: string
-// blogs: string
-// records: number
-// created_at: number
-// edited_at: number
-// api_key: string | null
-
-const DetailRow: Component<DetailRowProps> = ({ holder, data, delay }) => {
+const DetailRow: Component<DetailRowProps> = ({
+    holder,
+    data,
+    dataDelay,
+    holderDelay,
+}) => {
     return (
         <div class='detail-row'>
             <div class='holder'>
-                <HackEffect sentence={holder} delay={delay} />
+                <HackEffect sentence={holder} delay={holderDelay} />
             </div>
             <div class='data'>
-                <HackEffect sentence={data} delay={delay + 100} />
+                <HackEffect sentence={data} delay={dataDelay} />
             </div>
         </div>
     )
