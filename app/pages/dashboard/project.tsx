@@ -34,7 +34,6 @@ export const Project: Component = ({}) => {
 
         return newDate
     }
-
     const playAudio = () => {
         audio().play()
     }
