@@ -72,8 +72,14 @@
                         display: inline-block;
 
                         span {
+                            &:hover {
+                                outline: 2px solid red;
+                            }
+                            &.active {
+                                outline: 2px solid cyan;
+                            }
                             // margin: 10px;
-                            outline: 1px solid red;
+                            // outline: 1px solid red;
                             // outline-offset: 2px;
                             // letter-spacing: 10px;
                         }

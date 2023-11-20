@@ -90,7 +90,12 @@ export default () => {
                                 [b.type]: true,
                             }}
                             onMouseDown={() =>
-                                setState({ active: { id: i, type: b.type } })
+                                setState(
+                                    produce(s => {
+                                        s.active.id = i
+                                        s.active.type = b.type
+                                    })
+                                )
                             }
                         >
                             {block_map[b.type]({
@@ -199,14 +204,6 @@ const TextComp: BlockComponent<TextBlock> = props => {
                         ? true
                         : 'plaintext-only'
                 }
-                onBlur={e => {
-                    props.setState(
-                        produce(s => {
-                            // @ts-ignore
-                            s.blocks[props.id].html = e.currentTarget.innerHTML
-                        })
-                    )
-                }}
                 innerHTML={props.block.html}
             ></p>
         </>
@@ -232,11 +229,25 @@ const TextConf: BlockComponent<TextBlock> = props => {
     let p = editor.querySelector<HTMLParagraphElement>(
         '.block.text p#block_paragraph_' + id
     )
-    const [target, setTarget] = createStore<{ span: HTMLSpanElement | null }>(
-        null
-    )
+    type Target = {
+        span: HTMLSpanElement | null
+    }
+    const [target, setTarget] = createStore<Target>({ span: null })
 
     onMount(() => {
+        // p.querySelectorAll('span').forEach(e => {
+        //     e.onmousedown = () => {
+        //         setTarget(
+        //             produce(s => {
+        //                 if (s.span) s.span.classList.remove('active')
+        //                 s.span = e
+        //             })
+        //         )
+        //         e.classList.add('active')
+        //     }
+        // })
+
+        /*
         document.onselectionchange = () => {
             let s = document.getSelection()
             if (!s.rangeCount) return
@@ -244,42 +255,71 @@ const TextConf: BlockComponent<TextBlock> = props => {
             if (!r.collapsed) return
             let node = r.startContainer
 
-            console.log(node, node.parentElement)
+            console.log(node, node.parentElement, p.contains(node))
 
-            setTarget({ span: null })
+            if (!p.contains(node)) {
+                // if (p.contentEditable == 'false') {
+                //     // @ts-ignore checking for firefox
+                //     if (typeof InstallTrigger !== 'undefined') {
+                //         p.contentEditable = 'true'
+                //     } else {
+                //         p.contentEditable = 'plaintext-only'
+                //     }
+                // }
 
-            if (!p.contains(node)) return
+                return
+            }
 
             if (node instanceof HTMLSpanElement) {
-                setTarget({
-                    span: document.querySelector(
-                        `.block.text p#block_paragraph_${id} span#g${node.id}`
-                    ),
-                })
+                // p.contentEditable = 'false'
+                setTarget({ span: node })
                 return
             }
 
             if (node.parentElement instanceof HTMLSpanElement) {
-                setTarget({
-                    span: document.querySelector(
-                        `.block.text p#block_paragraph_${id} span#g${node.parentElement.id}`
-                    ),
-                })
+                // p.contentEditable = 'false'
+                setTarget({ span: node.parentElement })
                 return
             }
-        }
 
-        // p.onclick = e => {
-        //     if (e.target instanceof HTMLSpanElement) {
-        //         setTarget({ span: e.target })
-        //     } else {
-        //         setTarget({ span: null })
-        //     }
-        // }
+            setTarget({ span: null })
+
+            // if (!target.span) {
+            //     if (p.contentEditable == 'false') {
+            //         // @ts-ignore checking for firefox
+            //         if (typeof InstallTrigger !== 'undefined') {
+            //             p.contentEditable = 'true'
+            //         } else {
+            //             p.contentEditable = 'plaintext-only'
+            //         }
+            //     }
+            //
+            //     return
+            // }
+        }
+        */
+
+        p.onmousedown = e => {
+            if (e.target instanceof HTMLSpanElement) {
+                console.log(e.target.getAttribute('style'))
+                e.target.classList.add('active')
+                setTarget({ span: e.target })
+            } else {
+                setTarget(s => {
+                    if (s.span) s.span.classList.remove('active')
+                    return { span: null }
+                })
+            }
+        }
     })
 
     onCleanup(() => {
-        // p.onclick = null
+        console.log('cleanup')
+        p.querySelectorAll('span').forEach(e => {
+            e.classList.remove('active')
+        })
+        p.onmousedown = null
+        p.onclick = null
         document.onselectionchange = null
     })
 
@@ -305,7 +345,9 @@ const TextConf: BlockComponent<TextBlock> = props => {
         }
 
         type GroupData = {
+            start: number
             style: string
+            content: string[]
         }
 
         let content = ''
@@ -328,9 +370,14 @@ const TextConf: BlockComponent<TextBlock> = props => {
                 content += n.textContent
             } else if (n.nodeName == 'BR') {
                 content += '\n'
-            } else if (n.nodeName == 'SPAN') {
+            } else if (n instanceof HTMLSpanElement) {
                 if (outrange) {
                     groups.push(content.length)
+                    data.push({
+                        start: content.length,
+                        style: n.getAttribute('style') || '',
+                        content: [],
+                    })
                 }
 
                 for (let e of n.childNodes) {
@@ -358,26 +405,52 @@ const TextConf: BlockComponent<TextBlock> = props => {
             }
         }
 
-        let grouped_content: string[][] = []
+        console.log(data.length, groups.length)
+
+        let grouped_content: GroupData[] = []
 
         let last_g = 0
         for (let [i, g] of groups.entries()) {
-            grouped_content.push(content.slice(last_g, g).split('\n'))
+            let c = content.slice(last_g, g).split('\n')
+            let d = data.find(x => {
+                if (x.start == last_g) {
+                    x.content = c
+                    return x
+                }
+                return null
+            }) || { start: g, style: '', content: c }
+
+            // console.log(d)
+            grouped_content.push(d)
+
             last_g = g
             if (i == groups.length - 1) {
-                grouped_content.push(content.slice(last_g).split('\n'))
+                let c = content.slice(last_g).split('\n')
+                let d = data.find(x => {
+                    if (x.start == last_g) {
+                        x.content = c
+                        return x
+                    }
+                    return null
+                }) || { start: last_g, style: '', content: c }
+                grouped_content.push(d)
             }
         }
 
+        console.log(grouped_content.length)
+
         p.innerHTML = ''
         grouped_content.forEach(g => {
-            if (!g.length || (g.length == 1 && !g[0])) return
+            console.log(g)
+            if (!g.content.length || (g.content.length == 1 && !g.content[0]))
+                return
 
             let span = document.createElement('span')
             span.id = 'g' + p.childNodes.length
-            g.forEach((t, i) => {
+            span.setAttribute('style', g.style)
+            g.content.forEach((t, i, a) => {
                 span.append(t)
-                if (i === g.length - 1) return
+                if (i === a.length - 1) return
                 span.append(document.createElement('br'))
             })
             p.append(span)
@@ -385,7 +458,7 @@ const TextConf: BlockComponent<TextBlock> = props => {
     }
 
     return (
-        <div class='text'>
+        <div class='text' onMouseEnter={() => {}}>
             <button
                 onmousedown={e => e.preventDefault()}
                 onClick={() => new_group()}
@@ -404,14 +477,38 @@ const TextConf: BlockComponent<TextBlock> = props => {
             <Show when={target.span != null}>
                 <input
                     type='color'
+                    value={
+                        target.span.style.color
+                            ? '#' +
+                              target.span.style.color
+                                  .slice(4, -1)
+                                  .split(', ')
+                                  .map(i =>
+                                      parseInt(i).toString(16).padStart(2, '0')
+                                  )
+                                  .join('')
+                            : '#ffffff'
+                    }
                     onInput={e => {
                         let color = e.currentTarget.value
-                        target.span.setAttribute('style', `color:${color};`)
-                        // target.span.style.color = e.currentTarget.value
-                        // console.log(span)
-                        // target.style.setProperty('color', e.currentTarget.value)
-                        // target.style = 'color: ' + e.currentTarget.value
-                        // target.style.color = e.currentTarget.value
+                        target.span.style.color = color
+                    }}
+                />
+                <input
+                    type='number'
+                    min={0}
+                    max={720}
+                    value={
+                        target.span.style.fontSize
+                            ? target.span.style.fontSize.slice(0, -2)
+                            : 18
+                    }
+                    onInput={e => {
+                        let value = e.currentTarget.value
+                        if (!value) return
+                        let size = parseInt(value)
+                        if (size < 0 || size > 720) return
+                        target.span.style.fontSize = size + 'px'
                     }}
                 />
             </Show>

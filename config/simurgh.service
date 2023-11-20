@@ -1,6 +1,6 @@
 [Unit]
 Description=Simurgh Gunicorn
-After=syslog.target
+After=syslog.target redis_simurgh.service
 
 [Service]
 ExecStart=/simurgh/.env/bin/gunicorn --config /simurgh/config/gunicorn.py
