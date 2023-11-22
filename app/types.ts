@@ -10,4 +10,15 @@ type ProjectModel = {
     api_key: string | null
 }
 
-export type { ProjectModel }
+type ProjectRecord = {
+    record_id: number
+    project: number
+    size: number
+    mime: string
+    ext: string
+    timestamp: number
+    url: string
+    name: string
+}
+
+export type { ProjectModel, ProjectRecord }
