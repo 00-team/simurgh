@@ -1,9 +1,10 @@
+import { setAlertState } from '!/components/alert'
 import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
 import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
-import { useParams } from '@solidjs/router'
+import { useNavigate, useParams } from '@solidjs/router'
 import {
     Component,
     createEffect,
@@ -15,6 +16,7 @@ import {
 import './style/project.scss'
 
 export const Project: Component = ({}) => {
+    const navigate = useNavigate()
     const param = useParams<{ id: string }>()
 
     const [project, setProject] = createSignal<ProjectModel | null>()
@@ -39,6 +41,18 @@ export const Project: Component = ({}) => {
     }
     const pauseAudio = () => {
         audio().pause()
+    }
+
+    function deleteProject() {
+        httpx({
+            url: `/api/projects/${param.id}/`,
+            method: 'DELETE',
+            onLoad(x) {
+                if (x.status === 200) return navigate('/projects')
+            },
+        })
+
+        return
     }
 
     onMount(() => {
@@ -143,7 +157,10 @@ export const Project: Component = ({}) => {
                             </div>
                         </div>
                         <div class='project-actions'>
-                            <button class='delete-project title_hero basic-button'>
+                            <button
+                                class='delete-project title_hero basic-button'
+                                onclick={() => deleteProject()}
+                            >
                                 <DeleteIcon />
                                 DELETE
                             </button>
