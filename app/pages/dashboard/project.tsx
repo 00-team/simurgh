@@ -19,6 +19,8 @@ export const Project: Component = ({}) => {
     const param = useParams<{ id: string }>()
 
     const [records, setRecords] = createSignal<ProjectRecord[] | null>(null)
+    const [activeRecord, setActiverecord] = createSignal(0)
+
     const [project, setProject] = createSignal<ProjectModel | null>(null)
     const [audio, setAudio] = createSignal<HTMLAudioElement | null>(
         new Audio('/static/audio/typing.mp3')
@@ -91,7 +93,7 @@ export const Project: Component = ({}) => {
     })
 
     createEffect(() => {
-        console.log(records())
+        console.log(activeRecord())
     })
 
     onCleanup(() => {
@@ -156,6 +158,9 @@ export const Project: Component = ({}) => {
                                                     style={{
                                                         'animation-delay': `4.${index}s`,
                                                     }}
+                                                    onclick={() =>
+                                                        setActiverecord(index)
+                                                    }
                                                 >
                                                     <img
                                                         src={record.url}
@@ -168,7 +173,11 @@ export const Project: Component = ({}) => {
 
                                 <div class='main-img'>
                                     <img
-                                        src={`https://picsum.photos/500/500`}
+                                        src={
+                                            records()[activeRecord()]
+                                                ? records()[activeRecord()].url
+                                                : `https://picsum.photos/500/500`
+                                        }
                                         alt=''
                                     />
                                 </div>
