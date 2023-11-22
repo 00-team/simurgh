@@ -1,13 +1,6 @@
 import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import './style/blog-editor.scss'
-import {
-    Component,
-    Show,
-    createEffect,
-    createSignal,
-    onCleanup,
-    onMount,
-} from 'solid-js'
+import { Component, Show, createSignal, onCleanup, onMount } from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
 // import { onCleanup, onMount } from 'solid-js'
 
@@ -15,9 +8,14 @@ type EmptyBlock = {
     type: 'empty'
 }
 
+type TextGroupData = {
+    content: string[]
+    style?: string
+}
+
 type TextBlock = {
     type: 'text'
-    html: string
+    data: TextGroupData[]
 }
 
 type ImageBlock = {
@@ -30,7 +28,7 @@ type Block = TextBlock | ImageBlock | EmptyBlock
 
 const DEFAULT_BLOCKS: { [T in Block as T['type']]: T } = {
     empty: { type: 'empty' },
-    text: { type: 'text', html: '' },
+    text: { type: 'text', data: [] },
     image: { type: 'image', url: '', record_id: -1 },
 }
 
@@ -60,12 +58,16 @@ let editor: HTMLDivElement
 export default () => {
     const [state, setState] = createStore<StateModel>({
         blocks: [
-            { type: 'text', html: '' },
+            { type: 'text', data: [] },
             DEFAULT_BLOCKS.empty,
             {
                 type: 'text',
-                // html: `12<br /><br /><br /><br />345<br /><br /><br /><br />213`,
-                html: `01<span><br/><br/>2345678<br/></span>very cool<span>ass<br />asdas</span>asd`,
+                data: [
+                    { content: ['01'] },
+                    { content: ['2345678abcdefg'], style: 'color: lime;' },
+                    { content: ['very cool'] },
+                    { content: ['this is good stuff'] },
+                ],
             },
         ],
         active: {
@@ -73,9 +75,6 @@ export default () => {
             type: 'text',
         },
     })
-
-    // onMount(() => {})
-    // onCleanup(() => {})
 
     return (
         <div class='blog-editor-fnd'>
@@ -176,7 +175,7 @@ const EmptyComp: BlockComponent<EmptyBlock> = props => {
 }
 
 const TextComp: BlockComponent<TextBlock> = props => {
-    const [placeholder, setPlaceholder] = createSignal(!props.block.html)
+    const [placeholder, setPlaceholder] = createSignal(!props.block.data.length)
 
     return (
         <>
@@ -204,14 +203,24 @@ const TextComp: BlockComponent<TextBlock> = props => {
                         ? true
                         : 'plaintext-only'
                 }
-                innerHTML={props.block.html}
-            ></p>
+            >
+                {props.block.data.map(g => (
+                    <span style={g.style}>
+                        {g.content.map((line, i, a) => (
+                            <>
+                                {line}
+                                {i != a.length - 1 ? <br /> : <></>}
+                            </>
+                        ))}
+                    </span>
+                ))}
+            </p>
         </>
     )
 }
 
 const ImageComp: BlockComponent<ImageBlock> = props => {
-    return <>IMAGE</>
+    return <>IMAGE - {props.id}</>
 }
 
 const block_map: BlockMap = {
@@ -300,15 +309,15 @@ const TextConf: BlockComponent<TextBlock> = props => {
         */
 
         p.onmousedown = e => {
+            p.querySelectorAll('span').forEach(e => {
+                e.classList.remove('active')
+            })
+
             if (e.target instanceof HTMLSpanElement) {
-                console.log(e.target.getAttribute('style'))
                 e.target.classList.add('active')
                 setTarget({ span: e.target })
             } else {
-                setTarget(s => {
-                    if (s.span) s.span.classList.remove('active')
-                    return { span: null }
-                })
+                setTarget({ span: null })
             }
         }
     })
@@ -323,11 +332,11 @@ const TextConf: BlockComponent<TextBlock> = props => {
         document.onselectionchange = null
     })
 
-    function new_group() {
+    function new_group(): TextGroupData[] | null {
         let selection = document.getSelection()
-        if (!selection.rangeCount) return
+        if (!selection.rangeCount) return null
         let range = selection.getRangeAt(0)
-        if (range.collapsed) return
+        if (range.collapsed) return null
 
         let sc = range.startContainer
         let ec = range.endContainer
@@ -344,15 +353,9 @@ const TextConf: BlockComponent<TextBlock> = props => {
             eoff = 0
         }
 
-        type GroupData = {
-            start: number
-            style: string
-            content: string[]
-        }
-
         let content = ''
         let groups: number[] = []
-        let data: GroupData[] = []
+        let data: Map<number, TextGroupData> = new Map()
         let outrange = -1
 
         for (let n of p.childNodes) {
@@ -373,9 +376,8 @@ const TextConf: BlockComponent<TextBlock> = props => {
             } else if (n instanceof HTMLSpanElement) {
                 if (outrange) {
                     groups.push(content.length)
-                    data.push({
-                        start: content.length,
-                        style: n.getAttribute('style') || '',
+                    data.set(content.length, {
+                        style: n.getAttribute('style'),
                         content: [],
                     })
                 }
@@ -388,6 +390,10 @@ const TextConf: BlockComponent<TextBlock> = props => {
 
                     if (!outrange && e == ec) {
                         groups.push(content.length + eoff)
+                        data.set(content.length + eoff, {
+                            style: n.getAttribute('style'),
+                            content: [],
+                        })
                         outrange = 1
                     }
 
@@ -405,63 +411,68 @@ const TextConf: BlockComponent<TextBlock> = props => {
             }
         }
 
-        console.log(data.length, groups.length)
-
-        let grouped_content: GroupData[] = []
+        let grouped_content: TextGroupData[] = []
 
         let last_g = 0
         for (let [i, g] of groups.entries()) {
             let c = content.slice(last_g, g).split('\n')
-            let d = data.find(x => {
-                if (x.start == last_g) {
-                    x.content = c
-                    return x
-                }
-                return null
-            }) || { start: g, style: '', content: c }
+            let d = data.get(last_g)
 
-            // console.log(d)
-            grouped_content.push(d)
+            if (d) {
+                grouped_content.push({ ...d, content: c })
+            } else {
+                grouped_content.push({ style: '', content: c })
+            }
 
             last_g = g
             if (i == groups.length - 1) {
                 let c = content.slice(last_g).split('\n')
-                let d = data.find(x => {
-                    if (x.start == last_g) {
-                        x.content = c
-                        return x
-                    }
-                    return null
-                }) || { start: last_g, style: '', content: c }
-                grouped_content.push(d)
+                let d = data.get(last_g)
+
+                if (d) {
+                    grouped_content.push({ ...d, content: c })
+                } else {
+                    grouped_content.push({ style: '', content: c })
+                }
             }
         }
 
-        console.log(grouped_content.length)
+        return grouped_content
 
-        p.innerHTML = ''
-        grouped_content.forEach(g => {
-            console.log(g)
-            if (!g.content.length || (g.content.length == 1 && !g.content[0]))
-                return
-
-            let span = document.createElement('span')
-            span.id = 'g' + p.childNodes.length
-            span.setAttribute('style', g.style)
-            g.content.forEach((t, i, a) => {
-                span.append(t)
-                if (i === a.length - 1) return
-                span.append(document.createElement('br'))
-            })
-            p.append(span)
-        })
+        // p.innerHTML = ''
+        // grouped_content.forEach(g => {
+        //     console.log(g)
+        //     if (!g.content.length || (g.content.length == 1 && !g.content[0]))
+        //         return
+        //
+        //     let span = document.createElement('span')
+        //     span.id = 'g' + p.childNodes.length
+        //     span.setAttribute('style', g.style)
+        //     g.content.forEach((t, i, a) => {
+        //         span.append(t)
+        //         if (i === a.length - 1) return
+        //         span.append(document.createElement('br'))
+        //     })
+        //     p.append(span)
+        // })
     }
 
     return (
         <div class='text' onMouseEnter={() => {}}>
             <button
                 onmousedown={e => e.preventDefault()}
-                onClick={() => new_group()}
+                onClick={() => {
+                    let res = new_group()
+
+                    if (res !== null) {
+                        props.setState(
+                            produce(s => {
+                                // @ts-ignore
+                                s.blocks[props.id].data = res
+                            })
+                        )
+                    }
+                }}
             >
                 new Group
             </button>
