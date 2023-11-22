@@ -104,8 +104,7 @@ section.project-container {
 
                 width: 100%;
                 flex: 1 0 0;
-
-                margin-top: 4vh;
+                height: clamp(0px, 100%, 480px);
 
                 .details {
                     width: clamp(0px, 50%, 500px);
@@ -120,12 +119,90 @@ section.project-container {
                     font-family: 'graduate';
                     text-transform: uppercase;
 
+                    margin-top: 4vh;
+
                     .detail-row {
                         width: 100%;
 
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
+                    }
+                }
+                .project-records {
+                    flex: 1 0 0;
+                    height: 100%;
+
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: center;
+                    gap: calc(2vw + 5px);
+
+                    .main-img {
+                        width: 50%;
+                        aspect-ratio: 1/1;
+
+                        background-color: grey;
+                    }
+
+                    .other-imgs {
+                        height: 100%;
+
+                        display: flex;
+                        align-items: center;
+                        flex-direction: column;
+                        gap: calc(2vh + 5px);
+
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                        padding: 0.5rem 1rem;
+
+                        .other-img {
+                            width: 90px;
+                            aspect-ratio: 1.1/1;
+
+                            position: relative;
+
+                            rotate: 0deg;
+                            left: -200%;
+
+                            flex-shrink: 0;
+
+                            clip-path: polygon(
+                                25% 0%,
+                                75% 0%,
+                                100% 50%,
+                                75% 100%,
+                                25% 100%,
+                                0% 50%
+                            );
+
+                            cursor: pointer;
+
+                            overflow: hidden;
+
+                            transform-origin: center center;
+                            animation: rotateHexagon 1s forwards
+                                cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+                            @keyframes rotateHexagon {
+                                from {
+                                    rotate: 0deg;
+                                    left: -200%;
+                                }
+
+                                to {
+                                    rotate: 360deg;
+                                    left: 0%;
+                                }
+                            }
+
+                            img {
+                                max-height: 100%;
+                                width: 100%;
+                                object-fit: cover;
+                            }
+                        }
                     }
                 }
             }
