@@ -3,7 +3,7 @@ import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
 import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
-import { ProjectModel } from '!/types'
+import { ProjectModel, ProjectRecord } from '!/types'
 import { useNavigate, useParams } from '@solidjs/router'
 import {
     Component,
@@ -19,7 +19,10 @@ export const Project: Component = ({}) => {
     const navigate = useNavigate()
     const param = useParams<{ id: string }>()
 
-    const [project, setProject] = createSignal<ProjectModel | null>()
+    const [records, setRecords] = createSignal<ProjectRecord[] | 'none' | null>(
+        null
+    )
+    const [project, setProject] = createSignal<ProjectModel | null>(null)
     const [audio, setAudio] = createSignal<HTMLAudioElement | null>(
         new Audio('/static/audio/typing.mp3')
     )
@@ -66,6 +69,14 @@ export const Project: Component = ({}) => {
                 if (x.status === 200) return setProject(x.response)
             },
         })
+        httpx({
+            url: `/api/projects/${param.id}/records/`,
+            method: 'GET',
+            type: 'json',
+            onLoad(x) {
+                if (x.status === 200) setRecords(x.response)
+            },
+        })
     })
 
     createEffect(() => {
@@ -76,6 +87,10 @@ export const Project: Component = ({}) => {
         }
     })
 
+    createEffect(() => {
+        console.log(records())
+    })
+
     onCleanup(() => {
         pauseAudio()
         setAudio(null)
@@ -84,7 +99,7 @@ export const Project: Component = ({}) => {
 
     return (
         <section class='project-container'>
-            {project() && project().api_key ? (
+            {project() && project().api_key && records() ? (
                 <div class='project-wrapper'>
                     <BgSvg />
                     <article class='project-data'>
@@ -130,7 +145,7 @@ export const Project: Component = ({}) => {
                             </div>
                             <div class='project-records'>
                                 <div class='other-imgs'>
-                                    {Array.from(Array(5).keys()).map(
+                                    {Array.from(Array(3).keys()).map(
                                         (_, index) => {
                                             return (
                                                 <div
