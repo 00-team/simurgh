@@ -253,6 +253,16 @@ section.project-container {
                         overflow-x: hidden;
                         padding: 0.5rem 1rem;
 
+                        &::-webkit-scrollbar {
+                            width: 7px;
+                        }
+
+                        &::-webkit-scrollbar-thumb {
+                            background-color: var(--sixty-percent);
+                            border: 0px solid white;
+                            border-radius: 20px;
+                        }
+
                         .other-img {
                             width: 90px;
                             aspect-ratio: 1.1/1;
