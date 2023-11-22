@@ -1,4 +1,3 @@
-import { setAlertState } from '!/components/alert'
 import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
 import { DeleteIcon, EditIcon } from '!/icons/dashboard'
@@ -19,9 +18,7 @@ export const Project: Component = ({}) => {
     const navigate = useNavigate()
     const param = useParams<{ id: string }>()
 
-    const [records, setRecords] = createSignal<ProjectRecord[] | 'none' | null>(
-        null
-    )
+    const [records, setRecords] = createSignal<ProjectRecord[] | null>(null)
     const [project, setProject] = createSignal<ProjectModel | null>(null)
     const [audio, setAudio] = createSignal<HTMLAudioElement | null>(
         new Audio('/static/audio/typing.mp3')
@@ -74,7 +71,13 @@ export const Project: Component = ({}) => {
             method: 'GET',
             type: 'json',
             onLoad(x) {
-                if (x.status === 200) setRecords(x.response)
+                if (x.status === 200) {
+                    if (x.response.length >= 1) {
+                        setRecords(x.response)
+                    } else {
+                        setRecords([])
+                    }
+                }
             },
         })
     })
@@ -145,8 +148,8 @@ export const Project: Component = ({}) => {
                             </div>
                             <div class='project-records'>
                                 <div class='other-imgs'>
-                                    {Array.from(Array(3).keys()).map(
-                                        (_, index) => {
+                                    {records().length >= 2 &&
+                                        records().map((record, index) => {
                                             return (
                                                 <div
                                                     class='other-img'
@@ -155,14 +158,14 @@ export const Project: Component = ({}) => {
                                                     }}
                                                 >
                                                     <img
-                                                        src={`https://picsum.photos/300/30${index}`}
+                                                        src={record.url}
                                                         alt=''
                                                     />
                                                 </div>
                                             )
-                                        }
-                                    )}
+                                        })}
                                 </div>
+
                                 <div class='main-img'>
                                     <img
                                         src={`https://picsum.photos/500/500`}
