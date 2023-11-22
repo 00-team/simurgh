@@ -142,9 +142,105 @@ section.project-container {
                         width: 50%;
                         aspect-ratio: 1/1;
 
-                        background-color: grey;
-                    }
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
 
+                        position: relative;
+                        isolation: isolate;
+                        overflow: hidden;
+
+                        &::before,
+                        &::after {
+                            content: '';
+
+                            position: absolute;
+
+                            width: 150%;
+                            height: 150%;
+
+                            background-color: black;
+
+                            transform-origin: center center;
+                            rotate: 45deg;
+
+                            z-index: 1;
+                        }
+
+                        &::after {
+                            transform: translateX(200%);
+
+                            top: 26%;
+                            right: 30%;
+
+                            border-top: 1px solid white;
+
+                            animation: img-block-after 2s 3s
+                                cubic-bezier(0.45, 0.02, 0.09, 0.98) forwards;
+
+                            @keyframes img-block-after {
+                                0% {
+                                    transform: translateX(200%);
+                                }
+                                50% {
+                                    transform: translateX(0%);
+                                }
+                                60% {
+                                    transform: translateX(0%);
+                                }
+                                100% {
+                                    transform: translateX(0%) translateY(43%);
+                                }
+                            }
+                        }
+                        &::before {
+                            transform: translateX(-200%);
+
+                            bottom: 26%;
+                            left: 29%;
+
+                            border-bottom: 1px solid white;
+
+                            animation: img-block-before 2s 3s
+                                cubic-bezier(0.45, 0.02, 0.09, 0.98) forwards;
+
+                            @keyframes img-block-before {
+                                0% {
+                                    transform: translateX(-200%);
+                                }
+                                50% {
+                                    transform: translateX(0%);
+                                }
+                                60% {
+                                    transform: translateX(0%);
+                                }
+                                100% {
+                                    transform: translateX(0%) translateY(-43%);
+                                }
+                            }
+                        }
+
+                        img {
+                            object-fit: contain;
+
+                            width: 0%;
+                            max-height: 0%;
+
+                            animation: project-main-img 0.1s 4s forwards;
+
+                            @keyframes project-main-img {
+                                from {
+                                    width: 0%;
+                                    max-height: 0%;
+                                }
+                                to {
+                                    height: 100%;
+                                    width: 100%;
+                                    max-height: 100%;
+                                }
+                            }
+                        }
+                    }
                     .other-imgs {
                         height: 100%;
 
