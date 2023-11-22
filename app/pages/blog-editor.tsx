@@ -2,7 +2,10 @@ import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import './style/blog-editor.scss'
 import { Component, Show, createSignal, onCleanup, onMount } from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
-// import { onCleanup, onMount } from 'solid-js'
+
+const CONTENT_IS_EDITABLE =
+    // @ts-ignore checking for firefox
+    typeof InstallTrigger !== 'undefined' ? true : 'plaintext-only'
 
 type EmptyBlock = {
     type: 'empty'
@@ -10,12 +13,19 @@ type EmptyBlock = {
 
 type TextGroupData = {
     content: string[]
-    style?: string
+    style: {
+        color?: string
+        fontSize?: number
+    }
 }
 
 type TextBlock = {
     type: 'text'
     data: TextGroupData[]
+    active: number
+    style: {
+        direction?: 'ltr' | 'rtl'
+    }
 }
 
 type ImageBlock = {
@@ -28,7 +38,12 @@ type Block = TextBlock | ImageBlock | EmptyBlock
 
 const DEFAULT_BLOCKS: { [T in Block as T['type']]: T } = {
     empty: { type: 'empty' },
-    text: { type: 'text', data: [] },
+    text: {
+        type: 'text',
+        data: [],
+        active: -1,
+        style: {},
+    },
     image: { type: 'image', url: '', record_id: -1 },
 }
 
@@ -58,16 +73,21 @@ let editor: HTMLDivElement
 export default () => {
     const [state, setState] = createStore<StateModel>({
         blocks: [
-            { type: 'text', data: [] },
+            DEFAULT_BLOCKS.text,
             DEFAULT_BLOCKS.empty,
             {
                 type: 'text',
                 data: [
-                    { content: ['01'] },
-                    { content: ['2345678abcdefg'], style: 'color: lime;' },
-                    { content: ['very cool'] },
-                    { content: ['this is good stuff'] },
+                    { content: ['01'], style: {} },
+                    {
+                        content: ['2345678abcdefg'],
+                        style: { color: '#00ff00' },
+                    },
+                    { content: ['very cool'], style: {} },
+                    { content: ['this is good stuff'], style: {} },
                 ],
+                active: -1,
+                style: {},
             },
         ],
         active: {
@@ -174,42 +194,61 @@ const EmptyComp: BlockComponent<EmptyBlock> = props => {
     )
 }
 
-const TextComp: BlockComponent<TextBlock> = props => {
-    const [placeholder, setPlaceholder] = createSignal(!props.block.data.length)
+const TextComp: BlockComponent<TextBlock> = P => {
+    const [placeholder, setPlaceholder] = createSignal(!P.block.data.length)
 
     return (
         <>
             {placeholder() && <span class='placeholder'>Enter Text Here</span>}
             <p
-                id={`block_paragraph_${props.id}`}
+                id={`block_paragraph_${P.id}`}
+                onMouseDown={() => {
+                    P.setState(
+                        produce(s => {
+                            // @ts-ignore
+                            s.blocks[P.id].active = -1
+                        })
+                    )
+                }}
                 onInput={e => {
-                    if (props.state.active.id != props.id) {
-                        props.setState({
-                            active: { id: props.id, type: props.block.type },
+                    if (P.state.active.id != P.id) {
+                        P.setState({
+                            active: { id: P.id, type: P.block.type },
                         })
                     }
                     setPlaceholder(!e.currentTarget.innerHTML)
                 }}
                 onFocus={() => {
-                    if (props.state.active.id != props.id) {
-                        props.setState({
-                            active: { id: props.id, type: props.block.type },
+                    if (P.state.active.id != P.id) {
+                        P.setState({
+                            active: { id: P.id, type: P.block.type },
                         })
                     }
                 }}
-                contenteditable={
-                    // @ts-ignore checking for firefox
-                    typeof InstallTrigger !== 'undefined'
-                        ? true
-                        : 'plaintext-only'
-                }
+                contenteditable={CONTENT_IS_EDITABLE}
             >
-                {props.block.data.map(g => (
-                    <span style={g.style}>
-                        {g.content.map((line, i, a) => (
+                {P.block.data.map((g, i) => (
+                    <span
+                        data-style={JSON.stringify(g.style)}
+                        style={{
+                            color: g.style.color,
+                            'font-size': g.style.fontSize + 'px',
+                        }}
+                        classList={{ active: P.block.active == i }}
+                        onMouseDown={e => {
+                            e.stopPropagation()
+                            P.setState(
+                                produce(s => {
+                                    // @ts-ignore
+                                    s.blocks[P.id].active = i
+                                })
+                            )
+                        }}
+                    >
+                        {g.content.map((line, i1, a) => (
                             <>
                                 {line}
-                                {i != a.length - 1 ? <br /> : <></>}
+                                {i1 != a.length - 1 ? <br /> : <></>}
                             </>
                         ))}
                     </span>
@@ -233,106 +272,22 @@ const ImageConf: BlockComponent<ImageBlock> = props => {
     return <>{props.block.type}</>
 }
 
-const TextConf: BlockComponent<TextBlock> = props => {
-    let id = props.state.active.id
-    let p = editor.querySelector<HTMLParagraphElement>(
-        '.block.text p#block_paragraph_' + id
-    )
-    type Target = {
-        span: HTMLSpanElement | null
-    }
-    const [target, setTarget] = createStore<Target>({ span: null })
-
-    onMount(() => {
-        // p.querySelectorAll('span').forEach(e => {
-        //     e.onmousedown = () => {
-        //         setTarget(
-        //             produce(s => {
-        //                 if (s.span) s.span.classList.remove('active')
-        //                 s.span = e
-        //             })
-        //         )
-        //         e.classList.add('active')
-        //     }
-        // })
-
-        /*
-        document.onselectionchange = () => {
-            let s = document.getSelection()
-            if (!s.rangeCount) return
-            let r = s.getRangeAt(0)
-            if (!r.collapsed) return
-            let node = r.startContainer
-
-            console.log(node, node.parentElement, p.contains(node))
-
-            if (!p.contains(node)) {
-                // if (p.contentEditable == 'false') {
-                //     // @ts-ignore checking for firefox
-                //     if (typeof InstallTrigger !== 'undefined') {
-                //         p.contentEditable = 'true'
-                //     } else {
-                //         p.contentEditable = 'plaintext-only'
-                //     }
-                // }
-
-                return
-            }
-
-            if (node instanceof HTMLSpanElement) {
-                // p.contentEditable = 'false'
-                setTarget({ span: node })
-                return
-            }
-
-            if (node.parentElement instanceof HTMLSpanElement) {
-                // p.contentEditable = 'false'
-                setTarget({ span: node.parentElement })
-                return
-            }
-
-            setTarget({ span: null })
-
-            // if (!target.span) {
-            //     if (p.contentEditable == 'false') {
-            //         // @ts-ignore checking for firefox
-            //         if (typeof InstallTrigger !== 'undefined') {
-            //             p.contentEditable = 'true'
-            //         } else {
-            //             p.contentEditable = 'plaintext-only'
-            //         }
-            //     }
-            //
-            //     return
-            // }
-        }
-        */
-
-        p.onmousedown = e => {
-            p.querySelectorAll('span').forEach(e => {
-                e.classList.remove('active')
-            })
-
-            if (e.target instanceof HTMLSpanElement) {
-                e.target.classList.add('active')
-                setTarget({ span: e.target })
-            } else {
-                setTarget({ span: null })
-            }
-        }
-    })
+const TextConf: BlockComponent<TextBlock> = P => {
+    let id = P.state.active.id
 
     onCleanup(() => {
-        console.log('cleanup')
-        p.querySelectorAll('span').forEach(e => {
-            e.classList.remove('active')
-        })
-        p.onmousedown = null
-        p.onclick = null
-        document.onselectionchange = null
+        P.setState(
+            produce(s => {
+                // @ts-ignore
+                s.blocks[P.id].active = -1
+            })
+        )
     })
 
     function new_group(): TextGroupData[] | null {
+        let p = editor.querySelector<HTMLParagraphElement>(
+            '.block.text p#block_paragraph_' + id
+        )
         let selection = document.getSelection()
         if (!selection.rangeCount) return null
         let range = selection.getRangeAt(0)
@@ -377,7 +332,9 @@ const TextConf: BlockComponent<TextBlock> = props => {
                 if (outrange) {
                     groups.push(content.length)
                     data.set(content.length, {
-                        style: n.getAttribute('style'),
+                        style:
+                            JSON.parse(n.getAttribute('data-style') || '{}') ||
+                            {},
                         content: [],
                     })
                 }
@@ -385,13 +342,23 @@ const TextConf: BlockComponent<TextBlock> = props => {
                 for (let e of n.childNodes) {
                     if (e == sc) {
                         groups.push(content.length + soff)
+                        data.set(content.length + soff, {
+                            style:
+                                JSON.parse(
+                                    n.getAttribute('data-style') || '{}'
+                                ) || {},
+                            content: [],
+                        })
                         outrange = 0
                     }
 
                     if (!outrange && e == ec) {
                         groups.push(content.length + eoff)
                         data.set(content.length + eoff, {
-                            style: n.getAttribute('style'),
+                            style:
+                                JSON.parse(
+                                    n.getAttribute('data-style') || '{}'
+                                ) || {},
                             content: [],
                         })
                         outrange = 1
@@ -421,7 +388,7 @@ const TextConf: BlockComponent<TextBlock> = props => {
             if (d) {
                 grouped_content.push({ ...d, content: c })
             } else {
-                grouped_content.push({ style: '', content: c })
+                grouped_content.push({ content: c, style: {} })
             }
 
             last_g = g
@@ -432,7 +399,7 @@ const TextConf: BlockComponent<TextBlock> = props => {
                 if (d) {
                     grouped_content.push({ ...d, content: c })
                 } else {
-                    grouped_content.push({ style: '', content: c })
+                    grouped_content.push({ content: c, style: {} })
                 }
             }
         }
@@ -463,12 +430,14 @@ const TextConf: BlockComponent<TextBlock> = props => {
                 onmousedown={e => e.preventDefault()}
                 onClick={() => {
                     let res = new_group()
+                    console.log(res)
 
                     if (res !== null) {
-                        props.setState(
+                        P.setState(
                             produce(s => {
                                 // @ts-ignore
-                                s.blocks[props.id].data = res
+                                s.blocks[P.id].data = res
+                                console.log(s.blocks[P.id])
                             })
                         )
                     }
@@ -479,51 +448,70 @@ const TextConf: BlockComponent<TextBlock> = props => {
             <button
                 onmousedown={e => e.preventDefault()}
                 onClick={() => {
+                    let p = editor.querySelector<HTMLParagraphElement>(
+                        '.block.text p#block_paragraph_' + id
+                    )
+
                     p.style.direction =
                         p.style.direction == 'rtl' ? 'ltr' : 'rtl'
                 }}
             >
                 Toggle Dir
             </button>
-            <Show when={target.span != null}>
-                <input
-                    type='color'
-                    value={
-                        target.span.style.color
-                            ? '#' +
-                              target.span.style.color
-                                  .slice(4, -1)
-                                  .split(', ')
-                                  .map(i =>
-                                      parseInt(i).toString(16).padStart(2, '0')
-                                  )
-                                  .join('')
-                            : '#ffffff'
-                    }
-                    onInput={e => {
-                        let color = e.currentTarget.value
-                        target.span.style.color = color
-                    }}
-                />
-                <input
-                    type='number'
-                    min={0}
-                    max={720}
-                    value={
-                        target.span.style.fontSize
-                            ? target.span.style.fontSize.slice(0, -2)
-                            : 18
-                    }
-                    onInput={e => {
-                        let value = e.currentTarget.value
-                        if (!value) return
-                        let size = parseInt(value)
-                        if (size < 0 || size > 720) return
-                        target.span.style.fontSize = size + 'px'
+            <Show when={P.block.data[P.block.active]}>
+                <TextGroupStyleConfig
+                    style={P.block.data[P.block.active].style}
+                    update={style => {
+                        P.setState(
+                            produce(s => {
+                                let data =
+                                    // @ts-ignore
+                                    s.blocks[P.id].data[P.block.active].style
+                                // @ts-ignore
+                                s.blocks[P.id].data[P.block.active].style = {
+                                    ...data,
+                                    ...style,
+                                }
+                            })
+                        )
                     }}
                 />
             </Show>
         </div>
+    )
+}
+
+type TGCProps = {
+    style: TextGroupData['style']
+    update: (data: Partial<TextGroupData['style']>) => void
+}
+const TextGroupStyleConfig: Component<TGCProps> = P => {
+    return (
+        <>
+            <input
+                name='group_color'
+                type='color'
+                value={P.style.color || '#ffffff'}
+                onInput={e => {
+                    let color = e.currentTarget.value
+                    P.update({ color })
+                }}
+            />
+            <input
+                name='font_size'
+                type='number'
+                min={0}
+                max={720}
+                value={P.style.fontSize || 18}
+                onInput={e => {
+                    let value = e.currentTarget.value
+                    if (!value) return
+                    let size = parseInt(value)
+                    if (size < 0 || size > 720) return
+                    P.update({ fontSize: size })
+                }}
+            />
+        </>
     )
 }
 
