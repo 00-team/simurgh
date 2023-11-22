@@ -114,7 +114,28 @@ export const Project: Component = ({}) => {
                                     dataDelay={2600}
                                 />
                             </div>
-                            <div class='project-records'></div>
+                            <div class='project-records'>
+                                <div class='other-imgs'>
+                                    {Array.from(Array(5).keys()).map(
+                                        (_, index) => {
+                                            return (
+                                                <div
+                                                    class='other-img'
+                                                    style={{
+                                                        'animation-delay': `3.${index}s`,
+                                                    }}
+                                                >
+                                                    <img
+                                                        src={`https://picsum.photos/300/30${index}`}
+                                                        alt=''
+                                                    />
+                                                </div>
+                                            )
+                                        }
+                                    )}
+                                </div>
+                                <div class='main-img'></div>
+                            </div>
                         </div>
                         <div class='project-actions'>
                             <button class='delete-project title_hero basic-button'>
