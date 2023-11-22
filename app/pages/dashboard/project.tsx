@@ -122,7 +122,7 @@ export const Project: Component = ({}) => {
                                                 <div
                                                     class='other-img'
                                                     style={{
-                                                        'animation-delay': `3.${index}s`,
+                                                        'animation-delay': `4.${index}s`,
                                                     }}
                                                 >
                                                     <img
@@ -134,7 +134,12 @@ export const Project: Component = ({}) => {
                                         }
                                     )}
                                 </div>
-                                <div class='main-img'></div>
+                                <div class='main-img'>
+                                    <img
+                                        src={`https://picsum.photos/500/500`}
+                                        alt=''
+                                    />
+                                </div>
                             </div>
                         </div>
                         <div class='project-actions'>
