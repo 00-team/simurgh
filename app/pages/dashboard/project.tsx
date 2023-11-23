@@ -158,9 +158,14 @@ export const Project: Component = ({}) => {
                                                     style={{
                                                         'animation-delay': `4.${index}s`,
                                                     }}
-                                                    onclick={() =>
+                                                    onclick={() => {
+                                                        if (
+                                                            index ===
+                                                            activeRecord()
+                                                        )
+                                                            return
                                                         setActiverecord(index)
-                                                    }
+                                                    }}
                                                 >
                                                     <img
                                                         src={record.url}
