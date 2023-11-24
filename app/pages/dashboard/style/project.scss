@@ -405,7 +405,7 @@ section.project-container {
 
             transform: rotateX(90deg);
 
-            transition: transform 0.5s 0.5s cubic-bezier(0.51, 0.27, 0.76, 0.5);
+            transition: transform 0.5s 0.5s cubic-bezier(0.29, 0.51, 0.5, 0.74);
 
             &.editing {
                 transform: rotateX(0);
