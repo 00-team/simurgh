@@ -93,6 +93,12 @@ section.project-container {
 
             padding: 5vh 3vw;
 
+            transition: transform 0.5s cubic-bezier(0.51, 0.27, 0.76, 0.5);
+
+            &.editing {
+                transform: rotateX(-90deg);
+            }
+
             header {
                 height: 2em;
             }
@@ -175,7 +181,7 @@ section.project-container {
 
                             border-top: 2px solid white;
 
-                            animation: img-block-after 2s 3s
+                            animation: img-block-after 2s 1s
                                 cubic-bezier(0.45, 0.02, 0.09, 0.98) forwards;
 
                             @keyframes img-block-after {
@@ -201,7 +207,7 @@ section.project-container {
 
                             border-bottom: 2px solid white;
 
-                            animation: img-block-before 2s 3s
+                            animation: img-block-before 2s 1s
                                 cubic-bezier(0.45, 0.02, 0.09, 0.98) forwards;
 
                             @keyframes img-block-before {
@@ -269,9 +275,6 @@ section.project-container {
 
                             position: relative;
 
-                            rotate: 0deg;
-                            left: -200%;
-
                             flex-shrink: 0;
 
                             clip-path: polygon(
@@ -288,20 +291,6 @@ section.project-container {
                             overflow: hidden;
 
                             transform-origin: center center;
-                            animation: rotateHexagon 1s forwards
-                                cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-                            @keyframes rotateHexagon {
-                                from {
-                                    rotate: 0deg;
-                                    left: -200%;
-                                }
-
-                                to {
-                                    rotate: 360deg;
-                                    left: 0%;
-                                }
-                            }
 
                             img {
                                 max-height: 100%;
@@ -336,7 +325,7 @@ section.project-container {
                     overflow: hidden;
 
                     animation: width-delete-project
-                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 3.5s forwards;
+                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 1.5s forwards;
 
                     @keyframes width-delete-project {
                         from {
@@ -380,7 +369,7 @@ section.project-container {
                     overflow: hidden;
 
                     animation: width-delete-project
-                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 3.5s forwards;
+                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 1.5s forwards;
 
                     svg {
                         width: 1em;
@@ -396,6 +385,30 @@ section.project-container {
                         }
                     }
                 }
+            }
+        }
+        .edit-wrapper {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 4vh;
+
+            padding: 5vh 3vw;
+
+            position: absolute;
+            top: 0;
+
+            background-color: yellow;
+
+            transform: rotateX(90deg);
+
+            transition: transform 0.5s 0.5s cubic-bezier(0.51, 0.27, 0.76, 0.5);
+
+            &.editing {
+                transform: rotateX(0);
             }
         }
     }
