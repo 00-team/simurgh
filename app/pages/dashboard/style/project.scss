@@ -93,6 +93,13 @@ section.project-container {
 
             padding: 5vh 3vw;
 
+            transition: transform 0.5s 0.5s cubic-bezier(0.29, 0.51, 0.5, 0.74);
+
+            &.editing {
+                transform: rotateX(-90deg);
+                transition: transform 0.5s cubic-bezier(0.51, 0.27, 0.76, 0.5);
+            }
+
             header {
                 height: 2em;
             }
@@ -175,7 +182,7 @@ section.project-container {
 
                             border-top: 2px solid white;
 
-                            animation: img-block-after 2s 3s
+                            animation: img-block-after 2s 1s
                                 cubic-bezier(0.45, 0.02, 0.09, 0.98) forwards;
 
                             @keyframes img-block-after {
@@ -201,7 +208,7 @@ section.project-container {
 
                             border-bottom: 2px solid white;
 
-                            animation: img-block-before 2s 3s
+                            animation: img-block-before 2s 1s
                                 cubic-bezier(0.45, 0.02, 0.09, 0.98) forwards;
 
                             @keyframes img-block-before {
@@ -269,9 +276,6 @@ section.project-container {
 
                             position: relative;
 
-                            rotate: 0deg;
-                            left: -200%;
-
                             flex-shrink: 0;
 
                             clip-path: polygon(
@@ -288,20 +292,6 @@ section.project-container {
                             overflow: hidden;
 
                             transform-origin: center center;
-                            animation: rotateHexagon 1s forwards
-                                cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-                            @keyframes rotateHexagon {
-                                from {
-                                    rotate: 0deg;
-                                    left: -200%;
-                                }
-
-                                to {
-                                    rotate: 360deg;
-                                    left: 0%;
-                                }
-                            }
 
                             img {
                                 max-height: 100%;
@@ -336,7 +326,7 @@ section.project-container {
                     overflow: hidden;
 
                     animation: width-delete-project
-                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 3.5s forwards;
+                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 1.5s forwards;
 
                     @keyframes width-delete-project {
                         from {
@@ -380,7 +370,7 @@ section.project-container {
                     overflow: hidden;
 
                     animation: width-delete-project
-                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 3.5s forwards;
+                        cubic-bezier(0.45, 0.02, 0.09, 0.98) 0.5s 1.5s forwards;
 
                     svg {
                         width: 1em;
@@ -394,6 +384,126 @@ section.project-container {
                         to {
                             width: 50%;
                         }
+                    }
+                }
+            }
+        }
+        .edit {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 2vh;
+
+            padding: 5vh 3vw;
+            padding-top: 10%;
+
+            position: absolute;
+            top: 0;
+
+            transform: rotateX(90deg);
+
+            transition: transform 0.5s cubic-bezier(0.51, 0.27, 0.76, 0.5);
+
+            &.editing {
+                transform: rotateX(0);
+                transition: transform 0.5s 0.5s
+                    cubic-bezier(0.29, 0.51, 0.5, 0.74);
+            }
+
+            .edit-wrapper {
+                width: 100%;
+                height: 80%;
+
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                gap: 4vh;
+
+                overflow-y: auto;
+                padding: 0 1em;
+
+                .edit-row {
+                    width: 100%;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .holder {
+                        text-transform: capitalize;
+                    }
+
+                    .inp {
+                        width: clamp(0px, 100%, 400px);
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        background-color: #d2aa1b;
+
+                        position: relative;
+                        isolation: isolate;
+                        overflow: hidden;
+
+                        clip-path: polygon(0 0, 100% 0, 100% 100%, 14% 100%);
+
+                        input {
+                            width: 100%;
+                            height: 100%;
+
+                            color: #fff;
+                            padding: 1em;
+                            direction: rtl;
+                            border: none;
+                            background-color: transparent;
+                        }
+                    }
+                }
+            }
+
+            .cta-wrapper {
+                width: 100%;
+                margin-top: auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                button {
+                    text-transform: uppercase;
+                }
+
+                button.confirm {
+                    margin-top: auto;
+                    width: 50%;
+                    height: 2em;
+
+                    background-color: var(--alert-error);
+
+                    clip-path: polygon(0 0, 86% 0, 100% 100%, 14% 100%);
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+
+                button.cancle {
+                    margin-top: auto;
+
+                    transform: scaleX(-1);
+                    width: 50%;
+
+                    height: 2em;
+                    background-color: grey;
+                    clip-path: polygon(0 0, 86% 0, 100% 100%, 14% 100%);
+
+                    white-space: nowrap;
+                    overflow: hidden;
+
+                    span {
+                        display: inline-block;
+                        transform: scaleX(-1);
                     }
                 }
             }
