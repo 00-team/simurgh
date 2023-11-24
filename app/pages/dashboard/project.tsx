@@ -18,15 +18,12 @@ export const Project: Component = ({}) => {
     const navigate = useNavigate()
     const param = useParams<{ id: string }>()
 
+    const [editing, setEditing] = createSignal<boolean>(false)
+
     const [records, setRecords] = createSignal<ProjectRecord[] | null>(null)
     const [activeRecord, setActiverecord] = createSignal(0)
 
     const [project, setProject] = createSignal<ProjectModel | null>(null)
-    const [audio, setAudio] = createSignal<HTMLAudioElement | null>(
-        new Audio('/static/audio/typing.mp3')
-    )
-
-    let interval
 
     function numberToDate(date: number) {
         let dateToMilisec = date * 1000
@@ -38,13 +35,6 @@ export const Project: Component = ({}) => {
 
         return newDate
     }
-    const playAudio = () => {
-        audio().play()
-    }
-    const pauseAudio = () => {
-        audio().pause()
-    }
-
     function deleteProject() {
         httpx({
             url: `/api/projects/${param.id}/`,
@@ -85,21 +75,7 @@ export const Project: Component = ({}) => {
     })
 
     createEffect(() => {
-        if (project() && project().api_key) {
-            interval = setTimeout(() => {
-                playAudio()
-            }, 1200)
-        }
-    })
-
-    createEffect(() => {
         console.log(activeRecord())
-    })
-
-    onCleanup(() => {
-        pauseAudio()
-        setAudio(null)
-        clearInterval(interval)
     })
 
     return (
@@ -107,10 +83,13 @@ export const Project: Component = ({}) => {
             {project() && project().api_key && records() ? (
                 <div class='project-wrapper'>
                     <BgSvg />
-                    <article class='project-data'>
+                    <article
+                        class='project-data'
+                        classList={{ editing: editing() }}
+                    >
                         <header class='title_hero'>
                             <Typing
-                                sentence='lorem ipsum'
+                                sentence={project().name}
                                 delay={1300}
                                 speed={75}
                             />
@@ -155,9 +134,6 @@ export const Project: Component = ({}) => {
                                             return (
                                                 <div
                                                     class='other-img'
-                                                    style={{
-                                                        'animation-delay': `4.${index}s`,
-                                                    }}
                                                     onclick={() => {
                                                         if (
                                                             index ===
@@ -196,7 +172,10 @@ export const Project: Component = ({}) => {
                                 <DeleteIcon />
                                 DELETE
                             </button>
-                            <button class='edit-project title_hero basic-button'>
+                            <button
+                                class='edit-project title_hero basic-button'
+                                onclick={() => setEditing(true)}
+                            >
                                 <span>
                                     <EditIcon />
                                     EDIT
@@ -204,6 +183,10 @@ export const Project: Component = ({}) => {
                             </button>
                         </div>
                     </article>
+                    <div
+                        class='edit-wrapper'
+                        classList={{ editing: editing() }}
+                    ></div>
                 </div>
             ) : (
                 <ProjectLoading />
