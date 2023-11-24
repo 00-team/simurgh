@@ -195,6 +195,36 @@ export const Project: Component = ({}) => {
                                     />
                                 </div>
                             </div>
+                            <div class='edit-row title_hero'>
+                                <div class='holder'>records :</div>
+                                <div class='inp'>
+                                    <input
+                                        type='text'
+                                        class='title_small'
+                                        value={project().name}
+                                    />
+                                </div>
+                            </div>
+                            <div class='edit-row title_hero'>
+                                <div class='holder'>blogs categories :</div>
+                                <div class='inp'>
+                                    <input
+                                        type='text'
+                                        class='title_small'
+                                        value={project().name}
+                                    />
+                                </div>
+                            </div>
+                            <div class='edit-row title_hero'>
+                                <div class='holder'>blogs :</div>
+                                <div class='inp'>
+                                    <input
+                                        type='text'
+                                        class='title_small'
+                                        value={project().name}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div class='cta-wrapper'>
                             <button class='cta confirm title_hero'>
