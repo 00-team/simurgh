@@ -183,10 +183,31 @@ export const Project: Component = ({}) => {
                             </button>
                         </div>
                     </article>
-                    <div
-                        class='edit-wrapper'
-                        classList={{ editing: editing() }}
-                    ></div>
+                    <div class='edit' classList={{ editing: editing() }}>
+                        <div class='edit-wrapper'>
+                            <div class='edit-row title_hero'>
+                                <div class='holder'>name :</div>
+                                <div class='inp'>
+                                    <input
+                                        type='text'
+                                        class='title_small'
+                                        value={project().name}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class='cta-wrapper'>
+                            <button class='cta confirm title_hero'>
+                                confirm
+                            </button>
+                            <button
+                                class='cta cancle title_hero'
+                                onclick={() => setEditing(false)}
+                            >
+                                <span>cancle</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             ) : (
                 <ProjectLoading />
