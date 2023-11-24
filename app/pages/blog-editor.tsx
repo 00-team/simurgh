@@ -1,6 +1,6 @@
 import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import './style/blog-editor.scss'
-import { Component, Show, createSignal, onCleanup, onMount } from 'solid-js'
+import { Component, Show, createSignal, onCleanup } from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
 
 const CONTENT_IS_EDITABLE =
@@ -67,11 +67,13 @@ type StateModel = {
         id: number
         type: Block['type']
     }
+    show_groups: boolean
 }
 
 let editor: HTMLDivElement
 export default () => {
     const [state, setState] = createStore<StateModel>({
+        show_groups: false,
         blocks: [
             DEFAULT_BLOCKS.text,
             DEFAULT_BLOCKS.empty,
@@ -143,6 +145,15 @@ export default () => {
                 </div>
                 <div class='sidebar'>
                     <div class='config'>
+                        <input
+                            type='checkbox'
+                            checked={state.show_groups}
+                            onchange={e =>
+                                setState({
+                                    show_groups: e.currentTarget.checked,
+                                })
+                            }
+                        />
                         {config_map[state.active.type]({
                             state,
                             setState,
@@ -234,7 +245,10 @@ const TextComp: BlockComponent<TextBlock> = P => {
                             color: g.style.color,
                             'font-size': g.style.fontSize + 'px',
                         }}
-                        classList={{ active: P.block.active == i }}
+                        classList={{
+                            active: P.block.active == i,
+                            show_border: P.state.show_groups,
+                        }}
                         onMouseDown={e => {
                             e.stopPropagation()
                             P.setState(
