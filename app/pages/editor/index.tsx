@@ -1,5 +1,5 @@
 import { SetStoreFunction, createStore, produce } from 'solid-js/store'
-import './style/blog-editor.scss'
+import './style/editor.scss'
 import { Component, Show, createSignal, onCleanup } from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
 

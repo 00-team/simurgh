@@ -20,7 +20,7 @@ const Login = lazy(() => import('./pages/login'))
 const Alert = lazy(() => import('./components/alert'))
 const Progress = lazy(() => import('./components/progress'))
 const Dashboard = lazy(() => import('./pages/dashboard'))
-const BlogEditor = lazy(() => import('./pages/blog-editor'))
+const Editor = lazy(() => import('./pages/editor'))
 // const Background = lazy(() => import('./components/background'))
 
 function Main() {
@@ -36,7 +36,7 @@ render(
         <>
             <Router>
                 <Routes>
-                    <Route path='/blog-editor' component={BlogEditor} />
+                    <Route path='/editor' component={Editor} />
 
                     <Route path='/' data={UserData} component={Main}>
                         <Route path={'projects'} component={Projects} />
