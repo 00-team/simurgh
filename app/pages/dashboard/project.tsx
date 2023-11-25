@@ -1,5 +1,6 @@
 import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
+import { CloseIcon } from '!/icon'
 import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel, ProjectRecord } from '!/types'
@@ -21,7 +22,6 @@ export const Project: Component = ({}) => {
     const [editing, setEditing] = createSignal<boolean>(false)
 
     const [records, setRecords] = createSignal<ProjectRecord[] | null>(null)
-    const [activeRecord, setActiverecord] = createSignal(0)
 
     const [project, setProject] = createSignal<ProjectModel | null>(null)
 
@@ -75,7 +75,7 @@ export const Project: Component = ({}) => {
     })
 
     createEffect(() => {
-        console.log(activeRecord())
+        console.log(records())
     })
 
     return (
@@ -163,11 +163,44 @@ export const Project: Component = ({}) => {
                             <div class='edit-row title_hero'>
                                 <div class='holder'>records :</div>
                                 <div class='inp'>
-                                    <input
-                                        type='text'
-                                        class='title_small'
-                                        value={project().name}
-                                    />
+                                    <table class='records'>
+                                        <thead class='title_smaller'>
+                                            <tr>
+                                                <th class='id'>No.</th>
+                                                <th class='id'>Id</th>
+                                                <th class='name'>Name</th>
+                                                <th class='action'>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {records().length >= 1 ? (
+                                                <>
+                                                    {records().map(
+                                                        (record, idx01) => (
+                                                            <tr>
+                                                                <td>{idx01}</td>
+                                                                <td>
+                                                                    {
+                                                                        record.name
+                                                                    }
+                                                                </td>
+                                                                <td
+                                                                    class='remove-record'
+                                                                    onclick={() => {}}
+                                                                >
+                                                                    <CloseIcon />
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <p class='title'>
+                                                    قیمتی وجود ندارد!
+                                                </p>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class='edit-row title_hero'>
