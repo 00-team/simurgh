@@ -511,7 +511,8 @@ section.project-container {
                                 isolation: isolate;
                             }
 
-                            .add-record {
+                            .add-record,
+                            .open-record {
                                 cursor: pointer;
                             }
 
@@ -545,6 +546,16 @@ section.project-container {
                                                 rotate: 0deg;
                                             }
                                         }
+                                    }
+                                }
+                            }
+                            .open-record {
+                                svg {
+                                    transition: transform 0.3s ease-in-out;
+                                }
+                                &:hover {
+                                    svg {
+                                        transform: scale(1.1);
                                     }
                                 }
                             }
