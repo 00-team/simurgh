@@ -337,8 +337,56 @@ export const Project: Component = ({}) => {
                                                             </td>
                                                             <td>{blog.slug}</td>
                                                             <td
-                                                                class='remove-blog'
-                                                                onclick={() => {}}
+                                                                class='blogs-blog'
+                                                                onclick={() => {
+                                                                    const table =
+                                                                        document.querySelector(
+                                                                            '.blogs-body'
+                                                                        )
+
+                                                                    if (
+                                                                        !table.className.includes(
+                                                                            'loading'
+                                                                        )
+                                                                    ) {
+                                                                        table.className +=
+                                                                            ' loading '
+
+                                                                        httpx({
+                                                                            url: `/api/projects/${param.id}/blogs/categories/${blog.category_id}/`,
+                                                                            method: 'DELETE',
+                                                                            onLoad(
+                                                                                x
+                                                                            ) {
+                                                                                if (
+                                                                                    x.status ===
+                                                                                    200
+                                                                                ) {
+                                                                                    setBlogs(
+                                                                                        s => {
+                                                                                            return s.filter(
+                                                                                                rec =>
+                                                                                                    rec !==
+                                                                                                    blog
+                                                                                            )
+                                                                                        }
+                                                                                    )
+
+                                                                                    let tableNew =
+                                                                                        table.className.replace(
+                                                                                            'loading',
+                                                                                            ''
+                                                                                        )
+
+                                                                                    table.className =
+                                                                                        tableNew
+
+                                                                                    return
+                                                                                }
+                                                                            },
+                                                                        })
+                                                                    }
+                                                                }}
                                                             >
                                                                 <DeleteIcon
                                                                     size={25}
