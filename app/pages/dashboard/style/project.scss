@@ -443,13 +443,9 @@ section.project-container {
                         align-items: center;
                         justify-content: center;
 
-                        background-color: #d2aa1b;
-
                         position: relative;
                         isolation: isolate;
                         overflow: hidden;
-
-                        clip-path: polygon(0 0, 100% 0, 100% 100%, 14% 100%);
 
                         input {
                             width: 100%;
@@ -460,6 +456,51 @@ section.project-container {
                             direction: rtl;
                             border: none;
                             background-color: transparent;
+
+                            background-color: #d2aa1b;
+
+                            clip-path: polygon(
+                                0 0,
+                                100% 0,
+                                100% 100%,
+                                14% 100%
+                            );
+                        }
+
+                        table.records {
+                            width: 100%;
+
+                            border: 1px solid black;
+                            border-spacing: 0;
+
+                            overflow: hidden;
+
+                            background-color: var(--accent-color);
+
+                            thead {
+                                th {
+                                    font-size: clamp(
+                                        0.8rem,
+                                        0.4rem + 1.6vw,
+                                        1rem
+                                    );
+                                }
+                            }
+
+                            td,
+                            th {
+                                text-align: center;
+                                border: 1px solid black;
+
+                                padding: 0.5rem 0.25rem;
+
+                                font-family: 'iranBold';
+                                font-size: clamp(0.8rem, 0.4rem + 1.6vw, 1rem);
+                            }
+                            tr {
+                                position: relative;
+                                isolation: isolate;
+                            }
                         }
                     }
                 }
