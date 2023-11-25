@@ -2,7 +2,7 @@ import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
 import { DeleteIcon, EditIcon, EyesIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
-import { ProjectModel, ProjectRecord } from '!/types'
+import { BlogCategory, ProjectModel, ProjectRecord } from '!/types'
 import { useNavigate, useParams } from '@solidjs/router'
 import {
     Component,
@@ -21,6 +21,7 @@ export const Project: Component = ({}) => {
     const [editing, setEditing] = createSignal<boolean>(false)
 
     const [records, setRecords] = createSignal<ProjectRecord[] | null>(null)
+    const [Blogs, setBlogs] = createSignal<BlogCategory[] | null>(null)
 
     const [project, setProject] = createSignal<ProjectModel | null>(null)
 
@@ -71,15 +72,30 @@ export const Project: Component = ({}) => {
                 }
             },
         })
+        httpx({
+            url: `/api/projects/${param.id}/blogs/categories/`,
+            method: 'GET',
+            type: 'json',
+            onLoad(x) {
+                if (x.status === 200) {
+                    if (x.response.length >= 1) {
+                        setBlogs(x.response)
+                    } else {
+                        setBlogs([])
+                    }
+                }
+            },
+        })
     })
 
     createEffect(() => {
         console.log(records())
+        console.log(Blogs())
     })
 
     return (
         <section class='project-container'>
-            {project() && project().api_key && records() ? (
+            {project() && project().api_key && records() && Blogs() ? (
                 <div class='project-wrapper'>
                     <BgSvg />
                     <article
@@ -276,7 +292,7 @@ export const Project: Component = ({}) => {
                                                             colspan={50}
                                                             class='title'
                                                         >
-                                                            no records to show!
+                                                            No records to show!
                                                         </td>
                                                     </tr>
                                                 </>
@@ -288,11 +304,75 @@ export const Project: Component = ({}) => {
                             <div class='edit-row title_hero'>
                                 <div class='holder'>blogs categories :</div>
                                 <div class='inp'>
-                                    <input
-                                        type='text'
-                                        class='title_small'
-                                        value={project().name}
-                                    />
+                                    <table class='blogs'>
+                                        <thead class='title_smaller'>
+                                            <tr class='head-row'>
+                                                <th class='id'>Id</th>
+                                                <th class='id'>Project Id</th>
+                                                <th class='name'>Slug</th>
+                                                <th class='action'>DELETE</th>
+                                                <th class='action'>OPEN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class='blogs-body'>
+                                            {Blogs().length >= 1 ? (
+                                                <>
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='add-record'
+                                                        >
+                                                            Add Category
+                                                        </td>
+                                                    </tr>
+                                                    {Blogs().map(blog => (
+                                                        <tr>
+                                                            <td>
+                                                                {
+                                                                    blog.category_id
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {blog.project}
+                                                            </td>
+                                                            <td>{blog.slug}</td>
+                                                            <td
+                                                                class='remove-blog'
+                                                                onclick={() => {}}
+                                                            >
+                                                                <DeleteIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                            <td class='open-blog'>
+                                                                <EyesIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <td
+                                                        colspan={50}
+                                                        class='add-blog'
+                                                    >
+                                                        Add Category
+                                                    </td>
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='title'
+                                                        >
+                                                            No categories to
+                                                            show!
+                                                        </td>
+                                                    </tr>
+                                                </>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class='edit-row title_hero'>
