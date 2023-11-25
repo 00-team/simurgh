@@ -1,6 +1,6 @@
 import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
-import { DeleteIcon, EditIcon } from '!/icons/dashboard'
+import { DeleteIcon, EditIcon, EyesIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel, ProjectRecord } from '!/types'
 import { useNavigate, useParams } from '@solidjs/router'
@@ -194,8 +194,10 @@ export const Project: Component = ({}) => {
                                                                 {record.mime}
                                                             </td>
                                                             <td>
-                                                                {record.size /
-                                                                    1024}
+                                                                {Math.floor(
+                                                                    record.size /
+                                                                        1024
+                                                                )}
                                                             </td>
                                                             <td
                                                                 class='remove-record'
@@ -250,6 +252,11 @@ export const Project: Component = ({}) => {
                                                                 }}
                                                             >
                                                                 <DeleteIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                            <td class='open-record'>
+                                                                <EyesIcon
                                                                     size={25}
                                                                 />
                                                             </td>
