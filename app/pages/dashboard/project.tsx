@@ -1,8 +1,8 @@
 import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
-import { DeleteIcon, EditIcon } from '!/icons/dashboard'
+import { DeleteIcon, EditIcon, EyesIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
-import { ProjectModel, ProjectRecord } from '!/types'
+import { BlogCategory, ProjectModel, ProjectRecord } from '!/types'
 import { useNavigate, useParams } from '@solidjs/router'
 import {
     Component,
@@ -21,7 +21,7 @@ export const Project: Component = ({}) => {
     const [editing, setEditing] = createSignal<boolean>(false)
 
     const [records, setRecords] = createSignal<ProjectRecord[] | null>(null)
-    const [activeRecord, setActiverecord] = createSignal(0)
+    const [Blogs, setBlogs] = createSignal<BlogCategory[] | null>(null)
 
     const [project, setProject] = createSignal<ProjectModel | null>(null)
 
@@ -72,15 +72,30 @@ export const Project: Component = ({}) => {
                 }
             },
         })
+        httpx({
+            url: `/api/projects/${param.id}/blogs/categories/`,
+            method: 'GET',
+            type: 'json',
+            onLoad(x) {
+                if (x.status === 200) {
+                    if (x.response.length >= 1) {
+                        setBlogs(x.response)
+                    } else {
+                        setBlogs([])
+                    }
+                }
+            },
+        })
     })
 
     createEffect(() => {
-        console.log(activeRecord())
+        console.log(records())
+        console.log(Blogs())
     })
 
     return (
         <section class='project-container'>
-            {project() && project().api_key && records() ? (
+            {project() && project().api_key && records() && Blogs() ? (
                 <div class='project-wrapper'>
                     <BgSvg />
                     <article
@@ -127,42 +142,7 @@ export const Project: Component = ({}) => {
                                     dataDelay={2600}
                                 />
                             </div>
-                            <div class='project-records'>
-                                <div class='other-imgs'>
-                                    {records().length >= 2 &&
-                                        records().map((record, index) => {
-                                            return (
-                                                <div
-                                                    class='other-img'
-                                                    onclick={() => {
-                                                        if (
-                                                            index ===
-                                                            activeRecord()
-                                                        )
-                                                            return
-                                                        setActiverecord(index)
-                                                    }}
-                                                >
-                                                    <img
-                                                        src={record.url}
-                                                        alt=''
-                                                    />
-                                                </div>
-                                            )
-                                        })}
-                                </div>
-
-                                <div class='main-img'>
-                                    <img
-                                        src={
-                                            records()[activeRecord()]
-                                                ? records()[activeRecord()].url
-                                                : `https://picsum.photos/500/500`
-                                        }
-                                        alt=''
-                                    />
-                                </div>
-                            </div>
+                            <div class='project-records'></div>
                         </div>
                         <div class='project-actions'>
                             <button
@@ -198,21 +178,249 @@ export const Project: Component = ({}) => {
                             <div class='edit-row title_hero'>
                                 <div class='holder'>records :</div>
                                 <div class='inp'>
-                                    <input
-                                        type='text'
-                                        class='title_small'
-                                        value={project().name}
-                                    />
+                                    <table class='records'>
+                                        <thead class='title_smaller'>
+                                            <tr class='head-row'>
+                                                <th class='id'>Id</th>
+                                                <th class='name'>Type</th>
+                                                <th class='name'>Size(Kb)</th>
+                                                <th class='action'>DELETE</th>
+                                                <th class='action'>OPEN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class='records-body'>
+                                            {records().length >= 1 ? (
+                                                <>
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='add-record'
+                                                        >
+                                                            Add Record
+                                                        </td>
+                                                    </tr>
+                                                    {records().map(record => (
+                                                        <tr>
+                                                            <td>
+                                                                {
+                                                                    record.record_id
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {record.mime}
+                                                            </td>
+                                                            <td>
+                                                                {Math.floor(
+                                                                    record.size /
+                                                                        1024
+                                                                )}
+                                                            </td>
+                                                            <td
+                                                                class='remove-record'
+                                                                onclick={() => {
+                                                                    const table =
+                                                                        document.querySelector(
+                                                                            '.records-body'
+                                                                        )
+
+                                                                    if (
+                                                                        !table.className.includes(
+                                                                            'loading'
+                                                                        )
+                                                                    ) {
+                                                                        table.className +=
+                                                                            ' loading '
+
+                                                                        httpx({
+                                                                            url: `/api/projects/${param.id}/records/${record.record_id}/`,
+                                                                            method: 'DELETE',
+                                                                            onLoad(
+                                                                                x
+                                                                            ) {
+                                                                                if (
+                                                                                    x.status ===
+                                                                                    200
+                                                                                ) {
+                                                                                    setRecords(
+                                                                                        s => {
+                                                                                            return s.filter(
+                                                                                                rec =>
+                                                                                                    rec !==
+                                                                                                    record
+                                                                                            )
+                                                                                        }
+                                                                                    )
+
+                                                                                    let tableNew =
+                                                                                        table.className.replace(
+                                                                                            'loading',
+                                                                                            ''
+                                                                                        )
+
+                                                                                    table.className =
+                                                                                        tableNew
+
+                                                                                    return
+                                                                                }
+                                                                            },
+                                                                        })
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <DeleteIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                            <td class='open-record'>
+                                                                <EyesIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <td
+                                                        colspan={50}
+                                                        class='add-record'
+                                                    >
+                                                        Add Record
+                                                    </td>
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='title'
+                                                        >
+                                                            No records to show!
+                                                        </td>
+                                                    </tr>
+                                                </>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class='edit-row title_hero'>
                                 <div class='holder'>blogs categories :</div>
                                 <div class='inp'>
-                                    <input
-                                        type='text'
-                                        class='title_small'
-                                        value={project().name}
-                                    />
+                                    <table class='blogs'>
+                                        <thead class='title_smaller'>
+                                            <tr class='head-row'>
+                                                <th class='id'>Id</th>
+                                                <th class='id'>Project Id</th>
+                                                <th class='name'>Slug</th>
+                                                <th class='action'>DELETE</th>
+                                                <th class='action'>OPEN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class='blogs-body'>
+                                            {Blogs().length >= 1 ? (
+                                                <>
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='add-record'
+                                                        >
+                                                            Add Category
+                                                        </td>
+                                                    </tr>
+                                                    {Blogs().map(blog => (
+                                                        <tr>
+                                                            <td>
+                                                                {
+                                                                    blog.category_id
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {blog.project}
+                                                            </td>
+                                                            <td>{blog.slug}</td>
+                                                            <td
+                                                                class='blogs-blog'
+                                                                onclick={() => {
+                                                                    const table =
+                                                                        document.querySelector(
+                                                                            '.blogs-body'
+                                                                        )
+
+                                                                    if (
+                                                                        !table.className.includes(
+                                                                            'loading'
+                                                                        )
+                                                                    ) {
+                                                                        table.className +=
+                                                                            ' loading '
+
+                                                                        httpx({
+                                                                            url: `/api/projects/${param.id}/blogs/categories/${blog.category_id}/`,
+                                                                            method: 'DELETE',
+                                                                            onLoad(
+                                                                                x
+                                                                            ) {
+                                                                                if (
+                                                                                    x.status ===
+                                                                                    200
+                                                                                ) {
+                                                                                    setBlogs(
+                                                                                        s => {
+                                                                                            return s.filter(
+                                                                                                rec =>
+                                                                                                    rec !==
+                                                                                                    blog
+                                                                                            )
+                                                                                        }
+                                                                                    )
+
+                                                                                    let tableNew =
+                                                                                        table.className.replace(
+                                                                                            'loading',
+                                                                                            ''
+                                                                                        )
+
+                                                                                    table.className =
+                                                                                        tableNew
+
+                                                                                    return
+                                                                                }
+                                                                            },
+                                                                        })
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <DeleteIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                            <td class='open-blog'>
+                                                                <EyesIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <td
+                                                        colspan={50}
+                                                        class='add-blog'
+                                                    >
+                                                        Add Category
+                                                    </td>
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='title'
+                                                        >
+                                                            No categories to
+                                                            show!
+                                                        </td>
+                                                    </tr>
+                                                </>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class='edit-row title_hero'>
