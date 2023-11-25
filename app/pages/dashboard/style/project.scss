@@ -496,6 +496,10 @@ section.project-container {
                                 }
                             }
 
+                            .add-record {
+                                text-transform: uppercase;
+                            }
+
                             td,
                             th {
                                 text-align: center;
@@ -550,6 +554,103 @@ section.project-container {
                                 }
                             }
                             .open-record {
+                                svg {
+                                    transition: transform 0.3s ease-in-out;
+                                }
+                                &:hover {
+                                    svg {
+                                        transform: scale(1.1);
+                                    }
+                                }
+                            }
+                        }
+                        table.blogs {
+                            width: 100%;
+
+                            border: 1px solid white;
+                            border-spacing: 0;
+
+                            color: white;
+
+                            overflow: hidden;
+
+                            background-color: #131313;
+
+                            thead {
+                                th {
+                                    font-size: clamp(
+                                        0.8rem,
+                                        0.4rem + 1.6vw,
+                                        1rem
+                                    );
+                                }
+                            }
+
+                            tbody {
+                                &.loading {
+                                    filter: blur(3px);
+                                    pointer-events: none;
+                                }
+                            }
+
+                            .add-blog {
+                                text-transform: uppercase;
+                            }
+
+                            td,
+                            th {
+                                text-align: center;
+                                border: 1px solid rgb(255, 255, 255);
+
+                                padding: 0.5rem 0.3rem;
+
+                                // font-family: 'iranBold';
+                                font-size: clamp(0.8rem, 0.4rem + 1.6vw, 1rem);
+                            }
+                            tr {
+                                position: relative;
+                                isolation: isolate;
+                            }
+
+                            .add-blog,
+                            .open-blog {
+                                cursor: pointer;
+                            }
+
+                            .remove-blog {
+                                cursor: pointer;
+                                svg {
+                                    fill: var(--alert-error);
+                                }
+
+                                &:hover {
+                                    svg {
+                                        animation: compass-ring 0.5s ease-in-out;
+
+                                        @keyframes compass-ring {
+                                            0% {
+                                                rotate: 0deg;
+                                            }
+                                            20% {
+                                                rotate: 7deg;
+                                            }
+                                            40% {
+                                                rotate: -7deg;
+                                            }
+                                            60% {
+                                                rotate: 10deg;
+                                            }
+                                            80% {
+                                                rotate: -10deg;
+                                            }
+                                            100% {
+                                                rotate: 0deg;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            .open-blog {
                                 svg {
                                     transition: transform 0.3s ease-in-out;
                                 }
