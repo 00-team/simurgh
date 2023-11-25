@@ -21,4 +21,11 @@ type ProjectRecord = {
     name: string
 }
 
-export type { ProjectModel, ProjectRecord }
+type BlogCategory = {
+    category_id: number
+    project: number
+    slug: string
+    label: {}
+}
+
+export type { ProjectModel, ProjectRecord, BlogCategory }
