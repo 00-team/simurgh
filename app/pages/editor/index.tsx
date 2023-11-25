@@ -2,6 +2,7 @@ import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import './style/editor.scss'
 import { Component, Show, createSignal, onCleanup } from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
+import { CheckBox } from './components'
 
 const CONTENT_IS_EDITABLE =
     // @ts-ignore checking for firefox
@@ -102,6 +103,7 @@ export default () => {
         <div class='blog-editor-fnd'>
             <div class='header'>Header</div>
             <div class='content'>
+                <div class='leftbar'>History</div>
                 <div class='editor' ref={editor}>
                     {state.blocks.map((b, i) => (
                         <div
@@ -143,16 +145,12 @@ export default () => {
                         Add Block
                     </button>
                 </div>
-                <div class='sidebar'>
+                <div class='rightbar'>
                     <div class='config'>
-                        <input
-                            type='checkbox'
+                        <CheckBox
+                            label='Show Groups'
                             checked={state.show_groups}
-                            onchange={e =>
-                                setState({
-                                    show_groups: e.currentTarget.checked,
-                                })
-                            }
+                            update={v => setState({ show_groups: v })}
                         />
                         {config_map[state.active.type]({
                             state,
