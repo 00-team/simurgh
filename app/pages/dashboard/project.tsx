@@ -1,6 +1,5 @@
 import { HackEffect } from '!/components/hackEffect'
 import { Typing } from '!/components/typing'
-import { CloseIcon } from '!/icon'
 import { DeleteIcon, EditIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel, ProjectRecord } from '!/types'
@@ -165,39 +164,115 @@ export const Project: Component = ({}) => {
                                 <div class='inp'>
                                     <table class='records'>
                                         <thead class='title_smaller'>
-                                            <tr>
-                                                <th class='id'>No.</th>
+                                            <tr class='head-row'>
                                                 <th class='id'>Id</th>
-                                                <th class='name'>Name</th>
-                                                <th class='action'>Action</th>
+                                                <th class='name'>Type</th>
+                                                <th class='name'>Size(Kb)</th>
+                                                <th class='action'>DELETE</th>
+                                                <th class='action'>OPEN</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody class='records-body'>
                                             {records().length >= 1 ? (
                                                 <>
-                                                    {records().map(
-                                                        (record, idx01) => (
-                                                            <tr>
-                                                                <td>{idx01}</td>
-                                                                <td>
-                                                                    {
-                                                                        record.name
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='add-record'
+                                                        >
+                                                            Add Record
+                                                        </td>
+                                                    </tr>
+                                                    {records().map(record => (
+                                                        <tr>
+                                                            <td>
+                                                                {
+                                                                    record.record_id
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {record.mime}
+                                                            </td>
+                                                            <td>
+                                                                {record.size /
+                                                                    1024}
+                                                            </td>
+                                                            <td
+                                                                class='remove-record'
+                                                                onclick={() => {
+                                                                    const table =
+                                                                        document.querySelector(
+                                                                            '.records-body'
+                                                                        )
+
+                                                                    if (
+                                                                        !table.className.includes(
+                                                                            'loading'
+                                                                        )
+                                                                    ) {
+                                                                        table.className +=
+                                                                            ' loading '
+
+                                                                        httpx({
+                                                                            url: `/api/projects/${param.id}/records/${record.record_id}/`,
+                                                                            method: 'DELETE',
+                                                                            onLoad(
+                                                                                x
+                                                                            ) {
+                                                                                if (
+                                                                                    x.status ===
+                                                                                    200
+                                                                                ) {
+                                                                                    setRecords(
+                                                                                        s => {
+                                                                                            return s.filter(
+                                                                                                rec =>
+                                                                                                    rec !==
+                                                                                                    record
+                                                                                            )
+                                                                                        }
+                                                                                    )
+
+                                                                                    let tableNew =
+                                                                                        table.className.replace(
+                                                                                            'loading',
+                                                                                            ''
+                                                                                        )
+
+                                                                                    table.className =
+                                                                                        tableNew
+
+                                                                                    return
+                                                                                }
+                                                                            },
+                                                                        })
                                                                     }
-                                                                </td>
-                                                                <td
-                                                                    class='remove-record'
-                                                                    onclick={() => {}}
-                                                                >
-                                                                    <CloseIcon />
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    )}
+                                                                }}
+                                                            >
+                                                                <DeleteIcon
+                                                                    size={25}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
                                                 </>
                                             ) : (
-                                                <p class='title'>
-                                                    قیمتی وجود ندارد!
-                                                </p>
+                                                <>
+                                                    <td
+                                                        colspan={50}
+                                                        class='add-record'
+                                                    >
+                                                        Add Record
+                                                    </td>
+                                                    <tr>
+                                                        <td
+                                                            colspan={50}
+                                                            class='title'
+                                                        >
+                                                            no records to show!
+                                                        </td>
+                                                    </tr>
+                                                </>
                                             )}
                                         </tbody>
                                     </table>
