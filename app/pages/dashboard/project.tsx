@@ -127,42 +127,7 @@ export const Project: Component = ({}) => {
                                     dataDelay={2600}
                                 />
                             </div>
-                            <div class='project-records'>
-                                <div class='other-imgs'>
-                                    {records().length >= 2 &&
-                                        records().map((record, index) => {
-                                            return (
-                                                <div
-                                                    class='other-img'
-                                                    onclick={() => {
-                                                        if (
-                                                            index ===
-                                                            activeRecord()
-                                                        )
-                                                            return
-                                                        setActiverecord(index)
-                                                    }}
-                                                >
-                                                    <img
-                                                        src={record.url}
-                                                        alt=''
-                                                    />
-                                                </div>
-                                            )
-                                        })}
-                                </div>
-
-                                <div class='main-img'>
-                                    <img
-                                        src={
-                                            records()[activeRecord()]
-                                                ? records()[activeRecord()].url
-                                                : `https://picsum.photos/500/500`
-                                        }
-                                        alt=''
-                                    />
-                                </div>
-                            </div>
+                            <div class='project-records'></div>
                         </div>
                         <div class='project-actions'>
                             <button
