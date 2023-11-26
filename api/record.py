@@ -10,7 +10,7 @@ from db.models import ProjectModel, ProjectTable, RecordModel, RecordPublic
 from db.models import RecordTable
 from deps import project_required, rate_limit
 from shared import config, sqlx
-from shared.locale import err_bad_file, err_bad_id
+from shared.locale import err_bad_file, err_bad_id, err_database_error
 from shared.tools import utc_now
 
 router = APIRouter(
@@ -87,20 +87,22 @@ async def record_add(request: Request, file: UploadFile):
 
     args = record.dict(exclude={'record_id'})
 
-    async with sqlx.transaction():
-        record_id = await sqlx.execute(insert(RecordTable), args)
-        record.record_id = record_id
+    record_id = await sqlx.execute(insert(RecordTable), args)
+    if not record_id:
+        raise err_database_error
 
-        await sqlx.execute(
-            update(ProjectTable)
-            .where(
-                ProjectTable.project_id == project.project_id
-            ),
-            dict(
-                storage=project.storage + file.size,
-                records=project.records + 1
-            )
+    record.record_id = record_id
+
+    await sqlx.execute(
+        update(ProjectTable)
+        .where(
+            ProjectTable.project_id == project.project_id
+        ),
+        dict(
+            storage=project.storage + file.size,
+            records=project.records + 1
         )
+    )
 
     if not record.path.parent.exists():
         record.path.parent.mkdir(parents=True, exist_ok=True)
@@ -122,21 +124,23 @@ async def record_delete(request: Request, record_id: int):
     record = await get_record(record_id, project.project_id)
     record.path.unlink(True)
 
-    async with await sqlx.transaction():
-        await sqlx.execute(delete(RecordTable).where(
-            RecordTable.record_id == record_id,
-            RecordTable.project == project.project_id
-        ))
+    result = await sqlx.execute(delete(RecordTable).where(
+        RecordTable.record_id == record_id,
+        RecordTable.project == project.project_id
+    ))
 
-        await sqlx.execute(
-            update(ProjectTable)
-            .where(
-                ProjectTable.project_id == project.project_id
-            ),
-            dict(
-                storage=project.storage - record.size,
-                records=project.records - 1
-            )
+    if not result[0]:
+        return Response()
+
+    await sqlx.execute(
+        update(ProjectTable)
+        .where(
+            ProjectTable.project_id == project.project_id
+        ),
+        dict(
+            storage=project.storage - record.size,
+            records=project.records - 1
         )
+    )
 
     return Response()
