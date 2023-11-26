@@ -3,6 +3,7 @@ import './style/editor.scss'
 import { Component, Show, createSignal, onCleanup } from 'solid-js'
 import { ImageIcon, TextIcon } from '!/icons/editor'
 import { CheckBox } from './components'
+import History from './history'
 
 const CONTENT_IS_EDITABLE =
     // @ts-ignore checking for firefox
@@ -100,10 +101,10 @@ export default () => {
     })
 
     return (
-        <div class='blog-editor-fnd'>
+        <div class='editor-fnd'>
             <div class='header'>Header</div>
             <div class='content'>
-                <div class='leftbar'>History</div>
+                <History />
                 <div class='editor' ref={editor}>
                     {state.blocks.map((b, i) => (
                         <div
