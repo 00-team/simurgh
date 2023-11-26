@@ -64,8 +64,8 @@ export default () => {
     })
 
     createEffect(() => {
-        console.log(state.blocks_changed, state.blocks)
-        addHistory({ ...state.blocks })
+        state.blocks_changed
+        addHistory(JSON.stringify(state.blocks))
     })
 
     return (
