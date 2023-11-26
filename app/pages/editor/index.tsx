@@ -1,69 +1,31 @@
 import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import './style/editor.scss'
-import { Component, Show, createSignal, onCleanup } from 'solid-js'
-import { ImageIcon, TextIcon } from '!/icons/editor'
+import {
+    Component,
+    Show,
+    createEffect,
+    createSignal,
+    onCleanup,
+    untrack,
+} from 'solid-js'
 import { CheckBox } from './components'
-import History from './history'
+import History, { addHistory } from './history'
+import {
+    BLOCK_COSMETIC,
+    Block,
+    DEFAULT_BLOCKS,
+    EmptyBlock,
+    ImageBlock,
+    TextBlock,
+    TextGroupData,
+} from './models'
 
 const CONTENT_IS_EDITABLE =
     // @ts-ignore checking for firefox
     typeof InstallTrigger !== 'undefined' ? true : 'plaintext-only'
 
-type EmptyBlock = {
-    type: 'empty'
-}
-
-type TextGroupData = {
-    content: string[]
-    style: {
-        color?: string
-        fontSize?: number
-    }
-}
-
-type TextBlock = {
-    type: 'text'
-    data: TextGroupData[]
-    active: number
-    style: {
-        direction?: 'ltr' | 'rtl'
-    }
-}
-
-type ImageBlock = {
-    type: 'image'
-    url: string
-    record_id: number
-}
-
-type Block = TextBlock | ImageBlock | EmptyBlock
-
-const DEFAULT_BLOCKS: { [T in Block as T['type']]: T } = {
-    empty: { type: 'empty' },
-    text: {
-        type: 'text',
-        data: [],
-        active: -1,
-        style: {},
-    },
-    image: { type: 'image', url: '', record_id: -1 },
-}
-
-type BlockCosmetic = {
-    title: string
-    icon: Component
-}
-
-type BlockCosmeticMap = Omit<
-    { [T in Block as T['type']]: BlockCosmetic },
-    'empty'
->
-const BLOCK_COSMETIC: BlockCosmeticMap = {
-    text: { title: 'Text', icon: TextIcon },
-    image: { title: 'Image', icon: ImageIcon },
-}
-
-type StateModel = {
+type State = {
+    blocks_changed: number
     blocks: Block[]
     active: {
         id: number
@@ -74,8 +36,9 @@ type StateModel = {
 
 let editor: HTMLDivElement
 export default () => {
-    const [state, setState] = createStore<StateModel>({
+    const [state, setState] = createStore<State>({
         show_groups: false,
+        blocks_changed: 0,
         blocks: [
             DEFAULT_BLOCKS.text,
             DEFAULT_BLOCKS.empty,
@@ -98,6 +61,11 @@ export default () => {
             id: 2,
             type: 'text',
         },
+    })
+
+    createEffect(() => {
+        console.log(state.blocks_changed, state.blocks)
+        addHistory({ ...state.blocks })
     })
 
     return (
@@ -139,6 +107,7 @@ export default () => {
                                     })
                                     s.active.id = new_id - 1
                                     s.active.type = 'empty'
+                                    s.blocks_changed = Date.now()
                                 })
                             )
                         }}
@@ -160,7 +129,11 @@ export default () => {
                             block: state.blocks[state.active.id] as never,
                         })}
                     </div>
-                    <div class='actions'></div>
+                    <div class='actions'>
+                        <button onclick={() => console.log(state.blocks)}>
+                            Log
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -168,8 +141,8 @@ export default () => {
 }
 
 type BlockComponent<T extends Block> = Component<{
-    state: StateModel
-    setState: SetStoreFunction<StateModel>
+    state: State
+    setState: SetStoreFunction<State>
     block: T
     id: number
 }>
@@ -191,6 +164,7 @@ const EmptyComp: BlockComponent<EmptyBlock> = props => {
                                 produce(s => {
                                     s.blocks[props.id] = DEFAULT_BLOCKS[t]
                                     s.active.type = t as Block['type']
+                                    s.blocks_changed = Date.now()
                                 })
                             )
                         }}
@@ -450,7 +424,7 @@ const TextConf: BlockComponent<TextBlock> = P => {
                             produce(s => {
                                 // @ts-ignore
                                 s.blocks[P.id].data = res
-                                console.log(s.blocks[P.id])
+                                s.blocks_changed = Date.now()
                             })
                         )
                     }
@@ -474,6 +448,7 @@ const TextConf: BlockComponent<TextBlock> = P => {
             <Show when={P.block.data[P.block.active]}>
                 <TextGroupStyleConfig
                     style={P.block.data[P.block.active].style}
+                    change={() => P.setState({ blocks_changed: Date.now() })}
                     update={style => {
                         P.setState(
                             produce(s => {
@@ -497,6 +472,7 @@ const TextConf: BlockComponent<TextBlock> = P => {
 type TGCProps = {
     style: TextGroupData['style']
     update: (data: Partial<TextGroupData['style']>) => void
+    change: () => void
 }
 const TextGroupStyleConfig: Component<TGCProps> = P => {
     return (
@@ -509,6 +485,7 @@ const TextGroupStyleConfig: Component<TGCProps> = P => {
                     let color = e.currentTarget.value
                     P.update({ color })
                 }}
+                onChange={P.change}
             />
             <input
                 name='font_size'
@@ -516,6 +493,7 @@ const TextGroupStyleConfig: Component<TGCProps> = P => {
                 min={0}
                 max={720}
                 value={P.style.fontSize || 18}
+                onChange={P.change}
                 onInput={e => {
                     let value = e.currentTarget.value
                     if (!value) return
