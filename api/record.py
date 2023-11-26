@@ -129,7 +129,7 @@ async def record_delete(request: Request, record_id: int):
         RecordTable.project == project.project_id
     ))
 
-    if not result[0]:
+    if not result:
         return Response()
 
     await sqlx.execute(
