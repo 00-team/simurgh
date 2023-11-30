@@ -27,7 +27,10 @@
         height: 100%;
         overflow: hidden;
         transition: width 200ms;
-        padding: 0.3rem;
+        padding: 1rem 1rem 1rem 0.5rem;
+        gap: 1rem;
+        display: flex;
+        flex-direction: column;
 
         .actions {
             position: relative;
@@ -71,6 +74,26 @@
 
                     pointer-events: none;
                     cursor: default;
+                }
+            }
+        }
+
+        .list {
+            z-index: 1;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-family: 'Roboto';
+
+            li {
+                cursor: pointer;
+                border: 2px solid red;
+                padding: 0.5rem;
+                border-radius: 5px;
+
+                &.active {
+                    border-color: blueviolet;
                 }
             }
         }

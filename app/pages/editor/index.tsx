@@ -65,14 +65,16 @@ export default () => {
 
     createEffect(() => {
         state.blocks_changed
-        addHistory(JSON.stringify(state.blocks))
+        untrack(() => {
+            addHistory(JSON.stringify(state.blocks))
+        })
     })
 
     return (
         <div class='editor-fnd'>
             <div class='header'>Header</div>
             <div class='content'>
-                <History />
+                <History change={s => setState({ blocks: JSON.parse(s) })} />
                 <div class='editor' ref={editor}>
                     {state.blocks.map((b, i) => (
                         <div

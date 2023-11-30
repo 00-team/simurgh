@@ -1,7 +1,8 @@
 import { createStore, produce } from 'solid-js/store'
 import './style/history.scss'
 import { ChevronLeft, ChevronRight, Redo, Trash, Undo } from '!/icons/editor'
-import { deep_equal } from '!/shared'
+import { time_ago } from '!/shared'
+import { Component, createEffect } from 'solid-js'
 
 type History = {
     blocks: string
@@ -59,6 +60,7 @@ function addHistory(blocks: string) {
                 blocks,
                 timestamp: new Date().getTime(),
             })
+            s.index = 0
 
             if (s.history.length > 100) {
                 s.history.pop()
@@ -67,8 +69,10 @@ function addHistory(blocks: string) {
     )
 }
 
-export { addHistory }
-export default () => {
+type HistoryProps = {
+    change(data: string): void
+}
+const History: Component<HistoryProps> = P => {
     return (
         <div class='leftside' classList={{ collapsed: state.collapsed }}>
             <button
@@ -80,7 +84,15 @@ export default () => {
 
             <div class='inner'>
                 <div class='actions'>
-                    <button style={{ 'border-right-width': '2px' }}>
+                    <button
+                        style={{ 'border-right-width': '2px' }}
+                        disabled={state.index == state.history.length - 1}
+                        onClick={() => {
+                            if (state.index == state.history.length - 1) return
+                            P.change(state.history[state.index + 1].blocks)
+                            setState(s => ({ index: s.index + 1 }))
+                        }}
+                    >
                         <Undo />
                     </button>
                     <button
@@ -94,16 +106,34 @@ export default () => {
                     >
                         <Trash />
                     </button>
-                    <button style={{ 'border-left-width': '2px' }}>
+                    <button
+                        style={{ 'border-left-width': '2px' }}
+                        disabled={state.index == 0}
+                        onClick={() => {
+                            if (state.index == 0) return
+                            P.change(state.history[state.index - 1].blocks)
+                            setState(s => ({ index: s.index - 1 }))
+                        }}
+                    >
                         <Redo />
                     </button>
                 </div>
                 <ul class='list'>
-                    {state.history.map(h => (
-                        <li>{h.timestamp}</li>
+                    {state.history.map((h, i) => (
+                        <li
+                            classList={{ active: state.index == i }}
+                            onClick={() => {
+                                setState({ index: i })
+                                P.change(h.blocks)
+                            }}
+                        >
+                            {time_ago(h.timestamp)}
+                        </li>
                     ))}
                 </ul>
             </div>
         </div>
     )
 }
+export default History
+export { addHistory }
