@@ -8,7 +8,6 @@ import {
     onCleanup,
     untrack,
 } from 'solid-js'
-import { CheckBox } from './components'
 import History, { addHistory } from './history'
 import {
     BLOCK_COSMETIC,
@@ -19,6 +18,18 @@ import {
     TextBlock,
     TextGroupData,
 } from './models'
+import {
+    AlignCenterIcon,
+    AlignLeftIcon,
+    AlignRightIcon,
+    ArrowLeftLine,
+    ArrowRightLine,
+    ChevronDown,
+    ChevronUp,
+    EyeIcon,
+    EyeOffIcon,
+    TrashIcon,
+} from '!/icons/editor'
 
 const CONTENT_IS_EDITABLE =
     // @ts-ignore checking for firefox
@@ -45,16 +56,16 @@ export default () => {
             {
                 type: 'text',
                 data: [
-                    { content: ['01'], style: {} },
+                    { content: ['01'] },
                     {
                         content: ['2345678abcdefg'],
-                        style: { color: '#00ff00' },
+                        color: '#00ff00',
                     },
-                    { content: ['very cool'], style: {} },
-                    { content: ['this is good stuff'], style: {} },
+                    { content: ['very cool'] },
+                    { content: ['this is good stuff'] },
                 ],
                 active: -1,
-                style: {},
+                dir: 'ltr',
             },
         ],
         active: {
@@ -119,11 +130,56 @@ export default () => {
                 </div>
                 <div class='rightbar'>
                     <div class='config'>
-                        <CheckBox
-                            label='Show Groups'
-                            checked={state.show_groups}
-                            update={v => setState({ show_groups: v })}
-                        />
+                        <div class='grid-actions'>
+                            <button>
+                                <ChevronUp />
+                            </button>
+                            <button
+                                onClick={() =>
+                                    setState(s => ({
+                                        show_groups: !s.show_groups,
+                                    }))
+                                }
+                            >
+                                {state.show_groups ? (
+                                    <EyeOffIcon />
+                                ) : (
+                                    <EyeIcon />
+                                )}
+                            </button>
+                            <button>C</button>
+                            <button>D</button>
+                            <button>F</button>
+                            <button>
+                                <TrashIcon />
+                            </button>
+                            <button>A</button>
+                            <button>B</button>
+                            <button>D</button>
+                            <button>D</button>
+                            <button>
+                                <ChevronDown />
+                            </button>
+                            <button>D</button>
+                            <button>D</button>
+                            <button>D</button>
+                            <button>D</button>
+                            <button>
+                                <ArrowLeftLine />
+                            </button>
+                            <button>
+                                <AlignLeftIcon />
+                            </button>
+                            <button>
+                                <AlignCenterIcon />
+                            </button>
+                            <button>
+                                <AlignRightIcon />
+                            </button>
+                            <button>
+                                <ArrowRightLine />
+                            </button>
+                        </div>
                         {config_map[state.active.type]({
                             state,
                             setState,
@@ -183,10 +239,16 @@ const EmptyComp: BlockComponent<EmptyBlock> = props => {
 const TextComp: BlockComponent<TextBlock> = P => {
     const [placeholder, setPlaceholder] = createSignal(!P.block.data.length)
 
+    function comp_data(group: TextGroupData): string {
+        const { content, ...data } = group
+        return JSON.stringify(data)
+    }
+
     return (
         <>
             {placeholder() && <span class='placeholder'>Enter Text Here</span>}
             <p
+                style={{ direction: P.block.dir }}
                 id={`block_paragraph_${P.id}`}
                 onMouseDown={() => {
                     P.setState(
@@ -215,10 +277,11 @@ const TextComp: BlockComponent<TextBlock> = P => {
             >
                 {P.block.data.map((g, i) => (
                     <span
-                        data-style={JSON.stringify(g.style)}
+                        data-comp={comp_data(g)}
                         style={{
-                            color: g.style.color,
-                            'font-size': g.style.fontSize + 'px',
+                            color: g.color,
+                            'font-size': g.font_size && g.font_size + 'px',
+                            '--bc': 'var(--c' + (i % 3) + ')',
                         }}
                         classList={{
                             active: P.block.active == i,
@@ -318,38 +381,25 @@ const TextConf: BlockComponent<TextBlock> = P => {
             } else if (n.nodeName == 'BR') {
                 content += '\n'
             } else if (n instanceof HTMLSpanElement) {
+                let tgd: TextGroupData = {
+                    ...JSON.parse(n.getAttribute('data-comp') || '{}'),
+                    content: [],
+                }
                 if (outrange) {
                     groups.push(content.length)
-                    data.set(content.length, {
-                        style:
-                            JSON.parse(n.getAttribute('data-style') || '{}') ||
-                            {},
-                        content: [],
-                    })
+                    data.set(content.length, tgd)
                 }
 
                 for (let e of n.childNodes) {
                     if (e == sc) {
                         groups.push(content.length + soff)
-                        data.set(content.length + soff, {
-                            style:
-                                JSON.parse(
-                                    n.getAttribute('data-style') || '{}'
-                                ) || {},
-                            content: [],
-                        })
+                        data.set(content.length + soff, tgd)
                         outrange = 0
                     }
 
                     if (!outrange && e == ec) {
                         groups.push(content.length + eoff)
-                        data.set(content.length + eoff, {
-                            style:
-                                JSON.parse(
-                                    n.getAttribute('data-style') || '{}'
-                                ) || {},
-                            content: [],
-                        })
+                        data.set(content.length + eoff, tgd)
                         outrange = 1
                     }
 
@@ -377,7 +427,7 @@ const TextConf: BlockComponent<TextBlock> = P => {
             if (d) {
                 grouped_content.push({ ...d, content: c })
             } else {
-                grouped_content.push({ content: c, style: {} })
+                grouped_content.push({ content: c })
             }
 
             last_g = g
@@ -388,7 +438,7 @@ const TextConf: BlockComponent<TextBlock> = P => {
                 if (d) {
                     grouped_content.push({ ...d, content: c })
                 } else {
-                    grouped_content.push({ content: c, style: {} })
+                    grouped_content.push({ content: c })
                 }
             }
         }
@@ -437,30 +487,33 @@ const TextConf: BlockComponent<TextBlock> = P => {
             <button
                 onmousedown={e => e.preventDefault()}
                 onClick={() => {
-                    let p = editor.querySelector<HTMLParagraphElement>(
-                        '.block.text p#block_paragraph_' + id
+                    P.setState(
+                        produce(s => {
+                            // @ts-ignore
+                            let cd = s.blocks[P.id].dir
+                            // @ts-ignore
+                            s.blocks[P.id].dir = cd == 'ltr' ? 'rtl' : 'ltr'
+                            s.blocks_changed = Date.now()
+                        })
                     )
-
-                    p.style.direction =
-                        p.style.direction == 'rtl' ? 'ltr' : 'rtl'
                 }}
             >
                 Toggle Dir
             </button>
             <Show when={P.block.data[P.block.active]}>
                 <TextGroupStyleConfig
-                    style={P.block.data[P.block.active].style}
+                    data={P.block.data[P.block.active]}
                     change={() => P.setState({ blocks_changed: Date.now() })}
-                    update={style => {
+                    update={values => {
+                        delete values['content']
                         P.setState(
                             produce(s => {
-                                let data =
-                                    // @ts-ignore
-                                    s.blocks[P.id].data[P.block.active].style
                                 // @ts-ignore
-                                s.blocks[P.id].data[P.block.active].style = {
+                                let data = s.blocks[P.id].data[P.block.active]
+                                // @ts-ignore
+                                s.blocks[P.id].data[P.block.active] = {
                                     ...data,
-                                    ...style,
+                                    ...values,
                                 }
                             })
                         )
@@ -472,8 +525,8 @@ const TextConf: BlockComponent<TextBlock> = P => {
 }
 
 type TGCProps = {
-    style: TextGroupData['style']
-    update: (data: Partial<TextGroupData['style']>) => void
+    data: TextGroupData
+    update: (data: Partial<TextGroupData>) => void
     change: () => void
 }
 const TextGroupStyleConfig: Component<TGCProps> = P => {
@@ -482,7 +535,7 @@ const TextGroupStyleConfig: Component<TGCProps> = P => {
             <input
                 name='group_color'
                 type='color'
-                value={P.style.color || '#ffffff'}
+                value={P.data.color || '#ffffff'}
                 onInput={e => {
                     let color = e.currentTarget.value
                     P.update({ color })
@@ -494,14 +547,14 @@ const TextGroupStyleConfig: Component<TGCProps> = P => {
                 type='number'
                 min={0}
                 max={720}
-                value={P.style.fontSize || 18}
+                value={P.data.font_size || 18}
                 onChange={P.change}
                 onInput={e => {
                     let value = e.currentTarget.value
                     if (!value) return
                     let size = parseInt(value)
                     if (size < 0 || size > 720) return
-                    P.update({ fontSize: size })
+                    P.update({ font_size: size })
                 }}
             />
         </>

@@ -2,8 +2,6 @@ export function time_ago(ts: number): string {
     let now = Date.now()
     let delta = (now - ts) / 1000
 
-    delta += 831
-
     if (delta <= 1) return 'Now'
 
     let seconds = ~~(delta % 60)

@@ -8,19 +8,18 @@ export type EmptyBlock = {
 
 export type TextGroupData = {
     content: string[]
-    style: {
-        color?: string
-        fontSize?: number
-    }
+    color?: string
+    bold?: true
+    italic?: true
+    underline?: true
+    font_size?: number
 }
 
 export type TextBlock = {
     type: 'text'
     data: TextGroupData[]
     active: number
-    style: {
-        direction?: 'ltr' | 'rtl'
-    }
+    dir: 'ltr' | 'rtl'
 }
 
 export type ImageBlock = {
@@ -37,7 +36,7 @@ export const DEFAULT_BLOCKS: { [T in Block as T['type']]: T } = {
         type: 'text',
         data: [],
         active: -1,
-        style: {},
+        dir: 'ltr',
     },
     image: { type: 'image', url: '', record_id: -1 },
 }

@@ -1,8 +1,14 @@
 import { createStore, produce } from 'solid-js/store'
 import './style/history.scss'
-import { ChevronLeft, ChevronRight, Redo, Trash, Undo } from '!/icons/editor'
+import {
+    ChevronLeft,
+    ChevronRight,
+    RedoIcon,
+    TrashIcon,
+    UndoIcon,
+} from '!/icons/editor'
 import { time_ago } from '!/shared'
-import { Component, createEffect } from 'solid-js'
+import { Component } from 'solid-js'
 
 type History = {
     blocks: string
@@ -93,7 +99,7 @@ const History: Component<HistoryProps> = P => {
                             setState(s => ({ index: s.index + 1 }))
                         }}
                     >
-                        <Undo />
+                        <UndoIcon />
                     </button>
                     <button
                         class='trash'
@@ -104,7 +110,7 @@ const History: Component<HistoryProps> = P => {
                         }}
                         onclick={trash}
                     >
-                        <Trash />
+                        <TrashIcon />
                     </button>
                     <button
                         style={{ 'border-left-width': '2px' }}
@@ -115,7 +121,7 @@ const History: Component<HistoryProps> = P => {
                             setState(s => ({ index: s.index - 1 }))
                         }}
                     >
-                        <Redo />
+                        <RedoIcon />
                     </button>
                 </div>
                 <ul class='list'>

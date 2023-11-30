@@ -26,9 +26,9 @@ export const TextIcon = () => (
         stroke-linecap='round'
         stroke-linejoin='round'
     >
-        <polyline points='4 7 4 4 20 4 20 7'></polyline>
-        <line x1='9' y1='20' x2='15' y2='20'></line>
-        <line x1='12' y1='4' x2='12' y2='20'></line>
+        <path d='M17 22h-1a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4h1' />
+        <path d='M7 22h1a4 4 0 0 0 4-4v-1' />
+        <path d='M7 2h1a4 4 0 0 1 4 4v1' />
     </svg>
 )
 
@@ -64,7 +64,35 @@ export const ChevronRight = () => (
     </svg>
 )
 
-export const Undo = () => (
+export const ChevronDown = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='m6 9 6 6 6-6' />
+    </svg>
+)
+
+export const ChevronUp = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='m18 15-6-6-6 6' />
+    </svg>
+)
+
+export const UndoIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
@@ -79,7 +107,7 @@ export const Undo = () => (
     </svg>
 )
 
-export const Redo = () => (
+export const RedoIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
@@ -94,7 +122,7 @@ export const Redo = () => (
     </svg>
 )
 
-export const Trash = () => (
+export const TrashIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
@@ -107,5 +135,117 @@ export const Trash = () => (
         <path d='M3 6h18' />
         <path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' />
         <path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' />
+    </svg>
+)
+
+export const EyeIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z' />
+        <circle cx='12' cy='12' r='3' />
+    </svg>
+)
+
+export const EyeOffIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='M9.88 9.88a3 3 0 1 0 4.24 4.24' />
+        <path d='M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68' />
+        <path d='M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61' />
+        <line x1='2' x2='22' y1='2' y2='22' />
+    </svg>
+)
+
+export const ArrowLeftLine = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='M3 19V5' />
+        <path d='m13 6-6 6 6 6' />
+        <path d='M7 12h14' />
+    </svg>
+)
+
+export const ArrowRightLine = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='M17 12H3' />
+        <path d='m11 18 6-6-6-6' />
+        <path d='M21 5v14' />
+    </svg>
+)
+
+export const AlignRightIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <line x1='21' x2='3' y1='6' y2='6' />
+        <line x1='21' x2='9' y1='12' y2='12' />
+        <line x1='21' x2='7' y1='18' y2='18' />
+    </svg>
+)
+
+export const AlignLeftIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <line x1='21' x2='3' y1='6' y2='6' />
+        <line x1='15' x2='3' y1='12' y2='12' />
+        <line x1='17' x2='3' y1='18' y2='18' />
+    </svg>
+)
+
+export const AlignCenterIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <line x1='21' x2='3' y1='6' y2='6' />
+        <line x1='17' x2='7' y1='12' y2='12' />
+        <line x1='19' x2='5' y1='18' y2='18' />
     </svg>
 )
