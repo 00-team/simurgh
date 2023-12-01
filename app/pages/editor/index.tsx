@@ -1,4 +1,4 @@
-import { SetStoreFunction, createStore, produce } from 'solid-js/store'
+import { createStore, produce } from 'solid-js/store'
 import './style/editor.scss'
 import {
     Component,
@@ -6,6 +6,7 @@ import {
     createEffect,
     createSignal,
     onCleanup,
+    onMount,
     untrack,
 } from 'solid-js'
 import History, { addHistory } from './history'
@@ -26,58 +27,22 @@ import {
     ArrowRightLine,
     ChevronDown,
     ChevronUp,
-    EyeIcon,
-    EyeOffIcon,
+    SeparatorVertical,
     TrashIcon,
 } from '!/icons/editor'
+import BlockConfig from './config'
+import { setWareHouse, warehouse } from './state'
 
 const CONTENT_IS_EDITABLE =
     // @ts-ignore checking for firefox
     typeof InstallTrigger !== 'undefined' ? true : 'plaintext-only'
 
-type State = {
-    blocks_changed: number
-    blocks: Block[]
-    active: {
-        id: number
-        type: Block['type']
-    }
-    show_groups: boolean
-}
-
 let editor: HTMLDivElement
 export default () => {
-    const [state, setState] = createStore<State>({
-        show_groups: false,
-        blocks_changed: 0,
-        blocks: [
-            DEFAULT_BLOCKS.text,
-            DEFAULT_BLOCKS.empty,
-            {
-                type: 'text',
-                data: [
-                    { content: ['01'] },
-                    {
-                        content: ['2345678abcdefg'],
-                        color: '#00ff00',
-                    },
-                    { content: ['very cool'] },
-                    { content: ['this is good stuff'] },
-                ],
-                active: -1,
-                dir: 'ltr',
-            },
-        ],
-        active: {
-            id: 2,
-            type: 'text',
-        },
-    })
-
     createEffect(() => {
-        state.blocks_changed
+        warehouse.blocks_changed
         untrack(() => {
-            addHistory(JSON.stringify(state.blocks))
+            addHistory(JSON.stringify(warehouse.blocks))
         })
     })
 
@@ -85,17 +50,19 @@ export default () => {
         <div class='editor-fnd'>
             <div class='header'>Header</div>
             <div class='content'>
-                <History change={s => setState({ blocks: JSON.parse(s) })} />
+                <History
+                    change={s => setWareHouse({ blocks: JSON.parse(s) })}
+                />
                 <div class='editor' ref={editor}>
-                    {state.blocks.map((b, i) => (
+                    {warehouse.blocks.map((b, i) => (
                         <div
                             class='block'
                             classList={{
-                                active: i == state.active.id,
+                                active: i == warehouse.active.id,
                                 [b.type]: true,
                             }}
                             onMouseDown={() =>
-                                setState(
+                                setWareHouse(
                                     produce(s => {
                                         s.active.id = i
                                         s.active.type = b.type
@@ -104,8 +71,6 @@ export default () => {
                             }
                         >
                             {block_map[b.type]({
-                                setState,
-                                state,
                                 block: b as never,
                                 id: i,
                             })}
@@ -113,7 +78,7 @@ export default () => {
                     ))}
                     <button
                         onclick={() => {
-                            setState(
+                            setWareHouse(
                                 produce(s => {
                                     let new_id = s.blocks.push({
                                         type: 'empty',
@@ -130,22 +95,11 @@ export default () => {
                 </div>
                 <div class='rightbar'>
                     <div class='config'>
+                        <BlockConfig />
+
                         <div class='grid-actions'>
                             <button>
                                 <ChevronUp />
-                            </button>
-                            <button
-                                onClick={() =>
-                                    setState(s => ({
-                                        show_groups: !s.show_groups,
-                                    }))
-                                }
-                            >
-                                {state.show_groups ? (
-                                    <EyeOffIcon />
-                                ) : (
-                                    <EyeIcon />
-                                )}
                             </button>
                             <button>C</button>
                             <button>D</button>
@@ -180,15 +134,15 @@ export default () => {
                                 <ArrowRightLine />
                             </button>
                         </div>
-                        {config_map[state.active.type]({
-                            state,
-                            setState,
-                            id: state.active.id,
-                            block: state.blocks[state.active.id] as never,
+                        {config_map[warehouse.active.type]({
+                            id: warehouse.active.id,
+                            block: warehouse.blocks[
+                                warehouse.active.id
+                            ] as never,
                         })}
                     </div>
                     <div class='actions'>
-                        <button onclick={() => console.log(state.blocks)}>
+                        <button onclick={() => console.log(warehouse.blocks)}>
                             Log
                         </button>
                     </div>
@@ -199,8 +153,6 @@ export default () => {
 }
 
 type BlockComponent<T extends Block> = Component<{
-    state: State
-    setState: SetStoreFunction<State>
     block: T
     id: number
 }>
@@ -218,7 +170,7 @@ const EmptyComp: BlockComponent<EmptyBlock> = props => {
                     <button
                         class='select-btn'
                         onclick={() => {
-                            props.setState(
+                            setWareHouse(
                                 produce(s => {
                                     s.blocks[props.id] = DEFAULT_BLOCKS[t]
                                     s.active.type = t as Block['type']
@@ -251,24 +203,24 @@ const TextComp: BlockComponent<TextBlock> = P => {
                 style={{ direction: P.block.dir }}
                 id={`block_paragraph_${P.id}`}
                 onMouseDown={() => {
-                    P.setState(
+                    setWareHouse(
                         produce(s => {
-                            // @ts-ignore
-                            s.blocks[P.id].active = -1
+                            let b = s.blocks[P.id] as TextBlock
+                            b.active = -1
                         })
                     )
                 }}
                 onInput={e => {
-                    if (P.state.active.id != P.id) {
-                        P.setState({
+                    if (warehouse.active.id != P.id) {
+                        setWareHouse({
                             active: { id: P.id, type: P.block.type },
                         })
                     }
                     setPlaceholder(!e.currentTarget.innerHTML)
                 }}
                 onFocus={() => {
-                    if (P.state.active.id != P.id) {
-                        P.setState({
+                    if (warehouse.active.id != P.id) {
+                        setWareHouse({
                             active: { id: P.id, type: P.block.type },
                         })
                     }
@@ -285,14 +237,14 @@ const TextComp: BlockComponent<TextBlock> = P => {
                         }}
                         classList={{
                             active: P.block.active == i,
-                            show_border: P.state.show_groups,
+                            show_border: warehouse.show_groups,
                         }}
                         onMouseDown={e => {
                             e.stopPropagation()
-                            P.setState(
+                            setWareHouse(
                                 produce(s => {
-                                    // @ts-ignore
-                                    s.blocks[P.id].active = i
+                                    let b = s.blocks[P.id] as TextBlock
+                                    b.active = i
                                 })
                             )
                         }}
@@ -325,13 +277,42 @@ const ImageConf: BlockComponent<ImageBlock> = props => {
 }
 
 const TextConf: BlockComponent<TextBlock> = P => {
-    let id = P.state.active.id
+    let id = warehouse.active.id
+
+    const [show, setShow] = createStore({ show_grouper: false })
+
+    function selection_change() {
+        let show_grouper = false
+        let selection = document.getSelection()
+
+        if (!selection.isCollapsed && selection.rangeCount) {
+            let range = selection.getRangeAt(0)
+            let sc = range.startContainer
+            let ec = range.endContainer
+            let p = editor.querySelector<HTMLParagraphElement>(
+                '.block.text p#block_paragraph_' + id
+            )
+            if ((sc == p || p.contains(sc)) && (ec == p || p.contains(ec))) {
+                show_grouper = true
+            }
+        }
+
+        if (show.show_grouper != show_grouper) {
+            setShow({ show_grouper })
+        }
+    }
+
+    onMount(() => {
+        document.addEventListener('selectionchange', selection_change)
+    })
 
     onCleanup(() => {
-        P.setState(
+        document.removeEventListener('selectionchange', selection_change)
+
+        setWareHouse(
             produce(s => {
-                // @ts-ignore
-                s.blocks[P.id].active = -1
+                let b = s.blocks[P.id] as TextBlock
+                b.active = -1
             })
         )
     })
@@ -421,7 +402,9 @@ const TextConf: BlockComponent<TextBlock> = P => {
 
         let last_g = 0
         for (let [i, g] of groups.entries()) {
-            let c = content.slice(last_g, g).split('\n')
+            let cstr = content.slice(last_g, g)
+            if (!cstr) continue
+            let c = cstr.split('\n')
             let d = data.get(last_g)
 
             if (d) {
@@ -432,7 +415,9 @@ const TextConf: BlockComponent<TextBlock> = P => {
 
             last_g = g
             if (i == groups.length - 1) {
-                let c = content.slice(last_g).split('\n')
+                let cstr = content.slice(last_g)
+                if (!cstr) continue
+                let c = cstr.split('\n')
                 let d = data.get(last_g)
 
                 if (d) {
@@ -464,30 +449,30 @@ const TextConf: BlockComponent<TextBlock> = P => {
     }
 
     return (
-        <div class='text' onMouseEnter={() => {}}>
-            <button
-                onmousedown={e => e.preventDefault()}
-                onClick={() => {
-                    let res = new_group()
-                    console.log(res)
+        <div class='text'>
+            {show.show_grouper && (
+                <button
+                    onmousedown={e => e.preventDefault()}
+                    onClick={() => {
+                        let res = new_group()
+                        if (res == null) return
 
-                    if (res !== null) {
-                        P.setState(
+                        setWareHouse(
                             produce(s => {
-                                // @ts-ignore
-                                s.blocks[P.id].data = res
+                                let b = s.blocks[P.id] as TextBlock
+                                b.data = res
                                 s.blocks_changed = Date.now()
                             })
                         )
-                    }
-                }}
-            >
-                new Group
-            </button>
+                    }}
+                >
+                    <SeparatorVertical />
+                </button>
+            )}
             <button
                 onmousedown={e => e.preventDefault()}
                 onClick={() => {
-                    P.setState(
+                    setWareHouse(
                         produce(s => {
                             // @ts-ignore
                             let cd = s.blocks[P.id].dir
@@ -503,10 +488,10 @@ const TextConf: BlockComponent<TextBlock> = P => {
             <Show when={P.block.data[P.block.active]}>
                 <TextGroupStyleConfig
                     data={P.block.data[P.block.active]}
-                    change={() => P.setState({ blocks_changed: Date.now() })}
+                    change={() => setWareHouse({ blocks_changed: Date.now() })}
                     update={values => {
                         delete values['content']
-                        P.setState(
+                        setWareHouse(
                             produce(s => {
                                 // @ts-ignore
                                 let data = s.blocks[P.id].data[P.block.active]

@@ -27,31 +27,11 @@
             flex-direction: column;
 
             .config {
+                display: flex;
+                flex-direction: column;
                 padding: 1rem;
                 height: 80%;
-
-                .grid-actions {
-                    display: grid;
-                    grid-template-columns: repeat(5, 1fr);
-                    width: 100%;
-                    border: 1px solid red;
-
-                    button {
-                        aspect-ratio: 1;
-                        background: transparent;
-                        outline: 1px solid red;
-                        outline-offset: -1px;
-                        padding: 0.1rem;
-
-                        svg {
-                            height: 60%;
-                        }
-
-                        &:hover {
-                            background-color: blueviolet;
-                        }
-                    }
-                }
+                gap: 1rem;
 
                 .text {
                     display: flex;
@@ -60,11 +40,13 @@
                     user-select: none;
 
                     button {
-                        padding: 0.2rem 1rem;
                         background: transparent;
                         border-radius: 5px;
                         border: 2px solid blueviolet;
                         user-select: none;
+                        height: 40px;
+                        aspect-ratio: 1;
+                        padding: 0.2rem;
                     }
                 }
             }
