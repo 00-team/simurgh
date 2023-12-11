@@ -92,12 +92,14 @@ for route in app.routes:
     errors.extend((route.openapi_extra or {}).pop('errors', []))
 
     for e in errors:
+        example = e.schema.get('example' , {})
         route.responses[e.code] = {
             'description': f'{e.messages()["subject"]} - {e.status}',
             'content': {
                 'application/json': {
                     'schema': {
                         '$ref': f'#/errors/{e.code}',
+                        'example': example
                     }
                 }
             }
