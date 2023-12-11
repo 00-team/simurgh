@@ -92,12 +92,14 @@ for route in app.routes:
     errors.extend((route.openapi_extra or {}).pop('errors', []))
 
     for e in errors:
+        example = e.schema.get('example' , {})
         route.responses[e.code] = {
             'description': f'{e.messages()["subject"]} - {e.status}',
             'content': {
                 'application/json': {
                     'schema': {
                         '$ref': f'#/errors/{e.code}',
+                        'example': example
                     }
                 }
             }
@@ -123,5 +125,23 @@ def custom_openapi():
     app.openapi_schema = schema
     return app.openapi_schema
 
+async def custom_exception_handler(request, exc):
+    if isinstance(exc, Error):
+        return JSONResponse(
+            status_code=exc.status,
+            content={
+                'code': exc.code,
+                'title': exc.title,
+                'message': exc.msg,
+                'status': exc.status,
+                'extra': exc.extra
+            },
+            headers=exc.headers
+        )
+    return await request.app.handle_exception(request, exc)
+
 
 app.openapi = custom_openapi
+
+# To convert custom errors in json format
+app.add_exception_handler(Error, custom_exception_handler)
