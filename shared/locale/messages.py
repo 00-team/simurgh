@@ -1,13 +1,13 @@
 
 
-from shared.locale.langs import Messages, all_langs
+from .langs import MessageModel, Messages, all_langs
 
 
 def message(key: str):
     messages = Messages()
 
     for k, lang in all_langs.items():
-        messages[k] = dict(
+        messages[k] = MessageModel(
             subject=lang.messages[key][0],
             content='\n'.join(lang.messages[key][1:])
         )

@@ -66,13 +66,11 @@ class Error(Exception):
         data = {
             'status': self.status,
             'code': self.code,
-            **self.messages(lang=lang),
+            **(self.messages(lang=lang)).format(**(self.extra or {})),
         }
 
         if self.extra:
             data['extra'] = self.extra
-            data['subject'] = data['subject'].format(**self.extra)
-            data['content'] = data['content'].format(**self.extra)
 
         return JSONResponse(
             status_code=self.status,

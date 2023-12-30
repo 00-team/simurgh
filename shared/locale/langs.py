@@ -22,6 +22,11 @@ class MessageModel(BaseModel):
     subject: str
     content: str = ''
 
+    def format(self, **kwds) -> 'MessageModel':
+        self.subject = self.subject.format(**kwds)
+        self.content = self.content.format(**kwds)
+        return self
+
 
 class MessageResult(BaseModel):
     message: MessageModel

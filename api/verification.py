@@ -10,7 +10,7 @@ from fastapi import Request
 from pydantic import BaseModel, EmailStr
 
 from shared import config, redis, settings
-from shared.locale import MessageResult, err_bad_verification
+from shared.locale import MessageModel, err_bad_verification
 from shared.locale import msg_verification_code_ok, msg_verification_code_sent
 from shared.tools import send_email
 
@@ -47,9 +47,10 @@ class Value:
         )
 
 
-class VerificationResult(MessageResult):
+class VerificationResult(BaseModel):
     expires: int
     action: Action
+    message: MessageModel
 
 
 class VerificationData(BaseModel):
@@ -60,7 +61,7 @@ class VerificationData(BaseModel):
 async def verification(request: Request, data: VerificationData):
     key = f'{NS}:{data.email}'
     result = await redis.get(key)
-    lang = request.cookies.get('lang', config.lang)
+    # lang = request.cookies.get('lang', config.lang)
 
     if result:
         value = Value.from_bytes(result)
