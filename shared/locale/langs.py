@@ -45,7 +45,7 @@ class Messages(dict):
 
 all_langs: dict[str, Lang] = {}
 
-for p in Path(__file__).parent.glob('*.json'):
+for p in (Path(__file__).parent / 'data').iterdir():
     with open(p, 'r') as f:
         all_langs[p.stem] = Lang(**json.load(f))
 
