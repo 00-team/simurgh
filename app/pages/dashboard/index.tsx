@@ -1,11 +1,12 @@
 import { BlogIcon, ExitIcon, PersonIcon, ProjectIcon } from '!/icons/dashboard'
 import { setUser, user } from '!/stores'
-import { Link, Outlet, useNavigate } from '@solidjs/router'
+import { A, useNavigate } from '@solidjs/router'
 import { Component, createEffect, JSXElement, onMount } from 'solid-js'
+import { RouteSectionProps } from '@solidjs/router'
 
 import './style/dashboard.scss'
 
-const Dashboard: Component = () => {
+const Dashboard: Component<RouteSectionProps> = P => {
     const navigate = useNavigate()
 
     // if (user && user.user_id === 0) navigate('/login')
@@ -13,9 +14,7 @@ const Dashboard: Component = () => {
     return (
         <main class='dashboard'>
             <Sidebar />
-            <aside class='wrapper'>
-                <Outlet />
-            </aside>
+            <aside class='wrapper'>{P.children}</aside>
         </main>
     )
 }
@@ -60,7 +59,7 @@ const Sidebar: Component = () => {
             <div class='options'>
                 {sidebarRows.map(({ title, Icon, link }) => {
                     return (
-                        <Link href={`/${link}`} class='option '>
+                        <A href={`/${link}`} class='option '>
                             <div class='icon'>
                                 <Icon size={25} />
                             </div>
@@ -69,7 +68,7 @@ const Sidebar: Component = () => {
                                 <div class='line'></div>
                             </span>
                             <div></div>
-                        </Link>
+                        </A>
                     )
                 })}
             </div>

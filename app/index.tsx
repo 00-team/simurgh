@@ -1,6 +1,4 @@
-/* @refresh reload */
-
-import { Route, Router, Routes } from '@solidjs/router'
+import { Route, Router } from '@solidjs/router'
 import { render } from 'solid-js/web'
 
 import { lazy, Show } from 'solid-js'
@@ -25,8 +23,12 @@ const Editor = lazy(() => import('./pages/editor'))
 
 function Main() {
     return (
-        <Show fallback={<Login />} when={user.user_id}>
-            <Dashboard />
+        <Show fallback={<Login />} when={user.user_id || true}>
+            <Route path='/' component={Dashboard}>
+                <Route path={'projects'} component={Projects} />
+                <Route path={'project/:id'} component={Project} />
+                <Route path={'*'} component={() => <></>} />
+            </Route>
         </Show>
     )
 }
@@ -35,47 +37,9 @@ render(
     () => (
         <>
             <Router>
-                <Routes>
-                    <Route path='/editor' component={Editor} />
+                <Route path='/editor' component={Editor} />
 
-                    <Route path='/' data={UserData} component={Main}>
-                        <Route path={'projects'} component={Projects} />
-                        <Route path={'project/:id'} component={Project} />
-                        <Route path={'*'} component={() => <></>} />
-                    </Route>
-
-                    {/*
-                <Route
-
-                    path='/dash/'
-                    component={lazy(() => import('./dash'))}
-                    data={UserData}
-                />
-                <Route
-                    path='/admin'
-                    component={lazy(() => import('./admin'))}
-                    data={UserData}
-                >
-                    <Route
-                        path='/'
-                        component={lazy(() => import('./admin/general'))}
-                    />
-                    <Route
-                        path='/users/'
-                        component={lazy(() => import('./admin/users'))}
-                    />
-                    <Route
-                        path='/projects/'
-                        component={lazy(() => import('./admin/projects'))}
-                    />
-                    <Route
-                        path='/projects/:id/'
-                        component={lazy(() => import('./admin/project'))}
-                    />
-                </Route>
-
-*/}
-                </Routes>
+                <Main />
             </Router>
             <Alert />
             <Progress />

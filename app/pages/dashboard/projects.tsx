@@ -1,7 +1,7 @@
 import { CalenderIcon, ImageIcon, PcIcon, QrCodeIcon } from '!/icons/dashboard'
 import { httpx } from '!/shared'
 import { ProjectModel } from '!/types'
-import { Link } from '@solidjs/router'
+import { A } from '@solidjs/router'
 import { Component, createSignal, onMount } from 'solid-js'
 
 import './style/projects.scss'
@@ -65,7 +65,7 @@ export const Projects: Component = () => {
                         getProjectRecord(project_id)
 
                         return (
-                            <Link
+                            <A
                                 href={`/project/${project_id}`}
                                 class='project-card'
                             >
@@ -116,7 +116,7 @@ export const Projects: Component = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </Link>
+                            </A>
                         )
                     }
                 )}
