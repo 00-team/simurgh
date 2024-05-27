@@ -36,7 +36,7 @@ export default defineConfig(env => {
         },
         build: {
             target: 'esnext',
-            outDir: 'static/app/',
+            outDir: 'static/dist',
             watch,
             assetsInlineLimit: 0,
             emptyOutDir: true,
