@@ -1,7 +1,8 @@
-import { UserConfig, defineConfig } from 'vite'
+import { defineConfig } from 'vite'
 import type { WatcherOptions } from 'rollup'
 import solidPlugin from 'vite-plugin-solid'
-import { resolve } from 'path'
+
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 let target = 'https://simurgh.00-team.org'
 if (process.env.local_api_target) {
@@ -11,11 +12,6 @@ if (process.env.local_api_target) {
 console.log('api target: ' + target)
 
 export default defineConfig(env => {
-    let other: Partial<UserConfig> = {}
-    if (env.command == 'build') {
-        other.base = '/static/app/'
-    }
-
     let watch: WatcherOptions | null = null
     if (env.mode == 'development') {
         watch = {
@@ -24,8 +20,7 @@ export default defineConfig(env => {
     }
 
     return {
-        ...other,
-        plugins: [solidPlugin({ hot: false })],
+        plugins: [tsconfigPaths(), solidPlugin({ hot: false })],
         server: {
             port: 8700,
             proxy: {
@@ -43,10 +38,9 @@ export default defineConfig(env => {
             target: 'esnext',
             outDir: 'static/app/',
             watch,
-            rollupOptions: {},
-        },
-        resolve: {
-            alias: { '!': resolve(__dirname, '../app') },
+            assetsInlineLimit: 0,
+            emptyOutDir: true,
+            copyPublicDir: false,
         },
     }
 })
