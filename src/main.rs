@@ -89,8 +89,6 @@ async fn main() -> std::io::Result<()> {
 
     sqlx::migrate!().run(&pool).await.expect("migration failed");
 
-    utils::send_email("dr007cc@gmail.com").await;
-
     let server = HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::new("%s %r %Ts"))

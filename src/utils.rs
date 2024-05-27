@@ -1,8 +1,12 @@
 use crate::{
     config::{config, Config},
-    models::AppErr,
+    models::{AppErr, AppErrBadRequest},
 };
 use actix_web::web::Buf;
+use lettre::{
+    message::{MultiPart, SinglePart},
+    Transport,
+};
 use rand::Rng;
 use serde::Serialize;
 use std::{fs::File, io};
@@ -58,26 +62,33 @@ pub async fn send_webhook(title: &str, desc: &str, color: u32) {
         .await;
 }
 
-pub async fn send_email(email: &str) {
-    let client = awc::Client::new();
-}
+pub async fn send_code(email: &str, code: &str) -> Result<(), AppErr> {
+    let html = format!(
+        r##"<h1>Simurgh Verification</h1>
+        <p>your verification code: <code style='font-size: 24px'>{code}</code></p>"##
+    );
+    let plain = format!("your verification code: {code}");
 
-// pub async fn send_message(chat_id: i64, text: &str) {
-//     let client = awc::Client::new();
-//     let url = format!(
-//         "https://api.telegram.org/bot{}/sendMessage",
-//         config().bot_token
-//     );
-//     let request = client.post(&url);
-//
-//     #[derive(Serialize, Debug)]
-//     struct Body {
-//         chat_id: i64,
-//         text: String,
-//     }
-//
-//     let _ = request.send_json(&Body { chat_id, text: text.to_string() }).await;
-// }
+    let message = lettre::Message::builder()
+        .from(config().mail_from.clone())
+        .to(email
+            .parse()
+            .map_err(|_| AppErrBadRequest("could not parse to email"))?)
+        .subject("Simurgh Verification")
+        .date_now()
+        .multipart(
+            MultiPart::alternative()
+                .singlepart(SinglePart::plain(plain))
+                .singlepart(SinglePart::html(html)),
+        )
+        .map_err(|_| AppErr::new(500, "could not build the message"))?;
+
+    config()
+        .mail_server
+        .send(&message)
+        .map(|_| ())
+        .map_err(|_| AppErr::new(500, "send email failed"))
+}
 
 pub trait CutOff {
     fn cut_off(&mut self, len: usize);
