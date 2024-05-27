@@ -1,5 +1,4 @@
 
-
 import logging
 import sqlite3
 import traceback
@@ -93,7 +92,7 @@ for route in app.routes:
 
     for e in errors:
         route.responses[e.code] = {
-            'description': f'{e.messages().subject} - {e.status}',
+            'description': f'{e.messages()['subject']} - {e.status}',
             'content': {
                 'application/json': {
                     'schema': {
