@@ -1,10 +1,13 @@
+import { Logo } from 'icons'
 import './style/login.scss'
 
 export default () => {
     return (
         <div class='login-fnd'>
             <div class='login-card'>
-                <div class='logo'>Logo</div>
+                <div class='logo'>
+                    <Logo />
+                </div>
                 <div class='login-form'>
                     <div class='row'>
                         <label for='login-email'>ایمیل:</label>
