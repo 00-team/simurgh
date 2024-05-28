@@ -1,0 +1,25 @@
+:root {
+    --radius: 0.25rem;
+
+    --white: #f2f2f2;
+    --black: #040404;
+    --red: #e20338;
+    --blue: #51eaff;
+    --green: #00dc7d;
+    --yellow: #ffd600;
+    // --cd: #524781;
+    // --cl: #f9c586;
+
+    --cd: #222831;
+    --cg: #393e46;
+    --ca: #00adb5;
+    --cl: #eeeeee;
+
+    --scroll-bg: var(--cd);
+    --scorll-fg: var(--cg);
+    --scorll-hover: var(--ca);
+    --scorll-active: var(--ca);
+
+    --selection-fg: var(--cd);
+    --selection-bg: var(--ca);
+}
