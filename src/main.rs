@@ -37,7 +37,7 @@ async fn openapi() -> impl Responder {
     // doc.merge(api::auth::ApiDoc::openapi());
     doc.merge(api::user::ApiDoc::openapi());
     // doc.merge(api::vendor::ApiDoc::openapi());
-    // doc.merge(api::verification::ApiVerificationDoc::openapi());
+    doc.merge(api::verification::ApiDoc::openapi());
     // doc.merge(api::product::Doc::openapi());
 
     // let mut admin_doc = ApiDoc::openapi();
@@ -99,14 +99,13 @@ async fn main() -> std::io::Result<()> {
             .service(index)
             .service(
                 scope("/api")
-                    // .service(api::auth::router())
                     .service(api::user::router())
-                    // .service(api::vendor::router()),
+                    .service(api::verification::verification),
             )
     });
 
     let server = if cfg!(debug_assertions) {
-        server.bind(("127.0.0.1", 7200)).unwrap()
+        server.bind(("127.0.0.1", 7700)).unwrap()
     } else {
         const PATH: &'static str = "/usr/share/nginx/sockets/simurgh.sock";
         let s = server.bind_uds(PATH).unwrap();
