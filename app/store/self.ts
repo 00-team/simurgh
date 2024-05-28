@@ -47,7 +47,7 @@ async function get_default(): Promise<SelfModel> {
     }
 }
 
-const [self, setSelf] = createStore(await get_default())
+export const [self, setSelf] = createStore(await get_default())
 
 createRoot(() => {
     createEffect(() => {
@@ -56,5 +56,3 @@ createRoot(() => {
         get_default().then(result => setSelf(result))
     })
 })
-
-export { self, setSelf }
