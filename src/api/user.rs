@@ -1,28 +1,25 @@
+use actix_multipart::form::MultipartForm;
 use actix_web::cookie::time::Duration;
 use actix_web::cookie::{Cookie, SameSite};
-use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{get, post, HttpResponse, Scope};
-use serde::{Deserialize, Serialize};
+use actix_web::web::{Data, Json};
+use actix_web::{delete, get, patch, post, put, HttpResponse, Scope};
+use serde::Deserialize;
 use sha2::{Digest, Sha512};
-use utoipa::{IntoParams, OpenApi, ToSchema};
+use utoipa::{OpenApi, ToSchema};
 
-use crate::config::{config, Config};
-use crate::docs::UpdatePaths;
-// use crate::models::message::Message;
-// use crate::models::order::Order;
-// use crate::models::transaction::{Transaction, TransactionStatus};
 use crate::api::verification;
-use crate::models::user::User;
-use crate::models::{AppErr, AppErrBadRequest, ListInput, Response};
+use crate::config::Config;
+use crate::docs::UpdatePaths;
+use crate::models::user::{UpdatePhoto, User};
+use crate::models::{AppErr, Response};
+use crate::utils::CutOff;
 use crate::{utils, AppState};
 
 #[derive(OpenApi)]
 #[openapi(
     tags((name = "api::user")),
     paths(
-        user_get, user_login,
-        // user_deposit, user_transactions, user_orders,
-        // user_messages, user_message_seen, user_messages_unseen_count,
+        user_get, user_login, user_update, user_update_photo, user_delete_photo
     ),
     components(schemas(LoginBody)),
     servers((url = "/user")),
@@ -111,181 +108,117 @@ async fn user_login(
 async fn user_get(user: User) -> Response<User> {
     Ok(Json(user))
 }
-//
-// #[utoipa::path(
-//     get,
-//     params(("amount" = u64, Path, example = 1e4)),
-//     responses((status = 200, body = String))
-// )]
-// /// Deposit
-// #[get("/deposit/{amount}/")]
-// async fn user_deposit(
-//     user: User, path: Path<(i64,)>, state: Data<AppState>,
-// ) -> Response<String> {
-//     let allowed = 50_000_000 - user.wallet;
-//     if allowed < 50_000 {
-//         return Err(AppErrBadRequest("wallet is maxed out"));
-//     }
-//
-//     let amount = path.0.max(50_000).min(allowed);
-//     let now = utils::now();
-//
-//
-//
-//     #[derive(Serialize)]
-//     struct Data {
-//         merchant_id: String,
-//         amount: i64,
-//         description: String,
-//         callback_url: String,
-//     }
-//
-//     let client = awc::Client::new();
-//     let mut result = client
-//         .post("https://api.zarinpal.com/pg/v4/payment/request.json")
-//         .send_json(&Data {
-//             merchant_id: config().zarinpal.clone(),
-//             amount,
-//             description: format!("{}", user.name),
-//             callback_url: "http://localhost:7200/api/user/zcb/".to_string()
-//         })
-//         .await?;
-//
-//     log::info!("result: {}", result.status());
-//     log::info!("result: {:?}", result.body().await?);
-//
-//     // TODO: insert into transactions
-//     // sqlx::query! {
-//     //     "insert into transactions(user, amount, timestamp, authority) values(?,?,?,?)",
-//     //     user.id, amount, now, result.authority
-//     // }
-//     // .execute(&state.sql)
-//     // .await?;
-//
-//     // sqlx::query! {
-//     //     "update users set wallet = ? where id = ?",
-//     //     wallet, user.id
-//     // }
-//     // .execute(&state.sql)
-//     // .await?;
-//     //
-//     // sqlx::query! {
-//     //     "update transactions set status = ? where id = ?",
-//     //     TransactionStatus::Success, tid
-//     // }
-//     // .execute(&state.sql)
-//     // .await?;
-//
-//     Ok(Json(format!("amount is {amount}")))
-// }
-//
-// #[utoipa::path(
-//     get,
-//     params(ListInput),
-//     responses((status = 200, body = Vec<Transaction>))
-// )]
-// /// List Transactions
-// #[get("/transactions/")]
-// async fn user_transactions(
-//     user: User, q: Query<ListInput>, state: Data<AppState>,
-// ) -> Response<Vec<Transaction>> {
-//     let offset = q.page * 32;
-//     let result = sqlx::query_as! {
-//         Transaction,
-//         "select * from transactions where user = ?
-//          order by id desc limit 32 offset ?",
-//         user.id, offset
-//     }
-//     .fetch_all(&state.sql)
-//     .await?;
-//
-//     Ok(Json(result))
-// }
-//
-// #[utoipa::path(
-//     get,
-//     params(ListInput),
-//     responses((status = 200, body = Vec<Message>))
-// )]
-// /// List Messages
-// #[get("/messages/")]
-// async fn user_messages(
-//     user: User, q: Query<ListInput>, state: Data<AppState>,
-// ) -> Response<Vec<Message>> {
-//     let offset = q.page * 32;
-//     let result = sqlx::query_as! {
-//         Message,
-//         "select * from messages where user = ? order by id desc limit 32 offset ?",
-//         user.id, offset
-//     }
-//     .fetch_all(&state.sql)
-//     .await?;
-//
-//     Ok(Json(result))
-// }
-//
-// #[utoipa::path(
-//     post,
-//     params(("id" = i64, Path,)),
-//     responses((status = 200))
-// )]
-// /// Message Seen
-// #[post("/messages/{id}/seen/")]
-// async fn user_message_seen(
-//     user: User, message: Message, state: Data<AppState>,
-// ) -> Result<HttpResponse, AppErr> {
-//     sqlx::query! {
-//         "update messages set seen = true where id = ? and user = ?",
-//         message.id, user.id
-//     }
-//     .execute(&state.sql)
-//     .await?;
-//
-//     Ok(HttpResponse::Ok().finish())
-// }
-//
-// #[utoipa::path(
-//     get,
-//     responses((status = 200, body = i32))
-// )]
-// /// Messages UnSeen Count
-// #[get("/messages-unseen-count/")]
-// async fn user_messages_unseen_count(
-//     user: User, state: Data<AppState>,
-// ) -> Response<i32> {
-//     let result = sqlx::query! {
-//         "select count(id) as count from messages where user = ? and seen = false
-//         order by id desc limit 10",
-//         user.id
-//     }
-//     .fetch_one(&state.sql)
-//     .await?;
-//
-//     Ok(Json(result.count))
-// }
-//
-// #[utoipa::path(
-//     get,
-//     params(ListInput),
-//     responses((status = 200, body = Vec<Order>))
-// )]
-// /// List Orders
-// #[get("/orders/")]
-// async fn user_orders(
-//     user: User, q: Query<ListInput>, state: Data<AppState>,
-// ) -> Response<Vec<Order>> {
-//     let offset = q.page * 32;
-//     let result = sqlx::query_as! {
-//         Order,
-//         "select * from orders where user = ? order by id desc limit 32 offset ?",
-//         user.id, offset
-//     }
-//     .fetch_all(&state.sql)
-//     .await?;
-//
-//     Ok(Json(result))
-// }
+
+#[derive(Deserialize, ToSchema)]
+struct UserUpdateBody {
+    name: Option<String>,
+}
+
+#[utoipa::path(
+    patch,
+    request_body = UserUpdateBody,
+    responses(
+        (status = 200, body = User)
+    )
+)]
+/// Update
+#[patch("/")]
+async fn user_update(
+    user: User, body: Json<UserUpdateBody>, state: Data<AppState>,
+) -> Json<User> {
+    let mut user = user;
+    let mut change = false;
+    if let Some(n) = &body.name {
+        change = true;
+        user.name = Some(n.clone());
+    };
+
+    if change {
+        user.name.cut_off(256);
+
+        let _ = sqlx::query_as! {
+            User,
+            "update users set name = ? where id = ?",
+            user.name, user.id
+        }
+        .execute(&state.sql)
+        .await;
+    }
+
+    Json(user)
+}
+
+#[utoipa::path(
+    put,
+    request_body(content = UpdatePhoto, content_type = "multipart/form-data"),
+    responses(
+        (status = 200, body = User)
+    )
+)]
+/// Update Photo
+#[put("/photo/")]
+async fn user_update_photo(
+    user: User, form: MultipartForm<UpdatePhoto>, state: Data<AppState>,
+) -> Response<User> {
+    let mut user = user;
+
+    let salt = if let Some(p) = &user.photo {
+        p.clone()
+    } else {
+        let s = utils::get_random_bytes(8);
+        user.photo = Some(s.clone());
+        s
+    };
+
+    let filename = format!("{}:{salt}", user.id);
+
+    utils::save_photo(form.photo.file.path(), &filename)?;
+
+    sqlx::query_as! {
+        User,
+        "update users set photo = ? where id = ?",
+        user.photo, user.id
+    }
+    .execute(&state.sql)
+    .await?;
+
+    Ok(Json(user))
+}
+
+#[utoipa::path(
+    delete,
+    responses(
+        (status = 200)
+    )
+)]
+/// Delete Photo
+#[delete("/photo/")]
+async fn user_delete_photo(user: User, state: Data<AppState>) -> HttpResponse {
+    let mut user = user;
+
+    if user.photo.is_none() {
+        return HttpResponse::Ok().finish();
+    }
+
+    utils::remove_photo(&format!("{}:{}", user.id, user.photo.unwrap()));
+    user.photo = None;
+
+    let _ = sqlx::query_as! {
+        User,
+        "update users set photo = ? where id = ?",
+        user.photo, user.id
+    }
+    .execute(&state.sql)
+    .await;
+
+    HttpResponse::Ok().finish()
+}
 
 pub fn router() -> Scope {
-    Scope::new("/user").service(user_get).service(user_login)
+    Scope::new("/user")
+        .service(user_get)
+        .service(user_login)
+        .service(user_update)
+        .service(user_update_photo)
+        .service(user_delete_photo)
 }
