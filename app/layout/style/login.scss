@@ -28,6 +28,49 @@
         .login-form {
             width: 50%;
             height: 100%;
+            direction: rtl;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+            justify-content: center;
+            font-family: 'Zan', sans-serif;
+            font-size: 28px;
+
+            &.loading {
+                pointer-events: none;
+                opacity: 0.4;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                grid-template-columns: 1fr 2fr;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            label.disabled {
+                opacity: 0.4;
+            }
+
+            input {
+                direction: ltr;
+                font-family: var(--en);
+
+                &:invalid {
+                    border-color: var(--red);
+                }
+
+                &:disabled {
+                    opacity: 0.4;
+                }
+            }
+
+            button {
+                width: 60%;
+            }
         }
     }
 }
