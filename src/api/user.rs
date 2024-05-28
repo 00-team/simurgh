@@ -1,13 +1,17 @@
+use actix_web::cookie::time::Duration;
+use actix_web::cookie::{Cookie, SameSite};
 use actix_web::web::{Data, Json, Path, Query};
 use actix_web::{get, post, HttpResponse, Scope};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha512};
 use utoipa::{IntoParams, OpenApi, ToSchema};
 
-use crate::config::config;
+use crate::config::{config, Config};
 use crate::docs::UpdatePaths;
 // use crate::models::message::Message;
 // use crate::models::order::Order;
 // use crate::models::transaction::{Transaction, TransactionStatus};
+use crate::api::verification;
 use crate::models::user::User;
 use crate::models::{AppErr, AppErrBadRequest, ListInput, Response};
 use crate::{utils, AppState};
@@ -16,7 +20,7 @@ use crate::{utils, AppState};
 #[openapi(
     tags((name = "api::user")),
     paths(
-        user_get,
+        user_get, user_login,
         // user_deposit, user_transactions, user_orders,
         // user_messages, user_message_seen, user_messages_unseen_count,
     ),
@@ -25,6 +29,81 @@ use crate::{utils, AppState};
     modifiers(&UpdatePaths)
 )]
 pub struct ApiDoc;
+
+#[derive(Debug, Deserialize, ToSchema)]
+struct LoginBody {
+    email: String,
+    code: String,
+}
+
+#[utoipa::path(
+    post,
+    request_body = LoginBody,
+    responses((status = 200, body = User))
+)]
+/// Login
+#[post("/login/")]
+async fn user_login(
+    body: Json<LoginBody>, state: Data<AppState>,
+) -> Result<HttpResponse, AppErr> {
+    verification::verify(&body.email, &body.code, verification::Action::Login)
+        .await?;
+
+    let token = utils::get_random_string(Config::TOKEN_ABC, 69);
+    let token_hashed = hex::encode(Sha512::digest(&token));
+
+    let result = sqlx::query_as! {
+        User,
+        "select * from users where email = ?",
+        body.email
+    }
+    .fetch_one(&state.sql)
+    .await;
+
+    let mut user: User = match result {
+        Ok(mut v) => {
+            v.token = token;
+
+            let _ = sqlx::query_as! {
+                User,
+                "update users set token = ? where id = ?",
+                token_hashed, v.id
+            }
+            .execute(&state.sql)
+            .await;
+
+            v
+        }
+        Err(_) => {
+            let result = sqlx::query_as! {
+                User,
+                "insert into users (email, token) values(?, ?)",
+                body.email, token_hashed
+            }
+            .execute(&state.sql)
+            .await;
+
+            User {
+                email: body.email.clone(),
+                token,
+                id: result.unwrap().last_insert_rowid(),
+                ..Default::default()
+            }
+        }
+    };
+
+    user.token = format!("{}:{}", user.id, user.token);
+
+    let cook = Cookie::build("Authorization", format!("Bearer {}", user.token))
+        .path("/")
+        .secure(true)
+        .same_site(SameSite::Strict)
+        .http_only(true)
+        .max_age(Duration::weeks(12))
+        .finish();
+
+    Ok(HttpResponse::Ok().cookie(cook).json(user))
+}
 
 #[utoipa::path(get, responses((status = 200, body = User)))]
 /// Get
@@ -208,12 +287,5 @@ async fn user_get(user: User) -> Response<User> {
 // }
 
 pub fn router() -> Scope {
-    Scope::new("/user")
-        .service(user_get)
-        // .service(user_deposit)
-        // .service(user_transactions)
-        // .service(user_messages)
-        // .service(user_message_seen)
-        // .service(user_messages_unseen_count)
-        // .service(user_orders)
+    Scope::new("/user").service(user_get).service(user_login)
 }
