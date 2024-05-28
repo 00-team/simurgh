@@ -1,0 +1,11 @@
+span.copiable {
+    cursor: pointer;
+
+    &:hover {
+        color: var(--blue);
+    }
+
+    &:active {
+        color: var(--cl);
+    }
+}
