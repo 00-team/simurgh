@@ -1,0 +1,8 @@
+[Unit]
+Description=Simurgh Backup
+
+[Service]
+Type=oneshot
+ExecStart=/x/simurgh/config/backup.sh
+WorkingDirectory=/x/simurgh/
+EnvironmentFile=/x/simurgh/.secrets.env
