@@ -1,0 +1,17 @@
+[Unit]
+Description=Simurgh Api 
+After=syslog.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/x/simurgh/
+EnvironmentFile=/x/simurgh/.secrets.env
+ExecStart=/x/simurgh/target/release/simurgh
+KillSignal=SIGQUIT
+StandardError=file:/x/simurgh/logs/err.log
+StandardOutput=file:/x/simurgh/logs/out.log
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
