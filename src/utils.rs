@@ -3,12 +3,15 @@ use crate::{
     models::{AppErr, AppErrBadRequest},
 };
 use actix_web::web::Buf;
+use image::io::Reader as ImageReader;
+use image::ImageFormat;
 use lettre::{
     message::{MultiPart, SinglePart},
     Transport,
 };
 use rand::Rng;
 use serde::Serialize;
+use std::path::Path;
 use std::{fs::File, io};
 
 pub fn now() -> i64 {
@@ -20,19 +23,29 @@ pub fn get_random_string(charset: &[u8], len: usize) -> String {
     (0..len).map(|_| charset[rng.gen_range(0..charset.len())] as char).collect()
 }
 
-// pub fn get_random_bytes(len: usize) -> String {
-//     let mut rng = rand::thread_rng();
-//     hex::encode((0..len).map(|_| rng.gen::<u8>()).collect::<Vec<u8>>())
-// }
+pub fn get_random_bytes(len: usize) -> String {
+    let mut rng = rand::thread_rng();
+    hex::encode((0..len).map(|_| rng.gen::<u8>()).collect::<Vec<u8>>())
+}
 
-pub async fn save_photo(url: &str, id: i64) -> Result<(), AppErr> {
-    let client = awc::Client::new();
-    let mut result = client.get(url).send().await?.body().await?.reader();
-    let mut file = File::create(format!("{}/{id}.jpg", Config::RECORD_DIR))?;
+pub fn save_photo(path: &Path, name: &str) -> io::Result<()> {
+    let img = ImageReader::open(path)?
+        .with_guessed_format()?
+        .decode()
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
-    io::copy(&mut result, &mut file)?;
+    img.thumbnail(512, 512)
+        .save_with_format(
+            Path::new(Config::RECORD_DIR).join(name),
+            ImageFormat::Png,
+        )
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
     Ok(())
+}
+
+pub fn remove_photo(name: &str) {
+    let _ = std::fs::remove_file(Path::new(Config::RECORD_DIR).join(name));
 }
 
 pub async fn send_webhook(title: &str, desc: &str, color: u32) {
