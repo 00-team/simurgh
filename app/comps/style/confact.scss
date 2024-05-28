@@ -1,0 +1,52 @@
+.cmp-confact {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    isolation: isolate;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: 220ms ease-in-out;
+    transition-property: border-color, background-color, color;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
+
+    &:hover {
+        color: var(--color);
+    }
+
+    &::before {
+        z-index: -1;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 0%;
+        background-color: var(--color);
+    }
+
+    &:active {
+        background-color: transparent;
+        color: var(--white);
+
+        &::before {
+            transition: height var(--tsd, 1s) linear;
+            height: 100%;
+        }
+    }
+
+    &.stage2 {
+        &::before {
+            height: 100%;
+        }
+
+        &:hover {
+            color: var(--white);
+        }
+    }
+}
