@@ -18,13 +18,13 @@ use super::{AppErr, AppErrForbidden};
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
 pub struct User {
     pub id: i64,
-    email: String,
-    name: Option<String>,
-    photo: Option<String>,
-    token: String,
-    admin: bool,
-    client: bool,
-    banned: bool,
+    pub email: String,
+    pub name: Option<String>,
+    pub photo: Option<String>,
+    pub token: String,
+    pub admin: bool,
+    pub client: bool,
+    pub banned: bool,
 }
 
 #[derive(Debug, MultipartForm, ToSchema)]
