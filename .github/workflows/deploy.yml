@@ -18,4 +18,4 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          script: bash /simurgh/config/deploy.sh
+          script: bash /x/simurgh/config/deploy.sh
