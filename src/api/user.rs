@@ -21,7 +21,7 @@ use crate::{utils, AppState};
     paths(
         user_get, user_login, user_update, user_update_photo, user_delete_photo
     ),
-    components(schemas(LoginBody)),
+    components(schemas(LoginBody, UserUpdateBody, UpdatePhoto)),
     servers((url = "/user")),
     modifiers(&UpdatePaths)
 )]
