@@ -24,7 +24,7 @@ use crate::{utils, AppState};
         // user_deposit, user_transactions, user_orders,
         // user_messages, user_message_seen, user_messages_unseen_count,
     ),
-    components(schemas()),
+    components(schemas(LoginBody)),
     servers((url = "/user")),
     modifiers(&UpdatePaths)
 )]
