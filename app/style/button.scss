@@ -1,0 +1,54 @@
+button.styled {
+    --color: var(--ca);
+
+    background-color: var(--cd);
+    color: var(--cl);
+    border: 2px;
+    border-color: var(--color);
+    border-style: solid;
+    border-radius: var(--radius);
+    font-size: 18px;
+    font-family: 'Zan', sans-serif;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: 220ms ease-in-out;
+    transition-property: border-color, background-color, color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    &.trash,
+    &.remove {
+        --color: var(--red);
+    }
+
+    &:hover {
+        // color: var(--color);
+        background-color: var(--color);
+    }
+
+    // &:not(&.icon):active {
+    &:active {
+        background-color: var(--cd);
+        border-color: var(--cd);
+        // color: var(--cl);
+    }
+
+    &:focus {
+        outline: 0;
+    }
+
+    &:disabled {
+        pointer-events: none;
+        opacity: 0.6;
+        // border: 2px solid var(--bg-3);
+        // background-color: var(--bg-1);
+        outline: 0;
+        cursor: default;
+    }
+}
