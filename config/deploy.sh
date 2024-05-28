@@ -59,7 +59,7 @@ if check_diff "src/* Cargo.toml"; then
     echo $SPACER
 fi
 
-echo "$EG restart dream"
+echo "$EG restart simurgh"
 systemctl restart simurgh
 echo $SPACER
 
