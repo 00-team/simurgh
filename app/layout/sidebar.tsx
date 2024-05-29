@@ -6,7 +6,34 @@ import { httpx } from 'shared'
 import { produce } from 'solid-js/store'
 
 export default () => {
-    function update_photo() {}
+    function update_photo() {
+        let input = document.createElement('input')
+        input.setAttribute('type', 'file')
+        input.setAttribute('accept', 'image/*')
+        input.onchange = () => {
+            let file = input.files[0]
+            if (!file || file.size > 8e6 || !file.type.startsWith('image/')) {
+                input.remove()
+                return
+            }
+
+            let data = new FormData()
+            data.set('photo', file)
+
+            httpx({
+                url: '/api/user/photo/',
+                method: 'PUT',
+                data,
+                onLoad(x) {
+                    if (x.status == 200) {
+                        setSelf({ user: x.response })
+                    }
+                },
+            })
+        }
+        input.oncancel = () => input.remove()
+        input.click()
+    }
 
     function delete_photo() {
         if (!self.user.photo) return
@@ -40,7 +67,7 @@ export default () => {
                 >
                     <Show when={self.user.photo} fallback={<UserIcon />}>
                         <img
-                            src={`/record/${self.user.id}:${self.user.photo}/`}
+                            src={`/record/${self.user.id}:${self.user.photo}/?hash=${performance.now()}`}
                             draggable={false}
                         />
                     </Show>
