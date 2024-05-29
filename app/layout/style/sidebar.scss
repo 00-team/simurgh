@@ -40,6 +40,12 @@
 
         .name {
             font-size: 2rem;
+            font-family: var(--fa), sans-serif;
+
+            input,
+            span {
+                font-family: inherit;
+            }
         }
     }
 }
