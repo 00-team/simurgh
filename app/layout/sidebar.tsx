@@ -3,12 +3,16 @@ import './style/sidebar.scss'
 import { self, setSelf } from 'store'
 import { UserIcon } from 'icons'
 import { httpx } from 'shared'
-import { createStore, produce } from 'solid-js/store'
+import { produce } from 'solid-js/store'
+import { A } from '@solidjs/router'
 
 export default () => {
     return (
         <div class='sidebar-fnd'>
             <User />
+            <div class='links'>
+                <A href='/projects/'>پروژه ها</A>
+            </div>
         </div>
     )
 }
