@@ -1,4 +1,9 @@
 .sidebar-fnd {
-    width: 25%;
+    width: var(--sidebar-width);
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--cg);
+    border-left: 2px solid var(--ca);
+    padding: 1rem;
 }
