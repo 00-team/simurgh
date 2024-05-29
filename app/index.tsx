@@ -8,8 +8,12 @@ import Sidebar from 'layout/sidebar'
 const Root = () => {
     return (
         <Show when={self.loged_in} fallback={<Login />}>
-            app
-            <Sidebar />
+            <div class='dash-fnd'>
+                <div class='content-fnd'>
+                    <div class='content-wrapper'></div>
+                </div>
+                <Sidebar />
+            </div>
         </Show>
     )
 }
