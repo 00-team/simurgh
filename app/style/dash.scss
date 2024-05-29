@@ -4,12 +4,11 @@
     height: 100%;
 
     .content-fnd {
-        width: calc(100% - var(--sidebar-width));
+        width: 100%;
         height: 100%;
         display: flex;
         background-color: var(--cg);
         justify-content: center;
-        // align-items: center;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 1.5rem;
