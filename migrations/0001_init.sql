@@ -16,7 +16,7 @@ create table if not exists languages (
     emoji text not null
 );
 
-create table if not exists orders (
+create table if not exists projects (
     id integer primary key not null,
     user integer not null references users(id) on delete cascade,
     name text not null,
