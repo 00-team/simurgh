@@ -13,9 +13,7 @@ import { Alert } from 'comps'
 const Dash: Component<RouteSectionProps> = P => {
     return (
         <div class='dash-fnd'>
-            <div class='content-fnd'>
-                <div class='content-wrapper'>{P.children}</div>
-            </div>
+            <div class='content-fnd'>{P.children}</div>
             <Sidebar />
         </div>
     )

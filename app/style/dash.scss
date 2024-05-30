@@ -8,25 +8,8 @@
         height: 100%;
         display: flex;
         background-color: var(--cg);
-        justify-content: center;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 1.5rem;
-        padding-bottom: 0;
-
-        .content-wrapper {
-            background-color: var(--cd);
-            width: 100%;
-            height: fit-content;
-            border-radius: 30px;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-            padding: 15px;
-            --dash-inner-height: calc(100vh - 1.5rem - 30px);
-        }
-
-        .super-long {
-            height: 3000px;
-        }
     }
 }
