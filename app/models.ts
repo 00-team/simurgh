@@ -8,3 +8,5 @@ export type UserModel = {
     client: boolean
     banned: boolean
 }
+
+export type Project = {}

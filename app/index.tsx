@@ -30,6 +30,7 @@ const Root = () => {
                             component={() => <Navigate href='/projects/' />}
                         />
                         <Route path='/projects/' component={Projects} />
+                        <Route path='/projects/:page' component={Projects} />
                         <Route path='*' component={NotFound} />
                     </Route>
                 </Router>
