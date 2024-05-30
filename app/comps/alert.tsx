@@ -1,5 +1,5 @@
 import { CircleAlertIcon, CircleCheckIcon, CircleXIcon, XIcon } from 'icons'
-import { Component, JSX, onCleanup, onMount } from 'solid-js'
+import { Component, JSX, Show, onCleanup, onMount } from 'solid-js'
 import './style/alert.scss'
 
 import { createStore, produce } from 'solid-js/store'
@@ -23,7 +23,7 @@ export const [alert_state, setAlertState] = createStore<AlertState>({
 export function addAlert(props: Omit<AlertModel, 'timeleft'>) {
     setAlertState(
         produce(s => {
-            s.alerts.unshift({ ...props, timeleft: props.timeout })
+            s.alerts.unshift({ ...props, timeleft: props.timeout * 1e3 })
         })
     )
 }
@@ -49,6 +49,7 @@ const ALERT_ICON: {
 const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
     let interval: number
     let timer: HTMLDivElement
+    const INTERVAL = 50 // ms
 
     function do_timeout() {
         setAlertState(
@@ -56,7 +57,7 @@ const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
                 let a = s.alerts[P.i]
                 if (!a) return
 
-                a.timeleft -= 1
+                a.timeleft -= INTERVAL
 
                 if (a.timeleft < 0) {
                     s.alerts.splice(P.i, 1)
@@ -66,28 +67,40 @@ const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
     }
 
     onMount(() => {
-        interval = setInterval(do_timeout, 1000)
+        interval = setInterval(do_timeout, INTERVAL)
     })
 
     onCleanup(() => clearInterval(interval))
+
+    function pbf_play() {
+        interval = setInterval(do_timeout, INTERVAL)
+        for (let a of timer.getAnimations()) {
+            if (!(a instanceof CSSAnimation && a.animationName == 'pbf'))
+                continue
+
+            a.currentTime = P.a.timeout * 1e3 - P.a.timeleft
+            a.play()
+            break
+        }
+    }
+
+    function pbf_pause() {
+        clearInterval(interval)
+        for (let a of timer.getAnimations()) {
+            if (!(a instanceof CSSAnimation && a.animationName == 'pbf'))
+                continue
+
+            a.pause()
+            break
+        }
+    }
 
     return (
         <div
             class='alert'
             classList={{ [P.a.type]: true }}
-            onMouseEnter={() => {
-                clearInterval(interval)
-                let a = timer.getAnimations()[0]
-                if (a) a.pause()
-            }}
-            onMouseLeave={() => {
-                interval = setInterval(do_timeout, 1000)
-                let a = timer.getAnimations()[0]
-                if (a) {
-                    a.currentTime = (P.a.timeout - P.a.timeleft - 1) * 1000
-                    a.play()
-                }
-            }}
+            onMouseEnter={pbf_pause}
+            onMouseLeave={pbf_play}
         >
             <div class='head'>
                 {ALERT_ICON[P.a.type]()}
@@ -97,16 +110,18 @@ const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
                     <XIcon />
                 </button>
             </div>
-            <div class='body'>
-                <p>
-                    {P.a.content.split('\n').map(line => (
-                        <>
-                            {line}
-                            <br />
-                        </>
-                    ))}
-                </p>
-            </div>
+            <Show when={P.a.content}>
+                <div class='body'>
+                    <p>
+                        {P.a.content.split('\n').map(line => (
+                            <>
+                                {line}
+                                <br />
+                            </>
+                        ))}
+                    </p>
+                </div>
+            </Show>
             <div
                 ref={timer}
                 class='timer-line'
