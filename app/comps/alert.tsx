@@ -16,11 +16,11 @@ type AlertState = {
     alerts: AlertModel[]
 }
 
-const [alert_state, setAlertState] = createStore<AlertState>({
+export const [alert_state, setAlertState] = createStore<AlertState>({
     alerts: [],
 })
 
-function addAlert(props: Omit<AlertModel, 'timeleft'>) {
+export function addAlert(props: Omit<AlertModel, 'timeleft'>) {
     setAlertState(
         produce(s => {
             s.alerts.unshift({ ...props, timeleft: props.timeout })
@@ -28,7 +28,7 @@ function addAlert(props: Omit<AlertModel, 'timeleft'>) {
     )
 }
 
-function delAlert(index: number) {
+export function delAlert(index: number) {
     setAlertState(
         produce(s => {
             if (index > -1 && index < s.alerts.length) {
@@ -46,7 +46,7 @@ const ALERT_ICON: {
     success: () => <CircleCheckIcon />,
 }
 
-const Alert: Component<{ a: AlertModel; i: number }> = P => {
+const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
     let interval: number
     let timer: HTMLDivElement
 
@@ -118,14 +118,12 @@ const Alert: Component<{ a: AlertModel; i: number }> = P => {
     )
 }
 
-export default () => {
+export const Alert = () => {
     return (
         <div class='alert-fnd'>
             {alert_state.alerts.map((a, i) => (
-                <Alert a={a} i={i} />
+                <AlertCard a={a} i={i} />
             ))}
         </div>
     )
 }
-
-export { alert_state, setAlertState, addAlert, delAlert }

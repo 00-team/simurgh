@@ -8,6 +8,7 @@ import Projects from 'layout/projects'
 import NotFound from 'layout/404'
 import { Navigate, Route, RouteSectionProps, Router } from '@solidjs/router'
 import { Component } from 'solid-js'
+import { Alert } from 'comps'
 
 const Dash: Component<RouteSectionProps> = P => {
     return (
@@ -22,18 +23,21 @@ const Dash: Component<RouteSectionProps> = P => {
 
 const Root = () => {
     return (
-        <Show when={self.loged_in} fallback={<Login />}>
-            <Router>
-                <Route path='/' component={Dash}>
-                    <Route
-                        path='/'
-                        component={() => <Navigate href='/projects/' />}
-                    />
-                    <Route path='/projects/' component={Projects} />
-                    <Route path='*' component={NotFound} />
-                </Route>
-            </Router>
-        </Show>
+        <>
+            <Show when={self.loged_in} fallback={<Login />}>
+                <Router>
+                    <Route path='/' component={Dash}>
+                        <Route
+                            path='/'
+                            component={() => <Navigate href='/projects/' />}
+                        />
+                        <Route path='/projects/' component={Projects} />
+                        <Route path='*' component={NotFound} />
+                    </Route>
+                </Router>
+            </Show>
+            <Alert />
+        </>
     )
 }
 

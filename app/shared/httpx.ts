@@ -1,4 +1,4 @@
-import { addAlert } from 'comps/alert'
+import { addAlert } from 'comps'
 
 type HttpxProps = {
     url: string | URL
