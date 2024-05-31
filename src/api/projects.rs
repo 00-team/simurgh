@@ -1,21 +1,21 @@
-use actix_web::web::{Data, Json};
-use actix_web::{post, Scope};
+use actix_web::web::{Data, Json, Query};
+use actix_web::{get, post, Scope};
 use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
 use crate::models::user::User;
-use crate::models::Response;
+use crate::models::{ListInput, Response};
 use crate::AppState;
 
 #[derive(OpenApi)]
 #[openapi(
     tags((name = "api::projects")),
     paths(
-        projects_new
+        projects_new, projects_list
     ),
-    components(schemas(Project)),
+    components(schemas(Project, NewBody)),
     servers((url = "/projects")),
     modifiers(&UpdatePaths)
 )]
@@ -50,6 +50,28 @@ async fn projects_new(
     }))
 }
 
+#[utoipa::path(
+    get,
+    params(ListInput),
+    responses((status = 200, body = Vec<Project>))
+)]
+/// List
+#[get("/")]
+async fn projects_list(
+    user: User, q: Query<ListInput>, state: Data<AppState>,
+) -> Response<Vec<Project>> {
+    let offset = q.page * 32;
+    let result = sqlx::query_as! {
+        Project,
+        "select * from projects where user = ? order by id desc limit 32 offset ?",
+        user.id, offset
+    }
+    .fetch_all(&state.sql)
+    .await?;
+
+    Ok(Json(result))
+}
+
 pub fn router() -> Scope {
-    Scope::new("/projects").service(projects_new)
+    Scope::new("/projects").service(projects_new).service(projects_list)
 }
