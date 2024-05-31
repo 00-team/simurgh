@@ -87,8 +87,6 @@ async fn main() -> std::io::Result<()> {
     let _ = std::fs::create_dir(Config::RECORD_DIR);
     let pool = SqlitePool::connect("sqlite://main.db").await.unwrap();
 
-    sqlx::migrate!().run(&pool).await.expect("migration failed");
-
     let server = HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::new("%s %r %Ts"))
