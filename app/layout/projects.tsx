@@ -4,6 +4,7 @@ import { ProjectModel } from 'models'
 import { createStore } from 'solid-js/store'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Show, createEffect } from 'solid-js'
+import { ChevronLeftIcon, ChevronRightIcon } from 'icons'
 
 export default () => {
     type State = {
@@ -20,11 +21,13 @@ export default () => {
 
     createEffect(() => {
         let page = parseInt(params.page || '0') || 0
-        setParams({ page })
         projects_list(page)
     })
 
     function projects_list(page: number) {
+        if (page < 0) page = 0
+
+        setParams({ page })
         setState({ loading: true })
         httpx({
             url: '/api/projects/',
@@ -49,12 +52,34 @@ export default () => {
         })
     }
 
+    function change_page(update: number) {
+        projects_list(state.page + update)
+    }
+
     return (
         <div class='projects-fnd'>
             <div class='actions'>
-                <button class='styled' onClick={projects_new}>
-                    پروژه جدید
-                </button>
+                <div>
+                    <button
+                        class='styled icon'
+                        onClick={() => change_page(-1)}
+                        disabled={state.page == 0}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button
+                        class='styled icon'
+                        onClick={() => change_page(+1)}
+                        disabled={state.projects.length < 31}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </div>
+                <div>
+                    <button class='styled' onClick={projects_new}>
+                        پروژه جدید
+                    </button>
+                </div>
             </div>
             <Show when={!state.loading && state.projects.length == 0}>
                 <div class='message'>پروژه ای یافت نشد</div>
