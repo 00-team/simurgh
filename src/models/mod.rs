@@ -5,4 +5,4 @@ pub mod project;
 pub mod user;
 
 mod error;
-pub use error::{AppErr, AppErrBadRequest, AppErrForbidden};
+pub use error::{AppErr, AppErrBadRequest, AppErrForbidden, AppErrNotFound};

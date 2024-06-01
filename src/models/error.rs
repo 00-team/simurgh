@@ -116,4 +116,5 @@ macro_rules! error_helper {
 }
 
 error_helper!(AppErrBadRequest, BAD_REQUEST);
+error_helper!(AppErrNotFound, NOT_FOUND);
 error_helper!(AppErrForbidden, FORBIDDEN);
