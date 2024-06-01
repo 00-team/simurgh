@@ -17,6 +17,7 @@ async function get_default(): Promise<SelfModel> {
                 url: '/api/user/',
                 method: 'GET',
                 reject,
+                show_messages: false,
                 onLoad(x) {
                     if (x.status != 200) return reject()
                     resolve(x.response)
