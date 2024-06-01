@@ -1,8 +1,27 @@
 .project-fnd {
     width: 100%;
-    display: flex;
-    text-align: center;
-    justify-content: space-evenly;
     height: 100%;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+
+    .info {
+        display: grid;
+        grid-template-columns: 0.5fr 1fr;
+        direction: rtl;
+        width: 50%;
+        background-color: var(--cd);
+        padding: 1rem;
+        border-radius: var(--radius);
+        gap: 0.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: 2px solid var(--ca);
+
+        .n {
+            direction: ltr;
+            font-family: var(--en);
+        }
+    }
 }

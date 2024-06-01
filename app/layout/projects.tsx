@@ -99,8 +99,10 @@ export default () => {
                         <span class='n'>{p.record_count.toLocaleString()}</span>
                         <span>فضا:</span>
                         <span class='n'>{fmt_bytes(p.storage)}</span>
-                        <span>تاریخ:</span>
-                        <span class='n'>{fmt_datetime(p.timestamp)}</span>
+                        <span>تاریخ شروع:</span>
+                        <span class='n'>{fmt_datetime(p.created_at)}</span>
+                        <span>تاریخ آپدیت:</span>
+                        <span class='n'>{fmt_datetime(p.updated_at)}</span>
                     </div>
                 ))}
             </div>
