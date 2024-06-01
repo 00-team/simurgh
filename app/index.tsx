@@ -7,8 +7,9 @@ import Sidebar from 'layout/sidebar'
 import Projects from 'layout/projects'
 import NotFound from 'layout/404'
 import { Navigate, Route, RouteSectionProps, Router } from '@solidjs/router'
-import { Component } from 'solid-js'
+import { Component, lazy } from 'solid-js'
 import { Alert } from 'comps'
+const Project = lazy(() => import('layout/project'))
 
 const Dash: Component<RouteSectionProps> = P => {
     return (
@@ -30,7 +31,7 @@ const Root = () => {
                             component={() => <Navigate href='/projects/' />}
                         />
                         <Route path='/projects/' component={Projects} />
-                        <Route path='/projects/:page' component={Projects} />
+                        <Route path='/projects/:id' component={Project} />
                         <Route path='*' component={NotFound} />
                     </Route>
                 </Router>
