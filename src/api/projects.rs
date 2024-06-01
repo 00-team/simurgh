@@ -14,7 +14,7 @@ use crate::AppState;
 #[openapi(
     tags((name = "api::projects")),
     paths(
-        projects_new, projects_list, projects_get
+        projects_new, projects_list, projects_get, projects_update
     ),
     components(schemas(Project, NewBody)),
     servers((url = "/projects")),
@@ -128,4 +128,5 @@ pub fn router() -> Scope {
         .service(projects_new)
         .service(projects_list)
         .service(projects_get)
+        .service(projects_update)
 }
