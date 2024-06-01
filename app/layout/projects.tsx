@@ -1,4 +1,4 @@
-import { useSearchParams } from '@solidjs/router'
+import { useNavigate, useSearchParams } from '@solidjs/router'
 import './style/projects.scss'
 import { ProjectModel } from 'models'
 import { createStore } from 'solid-js/store'
@@ -18,6 +18,7 @@ export default () => {
         loading: true,
     })
     const [params, setParams] = useSearchParams()
+    const nav = useNavigate()
 
     createEffect(() => {
         let page = parseInt(params.page || '0') || 0
@@ -86,7 +87,10 @@ export default () => {
             </Show>
             <div class='project-list'>
                 {state.projects.map(p => (
-                    <div class='project'>
+                    <div
+                        class='project'
+                        onClick={() => nav('/projects/' + p.id)}
+                    >
                         <span>نام:</span>
                         <span>{p.name}</span>
                         <span>بلاگ ها:</span>
