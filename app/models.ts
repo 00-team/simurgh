@@ -9,4 +9,13 @@ export type UserModel = {
     banned: boolean
 }
 
-export type Project = {}
+export type ProjectModel = {
+    id: number
+    user: number
+    name: string
+    blog_count: number
+    record_count: number
+    storage: number
+    timestamp: number
+    api_key: string | null
+}
