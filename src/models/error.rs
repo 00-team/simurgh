@@ -52,12 +52,12 @@ impl From<sqlx::Error> for AppErr {
         match value {
             sqlx::Error::RowNotFound => Self {
                 status: 404,
-                subject: "not found".to_string(),
+                subject: "یافت نشد".to_string(),
                 content: None,
             },
             _ => Self {
                 status: 500,
-                subject: "database error".to_string(),
+                subject: "خطای سیستم".to_string(),
                 content: None,
             },
         }
@@ -69,7 +69,7 @@ impl From<actix_web::error::Error> for AppErr {
         let r = value.error_response();
         Self {
             status: r.status().as_u16(),
-            subject: "Error".to_string(),
+            subject: "خطا".to_string(),
             content: Some(value.to_string()),
         }
     }
