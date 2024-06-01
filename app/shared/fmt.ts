@@ -26,7 +26,7 @@ export function fmt_datetime(ts: number): string {
     let date = irn_replace(d.toLocaleDateString('fa'))
     let [hour, minute] = irn_replace(d.toLocaleTimeString('fa')).split(':')
 
-    return `${date} ${hour}:${minute}`
+    return `${date} ${hour.padStart(2, '0')}:${minute}`
 }
 
 export function fmt_bytes(b: number): string {
