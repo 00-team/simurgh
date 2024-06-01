@@ -1,4 +1,4 @@
-use actix_web::web::{Data, Json, Query};
+use actix_web::web::{Data, Json, Path, Query};
 use actix_web::{get, post, Scope};
 use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
@@ -7,14 +7,14 @@ use crate::docs::UpdatePaths;
 use crate::models::project::Project;
 use crate::models::user::User;
 use crate::models::{ListInput, Response};
-use crate::AppState;
 use crate::utils;
+use crate::AppState;
 
 #[derive(OpenApi)]
 #[openapi(
     tags((name = "api::projects")),
     paths(
-        projects_new, projects_list
+        projects_new, projects_list, projects_get
     ),
     components(schemas(Project, NewBody)),
     servers((url = "/projects")),
@@ -74,6 +74,30 @@ async fn projects_list(
     Ok(Json(result))
 }
 
+#[utoipa::path(
+    get,
+    params(("id" = i64, Path, example = 1)),
+    responses((status = 200, body = Project))
+)]
+/// Get
+#[get("/{id}/")]
+async fn projects_get(
+    user: User, path: Path<(i64,)>, state: Data<AppState>,
+) -> Response<Project> {
+    let result = sqlx::query_as! {
+        Project,
+        "select * from projects where user = ? and id = ?",
+        user.id, path.0
+    }
+    .fetch_one(&state.sql)
+    .await?;
+
+    Ok(Json(result))
+}
+
 pub fn router() -> Scope {
-    Scope::new("/projects").service(projects_new).service(projects_list)
+    Scope::new("/projects")
+        .service(projects_new)
+        .service(projects_list)
+        .service(projects_get)
 }
