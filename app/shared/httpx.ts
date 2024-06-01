@@ -102,7 +102,7 @@ function httpx(P: HttpxProps) {
                         ...this.response.message,
                     })
                 }
-            } else if (this.response && this.response.code) {
+            } else if (this.response && this.response.status) {
                 addAlert({
                     type: 'error',
                     timeout: 10,
