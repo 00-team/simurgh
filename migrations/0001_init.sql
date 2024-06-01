@@ -23,7 +23,8 @@ create table if not exists projects (
     storage integer not null default 0,
     blog_count integer not null default 0,
     record_count integer not null default 0,
-    timestamp integer not null default 0,
+    created_at integer not null,
+    updated_at integer not null default 0,
     api_key text
 );
 
@@ -32,7 +33,8 @@ create table if not exists records (
     project integer references projects(id) on delete set null,
     salt text not null,
     size integer not null,
-    timestamp integer not null,
+    created_at integer not null,
+    updated_at integer not null default 0,
     mime text,
     ext text
 );
@@ -42,8 +44,8 @@ create table if not exists blogs (
     slug text not null,
     project integer not null references projects(id) on delete cascade,
     author integer not null references users(id) on delete cascade,
-    created integer not null,
-    updated integer not null default 0,
+    created_at integer not null,
+    updated_at integer not null default 0,
     thumbnail text,
     read_time integer,
     unique(slug, project)

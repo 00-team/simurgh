@@ -1,12 +1,12 @@
-use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{get, post, Scope};
+use actix_web::web::{Data, Json, Query};
+use actix_web::{get, patch, post, Scope};
 use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
 use crate::models::user::User;
-use crate::models::{ListInput, Response};
+use crate::models::{AppErrNotFound, ListInput, Response};
 use crate::utils;
 use crate::AppState;
 
@@ -39,7 +39,7 @@ async fn projects_new(
 ) -> Response<Project> {
     let now = utils::now();
     sqlx::query! {
-        "insert into projects(user, name, timestamp) values(?, ?, ?)",
+        "insert into projects(user, name, created_at) values(?, ?, ?)",
         user.id, body.name, now
     }
     .execute(&state.sql)
@@ -81,18 +81,46 @@ async fn projects_list(
 )]
 /// Get
 #[get("/{id}/")]
-async fn projects_get(
-    user: User, path: Path<(i64,)>, state: Data<AppState>,
-) -> Response<Project> {
-    let result = sqlx::query_as! {
-        Project,
-        "select * from projects where user = ? and id = ?",
-        user.id, path.0
+async fn projects_get(user: User, project: Project) -> Response<Project> {
+    if project.user != user.id {
+        return Err(AppErrNotFound("پروژه یافت نشد"));
     }
-    .fetch_one(&state.sql)
+    Ok(Json(project))
+}
+
+#[derive(Deserialize, ToSchema)]
+struct UpdateBody {
+    name: String,
+}
+
+#[utoipa::path(
+    patch,
+    params(("id" = i64, Path, example = 1)),
+    request_body = UpdateBody,
+    responses((status = 200, body = Project))
+)]
+/// Update
+#[patch("/{id}/")]
+async fn projects_update(
+    user: User, project: Project, body: Json<UpdateBody>, state: Data<AppState>,
+) -> Response<Project> {
+    let mut project = project;
+    if project.user != user.id {
+        return Err(AppErrNotFound("پروژه یافت نشد"));
+    }
+
+    let now = utils::now();
+    sqlx::query! {
+        "update projects set name = ?, updated_at = ? where id = ?",
+        body.name, now, project.id,
+    }
+    .execute(&state.sql)
     .await?;
 
-    Ok(Json(result))
+    project.name = body.name.clone();
+    project.updated_at = now;
+
+    Ok(Json(project))
 }
 
 pub fn router() -> Scope {

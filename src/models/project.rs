@@ -17,7 +17,8 @@ pub struct Project {
     pub storage: i64,
     pub blog_count: i64,
     pub record_count: i64,
-    pub timestamp: i64,
+    pub created_at: i64,
+    pub updated_at: i64,
     pub api_key: Option<String>,
 }
 
