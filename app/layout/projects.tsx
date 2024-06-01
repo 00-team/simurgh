@@ -1,30 +1,38 @@
-import { useParams } from '@solidjs/router'
+import { useSearchParams } from '@solidjs/router'
 import './style/projects.scss'
 import { ProjectModel } from 'models'
-import { createStore, produce } from 'solid-js/store'
+import { createStore } from 'solid-js/store'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
-import { createEffect } from 'solid-js'
+import { Show, createEffect } from 'solid-js'
 
 export default () => {
     type State = {
         page: number
         projects: ProjectModel[]
+        loading: boolean
     }
-    const [state, setState] = createStore<State>({ page: 0, projects: [] })
-    const UP = useParams()
+    const [state, setState] = createStore<State>({
+        page: 0,
+        projects: [],
+        loading: true,
+    })
+    const [params, setParams] = useSearchParams()
 
     createEffect(() => {
-        projects_list(parseInt(UP.page || '0') || 0)
+        let page = parseInt(params.page || '0') || 0
+        setParams({ page })
+        projects_list(page)
     })
 
     function projects_list(page: number) {
+        setState({ loading: true })
         httpx({
             url: '/api/projects/',
             method: 'GET',
             params: { page },
             onLoad(x) {
                 if (x.status != 200) return
-                setState({ projects: x.response, page })
+                setState({ projects: x.response, page, loading: false })
             },
         })
     }
@@ -48,6 +56,9 @@ export default () => {
                     پروژه جدید
                 </button>
             </div>
+            <Show when={!state.loading && state.projects.length == 0}>
+                <div class='message'>پروژه ای یافت نشد</div>
+            </Show>
             <div class='project-list'>
                 {state.projects.map(p => (
                     <div class='project'>

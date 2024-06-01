@@ -11,6 +11,13 @@
         padding: 1rem;
     }
 
+    .message {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 3rem;
+    }
+
     .project-list {
         display: flex;
         flex-wrap: wrap;
