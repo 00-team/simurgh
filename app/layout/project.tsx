@@ -47,11 +47,15 @@ export default () => {
             method: 'PATCH',
             json: data,
             onLoad(x) {
-                if (x.status != 200) return
+                if (x.status != 200) {
+                    setState({ edit_name: false })
+                    return
+                }
 
                 setState(
                     produce(s => {
                         s.project.name = data.name
+                        s.edit_name = false
                     })
                 )
             },
@@ -65,7 +69,10 @@ export default () => {
                 <Show
                     when={state.edit_name}
                     fallback={
-                        <span onClick={() => setState({ edit_name: true })}>
+                        <span
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => setState({ edit_name: true })}
+                        >
                             {state.project.name}
                         </span>
                     }
