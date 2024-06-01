@@ -16,6 +16,7 @@ export type ProjectModel = {
     blog_count: number
     record_count: number
     storage: number
-    timestamp: number
+    created_at: number
+    updated_at: number
     api_key: string | null
 }
