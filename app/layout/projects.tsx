@@ -2,7 +2,7 @@ import { useParams } from '@solidjs/router'
 import './style/projects.scss'
 import { ProjectModel } from 'models'
 import { createStore } from 'solid-js/store'
-import { httpx } from 'shared'
+import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { createEffect } from 'solid-js'
 
 export default () => {
@@ -46,14 +46,18 @@ export default () => {
                         <div class='project'>
                             <span>نام:</span>
                             <span>{p.name}</span>
-                            <span>تاریخ:</span>
-                            <span>{p.timestamp}</span>
                             <span>بلاگ ها:</span>
-                            <span>{p.blog_count}</span>
+                            <span class='n'>
+                                {p.blog_count.toLocaleString()}
+                            </span>
                             <span>فایل ها:</span>
-                            <span>{p.record_count}</span>
+                            <span class='n'>
+                                {p.record_count.toLocaleString()}
+                            </span>
                             <span>فضا:</span>
-                            <span>{p.storage}</span>
+                            <span class='n'>{fmt_bytes(p.storage)}</span>
+                            <span>تاریخ:</span>
+                            <span class='n'>{fmt_datetime(p.timestamp)}</span>
                         </div>
                     ))}
             </div>

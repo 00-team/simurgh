@@ -29,6 +29,13 @@
             border-radius: var(--radius);
             transition: border-color 200ms ease-in-out;
             font-size: 18px;
+            overflow: hidden;
+            white-space: nowrap;
+
+            .n {
+                font-family: var(--en);
+                direction: ltr;
+            }
 
             &:hover {
                 border-color: var(--ca);
