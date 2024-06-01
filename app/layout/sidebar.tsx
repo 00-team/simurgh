@@ -10,7 +10,9 @@ export default () => {
     return (
         <div class='sidebar-fnd'>
             <User />
-            <div class='links'>{/*<A href='/projects/'>پروژه ها</A>*/}</div>
+            <div class='links'>
+                <A href='/projects/'>پروژه ها</A>
+            </div>
         </div>
     )
 }
