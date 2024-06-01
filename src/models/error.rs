@@ -16,12 +16,13 @@ use utoipa::ToSchema;
 #[derive(Clone, Serialize, Debug, ToSchema)]
 pub struct AppErr {
     status: u16,
-    message: String,
+    subject: String,
+    content: Option<String>,
 }
 
 impl AppErr {
-    pub fn new(status: u16, message: &str) -> Self {
-        Self { status, message: message.to_string() }
+    pub fn new(status: u16, subject: &str) -> Self {
+        Self { status, subject: subject.to_string(), content: None }
     }
 
     // pub fn default() -> Self {
@@ -49,10 +50,16 @@ impl ResponseError for AppErr {
 impl From<sqlx::Error> for AppErr {
     fn from(value: sqlx::Error) -> Self {
         match value {
-            sqlx::Error::RowNotFound => {
-                Self { status: 404, message: "not found".to_string() }
-            }
-            _ => Self { status: 500, message: "database error".to_string() },
+            sqlx::Error::RowNotFound => Self {
+                status: 404,
+                subject: "not found".to_string(),
+                content: None,
+            },
+            _ => Self {
+                status: 500,
+                subject: "database error".to_string(),
+                content: None,
+            },
         }
     }
 }
@@ -60,7 +67,11 @@ impl From<sqlx::Error> for AppErr {
 impl From<actix_web::error::Error> for AppErr {
     fn from(value: actix_web::error::Error) -> Self {
         let r = value.error_response();
-        Self { status: r.status().as_u16(), message: value.to_string() }
+        Self {
+            status: r.status().as_u16(),
+            subject: "Error".to_string(),
+            content: Some(value.to_string()),
+        }
     }
 }
 
@@ -70,7 +81,11 @@ macro_rules! impl_from_err {
             fn from(value: $ty) -> Self {
                 let value = value.to_string();
                 log::error!("err 500: {}", value);
-                Self { status: 500, message: value }
+                Self {
+                    status: 500,
+                    subject: stringify!($ty).to_string(),
+                    content: Some(value),
+                }
             }
         }
     };
@@ -93,7 +108,8 @@ macro_rules! error_helper {
             log::error!("err {} - {}", stringify!($status), err);
             AppErr {
                 status: StatusCode::$status.as_u16(),
-                message: err.to_string()
+                subject: stringify!($status).to_string(),
+                content: Some(err.to_string())
             }
         }
     };
