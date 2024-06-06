@@ -81,7 +81,7 @@ fn config_static(app: &mut web::ServiceConfig) {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenvy::from_path(".secrets.env").expect("could not read .secrets.env");
+    dotenvy::from_path(".env").expect("could not read .env file");
     pretty_env_logger::init();
 
     let _ = std::fs::create_dir(Config::RECORD_DIR);

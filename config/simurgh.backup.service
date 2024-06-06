@@ -5,4 +5,4 @@ Description=Simurgh Backup
 Type=oneshot
 ExecStart=/x/simurgh/config/backup.sh
 WorkingDirectory=/x/simurgh/
-EnvironmentFile=/x/simurgh/.secrets.env
+EnvironmentFile=/x/simurgh/.env
