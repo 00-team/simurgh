@@ -14,8 +14,6 @@ Cargo.lock
 *.pdb
 
 
-# Added by cargo
-
 /target
 .secrets.env
 main.db*
@@ -26,10 +24,4 @@ dist/
 record/
 logs/
 old/
-
-
-# Added by cargo
-#
-# already existing elements were commented out
-
-#/target
+.env
