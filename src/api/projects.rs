@@ -15,28 +15,29 @@ use crate::AppState;
 #[openapi(
     tags((name = "api::projects")),
     paths(
-        projects_new, projects_list, projects_get, projects_update
+        projects_add, projects_list, projects_get, projects_update,
+        projects_delete
     ),
-    components(schemas(Project, NewBody)),
+    components(schemas(Project, ProjectAddBody)),
     servers((url = "/projects")),
     modifiers(&UpdatePaths)
 )]
 pub struct ApiDoc;
 
 #[derive(Deserialize, ToSchema)]
-struct NewBody {
+struct ProjectAddBody {
     name: String,
 }
 
 #[utoipa::path(
     post,
-    request_body = NewBody,
+    request_body = ProjectAddBody,
     responses((status = 200, body = Project))
 )]
-/// New
+/// Add
 #[post("/")]
-async fn projects_new(
-    user: User, body: Json<NewBody>, state: Data<AppState>,
+async fn projects_add(
+    user: User, body: Json<ProjectAddBody>, state: Data<AppState>,
 ) -> Response<Project> {
     let now = utils::now();
     sqlx::query! {
@@ -169,9 +170,10 @@ async fn projects_delete(
 
 pub fn router() -> Scope {
     Scope::new("/projects")
-        .service(projects_new)
+        .service(projects_add)
         .service(projects_list)
         .service(projects_get)
         .service(projects_update)
         .service(projects_delete)
+        .service(super::blogs::router())
 }

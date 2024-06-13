@@ -34,10 +34,10 @@ async fn index() -> impl Responder {
 #[get("/openapi.json")]
 async fn openapi() -> impl Responder {
     let mut doc = docs::ApiDoc::openapi();
-    doc.merge(api::projects::ApiDoc::openapi());
     doc.merge(api::user::ApiDoc::openapi());
-    // doc.merge(api::vendor::ApiDoc::openapi());
     doc.merge(api::verification::ApiDoc::openapi());
+    doc.merge(api::projects::ApiDoc::openapi());
+    doc.merge(api::blogs::ApiDoc::openapi());
     // doc.merge(api::product::Doc::openapi());
 
     // let mut admin_doc = ApiDoc::openapi();
