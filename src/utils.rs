@@ -48,6 +48,11 @@ pub fn remove_photo(name: &str) {
 }
 
 pub async fn send_webhook(title: &str, desc: &str, color: u32) {
+    if cfg!(debug_assertions) {
+        log::info!("sending webhook:\n{title}\n-----------\n{desc}");
+        return;
+    }
+
     let client = awc::Client::new();
     let request = client.post(&config().discord_webhook);
 
@@ -75,6 +80,11 @@ pub async fn send_webhook(title: &str, desc: &str, color: u32) {
 }
 
 pub async fn send_code(email: &str, code: &str) -> Result<(), AppErr> {
+    if cfg!(debug_assertions) {
+        log::info!("send code:\n{email}:{code}");
+        return Ok(());
+    }
+
     let html = format!(
         r##"<h1>Simurgh Verification</h1>
         <p>your verification code: <code style='font-size: 24px'>{code}</code></p>"##
