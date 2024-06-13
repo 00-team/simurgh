@@ -3,7 +3,7 @@ import './style/sidebar.scss'
 import { self, setSelf } from 'store'
 import { UserIcon } from 'icons'
 import { httpx } from 'shared'
-import { produce } from 'solid-js/store'
+import { createStore, produce } from 'solid-js/store'
 import { A } from '@solidjs/router'
 
 export default () => {
@@ -18,10 +18,15 @@ export default () => {
 }
 
 const User = () => {
-    const [edit_name, setEditName] = createSignal(false)
+    type State = {
+        edit_name: boolean
+    }
+    const [state, setState] = createStore<State>({
+        edit_name: false,
+    })
     let input_name: HTMLInputElement
     createEffect(() => {
-        if (!edit_name()) return
+        if (!state.edit_name) return
         input_name.focus()
     })
 
@@ -80,7 +85,7 @@ const User = () => {
             onLoad(x) {
                 if (x.status == 200) {
                     setSelf({ user: x.response })
-                    setEditName(false)
+                    setState({ edit_name: false })
                 }
             },
         })
@@ -99,14 +104,14 @@ const User = () => {
             >
                 <Show when={self.user.photo} fallback={<UserIcon />}>
                     <img
-                        src={`/record/${self.user.id}:${self.user.photo}/?x=${~~performance.now()}`}
+                        src={`/record/u:${self.user.id}:${self.user.photo}/?r=${~~performance.now()}`}
                         draggable={false}
                     />
                 </Show>
             </div>
-            <div class='name' onclick={() => setEditName(true)}>
+            <div class='name' onclick={() => setState({ edit_name: true })}>
                 <Show
-                    when={edit_name()}
+                    when={state.edit_name}
                     fallback={<span>{self.user.name || '---'}</span>}
                 >
                     <input
@@ -121,11 +126,11 @@ const User = () => {
                             e.stopPropagation()
                             update_name(e.currentTarget.value)
                         }}
-                        onBlur={() => setEditName(false)}
+                        onBlur={() => setState({ edit_name: false })}
                         onContextMenu={e => {
                             e.preventDefault()
                             e.stopPropagation()
-                            setEditName(false)
+                            setState({ edit_name: false })
                         }}
                     />
                 </Show>
