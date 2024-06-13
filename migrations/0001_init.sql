@@ -51,7 +51,7 @@ create table if not exists blog_contents (
     blog integer not null references blogs(id) on delete cascade,
     lang integer not null,
     title text not null,
-    description text not null,
+    detail text not null,
     html text not null,
     data text not null default '{}',
     unique(blog, lang)
