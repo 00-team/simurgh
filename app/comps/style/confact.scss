@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 0;
+    border: 2px solid var(--color);
     isolation: isolate;
     position: relative;
     overflow: hidden;
@@ -14,6 +14,10 @@
     width: 32px;
     height: 32px;
     border-radius: var(--radius);
+
+    &:disabled {
+        pointer-events: none;
+    }
 
     &:hover {
         color: var(--color);
