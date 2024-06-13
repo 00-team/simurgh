@@ -1,3 +1,6 @@
+use std::{future::Future, pin::Pin};
+
+use actix_web::{dev::Payload, web::Data, HttpRequest};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -14,4 +17,28 @@ pub struct Project {
     pub api_key: Option<String>,
 }
 
-super::from_request!(Project, "projects");
+impl actix_web::FromRequest for Project {
+    type Error = crate::models::AppErr;
+    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+
+    fn from_request(rq: &HttpRequest, pl: &mut Payload) -> Self::Future {
+        let user = super::user::User::from_request(rq, pl);
+        let path = actix_web::web::Path::<(i64,)>::extract(rq);
+        let state = rq.app_data::<Data<crate::AppState>>().unwrap();
+        let pool = state.sql.clone();
+
+        Box::pin(async move {
+            let user = user.await?;
+            let path = path.await?;
+            let result = sqlx::query_as! {
+                Project,
+                "select * from projects where id = ? and user = ?",
+                path.0, user.id
+            }
+            .fetch_one(&pool)
+            .await?;
+
+            Ok(result)
+        })
+    }
+}
