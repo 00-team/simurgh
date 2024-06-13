@@ -1,4 +1,4 @@
-use std::{fs::read_to_string, os::unix::fs::PermissionsExt};
+use std::fs::read_to_string;
 
 use actix_files as af;
 use actix_web::{
@@ -71,14 +71,23 @@ async fn rapidoc() -> impl Responder {
     )
 }
 
-fn config_static(app: &mut web::ServiceConfig) {
+fn config_app(app: &mut web::ServiceConfig) {
     if cfg!(debug_assertions) {
         app.service(af::Files::new("/static", "./static"));
         app.service(af::Files::new("/assets", "./static/dist/assets"));
         app.service(af::Files::new("/record", Config::RECORD_DIR));
     }
+
+    app.service(openapi).service(rapidoc).service(index);
+    app.service(
+        scope("/api")
+            .service(api::user::router())
+            .service(api::projects::router())
+            .service(api::verification::verification),
+    );
 }
 
+#[cfg(unix)]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenvy::from_path(".env").expect("could not read .env file");
@@ -91,26 +100,39 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(middleware::Logger::new("%s %r %Ts"))
             .app_data(Data::new(AppState { sql: pool.clone() }))
-            .configure(config_static)
-            .service(openapi)
-            .service(rapidoc)
-            .service(index)
-            .service(
-                scope("/api")
-                    .service(api::user::router())
-                    .service(api::projects::router())
-                    .service(api::verification::verification),
-            )
+            .configure(config_app)
     });
 
     let server = if cfg!(debug_assertions) {
         server.bind(("127.0.0.1", 7700)).unwrap()
     } else {
+        use std::os::unix::fs::PermissionsExt;
         const PATH: &'static str = "/usr/share/nginx/sockets/simurgh.sock";
-        let s = server.bind_uds(PATH).unwrap();
+        let server = server.bind_uds(PATH).unwrap();
         std::fs::set_permissions(PATH, std::fs::Permissions::from_mode(0o777))?;
-        s
+        server
     };
 
     server.run().await
+}
+
+#[cfg(windows)]
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    dotenvy::from_path(".env").expect("could not read .env file");
+    pretty_env_logger::init();
+
+    let _ = std::fs::create_dir(Config::RECORD_DIR);
+    let pool = SqlitePool::connect("sqlite://main.db").await.unwrap();
+
+    HttpServer::new(move || {
+        App::new()
+            .wrap(middleware::Logger::new("%s %r %Ts"))
+            .app_data(Data::new(AppState { sql: pool.clone() }))
+            .configure(config_app)
+    })
+    .bind(("127.0.0.1", 7700))
+    .expect("server bind")
+    .run()
+    .await
 }
