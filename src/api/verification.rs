@@ -81,7 +81,6 @@ async fn verification(
     vdb.retain(|_, v| v.expires - now > 0);
 
     let code = utils::get_random_string(Config::CODE_ABC, 5);
-    log::info!("code: {code}");
 
     utils::send_code(&body.email, code.as_str()).await?;
 
