@@ -2,7 +2,6 @@ use crate::{
     config::{config, Config},
     models::{AppErr, AppErrBadRequest},
 };
-use actix_web::web::Buf;
 use image::io::Reader as ImageReader;
 use image::ImageFormat;
 use lettre::{
@@ -11,8 +10,8 @@ use lettre::{
 };
 use rand::Rng;
 use serde::Serialize;
+use std::io;
 use std::path::Path;
-use std::{fs::File, io};
 
 pub fn now() -> i64 {
     chrono::Local::now().timestamp()
