@@ -26,6 +26,11 @@ export default () => {
     })
     const params = useParams()
     const nav = useNavigate()
+    let input_name: HTMLInputElement
+    createEffect(() => {
+        if (!state.edit_name) return
+        input_name.focus()
+    })
 
     createEffect(() => {
         let id = parseInt(params.id)
@@ -79,6 +84,7 @@ export default () => {
                 >
                     <input
                         class='styled'
+                        ref={input_name}
                         value={state.project.name}
                         dir='auto'
                         placeholder='نام شما'

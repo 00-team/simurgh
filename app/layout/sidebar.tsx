@@ -1,4 +1,4 @@
-import { Show, createSignal } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 import './style/sidebar.scss'
 import { self, setSelf } from 'store'
 import { UserIcon } from 'icons'
@@ -18,7 +18,12 @@ export default () => {
 }
 
 const User = () => {
-    const [editing, setEditing] = createSignal(false)
+    const [edit_name, setEditName] = createSignal(false)
+    let input_name: HTMLInputElement
+    createEffect(() => {
+        if (!edit_name()) return
+        input_name.focus()
+    })
 
     function update_photo() {
         let input = document.createElement('input')
@@ -75,7 +80,7 @@ const User = () => {
             onLoad(x) {
                 if (x.status == 200) {
                     setSelf({ user: x.response })
-                    setEditing(false)
+                    setEditName(false)
                 }
             },
         })
@@ -99,12 +104,13 @@ const User = () => {
                     />
                 </Show>
             </div>
-            <div class='name' onclick={() => setEditing(true)}>
+            <div class='name' onclick={() => setEditName(true)}>
                 <Show
-                    when={editing()}
+                    when={edit_name()}
                     fallback={<span>{self.user.name || '---'}</span>}
                 >
                     <input
+                        ref={input_name}
                         dir='auto'
                         class='styled'
                         placeholder='نام شما'
@@ -115,11 +121,11 @@ const User = () => {
                             e.stopPropagation()
                             update_name(e.currentTarget.value)
                         }}
-                        onBlur={() => setEditing(false)}
+                        onBlur={() => setEditName(false)}
                         onContextMenu={e => {
                             e.preventDefault()
                             e.stopPropagation()
-                            setEditing(false)
+                            setEditName(false)
                         }}
                     />
                 </Show>
