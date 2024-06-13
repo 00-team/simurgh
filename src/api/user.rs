@@ -170,9 +170,10 @@ async fn user_update_photo(
         s
     };
 
-    let filename = format!("{}:{salt}", user.id);
-
-    utils::save_photo(form.photo.file.path(), &filename)?;
+    utils::save_photo(
+        form.photo.file.path(),
+        &format!("u:{}:{salt}", user.id),
+    )?;
 
     sqlx::query_as! {
         User,
@@ -200,7 +201,7 @@ async fn user_delete_photo(user: User, state: Data<AppState>) -> HttpResponse {
         return HttpResponse::Ok().finish();
     }
 
-    utils::remove_photo(&format!("{}:{}", user.id, user.photo.unwrap()));
+    utils::remove_record(&format!("u:{}:{}", user.id, user.photo.unwrap()));
     user.photo = None;
 
     let _ = sqlx::query_as! {

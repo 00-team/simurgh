@@ -1,12 +1,13 @@
 use actix_web::web::{Data, Json, Query};
-use actix_web::{get, patch, post, Scope};
+use actix_web::{delete, get, patch, post, HttpResponse, Scope};
 use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
+use crate::models::record::Record;
 use crate::models::user::User;
-use crate::models::{AppErrNotFound, ListInput, Response};
+use crate::models::{AppErr, AppErrNotFound, ListInput, Response};
 use crate::utils;
 use crate::AppState;
 
@@ -123,10 +124,54 @@ async fn projects_update(
     Ok(Json(project))
 }
 
+#[utoipa::path(
+    delete,
+    params(("id" = i64, Path,)),
+    responses((status = 200))
+)]
+/// Delete
+#[delete("/{id}/")]
+async fn projects_delete(
+    user: User, project: Project, state: Data<AppState>,
+) -> Result<HttpResponse, AppErr> {
+    if project.user != user.id {
+        return Err(AppErrNotFound("پروژه یافت نشد"));
+    }
+
+    let records = sqlx::query_as! {
+        Record,
+        "select * from records where project = ? OR project = null",
+        project.id,
+    }
+    .fetch_all(&state.sql)
+    .await?;
+
+    for r in records {
+        utils::remove_record(&format!("r:{}:{}", r.id, r.salt));
+    }
+
+    sqlx::query! {
+        "delete from records where project = ? OR project = null",
+        project.id,
+    }
+    .execute(&state.sql)
+    .await?;
+
+    sqlx::query! {
+        "delete from projects where id = ?",
+        project.id,
+    }
+    .execute(&state.sql)
+    .await?;
+
+    Ok(HttpResponse::Ok().finish())
+}
+
 pub fn router() -> Scope {
     Scope::new("/projects")
         .service(projects_new)
         .service(projects_list)
         .service(projects_get)
         .service(projects_update)
+        .service(projects_delete)
 }
