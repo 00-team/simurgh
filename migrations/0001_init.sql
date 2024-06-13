@@ -10,12 +10,6 @@ create table if not exists users (
     banned boolean not null default false
 );
 
-create table if not exists languages (
-    id text primary key not null,
-    label text not null,
-    emoji text not null
-);
-
 create table if not exists projects (
     id integer primary key not null,
     user integer not null references users(id) on delete cascade,
@@ -55,7 +49,7 @@ create table if not exists blogs (
 create table if not exists blog_contents (
     id integer primary key not null,
     blog integer not null references blogs(id) on delete cascade,
-    lang integer not null references languages(id) on delete cascade,
+    lang integer not null,
     title text not null,
     description text not null,
     html text not null,
