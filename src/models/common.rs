@@ -7,6 +7,7 @@ use sqlx::{
     sqlite::{SqliteArgumentValue, SqliteTypeInfo},
     Sqlite,
 };
+use utoipa::IntoParams;
 
 pub type Response<T> = Result<Json<T>, super::AppErr>;
 
@@ -108,5 +109,41 @@ macro_rules! sql_enum {
     };
 }
 
+macro_rules! from_request {
+    ($name:ident, $table:literal) => {
+        impl actix_web::FromRequest for $name {
+            type Error = crate::models::AppErr;
+            type Future = std::pin::Pin<
+                Box<
+                    dyn std::future::Future<Output = Result<Self, Self::Error>>,
+                >,
+            >;
+
+            fn from_request(
+                req: &actix_web::HttpRequest, _: &mut actix_web::dev::Payload,
+            ) -> Self::Future {
+                let path = actix_web::web::Path::<(i64,)>::extract(req);
+                let state = req
+                    .app_data::<actix_web::web::Data<crate::AppState>>()
+                    .unwrap();
+                let pool = state.sql.clone();
+
+                Box::pin(async move {
+                    let path = path.await?;
+                    let result = sqlx::query_as! {
+                        $name,
+                        "select * from " + $table + " where id = ?",
+                        path.0
+                    }
+                    .fetch_one(&pool)
+                    .await?;
+
+                    Ok(result)
+                })
+            }
+        }
+    };
+}
+
+pub(crate) use from_request;
 pub(crate) use sql_enum;
-use utoipa::IntoParams;
