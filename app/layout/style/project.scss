@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    gap: 1rem;
 
     .info {
         display: grid;
@@ -33,6 +34,18 @@
         .n {
             direction: ltr;
             font-family: var(--en);
+        }
+    }
+
+    .blogs {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .actions {
+            .add-btn {
+                --color: var(--green);
+            }
         }
     }
 }

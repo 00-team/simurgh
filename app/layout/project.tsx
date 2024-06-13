@@ -80,6 +80,13 @@ export default () => {
         })
     }
 
+    function blog_add() {
+        httpx({
+            url: '/api/blogs/',
+            method: 'POST',
+        })
+    }
+
     return (
         <div class='project-fnd'>
             <div class='info'>
@@ -139,7 +146,14 @@ export default () => {
                 <span>تاریخ آپدیت:</span>
                 <span class='n'>{fmt_datetime(state.project.updated_at)}</span>
             </div>
-            <div class='blog-list'></div>
+            <div class='blogs'>
+                <div class='actions'>
+                    <button class='add-btn styled' onClick={blog_add}>
+                        بلاگ جدید
+                    </button>
+                </div>
+                <div class='blog-list'></div>
+            </div>
         </div>
     )
 }
