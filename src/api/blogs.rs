@@ -14,7 +14,7 @@ use crate::{utils, AppState};
 #[openapi(
     tags((name = "api::blogs")),
     paths(
-        blogs_list, blogs_add
+        blogs_list, blogs_add, blogs_get
     ),
     components(schemas(Blog, BlogAddBody)),
     servers((url = "/projects/{pid}/blogs")),
@@ -78,20 +78,20 @@ async fn blogs_add(
 }
 
 
-// #[utoipa::path(
-//     get,
-//     params(("id" = i64, Path, example = 1)),
-//     responses((status = 200, body = Project))
-// )]
-// /// Get
-// #[get("/{id}/")]
-// async fn projects_get(user: User, project: Project) -> Response<Project> {
-//     if project.user != user.id {
-//         return Err(AppErrNotFound("پروژه یافت نشد"));
-//     }
-//     Ok(Json(project))
-// }
-//
+#[utoipa::path(
+    get,
+    params(
+        ("pid" = i64, Path, example = 1),
+        ("bid" = i64, Path, example = 1),
+    ),
+    responses((status = 200, body = Blog))
+)]
+/// Get
+#[get("/{bid}/")]
+async fn blogs_get(blog: Blog) -> Response<Blog> {
+    Ok(Json(blog))
+}
+
 // #[derive(Deserialize, ToSchema)]
 // struct UpdateBody {
 //     name: String,
@@ -174,7 +174,5 @@ pub fn router() -> Scope {
     Scope::new("/{pid}/blogs")
         .service(blogs_add)
         .service(blogs_list)
-    // .service(blogs_get)
-    // .service(blogs_update)
-    // .service(blogs_delete)
+        .service(blogs_get)
 }
