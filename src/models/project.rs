@@ -1,8 +1,9 @@
-use std::{future::Future, pin::Pin};
-
 use actix_web::{dev::Payload, web::Data, HttpRequest};
 use serde::{Deserialize, Serialize};
+use std::{future::Future, pin::Pin};
 use utoipa::ToSchema;
+
+use super::AppErrNotFound;
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
 pub struct Project {
@@ -30,15 +31,20 @@ impl actix_web::FromRequest for Project {
         Box::pin(async move {
             let user = user.await?;
             let path = path.await?;
-            let result = sqlx::query_as! {
+            let project = sqlx::query_as! {
                 Project,
-                "select * from projects where id = ? and user = ?",
-                path.0, user.id
+                "select * from projects where id = ?",
+                path.0
             }
             .fetch_one(&pool)
             .await?;
 
-            Ok(result)
+            if project.user == user.id || user.admin {
+                Ok(project)
+            } else {
+                Err(AppErrNotFound("یافت نشد"))
+            }
+
         })
     }
 }
