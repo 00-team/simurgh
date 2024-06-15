@@ -1,15 +1,18 @@
 import { Show, render } from 'solid-js/web'
+import { Component, lazy } from 'solid-js'
+import { Navigate, Route, RouteSectionProps, Router } from '@solidjs/router'
 
-import './style/index.scss'
+import { Alert } from 'comps'
 import { self } from 'store'
+
 import Login from 'layout/login'
 import Sidebar from 'layout/sidebar'
 import Projects from 'layout/projects'
 import NotFound from 'layout/404'
-import { Navigate, Route, RouteSectionProps, Router } from '@solidjs/router'
-import { Component, lazy } from 'solid-js'
-import { Alert } from 'comps'
 const Project = lazy(() => import('layout/project'))
+const Blog = lazy(() => import('layout/blog'))
+
+import './style/index.scss'
 
 const Dash: Component<RouteSectionProps> = P => {
     return (
@@ -31,7 +34,14 @@ const Root = () => {
                             component={() => <Navigate href='/projects/' />}
                         />
                         <Route path='/projects/' component={Projects} />
-                        <Route path='/projects/:id' component={Project} />
+                        <Route path='/projects/:pid'>
+                            <Route path='/' component={Project} />
+                            <Route
+                                path='/blogs'
+                                component={() => <span>Blogs page</span>}
+                            />
+                            <Route path='/blogs/:bid' component={Blog} />
+                        </Route>
                         <Route path='*' component={NotFound} />
                     </Route>
                 </Router>
