@@ -25,9 +25,9 @@ impl AppErr {
         Self { status, subject: subject.to_string(), content: None }
     }
 
-    // pub fn default() -> Self {
-    //     Self { status: 500, message: "Internal Server Error".to_string() }
-    // }
+    pub fn default() -> Self {
+        Self { status: 500, subject: "خطای سیستمی".to_string(), content: None }
+    }
 }
 
 impl fmt::Display for AppErr {
