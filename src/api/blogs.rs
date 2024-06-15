@@ -56,7 +56,7 @@ async fn blog_add(
 ) -> Response<Blog> {
     let now = utils::now();
     let mut tries = 0;
-    let slug = loop {
+    let (id, slug) = loop {
         let slug = format!(
             "{}-{}",
             project.blog_count,
@@ -69,8 +69,8 @@ async fn blog_add(
         .execute(&state.sql)
         .await;
 
-        if result.is_ok() {
-            break slug;
+        if let Ok(result) = result {
+            break (result.last_insert_rowid(), slug);
         }
 
         tries += 1;
@@ -80,6 +80,7 @@ async fn blog_add(
     };
 
     Ok(Json(Blog {
+        id,
         slug,
         project: project.id,
         author: user.id,
