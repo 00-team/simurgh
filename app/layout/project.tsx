@@ -5,7 +5,7 @@ import { Show, createEffect } from 'solid-js'
 import { useNavigate, useParams } from '@solidjs/router'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Confact } from 'comps'
-import { TrashIcon } from 'icons'
+import { ImageIcon, TrashIcon } from 'icons'
 
 export default () => {
     type State = {
@@ -190,7 +190,16 @@ export default () => {
                 <div class='blog-list'>
                     {state.blogs.slice(0, 3).map(b => (
                         <div class='blog' onClick={() => nav('blogs/' + b.id)}>
-                            <div class='thumbnail'>{b.thumbnail + ''}</div>
+                            <div class='thumbnail'>
+                                <Show
+                                    when={b.thumbnail}
+                                    fallback={<ImageIcon />}
+                                >
+                                    <img
+                                        src={`/record/bt-${b.id}-${b.thumbnail}`}
+                                    />
+                                </Show>
+                            </div>
                             <div class='blog-info'>
                                 <span>شماره:</span>
                                 <span class='n'>{b.id}</span>
