@@ -14,7 +14,7 @@ use crate::{utils, AppState};
 #[openapi(
     tags((name = "api::blogs")),
     paths(
-        blogs_list, blogs_add, blogs_get
+        blog_list, blog_add, blog_get
     ),
     components(schemas(Blog, BlogAddBody)),
     servers((url = "/projects/{pid}/blogs")),
@@ -29,7 +29,7 @@ pub struct ApiDoc;
 )]
 /// List
 #[get("/")]
-async fn blogs_list(
+async fn blog_list(
     project: Project, q: Query<ListInput>, state: Data<AppState>,
 ) -> Response<Vec<Blog>> {
     let offset = q.page * 32;
@@ -57,7 +57,7 @@ struct BlogAddBody {
 )]
 /// Add
 #[post("/")]
-async fn blogs_add(
+async fn blog_add(
     user: User, project: Project, body: Json<BlogAddBody>, state: Data<AppState>,
 ) -> Response<Blog> {
     let now = utils::now();
@@ -88,7 +88,7 @@ async fn blogs_add(
 )]
 /// Get
 #[get("/{bid}/")]
-async fn blogs_get(blog: Blog) -> Response<Blog> {
+async fn blog_get(blog: Blog) -> Response<Blog> {
     Ok(Json(blog))
 }
 
@@ -172,7 +172,8 @@ async fn blogs_get(blog: Blog) -> Response<Blog> {
 
 pub fn router() -> Scope {
     Scope::new("/{pid}/blogs")
-        .service(blogs_add)
-        .service(blogs_list)
-        .service(blogs_get)
+        .service(blog_add)
+        .service(blog_list)
+        .service(blog_get)
+        .service(super::blog_contents::router())
 }
