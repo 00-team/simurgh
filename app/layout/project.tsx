@@ -1,4 +1,4 @@
-import { ProjectModel } from 'models'
+import { BlogModel, ProjectModel, RecordModel } from 'models'
 import './style/project.scss'
 import { createStore, produce } from 'solid-js/store'
 import { Show, createEffect } from 'solid-js'
@@ -11,6 +11,8 @@ export default () => {
     type State = {
         edit_name: boolean
         project: ProjectModel
+        blogs: BlogModel[]
+        records: RecordModel[]
     }
     const [state, setState] = createStore<State>({
         edit_name: false,
@@ -25,6 +27,8 @@ export default () => {
             updated_at: 0,
             api_key: null,
         },
+        blogs: [],
+        records: [],
     })
     const params = useParams()
     const nav = useNavigate()
@@ -35,7 +39,7 @@ export default () => {
     })
 
     createEffect(() => {
-        let id = parseInt(params.id)
+        let id = parseInt(params.pid)
         if (isNaN(id)) nav('/projects/')
 
         httpx({
@@ -44,6 +48,30 @@ export default () => {
             onLoad(x) {
                 if (x.status != 200) return nav('/projects/')
                 setState({ project: x.response })
+            },
+        })
+    })
+
+    createEffect(() => {
+        if (!state.project.id) return
+
+        httpx({
+            url: `/api/projects/${state.project.id}/blogs/`,
+            method: 'GET',
+            params: { page: 0 },
+            onLoad(x) {
+                if (x.status != 200) return
+                setState({ blogs: x.response })
+            },
+        })
+
+        httpx({
+            url: `/api/projects/${state.project.id}/records/`,
+            method: 'GET',
+            params: { page: 0 },
+            onLoad(x) {
+                if (x.status != 200) return
+                setState({ records: x.response })
             },
         })
     })
@@ -82,14 +110,18 @@ export default () => {
 
     function blog_add() {
         httpx({
-            url: '/api/blogs/',
+            url: `/api/projects/${state.project.id}/blogs/`,
             method: 'POST',
+            onLoad(x) {
+                if (x.status != 200) return
+                nav(`/projects/${state.project.id}/blogs/${x.response.id}`)
+            },
         })
     }
 
     return (
         <div class='project-fnd'>
-            <div class='info'>
+            <div class='project-info'>
                 <span>نام:</span>
                 <div class='name'>
                     <Show
@@ -151,8 +183,31 @@ export default () => {
                     <button class='add-btn styled' onClick={blog_add}>
                         بلاگ جدید
                     </button>
+                    <button class='styled' onClick={() => nav('blogs')}>
+                        بلاگ ها
+                    </button>
                 </div>
-                <div class='blog-list'></div>
+                <div class='blog-list'>
+                    {state.blogs.slice(0, 3).map(b => (
+                        <div class='blog' onClick={() => nav('blogs/' + b.id)}>
+                            <div class='thumbnail'>{b.thumbnail + ''}</div>
+                            <div class='blog-info'>
+                                <span>شماره:</span>
+                                <span class='n'>{b.id}</span>
+                                <span>نشانه:</span>
+                                <span class='n'>{b.slug}</span>
+                                <span>تاریخ شروع:</span>
+                                <span class='n'>
+                                    {fmt_datetime(state.project.created_at)}
+                                </span>
+                                <span>تاریخ آپدیت:</span>
+                                <span class='n'>
+                                    {fmt_datetime(state.project.updated_at)}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     )
