@@ -1,13 +1,13 @@
 use actix_web::web::{Data, Json, Query};
-use actix_web::{delete, get, patch, post, HttpResponse, Scope};
-use serde::Deserialize;
-use utoipa::{OpenApi, ToSchema};
+use actix_web::{get, post, Scope};
+use utoipa::OpenApi;
 
+use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::blog::Blog;
 use crate::models::project::Project;
 use crate::models::user::User;
-use crate::models::{ListInput, Response};
+use crate::models::{AppErr, ListInput, Response};
 use crate::{utils, AppState};
 
 #[derive(OpenApi)]
@@ -16,7 +16,7 @@ use crate::{utils, AppState};
     paths(
         blog_list, blog_add, blog_get
     ),
-    components(schemas(Blog, BlogAddBody)),
+    components(schemas(Blog)),
     servers((url = "/projects/{pid}/blogs")),
     modifiers(&UpdatePaths)
 )]
@@ -44,33 +44,43 @@ async fn blog_list(
     Ok(Json(result))
 }
 
-#[derive(Deserialize, ToSchema)]
-struct BlogAddBody {
-    slug: String,
-}
-
 #[utoipa::path(
     post,
     params(("pid" = i64, Path, example = 1)),
-    request_body = BlogAddBody,
     responses((status = 200, body = Blog))
 )]
 /// Add
 #[post("/")]
 async fn blog_add(
-    user: User, project: Project, body: Json<BlogAddBody>,
-    state: Data<AppState>,
+    user: User, project: Project, state: Data<AppState>,
 ) -> Response<Blog> {
     let now = utils::now();
-    sqlx::query! {
-        "insert into blogs(slug, project, author, created_at) values(?,?,?,?)",
-        body.slug, project.id, user.id, now
-    }
-    .execute(&state.sql)
-    .await?;
+    let mut tries = 0;
+    let slug = loop {
+        let slug = format!(
+            "{}-{}",
+            project.blog_count,
+            utils::get_random_string(Config::SLUG_ABC, 16)
+        );
+        let result = sqlx::query! {
+            "insert into blogs(slug, project, author, created_at) values(?,?,?,?)",
+            slug, project.id, user.id, now
+        }
+        .execute(&state.sql)
+        .await;
+
+        if result.is_ok() {
+            break slug;
+        }
+
+        tries += 1;
+        if tries > 3 {
+            return Err(AppErr::default());
+        }
+    };
 
     Ok(Json(Blog {
-        slug: body.slug.clone(),
+        slug,
         project: project.id,
         author: user.id,
         created_at: now,
