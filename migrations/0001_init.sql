@@ -28,7 +28,6 @@ create table if not exists records (
     salt text not null,
     size integer not null,
     created_at integer not null,
-    updated_at integer not null default 0,
     mime text,
     ext text
 );
