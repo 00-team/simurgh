@@ -89,7 +89,7 @@ export default () => {
 
                 setState(
                     produce(s => {
-                        s.project.name = data.name
+                        s.project = x.response
                         s.edit_name = false
                     })
                 )
