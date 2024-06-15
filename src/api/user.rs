@@ -10,8 +10,8 @@ use utoipa::{OpenApi, ToSchema};
 use crate::api::verification;
 use crate::config::Config;
 use crate::docs::UpdatePaths;
-use crate::models::user::{UpdatePhoto, User};
-use crate::models::{AppErr, Response};
+use crate::models::user::User;
+use crate::models::{AppErr, RecordUpload, Response};
 use crate::utils::CutOff;
 use crate::{utils, AppState};
 
@@ -21,7 +21,7 @@ use crate::{utils, AppState};
     paths(
         user_get, user_login, user_update, user_update_photo, user_delete_photo
     ),
-    components(schemas(LoginBody, UserUpdateBody, UpdatePhoto)),
+    components(schemas(User, LoginBody, UserUpdateBody)),
     servers((url = "/user")),
     modifiers(&UpdatePaths)
 )]
@@ -150,7 +150,7 @@ async fn user_update(
 
 #[utoipa::path(
     put,
-    request_body(content = UpdatePhoto, content_type = "multipart/form-data"),
+    request_body(content = RecordUpload, content_type = "multipart/form-data"),
     responses(
         (status = 200, body = User)
     )
@@ -158,7 +158,7 @@ async fn user_update(
 /// Update Photo
 #[put("/photo/")]
 async fn user_update_photo(
-    user: User, form: MultipartForm<UpdatePhoto>, state: Data<AppState>,
+    user: User, form: MultipartForm<RecordUpload>, state: Data<AppState>,
 ) -> Response<User> {
     let mut user = user;
 
@@ -171,9 +171,9 @@ async fn user_update_photo(
     };
 
     utils::save_photo(
-        form.photo.file.path(),
+        form.record.file.path(),
         &format!("up-{}-{salt}", user.id),
-        (512, 512)
+        (512, 512),
     )?;
 
     sqlx::query_as! {

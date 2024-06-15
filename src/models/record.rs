@@ -12,7 +12,6 @@ pub struct Record {
     pub salt: String,
     pub size: i64,
     pub created_at: i64,
-    pub updated_at: i64,
     pub mime: Option<String>,
     pub ext: Option<String>,
 }
