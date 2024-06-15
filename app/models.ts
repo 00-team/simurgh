@@ -42,4 +42,13 @@ export type BlogContentModel = {
     html: string
 }
 
-export type RecordModel = {}
+export type RecordModel = {
+    created_at: number
+    ext: string | null
+    id: number
+    mime: string | null
+    project: number | null
+    salt: string
+    size: number
+    updated_at: number
+}
