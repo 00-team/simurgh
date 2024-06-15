@@ -1,4 +1,4 @@
-import { Show, createEffect, createSignal } from 'solid-js'
+import { Show, createEffect } from 'solid-js'
 import './style/sidebar.scss'
 import { self, setSelf } from 'store'
 import { UserIcon } from 'icons'
@@ -104,7 +104,7 @@ const User = () => {
             >
                 <Show when={self.user.photo} fallback={<UserIcon />}>
                     <img
-                        src={`/record/u:${self.user.id}:${self.user.photo}/?r=${~~performance.now()}`}
+                        src={`/record/up-${self.user.id}-${self.user.photo}/?r=${~~performance.now()}`}
                         draggable={false}
                     />
                 </Show>

@@ -27,13 +27,13 @@ pub fn get_random_bytes(len: usize) -> String {
     hex::encode((0..len).map(|_| rng.gen::<u8>()).collect::<Vec<u8>>())
 }
 
-pub fn save_photo(path: &Path, name: &str) -> io::Result<()> {
+pub fn save_photo(path: &Path, name: &str, size: (u32, u32)) -> io::Result<()> {
     let img = ImageReader::open(path)?
         .with_guessed_format()?
         .decode()
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
-    img.thumbnail(512, 512)
+    img.thumbnail(size.0, size.1)
         .save_with_format(
             Path::new(Config::RECORD_DIR).join(name),
             ImageFormat::Png,
