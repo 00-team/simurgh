@@ -79,6 +79,14 @@ async fn blog_add(
         }
     };
 
+    let blog_count = project.blog_count + 1;
+    sqlx::query! {
+        "update projects set blog_count = ? where id = ?",
+        blog_count, project.id
+    }
+    .execute(&state.sql)
+    .await?;
+
     Ok(Json(Blog {
         id,
         slug,
