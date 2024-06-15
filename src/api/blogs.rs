@@ -58,7 +58,8 @@ struct BlogAddBody {
 /// Add
 #[post("/")]
 async fn blog_add(
-    user: User, project: Project, body: Json<BlogAddBody>, state: Data<AppState>,
+    user: User, project: Project, body: Json<BlogAddBody>,
+    state: Data<AppState>,
 ) -> Response<Blog> {
     let now = utils::now();
     sqlx::query! {
@@ -76,7 +77,6 @@ async fn blog_add(
         ..Default::default()
     }))
 }
-
 
 #[utoipa::path(
     get,

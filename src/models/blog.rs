@@ -52,7 +52,6 @@ impl actix_web::FromRequest for Blog {
     }
 }
 
-
 impl actix_web::FromRequest for BlogContent {
     type Error = crate::models::AppErr;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;

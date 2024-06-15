@@ -44,7 +44,6 @@ impl actix_web::FromRequest for Project {
             } else {
                 Err(AppErrNotFound("یافت نشد"))
             }
-
         })
     }
 }

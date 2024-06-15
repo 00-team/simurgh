@@ -81,7 +81,6 @@ async fn content_list(
 //     }))
 // }
 
-
 #[utoipa::path(
     get,
     params(

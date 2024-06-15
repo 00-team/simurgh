@@ -100,12 +100,7 @@ fn extract_token(request: &HttpRequest) -> Option<String> {
         }
     }
 
-    let bearer_token = if let Some(v) = bearer_token {
-        v
-    } else {
-        return None;
-    };
-
+    let bearer_token = bearer_token?;
     let mut tokens = bearer_token.splitn(2, ' ');
     let key = tokens.next();
     let token = tokens.next();

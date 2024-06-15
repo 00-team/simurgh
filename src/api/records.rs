@@ -1,15 +1,12 @@
 use actix_web::web::{Data, Json, Query};
-use actix_web::{delete, get, patch, post, HttpResponse, Scope};
-use serde::Deserialize;
-use utoipa::{OpenApi, ToSchema};
+use actix_web::{get, Scope};
+use utoipa::OpenApi;
 
 use crate::docs::UpdatePaths;
-use crate::models::blog::Blog;
 use crate::models::project::Project;
 use crate::models::record::Record;
-use crate::models::user::User;
 use crate::models::{ListInput, Response};
-use crate::{utils, AppState};
+use crate::AppState;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -77,7 +74,6 @@ async fn record_list(
 //         ..Default::default()
 //     }))
 // }
-
 
 #[utoipa::path(
     get,

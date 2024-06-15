@@ -69,7 +69,7 @@ impl<T> sqlx::Type<Sqlite> for JsonStr<T> {
 
 impl<T: DeserializeOwned + Default> From<String> for JsonStr<T> {
     fn from(value: String) -> Self {
-        Self(serde_json::from_str::<T>(&value).unwrap_or(T::default()))
+        Self(serde_json::from_str::<T>(&value).unwrap_or_default())
     }
 }
 

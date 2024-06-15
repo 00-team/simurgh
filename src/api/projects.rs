@@ -119,7 +119,7 @@ async fn projects_update(
     .execute(&state.sql)
     .await?;
 
-    project.name = body.name.clone();
+    project.name.clone_from(&body.name);
     project.updated_at = now;
 
     Ok(Json(project))
