@@ -35,16 +35,17 @@ create table if not exists records (
 create table if not exists blogs (
     id integer primary key not null,
     slug text not null,
+    status integer not null default 0,
     project integer not null references projects(id) on delete cascade,
     author integer not null references users(id) on delete cascade,
     created_at integer not null,
     updated_at integer not null default 0,
-    title text not null,
-    detail text not null,
-    html text not null,
+    title text not null default '',
+    detail text not null default '',
+    html text not null default '',
     data text not null default '{}',
+    read_time integer not null default 0,
     thumbnail text,
-    read_time integer,
     unique(slug, project)
 );
 
