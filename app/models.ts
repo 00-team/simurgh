@@ -28,18 +28,12 @@ export type BlogModel = {
     author: number
     created_at: number
     updated_at: number
-    thumbnail: string | null
-    read_time: number | null
-}
-
-export type BlogContentModel = {
-    id: number
-    blog: number
     title: string
-    lang: number
     detail: string
     data: string
     html: string
+    thumbnail: string | null
+    read_time: number | null
 }
 
 export type RecordModel = {
