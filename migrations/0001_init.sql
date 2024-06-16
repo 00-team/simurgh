@@ -43,7 +43,7 @@ create table if not exists blogs (
     title text not null default '',
     detail text not null default '',
     html text not null default '',
-    data text not null default '{}',
+    data text not null default '[]',
     read_time integer not null default 0,
     thumbnail text,
     unique(slug, project)
