@@ -1,10 +1,11 @@
 import { Show, createEffect } from 'solid-js'
 import './style/sidebar.scss'
 import { self, setSelf } from 'store'
-import { UserIcon } from 'icons'
+import { PencilIcon, UserIcon } from 'icons'
 import { httpx } from 'shared'
 import { createStore, produce } from 'solid-js/store'
 import { A } from '@solidjs/router'
+import { Editable } from 'comps/editable'
 
 export default () => {
     return (
@@ -102,17 +103,23 @@ const User = () => {
                     delete_photo()
                 }}
             >
-                <Show when={self.user.photo} fallback={<UserIcon />}>
-                    <img
-                        src={`/record/up-${self.user.id}-${self.user.photo}/?r=${~~performance.now()}`}
-                        draggable={false}
-                    />
-                </Show>
+                <Editable>
+                    <Show when={self.user.photo} fallback={<UserIcon />}>
+                        <img
+                            src={`/record/up-${self.user.id}-${self.user.photo}/?r=${~~performance.now()}`}
+                            draggable={false}
+                        />
+                    </Show>
+                </Editable>
             </div>
             <div class='name' onclick={() => setState({ edit_name: true })}>
                 <Show
                     when={state.edit_name}
-                    fallback={<span>{self.user.name || '---'}</span>}
+                    fallback={
+                        <Editable>
+                            <span>{self.user.name || '---'}</span>
+                        </Editable>
+                    }
                 >
                     <input
                         ref={input_name}
