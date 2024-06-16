@@ -3,11 +3,43 @@ use serde::{Deserialize, Serialize};
 use std::{future::Future, pin::Pin};
 use utoipa::ToSchema;
 
+use super::JsonStr;
+
 super::sql_enum! {
     pub enum BlogStatus {
         Draft,
         Published,
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+pub struct Style {
+    color: Option<String>,
+    bold: bool,
+    italic: bool,
+    underline: bool,
+    font_size: u16,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+pub enum TextDirection {
+    #[default]
+    LTR,
+    RTL,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+pub struct TextGroup {
+    content: Vec<String>,
+    style: Style,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+pub enum BlogData {
+    Text { dir: TextDirection, groups: Vec<TextGroup> },
+    Image { record_id: i64, record_salt: String },
+    #[default]
+    Empty,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
@@ -22,7 +54,8 @@ pub struct Blog {
     pub title: String,
     pub detail: String,
     pub html: String,
-    pub data: String,
+    #[schema(value_type = Vec<BlogData>)]
+    pub data: JsonStr<Vec<BlogData>>,
     pub read_time: i64,
     pub thumbnail: Option<String>,
 }
