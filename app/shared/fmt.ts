@@ -31,8 +31,9 @@ export function fmt_datetime(ts: number): string {
 
 export function fmt_bytes(b: number): string {
     if (b < 1024) return b.toLocaleString() + ' b'
-    if (b < 1048576) return (~~(b / 1024)).toLocaleString() + ' Kb'
-    if (b < 1073741824) return (~~(b / 1048576)).toLocaleString() + ' Mb'
-    if (b < 1099511627776) return (~~(b / 1073741824)).toLocaleString() + ' Gb'
-    return (~~(b / 1099511627776)).toLocaleString() + ' Tb'
+    if (b < 1048576) return (~~(b / 102.4) / 10).toLocaleString() + ' Kb'
+    if (b < 1073741824) return (~~(b / 104857.6) / 10).toLocaleString() + ' Mb'
+    if (b < 1099511627776)
+        return (~~(b / 107374182.4) / 10).toLocaleString() + ' Gb'
+    return (~~(b / 109951162777.6) / 10).toLocaleString() + ' Tb'
 }
