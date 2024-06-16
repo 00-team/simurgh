@@ -1,11 +1,11 @@
 import { Show, createEffect } from 'solid-js'
 import './style/sidebar.scss'
 import { self, setSelf } from 'store'
-import { PencilIcon, UserIcon } from 'icons'
+import { UserIcon } from 'icons'
 import { httpx } from 'shared'
 import { createStore, produce } from 'solid-js/store'
 import { A } from '@solidjs/router'
-import { Editable } from 'comps/editable'
+import { Editable } from 'comps'
 
 export default () => {
     return (
