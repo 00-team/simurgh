@@ -39,19 +39,12 @@ create table if not exists blogs (
     author integer not null references users(id) on delete cascade,
     created_at integer not null,
     updated_at integer not null default 0,
+    title text not null,
+    detail text not null,
+    html text not null,
+    data text not null default '{}',
     thumbnail text,
     read_time integer,
     unique(slug, project)
 );
 
-
-create table if not exists blog_contents (
-    id integer primary key not null,
-    blog integer not null references blogs(id) on delete cascade,
-    lang integer not null,
-    title text not null,
-    detail text not null,
-    html text not null,
-    data text not null default '{}',
-    unique(blog, lang)
-);
