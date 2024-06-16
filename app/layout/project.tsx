@@ -200,8 +200,10 @@ export default () => {
                                 </Show>
                             </div>
                             <div class='blog-info'>
-                                <span>شماره:</span>
+                                <span>شناسه:</span>
                                 <span class='n'>{b.id}</span>
+                                <span>عنوان:</span>
+                                <span>{b.title || '---'}</span>
                                 <span>نشانه:</span>
                                 <span class='n'>{b.slug}</span>
                                 <span>تاریخ شروع:</span>
