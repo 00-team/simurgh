@@ -4,6 +4,7 @@ import { createStore } from 'solid-js/store'
 import { httpx } from 'shared'
 import { Show } from 'solid-js'
 import { setSelf } from 'store'
+import { Timer } from 'comps'
 
 export default () => {
     type State = {
@@ -11,12 +12,14 @@ export default () => {
         email: string
         code: string
         loading: boolean
+        expires: number
     }
     const [state, setState] = createStore<State>({
         stage: 'email',
         email: '',
         code: '',
         loading: false,
+        expires: 0,
     })
 
     function verification() {
@@ -35,7 +38,7 @@ export default () => {
             onLoad(x) {
                 setState({ loading: false })
                 if (x.status == 200 && x.response.expires > 0) {
-                    setState({ stage: 'code' })
+                    setState({ stage: 'code', expires: x.response.expires })
                 }
             },
         })
@@ -110,6 +113,9 @@ export default () => {
                             }
                         />
                     </div>
+                    <Show when={state.stage == 'code'}>
+                        <Timer seconds={state.expires} />
+                    </Show>
                     <Show
                         when={state.stage == 'email'}
                         fallback={
