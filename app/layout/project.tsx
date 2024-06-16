@@ -4,7 +4,7 @@ import { createStore, produce } from 'solid-js/store'
 import { Show, createEffect } from 'solid-js'
 import { useNavigate, useParams } from '@solidjs/router'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
-import { Confact } from 'comps'
+import { Confact, Editable } from 'comps'
 import { ImageIcon, TrashIcon } from 'icons'
 
 export default () => {
@@ -123,16 +123,15 @@ export default () => {
         <div class='project-fnd'>
             <div class='project-info'>
                 <span>نام:</span>
-                <div class='name'>
+                <div class='name' onClick={() => setState({ edit_name: true })}>
                     <Show
                         when={state.edit_name}
                         fallback={
-                            <span
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => setState({ edit_name: true })}
-                            >
-                                {state.project.name}
-                            </span>
+                            <Editable>
+                                <span style={{ cursor: 'pointer' }}>
+                                    {state.project.name}
+                                </span>
+                            </Editable>
                         }
                     >
                         <input
