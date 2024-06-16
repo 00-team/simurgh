@@ -1,18 +1,16 @@
 import { BlogModel, ProjectModel, RecordModel } from 'models'
 import './style/project.scss'
 import { createStore, produce } from 'solid-js/store'
-import { Show, createEffect } from 'solid-js'
+import { Component, Show, createEffect } from 'solid-js'
 import { useNavigate, useParams } from '@solidjs/router'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Confact, Editable } from 'comps'
-import { ImageIcon, TrashIcon } from 'icons'
+import { FileIcon, ImageIcon, TrashIcon } from 'icons'
 
 export default () => {
     type State = {
         edit_name: boolean
         project: ProjectModel
-        blogs: BlogModel[]
-        records: RecordModel[]
     }
     const [state, setState] = createStore<State>({
         edit_name: false,
@@ -27,8 +25,6 @@ export default () => {
             updated_at: 0,
             api_key: null,
         },
-        blogs: [],
-        records: [],
     })
     const params = useParams()
     const nav = useNavigate()
@@ -48,30 +44,6 @@ export default () => {
             onLoad(x) {
                 if (x.status != 200) return nav('/projects/')
                 setState({ project: x.response })
-            },
-        })
-    })
-
-    createEffect(() => {
-        if (!state.project.id) return
-
-        httpx({
-            url: `/api/projects/${state.project.id}/blogs/`,
-            method: 'GET',
-            params: { page: 0 },
-            onLoad(x) {
-                if (x.status != 200) return
-                setState({ blogs: x.response })
-            },
-        })
-
-        httpx({
-            url: `/api/projects/${state.project.id}/records/`,
-            method: 'GET',
-            params: { page: 0 },
-            onLoad(x) {
-                if (x.status != 200) return
-                setState({ records: x.response })
             },
         })
     })
@@ -104,17 +76,6 @@ export default () => {
             onLoad(x) {
                 if (x.status != 200) return
                 nav('/projects/')
-            },
-        })
-    }
-
-    function blog_add() {
-        httpx({
-            url: `/api/projects/${state.project.id}/blogs/`,
-            method: 'POST',
-            onLoad(x) {
-                if (x.status != 200) return
-                nav(`/projects/${state.project.id}/blogs/${x.response.id}`)
             },
         })
     }
@@ -177,47 +138,176 @@ export default () => {
                 <span>تاریخ آپدیت:</span>
                 <span class='n'>{fmt_datetime(state.project.updated_at)}</span>
             </div>
-            <div class='blogs'>
-                <div class='actions'>
-                    <button class='add-btn styled' onClick={blog_add}>
-                        بلاگ جدید
-                    </button>
-                    <button class='styled' onClick={() => nav('blogs')}>
-                        بلاگ ها
-                    </button>
-                </div>
-                <div class='blog-list'>
-                    {state.blogs.slice(0, 3).map(b => (
-                        <div class='blog' onClick={() => nav('blogs/' + b.id)}>
-                            <div class='thumbnail'>
-                                <Show
-                                    when={b.thumbnail}
-                                    fallback={<ImageIcon />}
-                                >
-                                    <img
-                                        src={`/record/bt-${b.id}-${b.thumbnail}`}
-                                    />
-                                </Show>
-                            </div>
-                            <div class='blog-info'>
-                                <span>شناسه:</span>
-                                <span class='n'>{b.id}</span>
-                                <span>عنوان:</span>
-                                <span>{b.title || '---'}</span>
-                                <span>نشانه:</span>
-                                <span class='n'>{b.slug}</span>
-                                <span>تاریخ شروع:</span>
-                                <span class='n'>
-                                    {fmt_datetime(state.project.created_at)}
-                                </span>
-                                <span>تاریخ آپدیت:</span>
-                                <span class='n'>
-                                    {fmt_datetime(state.project.updated_at)}
-                                </span>
-                            </div>
+            <Blogs project={state.project} />
+            <Records project={state.project} />
+        </div>
+    )
+}
+type BlogProps = {
+    project: ProjectModel
+}
+const Blogs: Component<BlogProps> = P => {
+    type State = {
+        blogs: BlogModel[]
+    }
+    const [state, setState] = createStore<State>({
+        blogs: [],
+    })
+
+    const nav = useNavigate()
+
+    createEffect(() => {
+        if (!P.project.id) return
+        httpx({
+            url: `/api/projects/${P.project.id}/blogs/`,
+            method: 'GET',
+            params: { page: 0 },
+            show_messages: false,
+            onLoad(x) {
+                if (x.status != 200) return
+                setState({ blogs: x.response })
+            },
+        })
+    })
+
+    function blog_add() {
+        httpx({
+            url: `/api/projects/${P.project.id}/blogs/`,
+            method: 'POST',
+            onLoad(x) {
+                if (x.status != 200) return
+                nav(`/projects/${P.project.id}/blogs/${x.response.id}`)
+            },
+        })
+    }
+
+    return (
+        <div class='blogs'>
+            <div class='actions'>
+                <button class='add-btn styled' onClick={blog_add}>
+                    بلاگ جدید
+                </button>
+                <button class='styled' onClick={() => nav('blogs')}>
+                    بلاگ ها
+                </button>
+            </div>
+            <div class='blog-list'>
+                {state.blogs.slice(0, 3).map(b => (
+                    <div class='blog' onClick={() => nav('blogs/' + b.id)}>
+                        <div class='thumbnail'>
+                            <Show when={b.thumbnail} fallback={<ImageIcon />}>
+                                <img
+                                    src={`/record/bt-${b.id}-${b.thumbnail}`}
+                                />
+                            </Show>
                         </div>
-                    ))}
-                </div>
+                        <div class='blog-info'>
+                            <span>شناسه:</span>
+                            <span class='n'>{b.id}</span>
+                            <span>عنوان:</span>
+                            <span>{b.title || '---'}</span>
+                            {/*<span>نشانه:</span>
+                            <span class='n'>{b.slug}</span>
+                            <span>تاریخ آپدیت:</span>
+                            <span class='n'>{fmt_datetime(b.updated_at)}</span>
+                            */}
+                            <span>تاریخ شروع:</span>
+                            <span class='n'>{fmt_datetime(b.created_at)}</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+type RecordProps = {
+    project: ProjectModel
+}
+const Records: Component<RecordProps> = P => {
+    type State = {
+        records: RecordModel[]
+    }
+    const [state, setState] = createStore<State>({
+        records: [],
+    })
+
+    const nav = useNavigate()
+
+    createEffect(() => {
+        if (!P.project.id) return
+        httpx({
+            url: `/api/projects/${P.project.id}/records/`,
+            method: 'GET',
+            params: { page: 0 },
+            show_messages: false,
+            onLoad(x) {
+                if (x.status != 200) return
+                setState({ records: x.response })
+            },
+        })
+    })
+
+    function record_add() {
+        let el = document.createElement('input')
+        el.setAttribute('type', 'file')
+        el.onchange = () => {
+            if (!el.files || !el.files[0]) return
+
+            let data = new FormData()
+            data.set('record', el.files[0])
+
+            httpx({
+                url: `/api/projects/${P.project.id}/records/`,
+                method: 'POST',
+                data,
+                onLoad(x) {
+                    if (x.status != 200) return
+                    setState(
+                        produce(s => {
+                            s.records.unshift(x.response)
+                        })
+                    )
+                },
+            })
+        }
+        el.click()
+    }
+
+    return (
+        <div class='records'>
+            <div class='actions'>
+                <button class='add-btn styled' onClick={record_add}>
+                    فایل جدید
+                </button>
+                <button class='styled' onClick={() => nav('records')}>
+                    فایل ها
+                </button>
+            </div>
+            <div class='record-list'>
+                {state.records.slice(0, 3).map(r => (
+                    <div class='record' onClick={() => nav('records/' + r.id)}>
+                        <div class='dpy'>
+                            <Show
+                                when={r.mime && r.mime.startsWith('image/')}
+                                fallback={<FileIcon />}
+                            >
+                                <img src={`/record/r-${r.id}-${r.salt}`} />
+                            </Show>
+                        </div>
+                        <div class='record-info'>
+                            <span>شناسه:</span>
+                            <span class='n'>{r.id}</span>
+                            <span>حجم:</span>
+                            <span class='n'>{fmt_bytes(r.size)}</span>
+                            <span>نوع:</span>
+                            <span class='n'>{r.mime}</span>
+                            {/*
+                            <span>تاریخ بارگزاری:</span>
+                            <span class='n'>{fmt_datetime(r.created_at)}</span>*/}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     )
