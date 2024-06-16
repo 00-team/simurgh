@@ -4,7 +4,9 @@ use utoipa::OpenApi;
 
 use crate::config::Config;
 use crate::docs::UpdatePaths;
-use crate::models::blog::Blog;
+use crate::models::blog::{
+    Blog, BlogData, BlogStatus, BlogStyle, BlogTextDirection, BlogTextGroup,
+};
 use crate::models::project::Project;
 use crate::models::user::User;
 use crate::models::{AppErr, ListInput, Response};
@@ -16,7 +18,10 @@ use crate::{utils, AppState};
     paths(
         blog_list, blog_add, blog_get
     ),
-    components(schemas(Blog)),
+    components(schemas(
+        Blog, BlogData, BlogStatus, BlogStyle,
+        BlogTextGroup, BlogTextDirection
+    )),
     servers((url = "/projects/{pid}/blogs")),
     modifiers(&UpdatePaths)
 )]
