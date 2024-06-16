@@ -3,10 +3,18 @@ use serde::{Deserialize, Serialize};
 use std::{future::Future, pin::Pin};
 use utoipa::ToSchema;
 
+super::sql_enum! {
+    pub enum BlogStatus {
+        Draft,
+        Published,
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
 pub struct Blog {
     pub id: i64,
     pub slug: String,
+    pub status: BlogStatus,
     pub project: i64,
     pub author: i64,
     pub created_at: i64,
@@ -15,8 +23,8 @@ pub struct Blog {
     pub detail: String,
     pub html: String,
     pub data: String,
+    pub read_time: i64,
     pub thumbnail: Option<String>,
-    pub read_time: Option<i64>,
 }
 
 impl actix_web::FromRequest for Blog {
