@@ -11,7 +11,7 @@ export type UserModel = {
 
 export type ProjectModel = {
     id: number
-    user: number
+    user: number | null
     name: string
     blog_count: number
     record_count: number
@@ -24,8 +24,8 @@ export type ProjectModel = {
 export type BlogModel = {
     id: number
     slug: string
-    project: number
-    author: number
+    project: number | null
+    author: number | null
     created_at: number
     updated_at: number
     title: string
@@ -37,12 +37,11 @@ export type BlogModel = {
 }
 
 export type RecordModel = {
-    created_at: number
-    ext: string | null
     id: number
-    mime: string | null
     project: number | null
     salt: string
     size: number
-    updated_at: number
+    created_at: number
+    ext: string | null
+    mime: string | null
 }
