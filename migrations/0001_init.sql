@@ -12,7 +12,7 @@ create table if not exists users (
 
 create table if not exists projects (
     id integer primary key not null,
-    user integer not null references users(id) on delete cascade,
+    user integer references users(id) on delete set null,
     name text not null,
     storage integer not null default 0,
     blog_count integer not null default 0,
@@ -36,8 +36,8 @@ create table if not exists blogs (
     id integer primary key not null,
     slug text not null,
     status integer not null default 0,
-    project integer not null references projects(id) on delete cascade,
-    author integer not null references users(id) on delete cascade,
+    project integer references projects(id) on delete set null,
+    author integer references users(id) on delete set null,
     created_at integer not null,
     updated_at integer not null default 0,
     title text not null default '',

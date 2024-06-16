@@ -8,7 +8,7 @@ use super::AppErrNotFound;
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
 pub struct Project {
     pub id: i64,
-    pub user: i64,
+    pub user: Option<i64>,
     pub name: String,
     pub storage: i64,
     pub blog_count: i64,
