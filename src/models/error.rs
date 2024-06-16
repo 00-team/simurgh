@@ -99,6 +99,7 @@ impl_from_err!(JsonPayloadError);
 impl_from_err!(SendRequestError);
 impl_from_err!(FromUtf8Error);
 impl_from_err!(serde_json::Error);
+impl_from_err!(tempfile::PersistError);
 
 macro_rules! error_helper {
     ($name:ident, $status:ident, $subject:literal) => {

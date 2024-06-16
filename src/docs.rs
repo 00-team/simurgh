@@ -7,8 +7,6 @@ use utoipa::{
     Modify, OpenApi,
 };
 
-use crate::models::RecordUpload;
-
 pub struct AddSecurity;
 
 impl Modify for AddSecurity {
@@ -75,8 +73,6 @@ impl Modify for UpdatePaths {
 #[openapi(
     servers((url = "/")),
     modifiers(&AddSecurity),
-    components(schemas(
-        RecordUpload, 
-    ))
+    components(schemas())
 )]
 pub struct ApiDoc;

@@ -95,8 +95,8 @@ async fn blog_add(
     Ok(Json(Blog {
         id,
         slug,
-        project: project.id,
-        author: user.id,
+        project: Some(project.id),
+        author: Some(user.id),
         created_at: now,
         ..Default::default()
     }))

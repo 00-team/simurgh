@@ -1,12 +1,14 @@
+use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
 use actix_web::web::{Data, Json, Query};
 use actix_web::{get, post, Scope};
-use utoipa::OpenApi;
+use utoipa::{OpenApi, ToSchema};
 
+use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
 use crate::models::record::Record;
-use crate::models::{ListInput, RecordUpload, Response};
+use crate::models::{ListInput, Response};
 use crate::{utils, AppState};
 
 #[derive(OpenApi)]
@@ -15,7 +17,7 @@ use crate::{utils, AppState};
     paths(
         record_list, record_get, record_add
     ),
-    components(schemas(Record)),
+    components(schemas(Record, RecordUpload)),
     servers((url = "/projects/{pid}/records")),
     modifiers(&UpdatePaths)
 )]
@@ -43,6 +45,13 @@ async fn record_list(
     Ok(Json(result))
 }
 
+#[derive(Debug, MultipartForm, ToSchema)]
+pub struct RecordUpload {
+    #[schema(value_type = String, format = Binary)]
+    #[multipart(limit = "200 MiB")]
+    pub record: TempFile,
+}
+
 #[utoipa::path(
     post,
     params(("pid" = i64, Path, example = 1)),
@@ -52,7 +61,8 @@ async fn record_list(
 /// Add
 #[post("/")]
 async fn record_add(
-    project: Project, form: MultipartForm<RecordUpload>, state: Data<AppState>,
+    project: Project, MultipartForm(form): MultipartForm<RecordUpload>,
+    state: Data<AppState>,
 ) -> Response<Record> {
     let now = utils::now();
     let salt = utils::get_random_bytes(8);
@@ -72,14 +82,21 @@ async fn record_add(
     .execute(&state.sql)
     .await?;
 
-    Ok(Json(Record {
+    let record = Record {
         id: result.last_insert_rowid(),
         project: Some(project.id),
         salt,
         size,
         created_at: now,
         ..Default::default()
-    }))
+    };
+
+    form.record.file.persist(
+        std::path::Path::new(Config::RECORD_DIR)
+            .join(format!("r-{}-{}", record.id, record.salt)),
+    )?;
+
+    Ok(Json(record))
 }
 
 #[utoipa::path(

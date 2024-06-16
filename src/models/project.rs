@@ -39,7 +39,7 @@ impl actix_web::FromRequest for Project {
             .fetch_one(&pool)
             .await?;
 
-            if project.user == user.id || user.admin {
+            if project.user == Some(user.id) || user.admin {
                 Ok(project)
             } else {
                 Err(AppErrNotFound("یافت نشد"))

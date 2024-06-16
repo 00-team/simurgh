@@ -1,6 +1,7 @@
 use std::fs::read_to_string;
 
 use actix_files as af;
+use actix_multipart::form::tempfile::TempFileConfig;
 use actix_web::{
     get,
     http::header::ContentType,
@@ -9,6 +10,7 @@ use actix_web::{
     App, HttpResponse, HttpServer, Responder,
 };
 use config::Config;
+use models::AppErrBadRequest;
 use sqlx::{Pool, Sqlite, SqlitePool};
 use utoipa::OpenApi;
 
@@ -78,6 +80,11 @@ fn config_app(app: &mut web::ServiceConfig) {
         app.service(af::Files::new("/assets", "./static/dist/assets"));
         app.service(af::Files::new("/record", Config::RECORD_DIR));
     }
+
+    app.app_data(
+        TempFileConfig::default()
+            .error_handler(|e, _| AppErrBadRequest(&e.to_string()).into()),
+    );
 
     app.service(openapi).service(rapidoc).service(index);
     app.service(

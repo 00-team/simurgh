@@ -2,6 +2,7 @@ use crate::{
     config::{config, Config},
     models::{AppErr, AppErrBadRequest},
 };
+use actix_multipart::form::tempfile::TempFile;
 use image::io::Reader as ImageReader;
 use image::ImageFormat;
 use lettre::{
@@ -39,6 +40,21 @@ pub fn save_photo(path: &Path, name: &str, size: (u32, u32)) -> io::Result<()> {
             ImageFormat::Png,
         )
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+
+    Ok(())
+}
+
+pub fn save_record(path: &Path, id: i64, salt: &str) -> io::Result<()> {
+    // let old_file = std::fs::File::open(path)?;
+    // let new_file = std::fs::File::create(
+    //     ,
+    // )?;
+
+    // old_file.read(buf)
+    std::fs::rename(
+        path,
+        Path::new(Config::RECORD_DIR).join(format!("r-{id}-{salt}")),
+    )?;
 
     Ok(())
 }

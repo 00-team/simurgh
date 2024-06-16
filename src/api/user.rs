@@ -170,12 +170,10 @@ pub struct UserPhotoUpload {
 async fn user_update_photo(
     req: HttpRequest, user: User, state: Data<AppState>,
 ) -> Response<User> {
-    let form =
-        MultipartForm::<UserPhotoUpload>::extract(&req).await.map_err(|e| {
-            log::error!("err: {e:#?}");
-            AppErrBadRequest(&e.to_string())
-        })?;
     let mut user = user;
+    let form = MultipartForm::<UserPhotoUpload>::extract(&req)
+        .await
+        .map_err(|e| AppErrBadRequest(&e.to_string()))?;
 
     let salt = if let Some(p) = &user.photo {
         p.clone()

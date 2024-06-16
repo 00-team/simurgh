@@ -4,6 +4,7 @@ use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
+use crate::models::blog::Blog;
 use crate::models::project::Project;
 use crate::models::record::Record;
 use crate::models::user::User;
@@ -48,7 +49,7 @@ async fn projects_add(
     .await?;
 
     Ok(Json(Project {
-        user: user.id,
+        user: Some(user.id),
         name: body.name.clone(),
         ..Default::default()
     }))
@@ -83,10 +84,7 @@ async fn projects_list(
 )]
 /// Get
 #[get("/{id}/")]
-async fn projects_get(user: User, project: Project) -> Response<Project> {
-    if project.user != user.id {
-        return Err(AppErrNotFound("پروژه یافت نشد"));
-    }
+async fn projects_get(project: Project) -> Response<Project> {
     Ok(Json(project))
 }
 
@@ -104,13 +102,9 @@ struct UpdateBody {
 /// Update
 #[patch("/{id}/")]
 async fn projects_update(
-    user: User, project: Project, body: Json<UpdateBody>, state: Data<AppState>,
+    project: Project, body: Json<UpdateBody>, state: Data<AppState>,
 ) -> Response<Project> {
     let mut project = project;
-    if project.user != user.id {
-        return Err(AppErrNotFound("پروژه یافت نشد"));
-    }
-
     let now = utils::now();
     sqlx::query! {
         "update projects set name = ?, updated_at = ? where id = ?",
@@ -133,30 +127,51 @@ async fn projects_update(
 /// Delete
 #[delete("/{id}/")]
 async fn projects_delete(
-    user: User, project: Project, state: Data<AppState>,
+    project: Project, state: Data<AppState>,
 ) -> Result<HttpResponse, AppErr> {
-    if project.user != user.id {
-        return Err(AppErrNotFound("پروژه یافت نشد"));
+    {
+        let records = sqlx::query_as! {
+            Record,
+            "select * from records where project = ? OR project = null",
+            project.id,
+        }
+        .fetch_all(&state.sql)
+        .await?;
+
+        for r in records {
+            utils::remove_record(&format!("r-{}-{}", r.id, r.salt));
+        }
+
+        sqlx::query! {
+            "delete from records where project = ? OR project = null",
+            project.id,
+        }
+        .execute(&state.sql)
+        .await?;
     }
 
-    let records = sqlx::query_as! {
-        Record,
-        "select * from records where project = ? OR project = null",
-        project.id,
-    }
-    .fetch_all(&state.sql)
-    .await?;
+    {
+        let blogs = sqlx::query_as! {
+            Blog,
+            "select * from blogs where project = ? OR project = null",
+            project.id,
+        }
+        .fetch_all(&state.sql)
+        .await?;
 
-    for r in records {
-        utils::remove_record(&format!("r:{}:{}", r.id, r.salt));
-    }
+        for b in blogs {
+            if let Some(t) = b.thumbnail {
+                utils::remove_record(&format!("bt-{}-{t}", b.id));
+            }
+        }
 
-    sqlx::query! {
-        "delete from records where project = ? OR project = null",
-        project.id,
+        sqlx::query! {
+            "delete from blogs where project = ? OR project = null",
+            project.id,
+        }
+        .execute(&state.sql)
+        .await?;
     }
-    .execute(&state.sql)
-    .await?;
 
     sqlx::query! {
         "delete from projects where id = ?",

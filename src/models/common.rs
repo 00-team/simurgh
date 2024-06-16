@@ -1,6 +1,5 @@
 use std::ops;
 
-use actix_multipart::form::{tempfile::TempFile, MultipartForm};
 use actix_web::web::Json;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use sqlx::{
@@ -8,7 +7,7 @@ use sqlx::{
     sqlite::{SqliteArgumentValue, SqliteTypeInfo},
     Sqlite,
 };
-use utoipa::{IntoParams, ToSchema};
+use utoipa::IntoParams;
 
 pub type Response<T> = Result<Json<T>, super::AppErr>;
 
@@ -16,13 +15,6 @@ pub type Response<T> = Result<Json<T>, super::AppErr>;
 pub struct ListInput {
     #[param(example = 0)]
     pub page: u32,
-}
-
-#[derive(Debug, MultipartForm, ToSchema)]
-pub struct RecordUpload {
-    #[schema(value_type = String, format = Binary)]
-    // #[multipart(limit = "8 MiB")]
-    pub record: TempFile,
 }
 
 #[derive(Debug, Deserialize, Default)]
