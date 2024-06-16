@@ -194,5 +194,4 @@ pub fn router() -> Scope {
         .service(blog_add)
         .service(blog_list)
         .service(blog_get)
-        .service(super::blog_contents::router())
 }
