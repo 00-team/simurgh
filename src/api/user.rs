@@ -1,3 +1,4 @@
+use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
 use actix_web::cookie::time::Duration;
 use actix_web::cookie::{Cookie, SameSite};
@@ -11,7 +12,7 @@ use crate::api::verification;
 use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::user::User;
-use crate::models::{AppErr, RecordUpload, Response};
+use crate::models::{AppErr, Response};
 use crate::utils::CutOff;
 use crate::{utils, AppState};
 
@@ -19,9 +20,10 @@ use crate::{utils, AppState};
 #[openapi(
     tags((name = "api::user")),
     paths(
-        user_get, user_login, user_update, user_update_photo, user_delete_photo
+        user_get, user_login, user_update,
+        user_update_photo, user_delete_photo
     ),
-    components(schemas(User, LoginBody, UserUpdateBody)),
+    components(schemas(User, LoginBody, UserUpdateBody, UserPhotoUpload)),
     servers((url = "/user")),
     modifiers(&UpdatePaths)
 )]
@@ -148,17 +150,22 @@ async fn user_update(
     Json(user)
 }
 
+#[derive(Debug, MultipartForm, ToSchema)]
+pub struct UserPhotoUpload {
+    #[schema(value_type = String, format = Binary)]
+    #[multipart(limit = "8 MiB")]
+    pub photo: TempFile,
+}
+
 #[utoipa::path(
     put,
-    request_body(content = RecordUpload, content_type = "multipart/form-data"),
-    responses(
-        (status = 200, body = User)
-    )
+    request_body(content = UserPhotoUpload, content_type = "multipart/form-data"),
+    responses((status = 200, body = User))
 )]
 /// Update Photo
 #[put("/photo/")]
 async fn user_update_photo(
-    user: User, form: MultipartForm<RecordUpload>, state: Data<AppState>,
+    user: User, form: MultipartForm<UserPhotoUpload>, state: Data<AppState>,
 ) -> Response<User> {
     let mut user = user;
 
@@ -171,7 +178,7 @@ async fn user_update_photo(
     };
 
     utils::save_photo(
-        form.record.file.path(),
+        form.photo.file.path(),
         &format!("up-{}-{salt}", user.id),
         (512, 512),
     )?;
@@ -187,12 +194,7 @@ async fn user_update_photo(
     Ok(Json(user))
 }
 
-#[utoipa::path(
-    delete,
-    responses(
-        (status = 200)
-    )
-)]
+#[utoipa::path(delete, responses((status = 200)))]
 /// Delete Photo
 #[delete("/photo/")]
 async fn user_delete_photo(user: User, state: Data<AppState>) -> HttpResponse {
