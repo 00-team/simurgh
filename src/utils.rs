@@ -2,7 +2,6 @@ use crate::{
     config::{config, Config},
     models::{AppErr, AppErrBadRequest},
 };
-use actix_multipart::form::tempfile::TempFile;
 use image::io::Reader as ImageReader;
 use image::ImageFormat;
 use lettre::{
@@ -11,7 +10,7 @@ use lettre::{
 };
 use rand::Rng;
 use serde::Serialize;
-use std::io;
+use std::io::{self, Read, Write};
 use std::path::Path;
 
 pub fn now() -> i64 {
@@ -45,16 +44,19 @@ pub fn save_photo(path: &Path, name: &str, size: (u32, u32)) -> io::Result<()> {
 }
 
 pub fn save_record(path: &Path, id: i64, salt: &str) -> io::Result<()> {
-    // let old_file = std::fs::File::open(path)?;
-    // let new_file = std::fs::File::create(
-    //     ,
-    // )?;
-
-    // old_file.read(buf)
-    std::fs::rename(
-        path,
+    let mut old_file = std::fs::File::open(path)?;
+    let mut new_file = std::fs::File::create(
         Path::new(Config::RECORD_DIR).join(format!("r-{id}-{salt}")),
     )?;
+
+    let mut buffer = [0u8; 4096];
+    loop {
+        let res = old_file.read(&mut buffer)?;
+        if res == 0 {
+            break;
+        }
+        new_file.write(&buffer)?;
+    }
 
     Ok(())
 }

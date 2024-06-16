@@ -1,21 +1,20 @@
 use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
 use actix_web::web::{Data, Json, Query};
-use actix_web::{get, post, Scope};
+use actix_web::{delete, get, post, HttpResponse, Scope};
 use utoipa::{OpenApi, ToSchema};
 
-use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
 use crate::models::record::Record;
-use crate::models::{ListInput, Response};
+use crate::models::{AppErr, ListInput, Response};
 use crate::{utils, AppState};
 
 #[derive(OpenApi)]
 #[openapi(
     tags((name = "api::records")),
     paths(
-        record_list, record_get, record_add
+        record_list, record_get, record_add, record_delete
     ),
     components(schemas(Record, RecordUpload)),
     servers((url = "/projects/{pid}/records")),
@@ -48,7 +47,7 @@ async fn record_list(
 #[derive(Debug, MultipartForm, ToSchema)]
 pub struct RecordUpload {
     #[schema(value_type = String, format = Binary)]
-    #[multipart(limit = "200 MiB")]
+    #[multipart(limit = "200MB")]
     pub record: TempFile,
 }
 
@@ -91,20 +90,22 @@ async fn record_add(
         ..Default::default()
     };
 
-    form.record.file.persist(
-        std::path::Path::new(Config::RECORD_DIR)
-            .join(format!("r-{}-{}", record.id, record.salt)),
-    )?;
+    utils::save_record(form.record.file.path(), record.id, &record.salt)?;
+
+    sqlx::query! {
+        "update projects set storage = storage + ?,
+        record_count = record_count + 1 where id = ?",
+        record.size, project.id
+    }
+    .execute(&state.sql)
+    .await?;
 
     Ok(Json(record))
 }
 
 #[utoipa::path(
     get,
-    params(
-        ("pid" = i64, Path, example = 1),
-        ("rid" = i64, Path, example = 1),
-    ),
+    params(("pid" = i64, Path, example = 1), ("rid" = i64, Path, example = 1)),
     responses((status = 200, body = Record))
 )]
 /// Get
@@ -113,9 +114,42 @@ async fn record_get(record: Record) -> Response<Record> {
     Ok(Json(record))
 }
 
+#[utoipa::path(
+    delete,
+    params(("pid" = i64, Path, example = 1), ("rid" = i64, Path, example = 1)),
+    responses((status = 200))
+)]
+/// Delete
+#[delete("/{rid}/")]
+async fn record_delete(
+    record: Record, state: Data<AppState>,
+) -> Result<HttpResponse, AppErr> {
+    utils::remove_record(&format!("r-{}-{}", record.id, record.salt));
+
+    if let Some(pid) = record.project {
+        sqlx::query! {
+            "update projects set storage = storage - ?,
+            record_count = record_count - 1 where id = ?",
+            record.size, pid
+        }
+        .execute(&state.sql)
+        .await?;
+    }
+
+    sqlx::query! {
+        "delete from records where id = ?",
+        record.id
+    }
+    .execute(&state.sql)
+    .await?;
+
+    Ok(HttpResponse::Ok().finish())
+}
+
 pub fn router() -> Scope {
     Scope::new("/{pid}/records")
         .service(record_add)
         .service(record_list)
         .service(record_get)
+        .service(record_delete)
 }
