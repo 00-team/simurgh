@@ -13,7 +13,7 @@ super::sql_enum! {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
-pub struct Style {
+pub struct BlogStyle {
     color: Option<String>,
     bold: bool,
     italic: bool,
@@ -22,21 +22,23 @@ pub struct Style {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
-pub enum TextDirection {
+#[serde(rename_all = "snake_case")]
+pub enum BlogTextDirection {
     #[default]
     LTR,
     RTL,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
-pub struct TextGroup {
+pub struct BlogTextGroup {
     content: Vec<String>,
-    style: Style,
+    style: BlogStyle,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+#[serde(rename_all = "snake_case", tag = "kind")]
 pub enum BlogData {
-    Text { dir: TextDirection, groups: Vec<TextGroup> },
+    Text { dir: BlogTextDirection, groups: Vec<BlogTextGroup> },
     Image { record_id: i64, record_salt: String },
     #[default]
     Empty,
