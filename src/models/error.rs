@@ -101,20 +101,20 @@ impl_from_err!(FromUtf8Error);
 impl_from_err!(serde_json::Error);
 
 macro_rules! error_helper {
-    ($name:ident, $status:ident) => {
+    ($name:ident, $status:ident, $subject:literal) => {
         #[doc = concat!("Helper function that wraps any error and generates a `", stringify!($status), "` response.")]
         #[allow(non_snake_case)]
         pub fn $name(err: &str) -> AppErr {
             log::error!("err {} - {}", stringify!($status), err);
             AppErr {
                 status: StatusCode::$status.as_u16(),
-                subject: stringify!($status).to_string(),
+                subject: $subject.to_string(),
                 content: Some(err.to_string())
             }
         }
     };
 }
 
-error_helper!(AppErrBadRequest, BAD_REQUEST);
-error_helper!(AppErrNotFound, NOT_FOUND);
-error_helper!(AppErrForbidden, FORBIDDEN);
+error_helper!(AppErrBadRequest, BAD_REQUEST, "درخواست بد");
+error_helper!(AppErrNotFound, NOT_FOUND, "پیدا نشد");
+error_helper!(AppErrForbidden, FORBIDDEN, "ممنوع");
