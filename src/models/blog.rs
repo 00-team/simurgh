@@ -25,8 +25,8 @@ pub struct BlogStyle {
 #[serde(rename_all = "snake_case")]
 pub enum BlogTextDirection {
     #[default]
-    LTR,
-    RTL,
+    Ltr,
+    Rtl,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
