@@ -1,19 +1,19 @@
-import { Show, render } from 'solid-js/web'
+import { Navigate, Route, Router, RouteSectionProps } from '@solidjs/router'
 import { Component, lazy } from 'solid-js'
-import { Navigate, Route, RouteSectionProps, Router } from '@solidjs/router'
+import { render, Show } from 'solid-js/web'
 
 import { Alert } from 'comps'
 import { self } from 'store'
 
-import Login from 'layout/login'
 import Sidebar from 'layout/sidebar'
-import Projects from 'layout/projects'
-import NotFound from 'layout/404'
-const Project = lazy(() => import('layout/project'))
-const Records = lazy(() => import('layout/records'))
-const Blog = lazy(() => import('layout/blog'))
-const Blogs = lazy(() => import('layout/blogs'))
-const Editor = lazy(() => import('layout/editor'))
+import NotFound from 'pages/404'
+import Login from 'pages/login'
+import Projects from 'pages/projects'
+const Project = lazy(() => import('pages/project'))
+const Records = lazy(() => import('pages/records'))
+const Blog = lazy(() => import('pages/blog'))
+const Blogs = lazy(() => import('pages/blogs'))
+const Editor = lazy(() => import('pages/editor'))
 
 import './style/index.scss'
 
