@@ -1,22 +1,24 @@
 use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
 use actix_web::web::{Data, Json, Query};
-use actix_web::{delete, get, post, HttpResponse, Scope};
+use actix_web::{delete, get, patch, post, HttpResponse, Scope};
+use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
 use crate::models::record::Record;
 use crate::models::{AppErr, ListInput, Response};
+use crate::utils::CutOff;
 use crate::{utils, AppState};
 
 #[derive(OpenApi)]
 #[openapi(
     tags((name = "api::records")),
     paths(
-        record_list, record_get, record_add, record_delete
+        record_list, record_get, record_update, record_add, record_delete
     ),
-    components(schemas(Record, RecordUpload)),
+    components(schemas(Record, RecordUpload, RecordUpdateBody)),
     servers((url = "/projects/{pid}/records")),
     modifiers(&UpdatePaths)
 )]
@@ -68,15 +70,19 @@ async fn record_add(
     let size = form.record.size as i64;
     let mut ext: Option<String> = None;
     let mut mime: Option<String> = None;
+    let mut name = form.record.file_name.unwrap_or(project.name);
+    name.cut_off(255);
 
     if let Some(m) = &form.record.content_type {
         mime = Some(m.to_string());
         ext = m.suffix().map(|a| a.to_string());
+        log::info!("ext: {:#?}", m.params().collect::<Vec<_>>());
     }
 
     let result = sqlx::query! {
-        "insert into records(project, salt, size, created_at, mime, ext) values(?,?,?,?,?,?)",
-        project.id, salt, size, now, mime, ext
+        "insert into records(project, name, salt, size, created_at, mime, ext)
+        values(?,?,?,?,?,?,?)",
+        project.id, name, salt, size, now, mime, ext
     }
     .execute(&state.sql)
     .await?;
@@ -85,9 +91,11 @@ async fn record_add(
         id: result.last_insert_rowid(),
         project: Some(project.id),
         salt,
+        name,
         size,
+        mime,
+        ext,
         created_at: now,
-        ..Default::default()
     };
 
     utils::save_record(form.record.file.path(), record.id, &record.salt)?;
@@ -111,6 +119,35 @@ async fn record_add(
 /// Get
 #[get("/{rid}/")]
 async fn record_get(record: Record) -> Response<Record> {
+    Ok(Json(record))
+}
+
+#[derive(Deserialize, ToSchema)]
+struct RecordUpdateBody {
+    name: String,
+}
+
+#[utoipa::path(
+    patch,
+    request_body = RecordUpdateBody,
+    responses((status = 200, body = Record))
+)]
+/// Update
+#[patch("/")]
+async fn record_update(
+    record: Record, body: Json<RecordUpdateBody>, state: Data<AppState>,
+) -> Response<Record> {
+    let mut record = record;
+    record.name = body.name.clone();
+    record.name.cut_off(255);
+
+    sqlx::query! {
+        "update records set name = ? where id = ?",
+        record.name, record.id
+    }
+    .execute(&state.sql)
+    .await?;
+
     Ok(Json(record))
 }
 
@@ -151,5 +188,6 @@ pub fn router() -> Scope {
         .service(record_add)
         .service(record_list)
         .service(record_get)
+        .service(record_update)
         .service(record_delete)
 }

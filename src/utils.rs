@@ -143,7 +143,7 @@ impl CutOff for String {
             }
             idx -= 1;
         }
-        self.truncate(idx)
+        self.truncate(idx);
     }
 }
 

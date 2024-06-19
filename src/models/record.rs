@@ -9,6 +9,7 @@ use super::AppErrNotFound;
 pub struct Record {
     pub id: i64,
     pub project: Option<i64>,
+    pub name: String,
     pub salt: String,
     pub size: i64,
     pub created_at: i64,

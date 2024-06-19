@@ -2,6 +2,7 @@ use std::fs::read_to_string;
 
 use actix_files as af;
 use actix_multipart::form::tempfile::TempFileConfig;
+use actix_multipart::form::MultipartFormConfig;
 use actix_web::{
     get,
     http::header::ContentType,
@@ -83,6 +84,11 @@ fn config_app(app: &mut web::ServiceConfig) {
 
     app.app_data(
         TempFileConfig::default()
+            .error_handler(|e, _| AppErrBadRequest(&e.to_string()).into()),
+    );
+    app.app_data(
+        MultipartFormConfig::default()
+            .total_limit(209_715_200)
             .error_handler(|e, _| AppErrBadRequest(&e.to_string()).into()),
     );
 

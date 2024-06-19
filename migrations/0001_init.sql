@@ -25,6 +25,7 @@ create table if not exists projects (
 create table if not exists records (
     id integer primary key not null,
     project integer references projects(id) on delete set null,
+    name text not null,
     salt text not null,
     size integer not null,
     created_at integer not null,
