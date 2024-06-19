@@ -121,11 +121,12 @@ struct RecordUpdateBody {
 
 #[utoipa::path(
     patch,
+    params(("pid" = i64, Path, example = 1), ("rid" = i64, Path, example = 1)),
     request_body = RecordUpdateBody,
     responses((status = 200, body = Record))
 )]
 /// Update
-#[patch("/")]
+#[patch("/{rid}/")]
 async fn record_update(
     record: Record, body: Json<RecordUpdateBody>, state: Data<AppState>,
 ) -> Response<Record> {
