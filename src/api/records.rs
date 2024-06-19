@@ -74,7 +74,7 @@ async fn record_add(
 
     let result = sqlx::query! {
         "insert into records(project, name, salt, size, created_at, mime)
-        values(?,?,?,?,?,?,?)",
+        values(?,?,?,?,?,?)",
         project.id, name, salt, size, now, mime
     }
     .execute(&state.sql)
