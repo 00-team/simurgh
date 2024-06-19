@@ -197,6 +197,9 @@ const Blogs: Component<BlogProps> = P => {
                         <div class='thumbnail'>
                             <Show when={b.thumbnail} fallback={<ImageIcon />}>
                                 <img
+                                    draggable={false}
+                                    loading='lazy'
+                                    decoding='async'
                                     src={`/record/bt-${b.id}-${b.thumbnail}`}
                                 />
                             </Show>
@@ -292,7 +295,12 @@ const Records: Component<RecordProps> = P => {
                                 when={r.mime && r.mime.startsWith('image/')}
                                 fallback={<FileIcon />}
                             >
-                                <img src={`/record/r-${r.id}-${r.salt}`} />
+                                <img
+                                    draggable={false}
+                                    loading='lazy'
+                                    decoding='async'
+                                    src={`/record/r-${r.id}-${r.salt}`}
+                                />
                             </Show>
                         </div>
                         <div class='record-info'>
