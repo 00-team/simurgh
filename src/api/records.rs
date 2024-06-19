@@ -68,21 +68,14 @@ async fn record_add(
     let now = utils::now();
     let salt = utils::get_random_bytes(8);
     let size = form.record.size as i64;
-    let mut ext: Option<String> = None;
-    let mut mime: Option<String> = None;
+    let mime = form.record.content_type.map(|c| c.to_string());
     let mut name = form.record.file_name.unwrap_or(project.name);
     name.cut_off(255);
 
-    if let Some(m) = &form.record.content_type {
-        mime = Some(m.to_string());
-        ext = m.suffix().map(|a| a.to_string());
-        log::info!("ext: {:#?}", m.params().collect::<Vec<_>>());
-    }
-
     let result = sqlx::query! {
-        "insert into records(project, name, salt, size, created_at, mime, ext)
+        "insert into records(project, name, salt, size, created_at, mime)
         values(?,?,?,?,?,?,?)",
-        project.id, name, salt, size, now, mime, ext
+        project.id, name, salt, size, now, mime
     }
     .execute(&state.sql)
     .await?;
@@ -94,7 +87,6 @@ async fn record_add(
         name,
         size,
         mime,
-        ext,
         created_at: now,
     };
 

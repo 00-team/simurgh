@@ -29,8 +29,7 @@ create table if not exists records (
     salt text not null,
     size integer not null,
     created_at integer not null,
-    mime text,
-    ext text
+    mime text
 );
 
 create table if not exists blogs (

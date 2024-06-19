@@ -14,7 +14,6 @@ pub struct Record {
     pub size: i64,
     pub created_at: i64,
     pub mime: Option<String>,
-    pub ext: Option<String>,
 }
 
 impl actix_web::FromRequest for Record {
