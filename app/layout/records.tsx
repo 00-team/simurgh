@@ -1,10 +1,16 @@
 import { RecordModel } from 'models'
 
 import './style/records.scss'
-import { createStore } from 'solid-js/store'
+import { createStore, produce } from 'solid-js/store'
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { createEffect } from 'solid-js'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import {
+    ArrowLeftIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    PlusIcon,
+} from 'icons'
 
 export default () => {
     type State = {
@@ -35,10 +41,52 @@ export default () => {
         })
     }
 
+    function records_update(id: number, name: string, idx: number) {
+        httpx({
+            url: `/api/projects/${pid}/records/${id}/`,
+            method: 'PATCH',
+            json: { name },
+            onLoad(x) {
+                if (x.status != 200) return
+
+                setState(
+                    produce(s => {
+                        s.records[idx] = x.response
+                    })
+                )
+            },
+        })
+    }
+
     return (
         <div class='records-fnd'>
+            <div class='actions'>
+                <div>
+                    <button
+                        class='styled icon'
+                        style={{ '--color': 'var(--blue)' }}
+                        onClick={() => nav('/projects/' + pid)}
+                    >
+                        <ArrowLeftIcon />
+                    </button>
+                </div>
+                <div>
+                    <button class='styled icon'>
+                        <ChevronLeftIcon />
+                    </button>
+                    <button
+                        class='styled icon'
+                        style={{ '--color': 'var(--green)' }}
+                    >
+                        <PlusIcon />
+                    </button>
+                    <button class='styled icon'>
+                        <ChevronRightIcon />
+                    </button>
+                </div>
+            </div>
             <div class='record-list'>
-                {state.records.map(r => (
+                {state.records.map((r, i) => (
                     <div class='record'>
                         <div class='info'>
                             <span>نام:</span>
@@ -47,11 +95,20 @@ export default () => {
                                 dir='auto'
                                 placeholder='record name'
                                 class='styled'
+                                maxLength={255}
+                                onBlur={e => {
+                                    let name = e.currentTarget.value
+                                    if (name == r.name) return
+                                    records_update(r.id, name, i)
+                                }}
+                                onChange={e => {
+                                    let name = e.currentTarget.value
+                                    if (name == r.name) return
+                                    records_update(r.id, name, i)
+                                }}
                             />
                             <span>شناسه:</span>
                             <span class='n'>{r.id}</span>
-                            <span>پسوند:</span>
-                            <span class='n'>{r.ext}</span>
                             <span>نوع:</span>
                             <span class='n'>{r.mime}</span>
                             <span>حجم:</span>
