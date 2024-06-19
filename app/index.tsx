@@ -11,6 +11,7 @@ import Projects from 'layout/projects'
 import NotFound from 'layout/404'
 const Project = lazy(() => import('layout/project'))
 const Blog = lazy(() => import('layout/blog'))
+const Records = lazy(() => import('layout/records'))
 
 import './style/index.scss'
 
@@ -36,6 +37,7 @@ const Root = () => {
                         <Route path='/projects/' component={Projects} />
                         <Route path='/projects/:pid'>
                             <Route path='/' component={Project} />
+                            <Route path='/records/' component={Records} />
                             <Route
                                 path='/blogs'
                                 component={() => <span>Blogs page</span>}

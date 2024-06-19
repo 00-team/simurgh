@@ -187,7 +187,7 @@ const Blogs: Component<BlogProps> = P => {
                 <button class='add-btn styled' onClick={blog_add}>
                     بلاگ جدید
                 </button>
-                <button class='styled' onClick={() => nav('blogs')}>
+                <button class='styled' onClick={() => nav('blogs/')}>
                     بلاگ ها
                 </button>
             </div>
@@ -280,13 +280,13 @@ const Records: Component<RecordProps> = P => {
                 <button class='add-btn styled' onClick={record_add}>
                     فایل جدید
                 </button>
-                <button class='styled' onClick={() => nav('records')}>
+                <button class='styled' onClick={() => nav('records/')}>
                     فایل ها
                 </button>
             </div>
             <div class='record-list'>
                 {state.records.slice(0, 3).map(r => (
-                    <div class='record' onClick={() => nav('records/' + r.id)}>
+                    <div class='record' onClick={() => nav('records/')}>
                         <div class='dpy'>
                             <Show
                                 when={r.mime && r.mime.startsWith('image/')}
