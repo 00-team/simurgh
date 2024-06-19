@@ -43,6 +43,5 @@ export type RecordModel = {
     salt: string
     size: number
     created_at: number
-    ext: string | null
     mime: string | null
 }
