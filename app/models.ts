@@ -39,6 +39,7 @@ export type BlogModel = {
 export type RecordModel = {
     id: number
     project: number | null
+    name: string
     salt: string
     size: number
     created_at: number
