@@ -64,11 +64,8 @@ function httpx(P: HttpxProps) {
         http.setRequestHeader('Authorization', 'Bearer ' + P.bearer)
     }
 
-    // let puid = addProgress(0)
-
     function cleanup(x: XMLHttpRequest) {
         if (P.reject) P.reject(x.statusText)
-        // delProgress(puid)
     }
 
     http.onerror = function (e) {
@@ -89,7 +86,6 @@ function httpx(P: HttpxProps) {
     http.onload = function (e) {
         if (P.onLoad) P.onLoad(this, e)
 
-        // delProgress(puid)
         if (show_messages) {
             if (P.exclude_status && P.exclude_status.includes(this.status))
                 return
@@ -118,7 +114,6 @@ function httpx(P: HttpxProps) {
     if (P.onProgress) {
         http.onprogress = function (e) {
             P.onProgress!(this, e)
-            // updateProgress(puid, e.loaded, e.total || e.loaded + 100)
         }
     }
 
