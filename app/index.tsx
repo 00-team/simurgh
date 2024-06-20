@@ -10,8 +10,9 @@ import Sidebar from 'layout/sidebar'
 import Projects from 'layout/projects'
 import NotFound from 'layout/404'
 const Project = lazy(() => import('layout/project'))
-const Blog = lazy(() => import('layout/blog'))
 const Records = lazy(() => import('layout/records'))
+const Blog = lazy(() => import('layout/blog'))
+const Blogs = lazy(() => import('layout/blogs'))
 
 import './style/index.scss'
 
@@ -38,10 +39,7 @@ const Root = () => {
                         <Route path='/projects/:pid'>
                             <Route path='/' component={Project} />
                             <Route path='/records/' component={Records} />
-                            <Route
-                                path='/blogs'
-                                component={() => <span>Blogs page</span>}
-                            />
+                            <Route path='/blogs' component={Blogs} />
                             <Route path='/blogs/:bid' component={Blog} />
                         </Route>
                         <Route path='*' component={NotFound} />
