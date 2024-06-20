@@ -1,14 +1,35 @@
+@use 'theme';
+@use 'config' as g;
+
 @import './fonts';
 @import './dash';
 @import './root';
 @import './button';
-@import './misc';
 @import './input';
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+
+    &:focus {
+        outline: 0;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--sixty-percent);
+    border: 2px solid var(--primary-color);
+    border-radius: 20px;
 }
 
 body {
@@ -17,12 +38,16 @@ body {
     background-color: var(--cd);
     color: var(--cl);
 
+    height: 100vh;
+    width: 100%;
+
+    -webkit-tap-highlight-color: transparent;
+
     font-family: 'Zan', sans-serif;
     font-weight: 400;
     font-size: 18px;
 
-    width: 100%;
-    height: 100vh;
+    overflow-x: hidden;
 
     .root {
         width: 100%;
@@ -37,4 +62,57 @@ body {
     img {
         user-select: none;
     }
+}
+
+html[data-theme='dark'] {
+    body {
+        @include theme.dark;
+    }
+    background-color: #000;
+}
+html[data-theme='light'] {
+    body {
+        @include theme.light;
+    }
+    background-color: #fff;
+}
+
+html,
+body {
+    scroll-behavior: smooth;
+}
+
+.title_hero {
+    font-size: g.$TITLE_FONTSIZE_HERO;
+    font-family: 'iranBold';
+}
+.section_title {
+    font-size: clamp(1.6rem, 2.9vw + 1.3rem, 2.8rem);
+    font-family: 'iranBold';
+}
+.title {
+    font-size: g.$TITLE_FONTSIZE;
+    font-family: 'yekanBold';
+}
+.title_small {
+    font-size: g.$TITLE_FONTSIZE_SMALL;
+    font-family: 'yekanBold';
+}
+.title_smaller {
+    font-size: g.$TITLE_FONTSIZE_SMALLER;
+    font-family: 'yekan';
+}
+
+.description {
+    font-size: g.$DESCRIPTION_FONT_SIZE;
+    font-family: 'yekan';
+}
+.description_small {
+    font-size: g.$DESCRIPTION_FONT_SIZE_SMALL;
+    font-family: 'yekan';
+}
+
+.icon {
+    display: grid;
+    place-items: center;
 }
