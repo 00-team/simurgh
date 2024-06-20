@@ -27,11 +27,17 @@
         grid-auto-rows: max-content;
 
         .blog {
+            cursor: pointer;
             max-width: 450px;
             display: flex;
             flex-direction: column;
             background-color: var(--cd);
+            border-radius: var(--radius);
             border: 2px solid var(--ca);
+
+            &:hover {
+                border-color: var(--cl);
+            }
 
             .thumbnail {
                 width: 100%;
@@ -63,7 +69,7 @@
             .info {
                 direction: rtl;
                 display: grid;
-                grid-template-columns: 1fr 3fr;
+                grid-template-columns: 1fr 2fr;
                 padding: 0.5rem 1rem;
                 gap: 0.5rem;
 

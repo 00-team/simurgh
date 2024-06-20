@@ -2,8 +2,15 @@ import { BlogModel } from 'models'
 import './style/blogs.scss'
 import { createStore } from 'solid-js/store'
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
-import { Component, createEffect } from 'solid-js'
-import { httpx } from 'shared'
+import { Component, Show, createEffect } from 'solid-js'
+import { fmt_datetime, httpx } from 'shared'
+import {
+    ArrowLeftIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    ImageIcon,
+    PlusIcon,
+} from 'icons'
 
 export default () => {
     type State = {
@@ -40,11 +47,56 @@ export default () => {
         })
     }
 
+    function blog_add() {
+        httpx({
+            url: `/api/projects/${pid}/blogs/`,
+            method: 'POST',
+            onLoad(x) {
+                if (x.status != 200) return
+                blog_list(0)
+            },
+        })
+    }
+
     return (
         <div class='blogs-fnd'>
+            <div class='actions'>
+                <div>
+                    <button
+                        class='styled icon'
+                        style={{ '--color': 'var(--blue)' }}
+                        onClick={() => nav('/projects/' + pid)}
+                    >
+                        <ArrowLeftIcon />
+                    </button>
+                </div>
+                <div>
+                    <button
+                        class='styled icon'
+                        disabled={state.page < 1}
+                        onClick={() => blog_list(state.page - 1)}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button
+                        class='styled icon'
+                        style={{ '--color': 'var(--green)' }}
+                        onClick={blog_add}
+                    >
+                        <PlusIcon />
+                    </button>
+                    <button
+                        class='styled icon'
+                        disabled={state.blogs.length < 32}
+                        onClick={() => blog_list(state.page + 1)}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </div>
+            </div>
             <div class='blog-list'>
                 {state.blogs.map(b => (
-                    <Blog b={b} />
+                    <Blog b={b} pid={pid} />
                 ))}
             </div>
         </div>
@@ -52,20 +104,33 @@ export default () => {
 }
 
 type BlogProps = {
+    pid: string
     b: BlogModel
 }
 const Blog: Component<BlogProps> = P => {
+    const nav = useNavigate()
     return (
-        <div class='blog'>
+        <div
+            class='blog'
+            onClick={() => nav(`/projects/${P.pid}/blogs/${P.b.id}/`)}
+        >
+            <div class='thumbnail'>
+                <Show when={P.b.thumbnail} fallback={<ImageIcon />}>
+                    <img
+                        draggable={false}
+                        loading='lazy'
+                        decoding='async'
+                        src={`/record/bt-${P.b.id}-${P.b.thumbnail}`}
+                    />
+                </Show>
+            </div>
             <div class='info'>
-                <span>{P.b.id}</span>
-                <span>{P.b.slug}</span>
-                <span>{P.b.title}</span>
-                <span>{P.b.author}</span>
-                <span>{P.b.detail}</span>
-                <span>{P.b.read_time}</span>
-                <span>{P.b.created_at}</span>
-                <span>{P.b.updated_at}</span>
+                <span>شناسه:</span>
+                <span class='n'>{P.b.id}</span>
+                <span>عنوان:</span>
+                <span dir='auto'>{P.b.title || '---'}</span>
+                <span>تاریخ شروع:</span>
+                <span class='n'>{fmt_datetime(P.b.created_at)}</span>
             </div>
         </div>
     )
