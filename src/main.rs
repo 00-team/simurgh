@@ -77,9 +77,17 @@ async fn rapidoc() -> impl Responder {
 
 fn config_app(app: &mut web::ServiceConfig) {
     if cfg!(debug_assertions) {
-        app.service(af::Files::new("/static", "./static"));
-        app.service(af::Files::new("/assets", "./static/dist/assets"));
-        app.service(af::Files::new("/record", Config::RECORD_DIR));
+        app.service(
+            af::Files::new("/static", "./static").disable_content_disposition(),
+        );
+        app.service(
+            af::Files::new("/assets", "./static/dist/assets")
+                .disable_content_disposition(),
+        );
+        app.service(
+            af::Files::new("/record", Config::RECORD_DIR)
+                .disable_content_disposition(),
+        );
     }
 
     app.app_data(
