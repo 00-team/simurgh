@@ -37,3 +37,42 @@ export function fmt_bytes(b: number): string {
         return (~~(b / 107374182.4) / 10).toLocaleString() + ' Gb'
     return (~~(b / 109951162777.6) / 10).toLocaleString() + ' Tb'
 }
+
+function pad0(v: string | number): string {
+    return v.toString().padStart(2, '0')
+}
+
+type ParsedSeconds = {
+    months: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+}
+export function fmt_parse_seconds(seconds: number): ParsedSeconds {
+    let months = ~~(seconds / 2592000)
+    let O = months * 2592000
+    let days = ~~((seconds - O) / 86400)
+    O = O + days * 86400
+    let hours = ~~((seconds - O) / 3600)
+    O = O + hours * 3600
+    let minutes = ~~((seconds - O) / 60)
+    O = O + minutes * 60
+    seconds = seconds - O
+
+    return {
+        months,
+        days,
+        hours,
+        minutes,
+        seconds,
+    }
+}
+
+export function fmt_mdhms(ts: number): string {
+    let now = new Date().getTime() / 1e3
+    let expires = ts - now
+    if (expires < 0) return 'Expired'
+    let { months, days, hours, minutes, seconds } = fmt_parse_seconds(expires)
+    return `${months} ماه و ${days} روز و ${pad0(hours)}:${pad0(minutes)}:${pad0(seconds)}`
+}
