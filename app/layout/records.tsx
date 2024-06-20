@@ -3,7 +3,15 @@ import { RecordModel } from 'models'
 import './style/records.scss'
 import { createStore, produce } from 'solid-js/store'
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
-import { Component, Show, createEffect, createSignal } from 'solid-js'
+import {
+    Component,
+    Match,
+    Show,
+    Switch,
+    createEffect,
+    createMemo,
+    createSignal,
+} from 'solid-js'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import {
     ArrowLeftIcon,
@@ -11,8 +19,9 @@ import {
     ChevronRightIcon,
     FileIcon,
     PlusIcon,
+    TrashIcon,
 } from 'icons'
-import { addAlert } from 'comps'
+import { Confact, Editable, addAlert } from 'comps'
 
 export default () => {
     type State = {
@@ -134,13 +143,15 @@ export default () => {
                     <Record
                         pid={pid}
                         r={r}
-                        update={record =>
+                        update={record => {
+                            if (!record) return record_list(state.page)
+
                             setState(
                                 produce(s => {
                                     s.records[i] = record
                                 })
                             )
-                        }
+                        }}
                     />
                 ))}
             </div>
@@ -178,52 +189,59 @@ const Record: Component<RecordProps> = P => {
         })
     }
 
+    function record_delete() {
+        httpx({
+            url: `/api/projects/${P.pid}/records/${P.r.id}/`,
+            method: 'DELETE',
+            onLoad(x) {
+                if (x.status != 200) return
+                P.update()
+            },
+        })
+    }
+
     return (
         <div class='record'>
             <div class='dpy'>
-                <Show
-                    when={P.r.mime && P.r.mime.startsWith('image/')}
-                    fallback={<FileIcon />}
-                >
-                    <img
-                        draggable={false}
-                        loading='lazy'
-                        decoding='async'
-                        src={`/record/r-${P.r.id}-${P.r.salt}`}
-                    />
-                </Show>
+                <RecordDpy r={P.r} />
             </div>
             <div class='line' />
             <div class='info'>
                 <span>نام:</span>
-                <Show
-                    when={edit_name()}
-                    fallback={
-                        <span
-                            class='name'
+                <div class='name'>
+                    <Show
+                        when={edit_name()}
+                        fallback={
+                            <Editable onClick={() => setEditName(true)}>
+                                <span class='name' dir='auto'>
+                                    {P.r.name}
+                                </span>
+                            </Editable>
+                        }
+                    >
+                        <input
+                            ref={input_name}
+                            value={P.r.name}
                             dir='auto'
-                            onClick={() => setEditName(true)}
-                        >
-                            {P.r.name}
-                        </span>
-                    }
-                >
-                    <input
-                        ref={input_name}
-                        value={P.r.name}
-                        dir='auto'
-                        placeholder='record name'
-                        class='name styled'
-                        maxLength={255}
-                        onChange={e => update_name(e.currentTarget.value)}
-                        onBlur={() => setEditName(false)}
-                        onContextMenu={e => {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            setEditName(false)
-                        }}
+                            placeholder='record name'
+                            class='name styled'
+                            maxLength={255}
+                            onChange={e => update_name(e.currentTarget.value)}
+                            onBlur={() => setEditName(false)}
+                            onContextMenu={e => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                setEditName(false)
+                            }}
+                        />
+                    </Show>
+                    <Confact
+                        color='var(--red)'
+                        onAct={record_delete}
+                        timer_ms={15e2}
+                        icon={TrashIcon}
                     />
-                </Show>
+                </div>
                 <span>شناسه:</span>
                 <span class='n'>{P.r.id}</span>
                 <span>نوع:</span>
@@ -234,5 +252,96 @@ const Record: Component<RecordProps> = P => {
                 <span class='n'>{fmt_datetime(P.r.created_at)}</span>
             </div>
         </div>
+    )
+}
+
+type RecordDpyProps = { r: RecordModel }
+const RecordDpy: Component<RecordDpyProps> = P => {
+    const url = createMemo(() => `/record/r-${P.r.id}-${P.r.salt}`)
+
+    return (
+        <Switch fallback={<FileIcon />}>
+            <Match when={P.r.mime.startsWith('image/')}>
+                <Show
+                    when={!P.r.mime.includes('svg')}
+                    fallback={<DynamicSvg url={url()} />}
+                >
+                    <img
+                        draggable={false}
+                        loading='lazy'
+                        decoding='async'
+                        src={url()}
+                        onClick={e => e.currentTarget.requestFullscreen()}
+                    />
+                </Show>
+            </Match>
+            <Match when={P.r.mime.startsWith('text/')}>
+                <DpyText url={url()} />
+            </Match>
+            <Match when={P.r.mime.startsWith('video/')}>
+                <video src={url()} controls draggable={false}></video>
+            </Match>
+        </Switch>
+    )
+}
+
+const DynamicSvg: Component<{ url: string }> = P => {
+    let ref: HTMLDivElement
+
+    createEffect(() => {
+        httpx({
+            url: P.url,
+            method: 'GET',
+            type: 'text',
+            show_messages: false,
+            onLoad(x) {
+                if (x.status != 200) {
+                    ref.parentElement.append(FileIcon() as Node)
+                    ref.remove()
+                    return
+                }
+
+                ref.innerHTML = x.response
+            },
+        })
+    })
+
+    return (
+        <div
+            class='dpy-svg'
+            ref={ref}
+            onClick={e => e.currentTarget.requestFullscreen()}
+        />
+    )
+}
+
+const DpyText: Component<{ url: string }> = P => {
+    let ref: HTMLTextAreaElement
+
+    createEffect(() => {
+        httpx({
+            url: P.url,
+            method: 'GET',
+            type: 'text',
+            show_messages: false,
+            onLoad(x) {
+                if (x.status != 200) {
+                    ref.parentElement.append(FileIcon() as Node)
+                    ref.remove()
+                    return
+                }
+
+                ref.value = x.response
+            },
+        })
+    })
+
+    return (
+        <textarea
+            ref={ref}
+            class='styled'
+            dir='auto'
+            onClick={e => e.currentTarget.requestFullscreen()}
+        />
     )
 }
