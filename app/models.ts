@@ -67,6 +67,21 @@ export type BlogModel = {
     thumbnail: string | null
     read_time: number
 }
+export const DEFAULT_BLOG = {
+    id: 0,
+    slug: '',
+    status: 'draft',
+    project: null,
+    author: null,
+    created_at: 0,
+    updated_at: 0,
+    title: '',
+    detail: '',
+    data: [],
+    html: '',
+    thumbnail: null,
+    read_time: 0,
+}
 
 export type RecordModel = {
     id: number
