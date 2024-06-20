@@ -12,7 +12,7 @@ use crate::models::blog::{
 };
 use crate::models::project::Project;
 use crate::models::user::User;
-use crate::models::{AppErr, JsonStr, ListInput, Response};
+use crate::models::{AppErr, AppErrBadRequest, JsonStr, ListInput, Response};
 use crate::utils::CutOff;
 use crate::{utils, AppState};
 
@@ -139,6 +139,10 @@ async fn blog_update(
     blog: Blog, body: Json<BlogUpdateBody>, state: Data<AppState>,
 ) -> Response<Blog> {
     let mut blog = blog;
+
+    if body.slug.len() < 3 {
+        return Err(AppErrBadRequest("حداقل طول نشانه 3 حرف است"));
+    }
 
     blog.slug = body.slug.clone();
     blog.slug.cut_off(255);
