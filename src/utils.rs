@@ -55,7 +55,7 @@ pub fn save_record(path: &Path, id: i64, salt: &str) -> io::Result<()> {
         if res == 0 {
             break;
         }
-        new_file.write(&buffer)?;
+        new_file.write(&buffer[0..res])?;
     }
 
     Ok(())
