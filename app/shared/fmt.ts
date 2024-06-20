@@ -70,9 +70,12 @@ export function fmt_parse_seconds(seconds: number): ParsedSeconds {
 }
 
 export function fmt_mdhms(ts: number): string {
-    let now = new Date().getTime() / 1e3
-    let expires = ts - now
-    if (expires < 0) return 'Expired'
-    let { months, days, hours, minutes, seconds } = fmt_parse_seconds(expires)
+    let { months, days, hours, minutes, seconds } = fmt_parse_seconds(ts)
     return `${months} ماه و ${days} روز و ${pad0(hours)}:${pad0(minutes)}:${pad0(seconds)}`
+}
+
+export function fmt_hms(ts: number): string {
+    let { months, days, hours, minutes, seconds } = fmt_parse_seconds(ts)
+    hours = days * 24 + months * 720
+    return `${hours} ساعت و ${minutes} دقیقه و ${seconds} ثانیه`
 }
