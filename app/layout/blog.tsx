@@ -3,9 +3,12 @@ import { BlogModel } from 'models'
 import { useNavigate, useParams } from '@solidjs/router'
 import {
     ArrowLeftIcon,
+    ArrowUpLeftIcon,
     ImageIcon,
+    PencilIcon,
     RotateCcwIcon,
     SaveIcon,
+    TextCursorIcon,
     TrashIcon,
     WrenchIcon,
     XIcon,
@@ -13,7 +16,7 @@ import {
 import { Show, createEffect, createMemo, on } from 'solid-js'
 
 import './style/blog.scss'
-import { fmt_datetime, httpx } from 'shared'
+import { fmt_datetime, fmt_hms, fmt_mdhms, httpx } from 'shared'
 import { Confact, addAlert } from 'comps'
 
 export default () => {
@@ -41,7 +44,7 @@ export default () => {
             thumbnail: null,
             read_time: 0,
         },
-        editing: true,
+        editing: false,
         edit: {
             slug: '',
             status: 'draft',
@@ -122,7 +125,7 @@ export default () => {
             },
             onLoad(x) {
                 if (x.status != 200) return
-                setState({ blog: x.response })
+                setState({ blog: x.response, editing: false })
             },
         })
     }
@@ -198,9 +201,26 @@ export default () => {
                     <button
                         class='styled icon'
                         style={{ '--color': 'var(--blue)' }}
+                        onClick={() => nav(`/projects/${pid}/`)}
+                    >
+                        <ArrowUpLeftIcon />
+                    </button>
+                    <button
+                        class='styled icon'
+                        style={{ '--color': 'var(--blue)' }}
                         onClick={() => nav(`/projects/${pid}/blogs/`)}
                     >
                         <ArrowLeftIcon />
+                    </button>
+                    <button
+                        class='styled icon'
+                        onClick={() =>
+                            nav(
+                                `/projects/${pid}/blogs/${state.blog.id}/editor/`
+                            )
+                        }
+                    >
+                        <TextCursorIcon />
                     </button>
                 </div>
                 <div>
@@ -249,7 +269,7 @@ export default () => {
                             dir='auto'
                             value={state.edit.slug}
                             class='styled'
-                            placeholder='placeholder'
+                            placeholder='نشانه در لینک'
                             onInput={e =>
                                 setState(
                                     produce(s => {
@@ -288,25 +308,88 @@ export default () => {
                             {STATUS_DPY[state.edit.status][0]}
                         </button>
                     </Show>
+
+                    <span>عنوان:</span>
+                    <Show
+                        when={state.editing}
+                        fallback={
+                            <span dir='auto'>{state.blog.title || '---'}</span>
+                        }
+                    >
+                        <input
+                            maxLength={255}
+                            dir='auto'
+                            value={state.edit.title}
+                            class='styled'
+                            placeholder='عنوان'
+                            onInput={e =>
+                                setState(
+                                    produce(s => {
+                                        s.edit.title = e.currentTarget.value
+                                    })
+                                )
+                            }
+                        />
+                    </Show>
+                    <span>توصیف:</span>
+                    <Show
+                        when={state.editing}
+                        fallback={
+                            <p dir='auto'>
+                                {state.blog.detail
+                                    .split('\n')
+                                    .map((l, i, a) => (
+                                        <>
+                                            {l}
+                                            {i < a.length - 1 && <br />}
+                                        </>
+                                    ))}
+                            </p>
+                        }
+                    >
+                        <textarea
+                            dir='auto'
+                            class='styled'
+                            placeholder='توصیف'
+                            value={state.edit.detail}
+                            rows={state.edit.detail.split('\n').length + 1}
+                            maxLength={2047}
+                            onInput={e => {
+                                setState(
+                                    produce(s => {
+                                        s.edit.detail = e.currentTarget.value
+                                    })
+                                )
+                            }}
+                        ></textarea>
+                    </Show>
+                    <span>زمان مطالعه:</span>
+                    <Show
+                        when={state.editing}
+                        fallback={
+                            <span class='read_time'>
+                                {fmt_hms(state.blog.read_time)}
+                            </span>
+                        }
+                    >
+                        <input
+                            class='styled'
+                            type='numer'
+                            value={state.edit.read_time}
+                            onInput={e => {
+                                setState(
+                                    produce(s => {
+                                        s.edit.read_time =
+                                            parseInt(e.currentTarget.value) || 0
+                                    })
+                                )
+                            }}
+                        />
+                    </Show>
                     <span>تاریخ آعاز:</span>
                     <span class='n'>{fmt_datetime(state.blog.created_at)}</span>
                     <span>تاریخ بروزرسانی:</span>
                     <span class='n'>{fmt_datetime(state.blog.updated_at)}</span>
-                    <span>عنوان:</span>
-                    <span class='title' dir='auto'>
-                        {state.blog.title || '---'}
-                    </span>
-                    <span>توصیف:</span>
-                    <p dir='auto'>
-                        {state.blog.detail.split('\n').map((l, i, a) => (
-                            <>
-                                {l}
-                                {i < a.length - 1 && <br />}
-                            </>
-                        ))}
-                    </p>
-                    <span>زمان مطالعه:</span>
-                    <span>{state.blog.read_time} ثانیه</span>
                     <Show when={!state.editing}>
                         <span>بنر:</span>
                         <div class='thumbnail' onClick={blog_thumbnail_update}>

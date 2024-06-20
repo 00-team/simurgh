@@ -68,6 +68,16 @@
             font-family: inherit;
         }
 
+        p {
+            background-color: var(--cg);
+            padding: 0.5rem;
+            border-radius: var(--radius);
+        }
+
+        .read_time {
+            font-family: var(--fa);
+        }
+
         .thumbnail {
             cursor: pointer;
             width: 100%;
