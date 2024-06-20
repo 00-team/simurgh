@@ -21,16 +21,48 @@ export type ProjectModel = {
     api_key: string | null
 }
 
+type BlogStyle = {
+    color: string | null
+    bold: boolean
+    italic: boolean
+    underline: boolean
+    font_size: number
+}
+
+type BlogTextGroup = {
+    content: string[]
+    style: BlogStyle
+}
+
+type BlogText = {
+    kind: 'text'
+    dir: 'ltr' | 'rtl'
+    groups: BlogTextGroup[]
+}
+
+type BlogImage = {
+    kind: 'image'
+    record_id: number
+    record_salt: string
+}
+
+type BlogEmpty = {
+    kind: 'empty'
+}
+
+type BlogData = BlogText | BlogImage | BlogEmpty
+
 export type BlogModel = {
     id: number
     slug: string
+    status: 'draft' | 'published'
     project: number | null
     author: number | null
     created_at: number
     updated_at: number
     title: string
     detail: string
-    data: string
+    data: BlogData[]
     html: string
     thumbnail: string | null
     read_time: number | null
