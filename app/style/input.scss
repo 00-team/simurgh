@@ -11,3 +11,19 @@ input.styled {
         outline: 0;
     }
 }
+
+textarea.styled {
+    resize: vertical;
+    background-color: var(--cd);
+    border: 2px solid var(--cl);
+    font-size: 18px;
+    border-radius: var(--radius);
+    font-family: inherit;
+    padding: 0.25rem;
+    color: var(--cl);
+
+    &:focus {
+        border-color: var(--ca);
+        outline: 0;
+    }
+}
