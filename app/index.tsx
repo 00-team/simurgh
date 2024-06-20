@@ -13,6 +13,7 @@ const Project = lazy(() => import('layout/project'))
 const Records = lazy(() => import('layout/records'))
 const Blog = lazy(() => import('layout/blog'))
 const Blogs = lazy(() => import('layout/blogs'))
+const Editor = lazy(() => import('layout/editor'))
 
 import './style/index.scss'
 
@@ -40,7 +41,10 @@ const Root = () => {
                             <Route path='/' component={Project} />
                             <Route path='/records/' component={Records} />
                             <Route path='/blogs' component={Blogs} />
-                            <Route path='/blogs/:bid' component={Blog} />
+                            <Route path='/blogs/:bid'>
+                                <Route path='/' component={Blog} />
+                                <Route path='/editor/' component={Editor} />
+                            </Route>
                         </Route>
                         <Route path='*' component={NotFound} />
                     </Route>
