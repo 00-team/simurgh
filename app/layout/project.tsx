@@ -268,11 +268,7 @@ const Records: Component<RecordProps> = P => {
                 data,
                 onLoad(x) {
                     if (x.status != 200) return
-                    setState(
-                        produce(s => {
-                            s.records.unshift(x.response)
-                        })
-                    )
+                    nav('records/')
                 },
             })
         }
