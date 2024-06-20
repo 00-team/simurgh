@@ -91,7 +91,7 @@ export default () => {
                             <Editable
                                 onClick={() => setState({ edit_name: true })}
                             >
-                                <span style={{ cursor: 'pointer' }}>
+                                <span dir='auto' style={{ cursor: 'pointer' }}>
                                     {state.project.name}
                                 </span>
                             </Editable>
