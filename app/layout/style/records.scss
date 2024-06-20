@@ -31,14 +31,42 @@
             flex-direction: column;
             background-color: var(--cd);
             border: 2px solid var(--ca);
+            /* gap: 0.5rem; */
+
+            .dpy {
+                width: 100%;
+                aspect-ratio: 2/1;
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .line {
+                width: 100%;
+                height: 2px;
+                background-color: var(--ca);
+            }
 
             .info {
                 direction: rtl;
                 display: grid;
                 grid-template-columns: 1fr 3fr;
                 padding: 0.5rem 1rem;
-                white-space: nowrap;
                 gap: 0.5rem;
+
+                span {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .name {
+                    font-family: var(--en), var(--fa);
+                }
 
                 .n {
                     font-family: var(--en);
