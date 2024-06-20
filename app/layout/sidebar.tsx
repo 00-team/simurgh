@@ -112,11 +112,11 @@ const User = () => {
                     </Show>
                 </Editable>
             </div>
-            <div class='name' onclick={() => setState({ edit_name: true })}>
+            <div class='name'>
                 <Show
                     when={state.edit_name}
                     fallback={
-                        <Editable>
+                        <Editable onClick={() => setState({ edit_name: true })}>
                             <span>{self.user.name || '---'}</span>
                         </Editable>
                     }

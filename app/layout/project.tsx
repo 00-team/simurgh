@@ -84,11 +84,13 @@ export default () => {
         <div class='project-fnd'>
             <div class='project-info'>
                 <span>نام:</span>
-                <div class='name' onClick={() => setState({ edit_name: true })}>
+                <div class='name'>
                     <Show
                         when={state.edit_name}
                         fallback={
-                            <Editable>
+                            <Editable
+                                onClick={() => setState({ edit_name: true })}
+                            >
                                 <span style={{ cursor: 'pointer' }}>
                                     {state.project.name}
                                 </span>
