@@ -21,7 +21,7 @@ export type ProjectModel = {
     api_key: string | null
 }
 
-type BlogStyle = {
+export type BlogStyle = {
     color: string | null
     bold: boolean
     italic: boolean
@@ -29,28 +29,28 @@ type BlogStyle = {
     font_size: number
 }
 
-type BlogTextGroup = {
+export type BlogTextGroup = {
     content: string[]
     style: BlogStyle
 }
 
-type BlogText = {
+export type BlogText = {
     kind: 'text'
     dir: 'ltr' | 'rtl'
     groups: BlogTextGroup[]
 }
 
-type BlogImage = {
+export type BlogImage = {
     kind: 'image'
     record_id: number
     record_salt: string
 }
 
-type BlogEmpty = {
+export type BlogEmpty = {
     kind: 'empty'
 }
 
-type BlogData = BlogText | BlogImage | BlogEmpty
+export type BlogData = BlogText | BlogImage | BlogEmpty
 
 export type BlogModel = {
     id: number
@@ -67,7 +67,7 @@ export type BlogModel = {
     thumbnail: string | null
     read_time: number
 }
-export const DEFAULT_BLOG = {
+export const DEFAULT_BLOG: BlogModel = {
     id: 0,
     slug: '',
     status: 'draft',
