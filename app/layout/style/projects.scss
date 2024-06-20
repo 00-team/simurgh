@@ -30,6 +30,7 @@
         justify-content: space-evenly;
 
         .project {
+            background-color: var(--cd);
             cursor: pointer;
             width: clamp(250px, calc(25% - 3rem), 300px);
             display: grid;
@@ -37,7 +38,7 @@
             direction: rtl;
             gap: 0.5rem;
             padding: 0.5rem;
-            border: 2px solid var(--cd);
+            border: 2px solid var(--cl);
             border-radius: var(--radius);
             transition: border-color 200ms ease-in-out;
             font-size: 18px;
