@@ -1,7 +1,8 @@
 use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
 use actix_web::web::{Data, Json, Query};
-use actix_web::{delete, get, post, put, HttpResponse, Scope};
+use actix_web::{delete, get, patch, post, put, HttpResponse, Scope};
+use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
 use crate::config::Config;
@@ -11,18 +12,19 @@ use crate::models::blog::{
 };
 use crate::models::project::Project;
 use crate::models::user::User;
-use crate::models::{AppErr, ListInput, Response};
+use crate::models::{AppErr, JsonStr, ListInput, Response};
+use crate::utils::CutOff;
 use crate::{utils, AppState};
 
 #[derive(OpenApi)]
 #[openapi(
     tags((name = "api::blogs")),
     paths(
-        blog_list, blog_add, blog_get, blog_delete,
-        blog_thumbnail_update, blog_thumbnail_delete
+        blog_list, blog_add, blog_get, blog_delete, blog_update,
+        blog_update_data, blog_thumbnail_update, blog_thumbnail_delete
     ),
     components(schemas(
-        Blog, BlogData, BlogStatus, BlogStyle,
+        Blog, BlogData, BlogStatus, BlogStyle, BlogUpdateBody,
         BlogTextGroup, BlogTextDirection, BlogThumbnailUpload,
     )),
     servers((url = "/projects/{pid}/blogs")),
@@ -116,6 +118,77 @@ async fn blog_get(blog: Blog) -> Response<Blog> {
     Ok(Json(blog))
 }
 
+#[derive(Deserialize, ToSchema)]
+struct BlogUpdateBody {
+    slug: String,
+    status: BlogStatus,
+    title: String,
+    detail: String,
+    read_time: i64,
+}
+
+#[utoipa::path(
+    patch,
+    params(("pid" = i64, Path, example = 1), ("bid" = i64, Path, example = 1)),
+    request_body = BlogUpdateBody,
+    responses((status = 200, body = Blog))
+)]
+/// Update
+#[patch("/{bid}/")]
+async fn blog_update(
+    blog: Blog, body: Json<BlogUpdateBody>, state: Data<AppState>,
+) -> Response<Blog> {
+    let mut blog = blog;
+
+    blog.slug = body.slug.clone();
+    blog.slug.cut_off(255);
+    blog.status = body.status.clone();
+    blog.updated_at = utils::now();
+    blog.title = body.title.clone();
+    blog.title.cut_off(255);
+    blog.detail = body.detail.clone();
+    blog.detail.cut_off(2047);
+    blog.read_time = body.read_time.clone();
+
+    sqlx::query! {
+        "update blogs set slug = ?, status = ?, updated_at = ?, title = ?,
+        detail = ?, read_time = ? where id = ?",
+        blog.slug, blog.status, blog.updated_at, blog.title,
+        blog.detail, blog.read_time, blog.id
+    }
+    .execute(&state.sql)
+    .await?;
+
+    Ok(Json(blog))
+}
+
+#[utoipa::path(
+    patch,
+    params(("pid" = i64, Path, example = 1), ("bid" = i64, Path, example = 1)),
+    request_body = Vec<BlogData>,
+    responses((status = 200, body = Blog))
+)]
+/// Update Data
+#[put("/{bid}/data/")]
+async fn blog_update_data(
+    blog: Blog, Json(data): Json<Vec<BlogData>>, state: Data<AppState>,
+) -> Response<Blog> {
+    let mut blog = blog;
+
+    blog.updated_at = utils::now();
+    blog.html = "<h1>Some Test Html</h1>".to_string();
+    blog.data = JsonStr(data);
+
+    sqlx::query! {
+        "update blogs set updated_at = ?, html = ?, data = ? where id = ?",
+        blog.updated_at, blog.html, blog.data, blog.id
+    }
+    .execute(&state.sql)
+    .await?;
+
+    Ok(Json(blog))
+}
+
 #[derive(Debug, MultipartForm, ToSchema)]
 pub struct BlogThumbnailUpload {
     #[schema(value_type = String, format = Binary)]
@@ -170,12 +243,15 @@ async fn blog_thumbnail_update(
 async fn blog_thumbnail_delete(
     blog: Blog, state: Data<AppState>,
 ) -> Response<Blog> {
+    let mut blog = blog;
+
     if blog.thumbnail.is_none() {
         return Ok(Json(blog));
     }
 
     let salt = blog.thumbnail.clone().unwrap();
     utils::remove_record(&format!("bt-{}-{salt}", blog.id));
+    blog.thumbnail = None;
 
     sqlx::query! {
         "update blogs set thumbnail = null where id = ?",
@@ -186,41 +262,6 @@ async fn blog_thumbnail_delete(
 
     Ok(Json(blog))
 }
-
-// #[derive(Deserialize, ToSchema)]
-// struct UpdateBody {
-//     name: String,
-// }
-//
-// #[utoipa::path(
-//     patch,
-//     params(("id" = i64, Path, example = 1)),
-//     request_body = UpdateBody,
-//     responses((status = 200, body = Project))
-// )]
-// /// Update
-// #[patch("/{id}/")]
-// async fn projects_update(
-//     user: User, project: Project, body: Json<UpdateBody>, state: Data<AppState>,
-// ) -> Response<Project> {
-//     let mut project = project;
-//     if project.user != user.id {
-//         return Err(AppErrNotFound("پروژه یافت نشد"));
-//     }
-//
-//     let now = utils::now();
-//     sqlx::query! {
-//         "update projects set name = ?, updated_at = ? where id = ?",
-//         body.name, now, project.id,
-//     }
-//     .execute(&state.sql)
-//     .await?;
-//
-//     project.name = body.name.clone();
-//     project.updated_at = now;
-//
-//     Ok(Json(project))
-// }
 
 #[utoipa::path(
     delete,
@@ -273,6 +314,8 @@ pub fn router() -> Scope {
         .service(blog_add)
         .service(blog_list)
         .service(blog_get)
+        .service(blog_update)
+        .service(blog_update_data)
         .service(blog_delete)
         .service(blog_thumbnail_update)
         .service(blog_thumbnail_delete)

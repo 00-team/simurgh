@@ -12,7 +12,7 @@ super::sql_enum! {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 pub struct BlogStyle {
     color: Option<String>,
     bold: bool,
@@ -21,7 +21,7 @@ pub struct BlogStyle {
     font_size: u16,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum BlogTextDirection {
     #[default]
@@ -29,13 +29,13 @@ pub enum BlogTextDirection {
     Rtl,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 pub struct BlogTextGroup {
     content: Vec<String>,
     style: BlogStyle,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case", tag = "kind")]
 pub enum BlogData {
     Text { dir: BlogTextDirection, groups: Vec<BlogTextGroup> },
