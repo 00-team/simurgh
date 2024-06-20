@@ -65,7 +65,7 @@ export type BlogModel = {
     data: BlogData[]
     html: string
     thumbnail: string | null
-    read_time: number | null
+    read_time: number
 }
 
 export type RecordModel = {
