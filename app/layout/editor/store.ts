@@ -8,12 +8,14 @@ export type Store = {
     active: number
     tg: number // text group active index
     block: BlogData | undefined
+    show_groups: boolean
 }
 export const [store, setStore] = createStore<Store>({
     blog: DEFAULT_BLOG,
     data: [],
     active: -1,
     tg: -1,
+    show_groups: false,
     get block() {
         return this.data[this.active]
     },
