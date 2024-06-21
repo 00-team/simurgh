@@ -32,9 +32,13 @@ const Confact: Component<Props> = P => {
             title={stage2() ? 'right click to unactivate' : 'hold to activate'}
             oncontextmenu={e => {
                 e.preventDefault()
+                e.stopPropagation()
                 setStage2(false)
             }}
             onmousedown={e => {
+                e.stopPropagation()
+                e.preventDefault()
+
                 timeout = 0
                 if (stage2()) {
                     if (e.button != 0) {
@@ -44,7 +48,10 @@ const Confact: Component<Props> = P => {
                     timeout = performance.now()
                 }
             }}
-            onmouseup={() => {
+            onmouseup={e => {
+                e.stopPropagation()
+                e.preventDefault()
+
                 if (stage2()) {
                     P.onAct()
                     setStage2(false)

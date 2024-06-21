@@ -127,7 +127,21 @@ const EditorBlock: Component<EditorBlockProps> = P => {
                 </Switch>
             </div>
             <div class='actions'>
-                <button class='styled icon'>
+                <button
+                    class='styled icon'
+                    disabled={P.idx == 0}
+                    onClick={e => {
+                        e.stopPropagation()
+                        e.preventDefault()
+                        setStore(
+                            produce(s => {
+                                let [b] = s.data.splice(P.idx, 1)
+                                s.data.splice(P.idx - 1, 0, b)
+                                s.active = P.idx - 1
+                            })
+                        )
+                    }}
+                >
                     <ChevronUpIcon />
                 </button>
                 <Confact
@@ -142,7 +156,21 @@ const EditorBlock: Component<EditorBlockProps> = P => {
                         )
                     }}
                 />
-                <button class='styled icon'>
+                <button
+                    class='styled icon'
+                    disabled={P.idx == store.data.length - 1}
+                    onClick={e => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setStore(
+                            produce(s => {
+                                let [b] = s.data.splice(P.idx, 1)
+                                s.data.splice(P.idx + 1, 0, b)
+                                s.active = P.idx + 1
+                            })
+                        )
+                    }}
+                >
                     <ChevronDownIcon />
                 </button>
             </div>
