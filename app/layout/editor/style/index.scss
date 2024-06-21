@@ -5,6 +5,7 @@
     overflow: hidden;
 
     .actions {
+        flex-wrap: wrap;
         width: 100%;
         display: flex;
         gap: 1rem;
@@ -12,6 +13,7 @@
         justify-content: space-between;
 
         div {
+            flex-wrap: wrap;
             display: flex;
             gap: 0.5rem;
         }
@@ -33,6 +35,8 @@
         background-color: var(--cd);
         border-radius: var(--radius);
         border: 2px solid var(--ca);
+        border-left: 0;
+        border-right: 0;
 
         .message {
             width: 100%;
@@ -54,9 +58,12 @@
             width: 100%;
             display: flex;
             align-items: center;
+            border: 2px solid var(--ca);
+            border-top: 0;
+            border-bottom: 0;
 
             &.active {
-                background-color: var(--cg);
+                border-color: var(--cl);
             }
 
             &-actions {

@@ -17,7 +17,8 @@ import { setStore, store, unwrap_rec } from './store'
 import { produce } from 'solid-js/store'
 import { Confact } from 'comps'
 import { EditorImageBlock } from './image'
-import { BlogData, BlogEmpty, BlogImage } from 'models'
+import { BlogData, BlogEmpty, BlogImage, BlogText } from 'models'
+import { EditorTextActions, EditorTextBlock } from './text'
 
 export default () => {
     const nav = useNavigate()
@@ -61,6 +62,9 @@ export default () => {
                         <ArrowLeftIcon />
                     </button>
                 </div>
+                <Show when={store.block && store.block.kind == 'text'}>
+                    <EditorTextActions />
+                </Show>
                 <div>
                     <button
                         class='styled icon'
@@ -130,7 +134,7 @@ const EditorBlock: Component<EditorBlockProps> = P => {
                 last: P.idx == store.data.length - 1,
                 active: P.idx == store.active,
             }}
-            onClick={() => setStore({ active: P.idx })}
+            onMouseDown={() => setStore({ active: P.idx })}
         >
             <div class='content'>
                 <Switch>
@@ -140,7 +144,12 @@ const EditorBlock: Component<EditorBlockProps> = P => {
                             block={P.block as BlogEmpty}
                         />
                     </Match>
-                    <Match when={P.block.kind == 'text'}>Text</Match>
+                    <Match when={P.block.kind == 'text'}>
+                        <EditorTextBlock
+                            idx={P.idx}
+                            block={P.block as BlogText}
+                        />
+                    </Match>
                     <Match when={P.block.kind == 'image'}>
                         <EditorImageBlock
                             idx={P.idx}

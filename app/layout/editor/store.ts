@@ -1,18 +1,19 @@
-import { ArrowLeftIcon } from 'icons'
 import { BlogData, BlogModel, DEFAULT_BLOG } from 'models'
 import { createEffect, createRoot } from 'solid-js'
-import { createStore, unwrap } from 'solid-js/store'
+import { createStore } from 'solid-js/store'
 
 export type Store = {
     blog: BlogModel
     data: BlogData[]
     active: number
+    tg: number // text group active index
     block: BlogData | undefined
 }
 export const [store, setStore] = createStore<Store>({
     blog: DEFAULT_BLOG,
     data: [],
     active: -1,
+    tg: -1,
     get block() {
         return this.data[this.active]
     },
