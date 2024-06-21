@@ -1,11 +1,10 @@
-import { createStore, produce, unwrap } from 'solid-js/store'
+import { createStore, produce } from 'solid-js/store'
 import { BlogModel } from 'models'
 import { useNavigate, useParams } from '@solidjs/router'
 import {
     ArrowLeftIcon,
     ArrowUpLeftIcon,
     ImageIcon,
-    PencilIcon,
     RotateCcwIcon,
     SaveIcon,
     TextCursorIcon,
@@ -16,7 +15,7 @@ import {
 import { Show, createEffect, createMemo, on } from 'solid-js'
 
 import './style/blog.scss'
-import { fmt_datetime, fmt_hms, fmt_mdhms, httpx } from 'shared'
+import { fmt_datetime, fmt_hms, httpx } from 'shared'
 import { Confact, addAlert } from 'comps'
 
 export default () => {
@@ -55,6 +54,11 @@ export default () => {
     })
     const nav = useNavigate()
     const { pid, bid } = useParams()
+
+    let preview: HTMLDivElement
+    createEffect(() => {
+        preview.innerHTML = state.blog.html
+    })
 
     createEffect(
         on(
@@ -417,10 +421,7 @@ export default () => {
                         </div>
                     </Show>
                 </div>
-                <div
-                    class='preview'
-                    ref={r => (r.innerHTML = state.blog.html)}
-                ></div>
+                <div class='preview' ref={preview} />
             </div>
         </div>
     )

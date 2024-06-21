@@ -1,10 +1,15 @@
 import { Component } from 'solid-js'
-import './style/empty.scss'
-import { EditorBlockProps, setStore } from './store'
-import { BlogData, DEFAULT_BLOCKS } from 'models'
+import { setStore } from './store'
+import { BlogData, BlogEmpty, DEFAULT_BLOCKS } from 'models'
 import { produce } from 'solid-js/store'
 
-export const EditorEmptyBlock: Component<EditorBlockProps> = P => {
+import './style/empty.scss'
+
+type Props = {
+    idx: number
+    block: BlogEmpty
+}
+export const EditorEmptyBlock: Component<Props> = P => {
     function update(kind: BlogData['kind']) {
         setStore(
             produce(s => {

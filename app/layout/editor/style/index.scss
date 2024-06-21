@@ -2,13 +2,13 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 0 1rem;
+    overflow: hidden;
 
     .actions {
         width: 100%;
         display: flex;
         gap: 1rem;
-        padding: 1rem 0;
+        padding: 1rem;
         justify-content: space-between;
 
         div {
@@ -17,37 +17,56 @@
         }
     }
 
+    .editor-wrapper {
+        height: 100%;
+        padding: 0 1rem 1rem 1rem;
+        width: 100%;
+        display: flex;
+        overflow-y: auto;
+    }
+
     .editor {
         display: flex;
         flex-direction: column;
         width: 100%;
+        height: max-content;
         background-color: var(--cd);
         border-radius: var(--radius);
         border: 2px solid var(--ca);
+
+        .message {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            padding: 3rem;
+        }
 
         .line {
             width: 100%;
             height: 2px;
             background-color: var(--ca);
+            flex-shrink: 0;
         }
 
         .block {
+            flex-shrink: 0;
             width: 100%;
             display: flex;
-            gap: 1rem;
-            padding: 1rem;
+            align-items: center;
 
             &.active {
                 background-color: var(--cg);
             }
 
-            .actions {
+            &-actions {
                 display: flex;
                 flex-direction: column;
                 flex-shrink: 0;
                 width: max-content;
                 gap: 0.5rem;
                 align-items: flex-end;
+                padding: 0.5rem;
                 height: 100%;
             }
 

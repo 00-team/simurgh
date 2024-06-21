@@ -10,13 +10,14 @@ import {
 } from 'icons'
 import './style/index.scss'
 import { useNavigate, useParams } from '@solidjs/router'
-import { Component, JSX, Match, Switch, createEffect } from 'solid-js'
+import { Component, Match, Show, Switch, createEffect } from 'solid-js'
 import { httpx } from 'shared'
 import { EditorEmptyBlock } from './empty'
-import { EditorBlockProps, setStore, store } from './store'
+import { setStore, store, unwrap_rec } from './store'
 import { produce } from 'solid-js/store'
 import { Confact } from 'comps'
-import { BlogData } from 'models'
+import { EditorImageBlock } from './image'
+import { BlogData, BlogEmpty, BlogImage } from 'models'
 
 export default () => {
     const nav = useNavigate()
@@ -84,27 +85,41 @@ export default () => {
                     <Confact
                         icon={RotateCcwIcon}
                         color='var(--yellow)'
-                        timer_ms={1500}
-                        onAct={() => setStore(s => ({ data: s.blog.data }))}
+                        timer_ms={1000}
+                        onAct={() => {
+                            setStore(s => ({
+                                data: unwrap_rec(s.blog.data),
+                            }))
+                        }}
                     />
                     <Confact
                         icon={DrillIcon}
                         color='var(--yellow)'
-                        timer_ms={1500}
+                        timer_ms={1000}
                         onAct={() => setStore({ data: [] })}
                     />
                 </div>
             </div>
-            <div class='editor'>
-                {store.data.map((block, i, a) => (
-                    <>
-                        <EditorBlock block={block} idx={i} />
-                        {i != a.length - 1 && <div class='line' />}
-                    </>
-                ))}
+            <div class='editor-wrapper'>
+                <div class='editor'>
+                    <Show when={store.data.length == 0}>
+                        <div class='message'>Add a Block</div>
+                    </Show>
+                    {store.data.map((block, i, a) => (
+                        <>
+                            <EditorBlock block={block} idx={i} />
+                            {i != a.length - 1 && <div class='line' />}
+                        </>
+                    ))}
+                </div>
             </div>
         </div>
     )
+}
+
+type EditorBlockProps = {
+    idx: number
+    block: BlogData
 }
 
 const EditorBlock: Component<EditorBlockProps> = P => {
@@ -120,13 +135,21 @@ const EditorBlock: Component<EditorBlockProps> = P => {
             <div class='content'>
                 <Switch>
                     <Match when={P.block.kind == 'empty'}>
-                        <EditorEmptyBlock idx={P.idx} block={P.block} />
+                        <EditorEmptyBlock
+                            idx={P.idx}
+                            block={P.block as BlogEmpty}
+                        />
                     </Match>
                     <Match when={P.block.kind == 'text'}>Text</Match>
-                    <Match when={P.block.kind == 'image'}>Image</Match>
+                    <Match when={P.block.kind == 'image'}>
+                        <EditorImageBlock
+                            idx={P.idx}
+                            block={P.block as BlogImage}
+                        />
+                    </Match>
                 </Switch>
             </div>
-            <div class='actions'>
+            <div class='block-actions'>
                 <button
                     class='styled icon'
                     disabled={P.idx == 0}
