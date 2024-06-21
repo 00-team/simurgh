@@ -6,7 +6,7 @@
     isolation: isolate;
     position: relative;
     overflow: hidden;
-    background-color: transparent;
+    background-color: var(--cd);
     cursor: pointer;
     padding: 0.25rem;
     transition: 220ms ease-in-out;
