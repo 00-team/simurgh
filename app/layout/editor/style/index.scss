@@ -1,0 +1,62 @@
+.editor-fnd {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
+
+    .actions {
+        width: 100%;
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 0;
+        justify-content: space-between;
+
+        div {
+            display: flex;
+            gap: 0.5rem;
+        }
+    }
+
+    .editor {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        background-color: var(--cd);
+        border-radius: var(--radius);
+        border: 2px solid var(--ca);
+
+        .line {
+            width: 100%;
+            height: 2px;
+            background-color: var(--ca);
+        }
+
+        .block {
+            width: 100%;
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+
+            &.active {
+                background-color: var(--cg);
+            }
+
+            .actions {
+                display: flex;
+                flex-direction: column;
+                flex-shrink: 0;
+                width: max-content;
+                gap: 0.5rem;
+                align-items: flex-end;
+                height: 100%;
+            }
+
+            .content {
+                width: 100%;
+                height: 100%;
+                display: grid;
+                place-items: center;
+            }
+        }
+    }
+}

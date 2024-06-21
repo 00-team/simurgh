@@ -52,6 +52,20 @@ export type BlogEmpty = {
 
 export type BlogData = BlogText | BlogImage | BlogEmpty
 
+export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
+    empty: { kind: 'empty' },
+    text: {
+        kind: 'text',
+        dir: 'ltr',
+        groups: [],
+    },
+    image: {
+        kind: 'image',
+        record_id: 0,
+        record_salt: '',
+    },
+} as const
+
 export type BlogModel = {
     id: number
     slug: string
