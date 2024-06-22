@@ -45,6 +45,7 @@ export type BlogTextGroup = {
 export type BlogText = {
     kind: 'text'
     dir: 'ltr' | 'rtl'
+    align: 'left' | 'center' | 'right'
     groups: BlogTextGroup[]
 }
 
@@ -65,6 +66,7 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     text: {
         kind: 'text',
         dir: 'ltr',
+        align: 'left',
         groups: [],
     },
     image: {

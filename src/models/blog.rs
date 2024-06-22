@@ -30,6 +30,15 @@ pub enum BlogTextDirection {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+#[serde(rename_all = "snake_case")]
+pub enum BlogTextAlign {
+    #[default]
+    Left,
+    Center,
+    Right,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 pub struct BlogTextGroup {
     content: Vec<String>,
     style: BlogStyle,
@@ -38,8 +47,15 @@ pub struct BlogTextGroup {
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case", tag = "kind")]
 pub enum BlogData {
-    Text { dir: BlogTextDirection, groups: Vec<BlogTextGroup> },
-    Image { record_id: i64, record_salt: String },
+    Text {
+        dir: BlogTextDirection,
+        align: BlogTextAlign,
+        groups: Vec<BlogTextGroup>,
+    },
+    Image {
+        record_id: i64,
+        record_salt: String,
+    },
     #[default]
     Empty,
 }

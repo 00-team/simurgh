@@ -1,4 +1,12 @@
-import { Component, Show, createSignal, onCleanup, onMount } from 'solid-js'
+import {
+    Component,
+    JSX,
+    Show,
+    createMemo,
+    createSignal,
+    onCleanup,
+    onMount,
+} from 'solid-js'
 import { BlogStyle, BlogText, BlogTextGroup, DEFAULT_STYLE } from 'models'
 
 import './style/text.scss'
@@ -6,6 +14,9 @@ import { setStore, store } from './store'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
+    AlignCenterIcon,
+    AlignLeftIcon,
+    AlignRightIcon,
     BoldIcon,
     EyeIcon,
     EyeOffIcon,
@@ -93,7 +104,7 @@ export const EditorTextBlock: Component<Props> = P => {
                 ref={p}
                 class='text-content'
                 classList={{ show_groups: store.show_groups }}
-                style={{ direction: P.block.dir }}
+                style={{ direction: P.block.dir, 'text-align': P.block.align }}
                 id={`block_paragraph_${P.idx}`}
                 onMouseDown={() => setStore({ tg: -1 })}
                 onInput={e => {
@@ -300,6 +311,28 @@ export const EditorTextActions = () => {
         )
     }
 
+    function set_attr(
+        cb: (b: BlogText) => Partial<Omit<BlogText, 'kind' | 'groups'>>
+    ) {
+        setStore(
+            produce(s => {
+                let b = s.data[s.active] as BlogText
+                let v = cb(b)
+                s.data[s.active] = { ...b, ...v }
+            })
+        )
+    }
+
+    const ALIGN: {
+        [k in BlogText['align']]: [BlogText['align'], () => JSX.Element]
+    } = {
+        left: ['center', AlignCenterIcon],
+        center: ['right', AlignRightIcon],
+        right: ['left', AlignLeftIcon],
+    }
+
+    const block = createMemo(() => store.block as BlogText)
+
     return (
         <div class='editor-text-actions'>
             <Show when={state.spliter}>
@@ -370,12 +403,21 @@ export const EditorTextActions = () => {
             <button
                 class='styled icon'
                 onClick={() =>
-                    setStore(
-                        produce(s => {
-                            let b = s.data[s.active] as BlogText
-                            b.dir = b.dir == 'ltr' ? 'rtl' : 'ltr'
-                        })
-                    )
+                    set_attr(b => ({
+                        align: b.align ? ALIGN[b.align][0] : 'center',
+                    }))
+                }
+            >
+                {block().align ? (
+                    ALIGN[block().align][1]()
+                ) : (
+                    <AlignCenterIcon />
+                )}
+            </button>
+            <button
+                class='styled icon'
+                onClick={() =>
+                    set_attr(b => ({ dir: b.dir == 'ltr' ? 'rtl' : 'ltr' }))
                 }
             >
                 <Show
