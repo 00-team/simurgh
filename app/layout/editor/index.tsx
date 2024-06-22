@@ -19,6 +19,7 @@ import { Confact } from 'comps'
 import { EditorImageBlock } from './image'
 import { BlogData, BlogEmpty, BlogImage, BlogText } from 'models'
 import { EditorTextActions, EditorTextBlock } from './text'
+import { EditorHeadingBlock } from './heading'
 
 export default () => {
     const nav = useNavigate()
@@ -130,6 +131,13 @@ type EditorBlockProps = {
 }
 
 const EditorBlock: Component<EditorBlockProps> = P => {
+    const BLOCKS: { [k in BlogData['kind']]: Component<EditorBlockProps> } = {
+        heading: EditorHeadingBlock,
+        text: EditorTextBlock,
+        image: EditorImageBlock,
+        empty: EditorEmptyBlock,
+    }
+
     return (
         <div
             class='block'
@@ -140,26 +148,7 @@ const EditorBlock: Component<EditorBlockProps> = P => {
             onMouseDown={() => setStore({ active: P.idx })}
         >
             <div class='content'>
-                <Switch>
-                    <Match when={P.block.kind == 'empty'}>
-                        <EditorEmptyBlock
-                            idx={P.idx}
-                            block={P.block as BlogEmpty}
-                        />
-                    </Match>
-                    <Match when={P.block.kind == 'text'}>
-                        <EditorTextBlock
-                            idx={P.idx}
-                            block={P.block as BlogText}
-                        />
-                    </Match>
-                    <Match when={P.block.kind == 'image'}>
-                        <EditorImageBlock
-                            idx={P.idx}
-                            block={P.block as BlogImage}
-                        />
-                    </Match>
-                </Switch>
+                {BLOCKS[P.block.kind]({ idx: P.idx, block: P.block })}
             </div>
             <div class='block-actions'>
                 <button
