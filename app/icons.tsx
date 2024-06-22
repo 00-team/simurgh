@@ -535,3 +535,39 @@ export const UnderlineIcon = () => (
         <line x1='4' x2='20' y1='20' y2='20' />
     </svg>
 )
+
+export const PilcrowLeftIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='M14 3v11' />
+        <path d='M14 9h-3a3 3 0 0 1 0-6h9' />
+        <path d='M18 3v11' />
+        <path d='M22 18H2l4-4' />
+        <path d='m6 22-4-4' />
+    </svg>
+)
+
+export const PilcrowRightIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='M10 3v11' />
+        <path d='M10 9H7a1 1 0 0 1 0-6h8' />
+        <path d='M14 3v11' />
+        <path d='m18 14 4 4H2' />
+        <path d='m22 18-4 4' />
+    </svg>
+)
