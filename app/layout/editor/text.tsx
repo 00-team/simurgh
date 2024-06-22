@@ -3,7 +3,7 @@ import { BlogStyle, BlogText, BlogTextGroup, DEFAULT_STYLE } from 'models'
 
 import './style/text.scss'
 import { setStore, store } from './store'
-import { EyeIcon, EyeOffIcon, SplitIcon } from 'icons'
+import { EyeIcon, EyeOffIcon, PaletteIcon, SplitIcon } from 'icons'
 import { createStore, produce } from 'solid-js/store'
 
 function span_style(span: HTMLSpanElement): BlogStyle {
@@ -287,7 +287,28 @@ export const EditorTextActions = () => {
                     <EyeOffIcon />
                 </Show>
             </button>
-            <button class='styled icon'>X</button>
+            <Show when={store.tgroup}>
+                <button
+                    class='styled icon'
+                    style={{ '--color': store.tgroup.style.color }}
+                    onClick={() => {
+                        let el = document.createElement('input')
+                        el.setAttribute('type', 'color')
+                        el.setAttribute('value', store.tgroup.style.color)
+                        el.oninput = () => {
+                            setStore(
+                                produce(s => {
+                                    if (!s.tgroup) return
+                                    s.tgroup.style.color = el.value
+                                })
+                            )
+                        }
+                        el.click()
+                    }}
+                >
+                    <PaletteIcon />
+                </button>
+            </Show>
             <button class='styled icon'>X</button>
         </div>
     )
