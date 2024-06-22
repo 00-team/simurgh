@@ -182,7 +182,7 @@ async fn blog_update_data(
 
     data.iter_mut().for_each(|b| {
         match b {
-            BlogData::Heading { level } => {
+            BlogData::Heading { level, .. } => {
                 *level = (*level).clamp(1, 6);
             },
             _ => ()

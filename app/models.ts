@@ -62,13 +62,14 @@ export type BlogEmpty = {
 export type BlogHeading = {
     kind: 'heading'
     level: number
+    content: string
 }
 
 export type BlogData = BlogText | BlogImage | BlogEmpty | BlogHeading
 
 export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     empty: { kind: 'empty' },
-    heading: { kind: 'heading', level: 1 },
+    heading: { kind: 'heading', level: 1, content: '' },
     text: {
         kind: 'text',
         dir: 'ltr',

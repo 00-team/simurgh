@@ -5,4 +5,14 @@
     gap: 1rem;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
+
+    button {
+        font-family: monospace;
+    }
+
+    input {
+        font-family: inherit;
+        width: 100%;
+    }
 }
