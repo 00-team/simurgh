@@ -3,7 +3,7 @@ import { BlogStyle, BlogText, BlogTextGroup, DEFAULT_STYLE } from 'models'
 
 import './style/text.scss'
 import { setStore, store } from './store'
-import { SplitIcon } from 'icons'
+import { EyeIcon, EyeOffIcon, SplitIcon } from 'icons'
 import { createStore, produce } from 'solid-js/store'
 
 function span_style(span: HTMLSpanElement): BlogStyle {
@@ -73,6 +73,7 @@ export const EditorTextBlock: Component<Props> = P => {
             <p
                 ref={p}
                 class='text-content'
+                classList={{ show_groups: store.show_groups }}
                 style={{ direction: P.block.dir }}
                 id={`block_paragraph_${P.idx}`}
                 onMouseDown={() => setStore({ tg: -1 })}
@@ -88,11 +89,12 @@ export const EditorTextBlock: Component<Props> = P => {
                 {P.block.groups.map((g, i) => (
                     <span
                         data-style={JSON.stringify(g.style)}
-                        // style={{
-                        //     color: g.color,
-                        //     'font-size': g.font_size && g.font_size + 'px',
-                        //     '--bc': 'var(--c' + (i % 3) + ')',
-                        // }}
+                        style={{
+                            color: g.style.color,
+                            'font-size':
+                                g.style.font_size && g.style.font_size + 'px',
+                            '--bc': 'var(--c' + (i % 3) + ')',
+                        }}
                         classList={{
                             active: store.active == P.idx && store.tg == i,
                             show_border: store.show_groups,
@@ -277,7 +279,14 @@ export const EditorTextActions = () => {
                     <SplitIcon />
                 </button>
             </Show>
-            <button class='styled icon'>X</button>
+            <button
+                class='styled icon'
+                onClick={() => setStore(s => ({ show_groups: !s.show_groups }))}
+            >
+                <Show when={store.show_groups} fallback={<EyeIcon />}>
+                    <EyeOffIcon />
+                </Show>
+            </button>
             <button class='styled icon'>X</button>
             <button class='styled icon'>X</button>
         </div>
