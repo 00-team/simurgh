@@ -13,13 +13,20 @@ import {
     PaletteIcon,
     PilcrowLeftIcon,
     PilcrowRightIcon,
+    RotateCcwIcon,
     SplitIcon,
     UnderlineIcon,
 } from 'icons'
 import { createStore, produce } from 'solid-js/store'
 
 function span_style(span: HTMLSpanElement): BlogStyle {
-    return JSON.parse(span.dataset.style)
+    return {
+        color: span.style.color,
+        bold: span.classList.contains('bold'),
+        italic: span.classList.contains('italic'),
+        underline: span.classList.contains('underline'),
+        font_size: parseInt(span.style.fontSize.slice(0, -2)),
+    }
 }
 
 type Props = {
@@ -44,7 +51,7 @@ export const EditorTextBlock: Component<Props> = P => {
                 if (texts) {
                     groups.push({
                         content: texts.split('\n'),
-                        style: DEFAULT_STYLE,
+                        style: { ...DEFAULT_STYLE },
                     })
                     texts = ''
                 }
@@ -61,7 +68,7 @@ export const EditorTextBlock: Component<Props> = P => {
         if (texts) {
             groups.push({
                 content: texts.split('\n'),
-                style: DEFAULT_STYLE,
+                style: { ...DEFAULT_STYLE },
             })
             texts = ''
         }
@@ -69,7 +76,7 @@ export const EditorTextBlock: Component<Props> = P => {
         setStore(
             produce(s => {
                 let b = s.data[P.idx] as BlogText
-                b.groups = groups
+                b.groups = [...groups]
             })
         )
     }
@@ -100,7 +107,6 @@ export const EditorTextBlock: Component<Props> = P => {
             >
                 {P.block.groups.map((g, i) => (
                     <span
-                        data-style={JSON.stringify(g.style)}
                         style={{
                             color: g.style.color,
                             'font-size':
@@ -162,7 +168,6 @@ export const EditorTextActions = () => {
 
     onCleanup(() => {
         document.removeEventListener('selectionchange', selection_change)
-
         setStore({ tg: -1 })
     })
 
@@ -281,21 +286,15 @@ export const EditorTextActions = () => {
             produce(s => {
                 let b = s.data[s.active] as BlogText
                 if (!b) return
-                b.groups = grouped_content
-                s.data[s.active] = b
+                b.groups = [...grouped_content]
             })
         )
     }
 
-    function set_style(
-        v: Partial<BlogStyle> | ((s: BlogStyle) => Partial<BlogStyle>)
-    ) {
+    function set_style(v: Partial<BlogStyle>) {
         setStore(
             produce(s => {
                 let g = (s.data[s.active] as BlogText).groups[s.tg]
-                if (typeof v == 'function') {
-                    v = v(g.style)
-                }
                 g.style = { ...g.style, ...v }
             })
         )
@@ -357,8 +356,16 @@ export const EditorTextActions = () => {
                 >
                     <UnderlineIcon />
                 </button>
+
                 <FontSizeButton dir={-1} />
                 <FontSizeButton dir={1} />
+                <button
+                    class='styled icon'
+                    style='--color: var(--yellow)'
+                    onClick={() => set_style(DEFAULT_STYLE)}
+                >
+                    <RotateCcwIcon />
+                </button>
             </Show>
             <button
                 class='styled icon'
@@ -392,8 +399,10 @@ const FontSizeButton: Component<FontSizeButtonProps> = P => {
         setStore(
             produce(s => {
                 let g = (s.data[s.active] as BlogText).groups[s.tg]
-                g.style.font_size += P.dir
-                if (g.style.font_size < 1) g.style.font_size = 1
+                let fs = g.style.font_size + P.dir
+                if (fs < 1) fs = 1
+                if (fs > 1024) fs = 1024
+                g.style = { ...g.style, font_size: fs }
             })
         )
     }
