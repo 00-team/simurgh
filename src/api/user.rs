@@ -3,10 +3,7 @@ use actix_multipart::form::MultipartForm;
 use actix_web::cookie::time::Duration;
 use actix_web::cookie::{Cookie, SameSite};
 use actix_web::web::{Data, Json};
-use actix_web::{
-    delete, get, patch, post, put, FromRequest, HttpRequest, HttpResponse,
-    Scope,
-};
+use actix_web::{delete, get, patch, post, put, HttpResponse, Scope};
 use serde::Deserialize;
 use sha2::{Digest, Sha512};
 use utoipa::{OpenApi, ToSchema};
@@ -15,7 +12,7 @@ use crate::api::verification;
 use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::user::User;
-use crate::models::{AppErr, AppErrBadRequest, Response};
+use crate::models::{AppErr, Response};
 use crate::utils::CutOff;
 use crate::{utils, AppState};
 
@@ -168,12 +165,9 @@ pub struct UserPhotoUpload {
 /// Update Photo
 #[put("/photo/")]
 async fn user_update_photo(
-    req: HttpRequest, user: User, state: Data<AppState>,
+    user: User, form: MultipartForm<UserPhotoUpload>, state: Data<AppState>,
 ) -> Response<User> {
     let mut user = user;
-    let form = MultipartForm::<UserPhotoUpload>::extract(&req)
-        .await
-        .map_err(|e| AppErrBadRequest(&e.to_string()))?;
 
     let salt = if let Some(p) = &user.photo {
         p.clone()

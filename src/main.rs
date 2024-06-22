@@ -90,14 +90,13 @@ fn config_app(app: &mut web::ServiceConfig) {
         );
     }
 
+    app.app_data(TempFileConfig::default().error_handler(|e, _| {
+        actix_web::Error::from(AppErrBadRequest(&e.to_string()))
+    }));
     app.app_data(
-        TempFileConfig::default()
-            .error_handler(|e, _| AppErrBadRequest(&e.to_string()).into()),
-    );
-    app.app_data(
-        MultipartFormConfig::default()
-            .total_limit(209_715_200)
-            .error_handler(|e, _| AppErrBadRequest(&e.to_string()).into()),
+        MultipartFormConfig::default().total_limit(209_715_200).error_handler(
+            |e, _| actix_web::Error::from(AppErrBadRequest(&e.to_string())),
+        ),
     );
 
     app.service(openapi).service(rapidoc).service(index);
