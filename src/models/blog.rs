@@ -49,6 +49,7 @@ pub struct BlogTextGroup {
 pub enum BlogData {
     Heading {
         level: u8,
+        content: Vec<String>,
     },
     Text {
         dir: BlogTextDirection,
