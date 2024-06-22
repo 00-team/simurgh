@@ -47,6 +47,9 @@ pub struct BlogTextGroup {
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case", tag = "kind")]
 pub enum BlogData {
+    Heading {
+        level: u8,
+    },
     Text {
         dir: BlogTextDirection,
         align: BlogTextAlign,

@@ -18,14 +18,22 @@ export const EditorEmptyBlock: Component<Props> = P => {
         )
     }
 
+    const BLOCKS: { [k in Exclude<BlogData['kind'], 'empty'>]: string } = {
+        heading: 'عنوان',
+        text: 'متن',
+        image: 'عکس',
+    }
+
     return (
         <div class='block-empty'>
-            <button class='styled' onClick={() => update('text')}>
-                متن
-            </button>
-            <button class='styled' onClick={() => update('image')}>
-                عکس
-            </button>
+            {Object.entries(BLOCKS).map(([k, v]) => (
+                <button
+                    class='styled'
+                    onClick={() => update(k as BlogData['kind'])}
+                >
+                    {v}
+                </button>
+            ))}
         </div>
     )
 }

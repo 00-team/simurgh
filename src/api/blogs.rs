@@ -178,6 +178,16 @@ async fn blog_update_data(
     blog: Blog, Json(data): Json<Vec<BlogData>>, state: Data<AppState>,
 ) -> Response<Blog> {
     let mut blog = blog;
+    let mut data = data;
+
+    data.iter_mut().for_each(|b| {
+        match b {
+            BlogData::Heading { level } => {
+                *level = (*level).clamp(1, 6);
+            },
+            _ => ()
+        }
+    });
 
     blog.updated_at = utils::now();
     blog.html = "<h1>Some Test Html</h1>".to_string();
