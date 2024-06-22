@@ -15,7 +15,6 @@ import {
     UnderlineIcon,
 } from 'icons'
 import { createStore, produce } from 'solid-js/store'
-import { style } from 'solid-js/web'
 
 function span_style(span: HTMLSpanElement): BlogStyle {
     return JSON.parse(span.dataset.style)
@@ -109,6 +108,9 @@ export const EditorTextBlock: Component<Props> = P => {
                         classList={{
                             active: store.active == P.idx && store.tg == i,
                             show_border: store.show_groups,
+                            bold: g.style.bold,
+                            italic: g.style.italic,
+                            underline: g.style.underline,
                         }}
                         onMouseDown={e => {
                             e.stopPropagation()
