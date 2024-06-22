@@ -13,7 +13,7 @@ export const EditorEmptyBlock: Component<Props> = P => {
     function update(kind: BlogData['kind']) {
         setStore(
             produce(s => {
-                s.data[P.idx] = DEFAULT_BLOCKS[kind]
+                s.data[P.idx] = { ...DEFAULT_BLOCKS[kind] }
             })
         )
     }
