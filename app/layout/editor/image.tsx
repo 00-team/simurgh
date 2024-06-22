@@ -2,20 +2,17 @@ import { Component, Show } from 'solid-js'
 import { BlogImage } from 'models'
 
 import './style/image.scss'
-import { ExternalLinkIcon, ImageIcon, XIcon } from 'icons'
+import { ImageIcon, XIcon } from 'icons'
 import { addAlert } from 'comps'
 import { httpx } from 'shared'
 import { setStore, store } from './store'
 import { produce } from 'solid-js/store'
-import { useNavigate } from '@solidjs/router'
 
 type Props = {
     idx: number
     block: BlogImage
 }
 export const EditorImageBlock: Component<Props> = P => {
-    const nav = useNavigate()
-
     function upload_record() {
         let el = document.createElement('input')
         el.setAttribute('type', 'file')
@@ -47,7 +44,6 @@ export const EditorImageBlock: Component<Props> = P => {
                             let b = s.data[P.idx] as BlogImage
                             b.record_salt = x.response.salt
                             b.record_id = x.response.id
-                            s.data[P.idx] = b
                         })
                     )
                 },
@@ -80,7 +76,6 @@ export const EditorImageBlock: Component<Props> = P => {
                                 let b = s.data[P.idx] as BlogImage
                                 b.record_salt = ''
                                 b.record_id = 0
-                                s.data[P.idx] = b
                             })
                         )
                     }}
