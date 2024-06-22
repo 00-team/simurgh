@@ -1,4 +1,4 @@
-import { BlogData, BlogModel, DEFAULT_BLOG } from 'models'
+import { BlogData, BlogModel, BlogTextGroup, DEFAULT_BLOG } from 'models'
 import { createEffect, createRoot } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
@@ -8,8 +8,9 @@ export type Store = {
     blog: BlogModel
     data: BlogData[]
     active: number
-    tg: number // text group active index
     block: BlogData | undefined
+    tg: number // text group active index
+    tgroup: BlogTextGroup | undefined
     show_groups: boolean
 }
 export const [store, setStore] = createStore<Store>({
@@ -20,6 +21,10 @@ export const [store, setStore] = createStore<Store>({
     show_groups: false,
     get block() {
         return this.data[this.active]
+    },
+    get tgroup() {
+        if (!this.block || this.block.kind != 'text') return
+        return this.block.groups[this.tg]
     },
 })
 
