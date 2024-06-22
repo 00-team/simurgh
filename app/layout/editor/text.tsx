@@ -4,6 +4,8 @@ import { BlogStyle, BlogText, BlogTextGroup, DEFAULT_STYLE } from 'models'
 import './style/text.scss'
 import { setStore, store } from './store'
 import {
+    AArrowDownIcon,
+    AArrowUpIcon,
     BoldIcon,
     EyeIcon,
     EyeOffIcon,
@@ -285,10 +287,15 @@ export const EditorTextActions = () => {
         )
     }
 
-    function set_style(v: Partial<BlogStyle>) {
+    function set_style(
+        v: Partial<BlogStyle> | ((s: BlogStyle) => Partial<BlogStyle>)
+    ) {
         setStore(
             produce(s => {
                 let g = (s.data[s.active] as BlogText).groups[s.tg]
+                if (typeof v == 'function') {
+                    v = v(g.style)
+                }
                 g.style = { ...g.style, ...v }
             })
         )
@@ -350,6 +357,8 @@ export const EditorTextActions = () => {
                 >
                     <UnderlineIcon />
                 </button>
+                <FontSizeButton dir={-1} />
+                <FontSizeButton dir={1} />
             </Show>
             <button
                 class='styled icon'
@@ -370,5 +379,43 @@ export const EditorTextActions = () => {
                 </Show>
             </button>
         </div>
+    )
+}
+
+type FontSizeButtonProps = {
+    dir: -1 | 1
+}
+const FontSizeButton: Component<FontSizeButtonProps> = P => {
+    let timer: number
+
+    function add_size() {
+        setStore(
+            produce(s => {
+                let g = (s.data[s.active] as BlogText).groups[s.tg]
+                g.style.font_size += P.dir
+                if (g.style.font_size < 1) g.style.font_size = 1
+            })
+        )
+    }
+
+    function clear() {
+        clearInterval(timer)
+    }
+
+    onMount(() => document.addEventListener('mouseup', clear))
+    onCleanup(() => document.removeEventListener('mouseup', clear))
+
+    return (
+        <button
+            class='styled icon'
+            onClick={add_size}
+            onMouseDown={() => {
+                timer = setInterval(add_size, 100)
+            }}
+        >
+            <Show when={P.dir == 1} fallback={<AArrowDownIcon />}>
+                <AArrowUpIcon />
+            </Show>
+        </button>
     )
 }
