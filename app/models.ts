@@ -1,3 +1,6 @@
+import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'icons'
+import { JSX } from 'solid-js'
+
 export type UserModel = {
     id: number
     email: string
@@ -42,10 +45,21 @@ export type BlogTextGroup = {
     style: BlogStyle
 }
 
+export type BlogDirection = 'ltr' | 'rtl'
+export type BlogAlign = 'left' | 'center' | 'right'
+
+export const BLOG_ALIGN: {
+    [k in BlogAlign]: [BlogAlign, () => JSX.Element]
+} = {
+    left: ['center', AlignCenterIcon],
+    center: ['right', AlignRightIcon],
+    right: ['left', AlignLeftIcon],
+}
+
 export type BlogText = {
     kind: 'text'
-    dir: 'ltr' | 'rtl'
-    align: 'left' | 'center' | 'right'
+    dir: BlogDirection
+    align: BlogAlign
     groups: BlogTextGroup[]
 }
 
@@ -63,13 +77,21 @@ export type BlogHeading = {
     kind: 'heading'
     level: number
     content: string
+    dir: BlogDirection
+    align: BlogAlign
 }
 
 export type BlogData = BlogText | BlogImage | BlogEmpty | BlogHeading
 
 export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     empty: { kind: 'empty' },
-    heading: { kind: 'heading', level: 1, content: '' },
+    heading: {
+        kind: 'heading',
+        level: 1,
+        content: '',
+        dir: 'ltr',
+        align: 'left',
+    },
     text: {
         kind: 'text',
         dir: 'ltr',

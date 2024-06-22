@@ -23,7 +23,7 @@ pub struct BlogStyle {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case")]
-pub enum BlogTextDirection {
+pub enum BlogDirection {
     #[default]
     Ltr,
     Rtl,
@@ -31,7 +31,7 @@ pub enum BlogTextDirection {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case")]
-pub enum BlogTextAlign {
+pub enum BlogAlign {
     #[default]
     Left,
     Center,
@@ -50,10 +50,12 @@ pub enum BlogData {
     Heading {
         level: u8,
         content: String,
+        dir: BlogDirection,
+        align: BlogAlign,
     },
     Text {
-        dir: BlogTextDirection,
-        align: BlogTextAlign,
+        dir: BlogDirection,
+        align: BlogAlign,
         groups: Vec<BlogTextGroup>,
     },
     Image {

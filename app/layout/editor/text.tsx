@@ -7,7 +7,13 @@ import {
     onCleanup,
     onMount,
 } from 'solid-js'
-import { BlogStyle, BlogText, BlogTextGroup, DEFAULT_STYLE } from 'models'
+import {
+    BLOG_ALIGN,
+    BlogStyle,
+    BlogText,
+    BlogTextGroup,
+    DEFAULT_STYLE,
+} from 'models'
 
 import './style/text.scss'
 import { setStore, store } from './store'
@@ -323,14 +329,6 @@ export const EditorTextActions = () => {
         )
     }
 
-    const ALIGN: {
-        [k in BlogText['align']]: [BlogText['align'], () => JSX.Element]
-    } = {
-        left: ['center', AlignCenterIcon],
-        center: ['right', AlignRightIcon],
-        right: ['left', AlignLeftIcon],
-    }
-
     const block = createMemo(() => store.block as BlogText)
 
     return (
@@ -404,12 +402,12 @@ export const EditorTextActions = () => {
                 class='styled icon'
                 onClick={() =>
                     set_attr(b => ({
-                        align: b.align ? ALIGN[b.align][0] : 'center',
+                        align: b.align ? BLOG_ALIGN[b.align][0] : 'center',
                     }))
                 }
             >
                 {block().align ? (
-                    ALIGN[block().align][1]()
+                    BLOG_ALIGN[block().align][1]()
                 ) : (
                     <AlignCenterIcon />
                 )}
