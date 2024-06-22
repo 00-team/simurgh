@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 log = "0.4"
 lettre = "0.11"
+cercis = "1.2"
 rand = "0.8"
 sha2 = "0.10"
 hmac = "0.12"

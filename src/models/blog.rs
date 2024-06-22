@@ -1,6 +1,6 @@
 use actix_web::{dev::Payload, web::Data, HttpRequest};
 use serde::{Deserialize, Serialize};
-use std::{future::Future, pin::Pin};
+use std::{fmt, future::Future, pin::Pin};
 use utoipa::ToSchema;
 
 use super::JsonStr;
@@ -14,11 +14,11 @@ super::sql_enum! {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 pub struct BlogStyle {
-    color: Option<String>,
-    bold: bool,
-    italic: bool,
-    underline: bool,
-    font_size: u16,
+    pub color: Option<String>,
+    pub bold: bool,
+    pub italic: bool,
+    pub underline: bool,
+    pub font_size: u16,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
@@ -27,6 +27,16 @@ pub enum BlogDirection {
     #[default]
     Ltr,
     Rtl,
+}
+
+impl fmt::Display for BlogDirection {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = match self {
+            BlogDirection::Ltr => "ltr",
+            BlogDirection::Rtl => "rtl",
+        };
+        write!(f, "{out}")
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
@@ -38,10 +48,21 @@ pub enum BlogAlign {
     Right,
 }
 
+impl fmt::Display for BlogAlign {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = match self {
+            BlogAlign::Left => "left",
+            BlogAlign::Center => "center",
+            BlogAlign::Right => "right",
+        };
+        write!(f, "{out}")
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 pub struct BlogTextGroup {
-    content: Vec<String>,
-    style: BlogStyle,
+    pub content: Vec<String>,
+    pub style: BlogStyle,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
