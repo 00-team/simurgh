@@ -3,8 +3,19 @@ import { BlogStyle, BlogText, BlogTextGroup, DEFAULT_STYLE } from 'models'
 
 import './style/text.scss'
 import { setStore, store } from './store'
-import { EyeIcon, EyeOffIcon, PaletteIcon, SplitIcon } from 'icons'
+import {
+    BoldIcon,
+    EyeIcon,
+    EyeOffIcon,
+    ItalicIcon,
+    PaletteIcon,
+    PilcrowLeftIcon,
+    PilcrowRightIcon,
+    SplitIcon,
+    UnderlineIcon,
+} from 'icons'
 import { createStore, produce } from 'solid-js/store'
+import { style } from 'solid-js/web'
 
 function span_style(span: HTMLSpanElement): BlogStyle {
     return JSON.parse(span.dataset.style)
@@ -272,6 +283,15 @@ export const EditorTextActions = () => {
         )
     }
 
+    function set_style(v: Partial<BlogStyle>) {
+        setStore(
+            produce(s => {
+                let g = (s.data[s.active] as BlogText).groups[s.tg]
+                g.style = { ...g.style, ...v }
+            })
+        )
+    }
+
     return (
         <div class='editor-text-actions'>
             <Show when={state.spliter}>
@@ -295,21 +315,58 @@ export const EditorTextActions = () => {
                         let el = document.createElement('input')
                         el.setAttribute('type', 'color')
                         el.setAttribute('value', store.tgroup.style.color)
-                        el.oninput = () => {
-                            setStore(
-                                produce(s => {
-                                    if (!s.tgroup) return
-                                    s.tgroup.style.color = el.value
-                                })
-                            )
-                        }
+                        el.oninput = () => set_style({ color: el.value })
                         el.click()
                     }}
                 >
                     <PaletteIcon />
                 </button>
+                <button
+                    class='styled icon'
+                    classList={{ active: store.tgroup.style.bold }}
+                    onClick={() =>
+                        set_style({ bold: !store.tgroup.style.bold })
+                    }
+                >
+                    <BoldIcon />
+                </button>
+                <button
+                    class='styled icon'
+                    classList={{ active: store.tgroup.style.italic }}
+                    onClick={() =>
+                        set_style({ italic: !store.tgroup.style.italic })
+                    }
+                >
+                    <ItalicIcon />
+                </button>
+                <button
+                    class='styled icon'
+                    classList={{ active: store.tgroup.style.underline }}
+                    onClick={() =>
+                        set_style({ underline: !store.tgroup.style.underline })
+                    }
+                >
+                    <UnderlineIcon />
+                </button>
             </Show>
-            <button class='styled icon'>X</button>
+            <button
+                class='styled icon'
+                onClick={() =>
+                    setStore(
+                        produce(s => {
+                            let b = s.data[s.active] as BlogText
+                            b.dir = b.dir == 'ltr' ? 'rtl' : 'ltr'
+                        })
+                    )
+                }
+            >
+                <Show
+                    when={(store.block as BlogText).dir == 'ltr'}
+                    fallback={<PilcrowLeftIcon />}
+                >
+                    <PilcrowRightIcon />
+                </Show>
+            </button>
         </div>
     )
 }

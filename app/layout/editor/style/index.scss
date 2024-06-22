@@ -17,6 +17,12 @@
             display: flex;
             gap: 0.5rem;
         }
+
+        .editor-text-actions {
+            button.active {
+                background-color: var(--color);
+            }
+        }
     }
 
     .editor-wrapper {
