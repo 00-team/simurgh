@@ -13,7 +13,7 @@ import { useNavigate, useParams } from '@solidjs/router'
 import { Component, Match, Show, Switch, createEffect } from 'solid-js'
 import { httpx } from 'shared'
 import { EditorEmptyBlock } from './empty'
-import { setStore, store, unwrap_rec } from './store'
+import { pre_save, setStore, store, unwrap_rec } from './store'
 import { produce } from 'solid-js/store'
 import { Confact } from 'comps'
 import { EditorImageBlock } from './image'
@@ -83,7 +83,10 @@ export default () => {
                         icon={SaveIcon}
                         color='var(--green)'
                         timer_ms={700}
-                        onAct={blog_update_data}
+                        onAct={() => {
+                            document.dispatchEvent(pre_save)
+                            blog_update_data()
+                        }}
                     />
 
                     <Confact

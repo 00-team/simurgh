@@ -2,6 +2,8 @@ import { BlogData, BlogModel, DEFAULT_BLOG } from 'models'
 import { createEffect, createRoot } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
+export const pre_save = new CustomEvent('editor_pre_save')
+
 export type Store = {
     blog: BlogModel
     data: BlogData[]

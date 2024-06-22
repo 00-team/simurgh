@@ -29,6 +29,14 @@ export type BlogStyle = {
     font_size: number
 }
 
+export const DEFAULT_STYLE: BlogStyle = {
+    color: null,
+    bold: false,
+    italic: false,
+    underline: false,
+    font_size: 18,
+}
+
 export type BlogTextGroup = {
     content: string[]
     style: BlogStyle
