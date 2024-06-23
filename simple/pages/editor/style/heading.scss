@@ -1,0 +1,30 @@
+.editor-fnd .editor .block-heading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+
+    .heading-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .heading {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    button {
+        font-family: monospace;
+    }
+
+    input {
+        font-family: inherit;
+        width: 100%;
+    }
+}

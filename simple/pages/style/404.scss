@@ -1,0 +1,18 @@
+.not-found-fnd {
+    width: 100%;
+    height: var(--dash-inner-height);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    h1 {
+        font-size: 3rem;
+        direction: rtl;
+    }
+
+    a {
+        color: var(--cl);
+        font-size: 2.5rem;
+    }
+}

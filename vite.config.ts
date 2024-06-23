@@ -4,12 +4,17 @@ import solidPlugin from 'vite-plugin-solid'
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-let target = 'https://simurgh.00-team.org'
-if (process.env.local_api_target) {
-    target = 'http://127.0.0.1:7700'
+const CONFING = {
+    al: ['http://127.0.0.1:7700', 'app', 8700],
+    sl: ['http://127.0.0.1:7700', 'simple', 8707],
+} as const
+
+let target = CONFING.al
+if (process.env.target && CONFING[process.env.target]) {
+    target = CONFING[process.env.target]
 }
 
-console.log('api target: ' + target)
+console.log('target: ' + target[1])
 
 export default defineConfig(env => {
     let watch: WatcherOptions | null = null
@@ -20,16 +25,21 @@ export default defineConfig(env => {
     }
 
     return {
+        root: target[1],
         plugins: [tsconfigPaths(), solidPlugin({ hot: false })],
         server: {
-            port: 8700,
+            port: target[2],
             proxy: {
                 '/api/': {
-                    target,
+                    target: target[0],
+                    changeOrigin: true,
+                },
+                '/simurgh-record/': {
+                    target: target[0],
                     changeOrigin: true,
                 },
                 '/record/': {
-                    target,
+                    target: target[0],
                     changeOrigin: true,
                 },
             },

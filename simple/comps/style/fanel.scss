@@ -1,0 +1,31 @@
+.cmp-fanel-fnd {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    backdrop-filter: blur(3px);
+    background-color: #0002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .fanel {
+        position: relative;
+        padding: 32px;
+        background-color: var(--cd);
+        border: 2px solid var(--cl);
+        border-radius: var(--radius);
+        width: 80%;
+        height: 80%;
+
+        .cmp-fanel-btn-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: transparent;
+
+            &:hover {
+                color: var(--cl);
+            }
+        }
+    }
+}

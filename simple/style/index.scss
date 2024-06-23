@@ -1,0 +1,40 @@
+@import './fonts';
+@import './dash';
+@import './root';
+@import './button';
+@import './misc';
+@import './input';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    color-scheme: dark;
+    background-image: url(/assets/pattern.svg);
+    background-color: var(--cd);
+    color: var(--cl);
+
+    font-family: 'Zan', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+
+    width: 100%;
+    height: 100vh;
+
+    .root {
+        width: 100%;
+        height: 100%;
+    }
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    img {
+        user-select: none;
+    }
+}

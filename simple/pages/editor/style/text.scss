@@ -1,0 +1,53 @@
+.editor-fnd .editor .block-text {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+
+    .placeholder {
+        direction: rtl;
+        opacity: 0.6;
+        user-select: none;
+        pointer-events: none;
+        position: absolute;
+    }
+
+    .text-content {
+        outline: 0;
+
+        font-size: 18px;
+        width: 100%;
+        display: inline-block;
+        word-break: break-word;
+
+        span {
+            --c0: var(--red);
+            --c1: var(--green);
+            --c2: var(--blue);
+
+            &:hover {
+                outline: 2px solid #fff3;
+            }
+
+            &.active {
+                outline: 2px solid #0ff3;
+            }
+
+            &.bold {
+                font-weight: bold;
+            }
+            &.italic {
+                font-style: italic;
+            }
+            &.underline {
+                text-decoration: underline;
+            }
+        }
+
+        &.show_groups span {
+            outline: 2px solid var(--bc);
+        }
+    }
+}

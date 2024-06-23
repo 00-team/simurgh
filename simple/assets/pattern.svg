@@ -1,0 +1,604 @@
+<!DOCTYPE xml>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 320 320" stroke-width="1"
+    stroke="#aaa" >
+    <g transform="translate(8 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 8)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 40)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 72)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 104)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 136)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 168)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 200)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 232)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="0s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 264)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(8 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(40 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="3s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(72 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(104 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(136 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="1s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(168 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="4s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(200 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(232 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(264 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="5s"></animateTransform>
+        </path>
+    </g>
+    <g transform="translate(296 296)">
+        <path d="M8 0v16m8-8h-16" transform-origin="8 8">
+            <animateTransform attributeName="transform" attributeType="XML" type="scale"
+                values="1;0;1" dur="4s" repeatCount="indefinite" begin="2s"></animateTransform>
+        </path>
+    </g>
+</svg>
