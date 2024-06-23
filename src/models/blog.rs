@@ -21,6 +21,21 @@ pub struct BlogStyle {
     pub font_size: u16,
 }
 
+impl BlogStyle {
+    pub fn css(&self) -> String {
+        let mut style = vec![format!("font-size: {}px", self.font_size)];
+        if let Some(c) = &self.color {
+            if c.len() > 0 {
+                style.push(format!("color: {c}"));
+            }
+        }
+        if self.underline {
+            style.push("text-decoration: underline".to_string());
+        }
+        style.join(";")
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum BlogDirection {

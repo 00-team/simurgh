@@ -2,7 +2,6 @@ use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
 use actix_web::web::{Data, Json, Query};
 use actix_web::{delete, get, patch, post, put, HttpResponse, Scope};
-use cercis::prelude::*;
 use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
@@ -167,64 +166,6 @@ async fn blog_update(
     Ok(Json(blog))
 }
 
-fn blog_render(data: &Vec<BlogData>) -> String {
-    let elements = data.iter().map(|b| match b {
-        BlogData::Text { dir, align, groups } => {
-            let gs = groups.iter().map(|g| {
-                let content =
-                    g.content.iter().enumerate().map(|(idx, line)| {
-                        rsx! {
-                            "{line}"
-                            if idx != g.content.len() {
-                                br {}
-                            }
-                        }
-                    });
-                let mut style: Vec<String> = vec![];
-                if let Some(c) = &g.style.color {
-                    if c.len() != 0 {
-                        style.push(format!("color: {c}"));
-                    }
-                }
-
-                let style = style.join(";");
-
-                rsx! {
-                    span {
-                        style: "{style}",
-                        for node in content {
-                            node
-                        }
-                    }
-                }
-            });
-
-            rsx! {
-                p {
-                    style: "direction: {dir};text-align: {align}",
-                    for g in gs {
-                        g
-                    }
-                }
-            }
-        }
-        BlogData::Heading { dir, align, level, content } => rsx! {
-            h1 {
-                style: "direction: {dir};text-align: {align}",
-                "{content}"
-            }
-        },
-        _ => rsx!(),
-    });
-
-    rsx! {
-        for e in elements {
-            e
-        }
-    }
-    .render()
-}
-
 #[utoipa::path(
     patch,
     params(("pid" = i64, Path, example = 1), ("bid" = i64, Path, example = 1)),
@@ -247,7 +188,7 @@ async fn blog_update_data(
     });
 
     blog.updated_at = utils::now();
-    blog.html = blog_render(&data);
+    blog.html = super::blog_render::blog_render(&data);
     log::info!("html:\n\n{}", blog.html);
     blog.data = JsonStr(data);
 
