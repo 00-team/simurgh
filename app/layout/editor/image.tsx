@@ -31,7 +31,7 @@ export const EditorImageBlock: Component<Props> = P => {
             }
 
             let data = new FormData()
-            data.set('record', el.files[0], 'XXX')
+            data.set('record', el.files[0], store.blog.title || store.blog.slug)
 
             httpx({
                 url: `/api/projects/${store.blog.project}/records/`,
