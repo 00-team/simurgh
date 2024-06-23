@@ -18,6 +18,7 @@ pub struct BlogStyle {
     pub bold: bool,
     pub italic: bool,
     pub underline: bool,
+    pub code: bool,
     pub font_size: u16,
 }
 

@@ -44,6 +44,10 @@
             &.underline {
                 text-decoration: underline;
             }
+            &.code {
+                font-family: monospace;
+                background-color: var(--cg);
+            }
         }
 
         &.show_groups span {

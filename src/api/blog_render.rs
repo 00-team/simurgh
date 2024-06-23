@@ -65,5 +65,9 @@ fn Group<'a>(group: &'a BlogTextGroup) -> Element {
         el = rsx! { i { el } };
     }
 
+    if group.style.code {
+        el = rsx! { code { el } };
+    }
+
     el
 }

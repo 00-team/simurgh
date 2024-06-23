@@ -21,6 +21,7 @@ import {
     AArrowUpIcon,
     AlignCenterIcon,
     BoldIcon,
+    CodeXmlIcon,
     EyeIcon,
     EyeOffIcon,
     ItalicIcon,
@@ -39,6 +40,7 @@ function span_style(span: HTMLSpanElement): BlogStyle {
         bold: span.classList.contains('bold'),
         italic: span.classList.contains('italic'),
         underline: span.classList.contains('underline'),
+        code: span.classList.contains('code'),
         font_size: parseInt(span.style.fontSize.slice(0, -2)),
     }
 }
@@ -138,6 +140,7 @@ export const EditorTextBlock: Component<Props> = P => {
                             bold: g.style.bold,
                             italic: g.style.italic,
                             underline: g.style.underline,
+                            code: g.style.code,
                         }}
                         onMouseDown={e => {
                             e.stopPropagation()
@@ -389,6 +392,15 @@ export const EditorTextActions = () => {
                     }
                 >
                     <UnderlineIcon />
+                </button>
+                <button
+                    class='styled icon'
+                    classList={{ active: store.tgroup.style.code }}
+                    onClick={() =>
+                        set_style({ code: !store.tgroup.style.code })
+                    }
+                >
+                    <CodeXmlIcon />
                 </button>
 
                 <FontSizeButton dir={-1} />

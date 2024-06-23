@@ -14,7 +14,7 @@ in house content management service for 00 Team
 -   [ ] map block
 -   [ ] move text block action in the text block it self
 -   [ ] inline [link](https://00-team.org) in text blocks
--   [ ] inline `code` in text blocks
+-   [x] inline `code` in text blocks
 -   [ ] mark in text blocks
 -   [ ] code block
 -   [ ] list, todo list and ... block

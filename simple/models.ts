@@ -29,6 +29,7 @@ export type BlogStyle = {
     bold: boolean
     italic: boolean
     underline: boolean
+    code: boolean
     font_size: number
 }
 
@@ -37,6 +38,7 @@ export const DEFAULT_STYLE: BlogStyle = {
     bold: false,
     italic: false,
     underline: false,
+    code: false,
     font_size: 18,
 }
 
