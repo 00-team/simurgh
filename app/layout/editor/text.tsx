@@ -1,6 +1,5 @@
 import {
     Component,
-    JSX,
     Show,
     createMemo,
     createSignal,
@@ -21,8 +20,6 @@ import {
     AArrowDownIcon,
     AArrowUpIcon,
     AlignCenterIcon,
-    AlignLeftIcon,
-    AlignRightIcon,
     BoldIcon,
     EyeIcon,
     EyeOffIcon,
@@ -118,6 +115,11 @@ export const EditorTextBlock: Component<Props> = P => {
                         setStore({ active: P.idx })
                     }
                     setPlaceholer(!e.currentTarget.innerHTML)
+                    for (let el of e.currentTarget.childNodes) {
+                        if (el.nodeType == Node.TEXT_NODE) {
+                            return pre_save()
+                        }
+                    }
                 }}
                 onFocus={() => setStore({ active: P.idx })}
                 contenteditable={'plaintext-only'}
@@ -189,6 +191,7 @@ export const EditorTextActions = () => {
     })
 
     function new_group() {
+        setState({ spliter: false })
         let p = document.getElementById('block_paragraph_' + store.active)
         let selection = document.getSelection()
         if (!p || selection.rangeCount == 0) return
@@ -346,7 +349,7 @@ export const EditorTextActions = () => {
                     <EyeOffIcon />
                 </Show>
             </button>
-            <Show when={store.tgroup}>
+            <Show when={store.tgroup && !state.spliter}>
                 <button
                     class='styled icon'
                     style={{ '--color': store.tgroup.style.color }}
