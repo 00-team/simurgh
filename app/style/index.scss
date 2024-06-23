@@ -4,6 +4,7 @@
 @import './fonts';
 @import './dash';
 @import './root';
+@import './misc';
 @import './button';
 @import './input';
 
@@ -12,24 +13,9 @@
     padding: 0;
     box-sizing: border-box;
 
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
-    user-select: none; /* Standard */
-
     &:focus {
         outline: 0;
     }
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--sixty-percent);
-    border: 2px solid var(--primary-color);
-    border-radius: 20px;
 }
 
 body {
@@ -64,19 +50,6 @@ body {
     }
 }
 
-html[data-theme='dark'] {
-    body {
-        @include theme.dark;
-    }
-    background-color: #000;
-}
-html[data-theme='light'] {
-    body {
-        @include theme.light;
-    }
-    background-color: #fff;
-}
-
 html,
 body {
     scroll-behavior: smooth;
@@ -107,12 +80,8 @@ body {
     font-size: g.$DESCRIPTION_FONT_SIZE;
     font-family: 'yekan';
 }
+
 .description_small {
     font-size: g.$DESCRIPTION_FONT_SIZE_SMALL;
     font-family: 'yekan';
-}
-
-.icon {
-    display: grid;
-    place-items: center;
 }

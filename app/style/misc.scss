@@ -1,0 +1,24 @@
+::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+    background-color: var(--scroll-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    border: 2px solid var(--scroll-bg);
+    background-color: var(--scorll-fg);
+
+    &:hover {
+        background-color: var(--scorll-hover);
+    }
+
+    &:active {
+        background-color: var(--scorll-active);
+    }
+}
+
+::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-fg);
+}
