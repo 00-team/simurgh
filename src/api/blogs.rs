@@ -189,7 +189,6 @@ async fn blog_update_data(
 
     blog.updated_at = utils::now();
     blog.html = super::blog_render::blog_render(&data);
-    log::info!("html:\n\n{}", blog.html);
     blog.data = JsonStr(data);
 
     sqlx::query! {
