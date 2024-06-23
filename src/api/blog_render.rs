@@ -50,7 +50,7 @@ fn Group<'a>(group: &'a BlogTextGroup) -> Element {
             style: "{style}",
             for (idx, line) in group.content.iter().enumerate() {
                 "{line}"
-                if idx != group.content.len() {
+                if idx != group.content.len() - 1 {
                     br {}
                 }
             }
