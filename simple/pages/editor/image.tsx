@@ -1,5 +1,11 @@
 import { Component, Show } from 'solid-js'
-import { BlogImage, DEFAULT_BLOCKS, RecordModel, RecordUsages } from 'models'
+import {
+    BLOG_ALIGN,
+    BlogImage,
+    DEFAULT_BLOCKS,
+    RecordModel,
+    RecordUsages,
+} from 'models'
 
 import './style/image.scss'
 import { ImageIcon, XIcon } from 'icons'
@@ -65,29 +71,93 @@ export const EditorImageBlock: Component<Props> = P => {
             <Show
                 when={P.block.url}
                 fallback={
-                    <button class='styled icon' onClick={upload_record}>
-                        <ImageIcon />
-                    </button>
+                    <div class='image-input'>
+                        <button class='styled icon' onClick={upload_record}>
+                            <ImageIcon />
+                        </button>
+                        <input
+                            class='styled url'
+                            placeholder='image url'
+                            value={P.block.url}
+                            onChange={e => {
+                                setStore(
+                                    produce(s => {
+                                        let b = s.data[P.idx] as BlogImage
+                                        b.url = e.currentTarget.value
+                                    })
+                                )
+                            }}
+                        />
+                    </div>
                 }
             >
-                <img
-                    decoding='async'
-                    loading='lazy'
-                    draggable={false}
-                    src={P.block.url}
-                />
-                <button
-                    class='styled icon remove'
-                    onClick={() => {
-                        setStore(
-                            produce(s => {
-                                s.data[P.idx] = DEFAULT_BLOCKS.image
-                            })
-                        )
-                    }}
-                >
-                    <XIcon />
-                </button>
+                <div class='image'>
+                    <Show when={!P.block.record_id}>
+                        <input
+                            class='styled url'
+                            placeholder='image url'
+                            value={P.block.url}
+                            onChange={e => {
+                                setStore(
+                                    produce(s => {
+                                        let b = s.data[P.idx] as BlogImage
+                                        b.url = e.currentTarget.value
+                                    })
+                                )
+                            }}
+                        />
+                    </Show>
+                    <img
+                        style={{ 'object-position': P.block.align }}
+                        decoding='async'
+                        alt={P.block.alt}
+                        loading='lazy'
+                        draggable={false}
+                        src={P.block.url}
+                    />
+                    <input
+                        dir='auto'
+                        class='styled'
+                        placeholder='توصیف تصویر'
+                        value={P.block.alt}
+                        onInput={e => {
+                            setStore(
+                                produce(s => {
+                                    let b = s.data[P.idx] as BlogImage
+                                    b.alt = e.currentTarget.value
+                                })
+                            )
+                        }}
+                    />
+                </div>
+                <div class='image-actions'>
+                    <button
+                        class='styled icon remove'
+                        onClick={() => {
+                            setStore(
+                                produce(s => {
+                                    s.data[P.idx] = DEFAULT_BLOCKS.image
+                                })
+                            )
+                        }}
+                    >
+                        <XIcon />
+                    </button>
+                    <button
+                        class='styled icon'
+                        onClick={() =>
+                            setStore(
+                                produce(s => {
+                                    let b = s.data[P.idx] as BlogImage
+                                    b.align = BLOG_ALIGN[b.align][0]
+                                })
+                            )
+                        }
+                        title={'align: ' + P.block.align}
+                    >
+                        {BLOG_ALIGN[P.block.align][1]()}
+                    </button>
+                </div>
             </Show>
         </div>
     )
