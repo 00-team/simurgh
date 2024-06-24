@@ -1,11 +1,4 @@
-import {
-    Component,
-    Show,
-    createMemo,
-    createSignal,
-    onCleanup,
-    onMount,
-} from 'solid-js'
+import { Component, Show, onCleanup, onMount } from 'solid-js'
 import {
     BLOG_ALIGN,
     BlogStyle,
@@ -19,7 +12,6 @@ import { setStore, store } from './store'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
-    AlignCenterIcon,
     BoldIcon,
     CodeXmlIcon,
     EyeIcon,
@@ -50,10 +42,20 @@ type Props = {
     block: BlogText
 }
 export const EditorTextBlock: Component<Props> = P => {
-    const [placeholder, setPlaceholer] = createSignal(
-        P.block.groups.length == 0 ||
-            !P.block.groups.find(g => g.content.length)
-    )
+    type State = {
+        placeholder: boolean
+        ag: number
+        group?: BlogTextGroup
+    }
+    const [state, setState] = createStore<State>({
+        placeholder:
+            P.block.groups.length == 0 ||
+            !P.block.groups.find(g => g.content.length),
+        ag: -1,
+        get group() {
+            return P.block.groups[this.ag]
+        },
+    })
 
     let p: HTMLParagraphElement
 
@@ -102,7 +104,14 @@ export const EditorTextBlock: Component<Props> = P => {
 
     return (
         <div class='block-text'>
-            <Show when={placeholder()}>
+            <Actions
+                idx={P.idx}
+                block={P.block}
+                p={p}
+                group={state.group}
+                ag={state.ag}
+            />
+            <Show when={state.placeholder}>
                 <span class='placeholder'>متن خود را وارد کنید ...</span>
             </Show>
             <p
@@ -111,12 +120,12 @@ export const EditorTextBlock: Component<Props> = P => {
                 classList={{ show_groups: store.show_groups }}
                 style={{ direction: P.block.dir, 'text-align': P.block.align }}
                 id={`block_paragraph_${P.idx}`}
-                onMouseDown={() => setStore({ tg: -1 })}
+                onMouseDown={() => setState({ ag: -1 })}
                 onInput={e => {
                     if (store.active != P.idx) {
                         setStore({ active: P.idx })
                     }
-                    setPlaceholer(!e.currentTarget.innerHTML)
+                    setState({ placeholder: !e.currentTarget.innerHTML })
                     for (let el of e.currentTarget.childNodes) {
                         if (el.nodeType == Node.TEXT_NODE) {
                             return pre_save()
@@ -135,7 +144,7 @@ export const EditorTextBlock: Component<Props> = P => {
                             '--bc': 'var(--c' + (i % 3) + ')',
                         }}
                         classList={{
-                            active: store.active == P.idx && store.tg == i,
+                            active: store.active == P.idx && state.ag == i,
                             show_border: store.show_groups,
                             bold: g.style.bold,
                             italic: g.style.italic,
@@ -144,7 +153,7 @@ export const EditorTextBlock: Component<Props> = P => {
                         }}
                         onMouseDown={e => {
                             e.stopPropagation()
-                            setStore({ tg: i })
+                            setState({ ag: i })
                         }}
                     >
                         {g.content.map((line, li, a) => (
@@ -160,7 +169,12 @@ export const EditorTextBlock: Component<Props> = P => {
     )
 }
 
-export const EditorTextActions = () => {
+type ActionsProps = Props & {
+    p: HTMLParagraphElement
+    group?: BlogTextGroup
+    ag: number
+}
+const Actions: Component<ActionsProps> = P => {
     type State = {
         spliter: boolean
     }
@@ -174,9 +188,10 @@ export const EditorTextActions = () => {
             let range = selection.getRangeAt(0)
             let sc = range.startContainer
             let ec = range.endContainer
-            let p = document.getElementById('block_paragraph_' + store.active)
-            if (!p) return
-            if ((sc == p || p.contains(sc)) && (ec == p || p.contains(ec))) {
+            if (
+                (sc == P.p || P.p.contains(sc)) &&
+                (ec == P.p || P.p.contains(ec))
+            ) {
                 show = true
             }
         }
@@ -190,14 +205,12 @@ export const EditorTextActions = () => {
 
     onCleanup(() => {
         document.removeEventListener('selectionchange', selection_change)
-        setStore({ tg: -1 })
     })
 
     function new_group() {
         setState({ spliter: false })
-        let p = document.getElementById('block_paragraph_' + store.active)
         let selection = document.getSelection()
-        if (!p || selection.rangeCount == 0) return
+        if (!P.p || selection.rangeCount == 0) return
 
         let range = selection.getRangeAt(0)
         if (range.collapsed) return
@@ -222,7 +235,7 @@ export const EditorTextActions = () => {
         let data: Map<number, BlogTextGroup> = new Map()
         let outrange = -1
 
-        for (let n of p.childNodes) {
+        for (let n of P.p.childNodes) {
             if (n == sc) {
                 groups.push(content.length + soff)
                 outrange = 0
@@ -304,11 +317,10 @@ export const EditorTextActions = () => {
             }
         }
 
-        p.innerHTML = ''
+        P.p.innerHTML = ''
         setStore(
             produce(s => {
-                let b = s.data[s.active] as BlogText
-                if (!b) return
+                let b = s.data[P.idx] as BlogText
                 b.groups = [...grouped_content]
             })
         )
@@ -317,7 +329,7 @@ export const EditorTextActions = () => {
     function set_style(v: Partial<BlogStyle>) {
         setStore(
             produce(s => {
-                let g = (s.data[s.active] as BlogText).groups[s.tg]
+                let g = (s.data[P.idx] as BlogText).groups[P.ag]
                 g.style = { ...g.style, ...v }
             })
         )
@@ -328,14 +340,12 @@ export const EditorTextActions = () => {
     ) {
         setStore(
             produce(s => {
-                let b = s.data[s.active] as BlogText
+                let b = s.data[P.idx] as BlogText
                 let v = cb(b)
-                s.data[s.active] = { ...b, ...v }
+                s.data[P.idx] = { ...b, ...v }
             })
         )
     }
-
-    const block = createMemo(() => store.block as BlogText)
 
     return (
         <div class='editor-text-actions'>
@@ -352,14 +362,14 @@ export const EditorTextActions = () => {
                     <EyeOffIcon />
                 </Show>
             </button>
-            <Show when={store.tgroup && !state.spliter}>
+            <Show when={P.group && !state.spliter}>
                 <button
                     class='styled icon'
-                    style={{ '--color': store.tgroup.style.color }}
+                    style={{ '--color': P.group.style.color }}
                     onClick={() => {
                         let el = document.createElement('input')
                         el.setAttribute('type', 'color')
-                        el.setAttribute('value', store.tgroup.style.color)
+                        el.setAttribute('value', P.group.style.color)
                         el.oninput = () => set_style({ color: el.value })
                         el.click()
                     }}
@@ -368,43 +378,37 @@ export const EditorTextActions = () => {
                 </button>
                 <button
                     class='styled icon'
-                    classList={{ active: store.tgroup.style.bold }}
-                    onClick={() =>
-                        set_style({ bold: !store.tgroup.style.bold })
-                    }
+                    classList={{ active: P.group.style.bold }}
+                    onClick={() => set_style({ bold: !P.group.style.bold })}
                 >
                     <BoldIcon />
                 </button>
                 <button
                     class='styled icon'
-                    classList={{ active: store.tgroup.style.italic }}
-                    onClick={() =>
-                        set_style({ italic: !store.tgroup.style.italic })
-                    }
+                    classList={{ active: P.group.style.italic }}
+                    onClick={() => set_style({ italic: !P.group.style.italic })}
                 >
                     <ItalicIcon />
                 </button>
                 <button
                     class='styled icon'
-                    classList={{ active: store.tgroup.style.underline }}
+                    classList={{ active: P.group.style.underline }}
                     onClick={() =>
-                        set_style({ underline: !store.tgroup.style.underline })
+                        set_style({ underline: !P.group.style.underline })
                     }
                 >
                     <UnderlineIcon />
                 </button>
                 <button
                     class='styled icon'
-                    classList={{ active: store.tgroup.style.code }}
-                    onClick={() =>
-                        set_style({ code: !store.tgroup.style.code })
-                    }
+                    classList={{ active: P.group.style.code }}
+                    onClick={() => set_style({ code: !P.group.style.code })}
                 >
                     <CodeXmlIcon />
                 </button>
 
-                <FontSizeButton dir={-1} />
-                <FontSizeButton dir={1} />
+                <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
+                <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
                 <button
                     class='styled icon'
                     style='--color: var(--yellow)'
@@ -416,28 +420,24 @@ export const EditorTextActions = () => {
             <button
                 class='styled icon'
                 onClick={() =>
-                    set_attr(b => ({
-                        align: b.align ? BLOG_ALIGN[b.align][0] : 'center',
-                    }))
+                    set_attr(b => ({ align: BLOG_ALIGN[b.align][0] }))
                 }
+                title={'align: ' + P.block.align}
             >
-                {block().align ? (
-                    BLOG_ALIGN[block().align][1]()
-                ) : (
-                    <AlignCenterIcon />
-                )}
+                {BLOG_ALIGN[P.block.align][1]()}
             </button>
             <button
                 class='styled icon'
                 onClick={() =>
                     set_attr(b => ({ dir: b.dir == 'ltr' ? 'rtl' : 'ltr' }))
                 }
+                title={'dir: ' + P.block.dir}
             >
                 <Show
-                    when={(store.block as BlogText).dir == 'ltr'}
-                    fallback={<PilcrowLeftIcon />}
+                    when={P.block.dir == 'ltr'}
+                    fallback={<PilcrowRightIcon />}
                 >
-                    <PilcrowRightIcon />
+                    <PilcrowLeftIcon />
                 </Show>
             </button>
         </div>
@@ -446,6 +446,8 @@ export const EditorTextActions = () => {
 
 type FontSizeButtonProps = {
     dir: -1 | 1
+    ag: number
+    idx: number
 }
 const FontSizeButton: Component<FontSizeButtonProps> = P => {
     let timer: number
@@ -453,7 +455,7 @@ const FontSizeButton: Component<FontSizeButtonProps> = P => {
     function add_size() {
         setStore(
             produce(s => {
-                let g = (s.data[s.active] as BlogText).groups[s.tg]
+                let g = (s.data[P.idx] as BlogText).groups[P.ag]
                 let fs = g.style.font_size + P.dir
                 if (fs < 1) fs = 1
                 if (fs > 1024) fs = 1024

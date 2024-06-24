@@ -18,7 +18,7 @@ import { produce } from 'solid-js/store'
 import { Confact } from 'comps'
 import { EditorImageBlock } from './image'
 import { BlogData } from 'models'
-import { EditorTextActions, EditorTextBlock } from './text'
+import { EditorTextBlock } from './text'
 import { EditorHeadingBlock } from './heading'
 
 export default () => {
@@ -63,9 +63,6 @@ export default () => {
                         <ArrowLeftIcon />
                     </button>
                 </div>
-                <Show when={store.block && store.block.kind == 'text'}>
-                    <EditorTextActions />
-                </Show>
                 <div>
                     <button
                         class='styled icon'
