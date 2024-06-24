@@ -48,8 +48,14 @@ export const DEFAULT_STYLE: BlogStyle = {
 
 export type BlogTextGroup = {
     content: string[]
-    ur: string | null
+    url: string | null
     style: BlogStyle
+}
+
+export const DEFAULT_TEXT_GROUP: BlogTextGroup = {
+    content: [],
+    url: null,
+    style: DEFAULT_STYLE,
 }
 
 export type BlogDirection = 'ltr' | 'rtl'

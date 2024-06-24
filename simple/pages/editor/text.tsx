@@ -5,6 +5,7 @@ import {
     BlogText,
     BlogTextGroup,
     DEFAULT_STYLE,
+    DEFAULT_TEXT_GROUP,
 } from 'models'
 
 import './style/text.scss'
@@ -26,14 +27,19 @@ import {
 } from 'icons'
 import { createStore, produce } from 'solid-js/store'
 
-function span_style(span: HTMLSpanElement): BlogStyle {
+function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
     return {
-        color: span.style.color,
-        bold: span.classList.contains('bold'),
-        italic: span.classList.contains('italic'),
-        underline: span.classList.contains('underline'),
-        code: span.classList.contains('code'),
-        font_size: parseInt(span.style.fontSize.slice(0, -2)),
+        style: {
+            color: span.style.color,
+            bold: span.classList.contains('bold'),
+            italic: span.classList.contains('italic'),
+            underline: span.classList.contains('underline'),
+            code: span.classList.contains('code'),
+            mark: span.classList.contains('mark'),
+            font_size: parseInt(span.style.fontSize.slice(0, -2)),
+            font_family: span.style.fontFamily,
+        },
+        url: span.dataset.url,
     }
 }
 
@@ -69,14 +75,14 @@ export const EditorTextBlock: Component<Props> = P => {
                 if (texts) {
                     groups.push({
                         content: texts.split('\n'),
-                        style: { ...DEFAULT_STYLE },
+                        ...DEFAULT_TEXT_GROUP,
                     })
                     texts = ''
                 }
 
                 groups.push({
                     content: n.textContent.split('\n'),
-                    style: span_style(n),
+                    ...group_data(n),
                 })
             } else {
                 texts += n.textContent || ''
@@ -84,10 +90,7 @@ export const EditorTextBlock: Component<Props> = P => {
         })
 
         if (texts) {
-            groups.push({
-                content: texts.split('\n'),
-                style: { ...DEFAULT_STYLE },
-            })
+            groups.push({ content: texts.split('\n'), ...DEFAULT_TEXT_GROUP })
             texts = ''
         }
 
@@ -137,10 +140,12 @@ export const EditorTextBlock: Component<Props> = P => {
             >
                 {P.block.groups.map((g, i) => (
                     <span
+                        data-url={g.url}
                         style={{
                             color: g.style.color,
                             'font-size':
                                 g.style.font_size && g.style.font_size + 'px',
+                            'font-family': g.style.font_family,
                             '--bc': 'var(--c' + (i % 3) + ')',
                         }}
                         classList={{
@@ -150,6 +155,7 @@ export const EditorTextBlock: Component<Props> = P => {
                             italic: g.style.italic,
                             underline: g.style.underline,
                             code: g.style.code,
+                            mark: g.style.mark,
                         }}
                         onMouseDown={e => {
                             e.stopPropagation()
@@ -251,10 +257,7 @@ const Actions: Component<ActionsProps> = P => {
             } else if (n.nodeName == 'BR') {
                 content += '\n'
             } else if (n instanceof HTMLSpanElement) {
-                let tgd: BlogTextGroup = {
-                    style: span_style(n),
-                    content: [],
-                }
+                let tgd: BlogTextGroup = { content: [], ...group_data(n) }
                 if (outrange) {
                     groups.push(content.length)
                     data.set(content.length, tgd)
@@ -294,26 +297,16 @@ const Actions: Component<ActionsProps> = P => {
             let cstr = content.slice(last_g, g)
             if (!cstr) continue
             let c = cstr.split('\n')
-            let d = data.get(last_g)
-
-            if (d) {
-                grouped_content.push({ ...d, content: c })
-            } else {
-                grouped_content.push({ content: c, style: DEFAULT_STYLE })
-            }
+            let d = data.get(last_g) || DEFAULT_TEXT_GROUP
+            grouped_content.push({ ...d, content: c })
 
             last_g = g
             if (i == groups.length - 1) {
                 let cstr = content.slice(last_g)
                 if (!cstr) continue
                 let c = cstr.split('\n')
-                let d = data.get(last_g)
-
-                if (d) {
-                    grouped_content.push({ ...d, content: c })
-                } else {
-                    grouped_content.push({ content: c, style: DEFAULT_STYLE })
-                }
+                let d = data.get(last_g) || DEFAULT_TEXT_GROUP
+                grouped_content.push({ ...d, content: c })
             }
         }
 
@@ -405,6 +398,13 @@ const Actions: Component<ActionsProps> = P => {
                     onClick={() => set_style({ code: !P.group.style.code })}
                 >
                     <CodeXmlIcon />
+                </button>
+                <button
+                    class='styled icon'
+                    classList={{ active: P.group.style.mark }}
+                    onClick={() => set_style({ mark: !P.group.style.mark })}
+                >
+                    M
                 </button>
 
                 <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
