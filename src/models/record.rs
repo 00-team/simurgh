@@ -3,7 +3,17 @@ use serde::{Deserialize, Serialize};
 use std::{future::Future, pin::Pin};
 use utoipa::ToSchema;
 
-use super::AppErrNotFound;
+use super::{AppErrNotFound, JsonStr};
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default)]
+#[serde(tag = "kind")]
+pub enum RecordUses {
+    Blog {
+        id: i64,
+    },
+    #[default]
+    Free,
+}
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
 pub struct Record {
@@ -14,6 +24,7 @@ pub struct Record {
     pub size: i64,
     pub created_at: i64,
     pub mime: Option<String>,
+    pub uses: JsonStr<Vec<RecordUses>>,
 }
 
 impl actix_web::FromRequest for Record {
