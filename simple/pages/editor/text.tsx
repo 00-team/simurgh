@@ -9,7 +9,7 @@ import {
 } from 'models'
 
 import './style/text.scss'
-import { setStore, store } from './store'
+import { setStore, store, unwrap_rec } from './store'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
@@ -74,15 +74,15 @@ export const EditorTextBlock: Component<Props> = P => {
             } else if (n instanceof HTMLSpanElement) {
                 if (texts) {
                     groups.push({
-                        content: texts.split('\n'),
                         ...DEFAULT_TEXT_GROUP,
+                        content: texts.split('\n'),
                     })
                     texts = ''
                 }
 
                 groups.push({
-                    content: n.textContent.split('\n'),
                     ...group_data(n),
+                    content: n.textContent.split('\n'),
                 })
             } else {
                 texts += n.textContent || ''
@@ -90,14 +90,17 @@ export const EditorTextBlock: Component<Props> = P => {
         })
 
         if (texts) {
-            groups.push({ content: texts.split('\n'), ...DEFAULT_TEXT_GROUP })
+            groups.push({
+                ...DEFAULT_TEXT_GROUP,
+                content: texts.split('\n'),
+            })
             texts = ''
         }
 
         setStore(
             produce(s => {
                 let b = s.data[P.idx] as BlogText
-                b.groups = [...groups]
+                b.groups = unwrap_rec(groups)
             })
         )
     }
@@ -110,73 +113,72 @@ export const EditorTextBlock: Component<Props> = P => {
             <Actions
                 idx={P.idx}
                 block={P.block}
-                p={p}
                 group={state.group}
                 ag={state.ag}
             />
-            <Show when={state.placeholder}>
-                <span class='placeholder'>متن خود را وارد کنید ...</span>
-            </Show>
-            <p
-                ref={p}
-                class='text-content'
-                classList={{ show_groups: store.show_groups }}
-                style={{ direction: P.block.dir, 'text-align': P.block.align }}
-                id={`block_paragraph_${P.idx}`}
-                onMouseDown={() => setState({ ag: -1 })}
-                onInput={e => {
-                    if (store.active != P.idx) {
-                        setStore({ active: P.idx })
-                    }
-                    setState({ placeholder: !e.currentTarget.innerHTML })
-                    for (let el of e.currentTarget.childNodes) {
-                        if (el.nodeType == Node.TEXT_NODE) {
-                            return pre_save()
+            <div class='text-section'>
+                <Show when={state.placeholder}>
+                    <span class='placeholder'>متن خود را وارد کنید ...</span>
+                </Show>
+                <p
+                    ref={p}
+                    class='text-content'
+                    classList={{ show_groups: store.show_groups }}
+                    style={{
+                        direction: P.block.dir,
+                        'text-align': P.block.align,
+                    }}
+                    id={`block_paragraph_${P.idx}`}
+                    onMouseDown={() => setState({ ag: -1 })}
+                    onInput={e => {
+                        if (store.active != P.idx) {
+                            setStore({ active: P.idx })
                         }
-                    }
-                }}
-                onFocus={() => setStore({ active: P.idx })}
-                contenteditable={'plaintext-only'}
-            >
-                {P.block.groups.map((g, i) => (
-                    <span
-                        data-url={g.url}
-                        style={{
-                            color: g.style.color,
-                            'font-size':
-                                g.style.font_size && g.style.font_size + 'px',
-                            'font-family': g.style.font_family,
-                            '--bc': 'var(--c' + (i % 3) + ')',
-                        }}
-                        classList={{
-                            active: store.active == P.idx && state.ag == i,
-                            show_border: store.show_groups,
-                            bold: g.style.bold,
-                            italic: g.style.italic,
-                            underline: g.style.underline,
-                            code: g.style.code,
-                            mark: g.style.mark,
-                        }}
-                        onMouseDown={e => {
-                            e.stopPropagation()
-                            setState({ ag: i })
-                        }}
-                    >
-                        {g.content.map((line, li, a) => (
-                            <>
-                                {line}
-                                {li != a.length - 1 && <br />}
-                            </>
-                        ))}
-                    </span>
-                ))}
-            </p>
+                        setState({ placeholder: !e.currentTarget.innerText })
+                    }}
+                    onFocus={() => setStore({ active: P.idx })}
+                    contenteditable={'plaintext-only'}
+                >
+                    {P.block.groups.map((g, i) => (
+                        <span
+                            data-url={g.url}
+                            style={{
+                                color: g.style.color,
+                                'font-size':
+                                    g.style.font_size &&
+                                    g.style.font_size + 'px',
+                                'font-family': g.style.font_family,
+                                '--bc': 'var(--c' + (i % 3) + ')',
+                            }}
+                            classList={{
+                                active: store.active == P.idx && state.ag == i,
+                                show_border: store.show_groups,
+                                bold: g.style.bold,
+                                italic: g.style.italic,
+                                underline: g.style.underline,
+                                code: g.style.code,
+                                mark: g.style.mark,
+                            }}
+                            onMouseDown={e => {
+                                e.stopPropagation()
+                                setState({ ag: i })
+                            }}
+                        >
+                            {g.content.map((line, li, a) => (
+                                <>
+                                    {line}
+                                    {li != a.length - 1 && <br />}
+                                </>
+                            ))}
+                        </span>
+                    ))}
+                </p>
+            </div>
         </div>
     )
 }
 
 type ActionsProps = Props & {
-    p: HTMLParagraphElement
     group?: BlogTextGroup
     ag: number
 }
@@ -189,15 +191,13 @@ const Actions: Component<ActionsProps> = P => {
     function selection_change() {
         let show = false
         let selection = document.getSelection()
+        let p = document.getElementById('block_paragraph_' + P.idx)
 
-        if (!selection.isCollapsed && selection.rangeCount) {
+        if (p && !selection.isCollapsed && selection.rangeCount) {
             let range = selection.getRangeAt(0)
             let sc = range.startContainer
             let ec = range.endContainer
-            if (
-                (sc == P.p || P.p.contains(sc)) &&
-                (ec == P.p || P.p.contains(ec))
-            ) {
+            if ((sc == p || p.contains(sc)) && (ec == p || p.contains(ec))) {
                 show = true
             }
         }
@@ -216,7 +216,8 @@ const Actions: Component<ActionsProps> = P => {
     function new_group() {
         setState({ spliter: false })
         let selection = document.getSelection()
-        if (!P.p || selection.rangeCount == 0) return
+        let p = document.getElementById('block_paragraph_' + P.idx)
+        if (!p || selection.rangeCount == 0) return
 
         let range = selection.getRangeAt(0)
         if (range.collapsed) return
@@ -241,7 +242,7 @@ const Actions: Component<ActionsProps> = P => {
         let data: Map<number, BlogTextGroup> = new Map()
         let outrange = -1
 
-        for (let n of P.p.childNodes) {
+        for (let n of p.childNodes) {
             if (n == sc) {
                 groups.push(content.length + soff)
                 outrange = 0
@@ -310,7 +311,7 @@ const Actions: Component<ActionsProps> = P => {
             }
         }
 
-        P.p.innerHTML = ''
+        p.innerHTML = ''
         setStore(
             produce(s => {
                 let b = s.data[P.idx] as BlogText
@@ -341,7 +342,7 @@ const Actions: Component<ActionsProps> = P => {
     }
 
     return (
-        <div class='editor-text-actions'>
+        <div class='text-actions'>
             <Show when={state.spliter}>
                 <button class='styled icon' onClick={new_group}>
                     <SplitIcon />

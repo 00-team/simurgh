@@ -4,7 +4,24 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    flex-direction: column;
+    padding: 1rem 0;
+
+    .text-actions {
+        width: 100%;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .text-section {
+        padding: 1rem;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+    }
 
     .placeholder {
         direction: rtl;
@@ -47,6 +64,10 @@
             &.code {
                 font-family: monospace;
                 background-color: var(--cg);
+            }
+            &.mark {
+                background-color: mark;
+                color: marktext;
             }
         }
 
