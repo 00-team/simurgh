@@ -20,9 +20,14 @@ import {
     FileIcon,
     PlusIcon,
     TrashIcon,
+    XIcon,
 } from 'icons'
 import { Confact, Editable, addAlert } from 'comps'
-import { Select } from 'comps/select'
+
+const USAGE_KIND: { [k in RecordUsages['kind']]: string } = {
+    free: 'آزاد',
+    blog: 'بلاگ',
+}
 
 export default () => {
     type State = {
@@ -80,12 +85,6 @@ export default () => {
                 await new Promise((resolve, reject) => {
                     let data = new FormData()
                     data.set('record', f)
-                    data.set(
-                        'usage',
-                        new Blob([JSON.stringify({ kind: 'free' })], {
-                            type: 'application/json',
-                        })
-                    )
 
                     httpx({
                         url: `/api/projects/${pid}/records/`,
@@ -180,20 +179,31 @@ const Record: Component<RecordProps> = P => {
         input_name.focus()
     })
 
-    function update_name(name: string) {
-        setEditName(false)
-        name = name.slice(0, 255)
-        if (name == P.r.name) return
-
+    function record_update(
+        data: Partial<Pick<RecordModel, 'name' | 'usages'>>
+    ) {
         httpx({
             url: `/api/projects/${P.pid}/records/${P.r.id}/`,
             method: 'PATCH',
-            json: { name, usages: P.r.usages },
+            json: { name: P.r.name, usages: P.r.usages, ...data },
             onLoad(x) {
                 if (x.status != 200) return
                 P.update(x.response)
             },
         })
+    }
+
+    function update_name(name: string) {
+        setEditName(false)
+        name = name.slice(0, 255)
+        if (name == P.r.name) return
+        record_update({ name })
+    }
+
+    function remove_usage(idx: number) {
+        let usages = [...P.r.usages]
+        usages.splice(idx, 1)
+        record_update({ usages })
     }
 
     function record_delete() {
@@ -245,7 +255,7 @@ const Record: Component<RecordProps> = P => {
                     <Confact
                         color='var(--red)'
                         onAct={record_delete}
-                        timer_ms={15e2}
+                        timer_ms={1000}
                         icon={TrashIcon}
                     />
                 </div>
@@ -258,11 +268,26 @@ const Record: Component<RecordProps> = P => {
                 <span>تاریخ:</span>
                 <span class='n'>{fmt_datetime(P.r.created_at)}</span>
             </div>
+            <div class='line' />
             <div class='usages'>
-                {P.r.usages.map(u => (
-                    <div class='usage'>{u.kind}</div>
-                ))}
-                <UsageAdd r={P.r} update={r => P.update(r)} />
+                <span class='title'>استفاده ها</span>
+                <div class='usage-list'>
+                    {P.r.usages.map((u, ui) => (
+                        <div class='usage'>
+                            <span>{USAGE_KIND[u.kind]}</span>
+                            <span>
+                                {u.kind == 'free' ? u.reason || '---' : u.id}
+                            </span>
+                            <Confact
+                                icon={XIcon}
+                                color='var(--red)'
+                                timer_ms={400}
+                                onAct={() => remove_usage(ui)}
+                            />
+                        </div>
+                    ))}
+                    <UsageAdd r={P.r} update={r => P.update(r)} />
+                </div>
             </div>
         </div>
     )
@@ -365,19 +390,13 @@ type UsageAddProps = {
 }
 const UsageAdd: Component<UsageAddProps> = P => {
     type State = {
-        usage: RecordUsages | null
+        usage: RecordUsages
     }
     const [state, setState] = createStore<State>({
-        usage: null,
+        usage: { kind: 'free', reason: '' },
     })
 
-    const KINDS: { [k in RecordUsages['kind']]: string } = {
-        free: 'آزاد',
-        blog: 'بلاگ',
-    }
-
     function record_update() {
-        if (!state.usage) return
         let usages = [...P.r.usages, state.usage]
         httpx({
             url: `/api/projects/${P.r.project}/records/${P.r.id}/`,
@@ -393,22 +412,24 @@ const UsageAdd: Component<UsageAddProps> = P => {
         })
     }
 
+    const USAGE_ROTATE: { [k in RecordUsages['kind']]: RecordUsages } = {
+        free: DEFAULT_RECORD_USAGES.blog,
+        blog: DEFAULT_RECORD_USAGES.free,
+    }
+
+    function rotate_usage() {
+        setState(s => ({ usage: { ...USAGE_ROTATE[s.usage.kind] } }))
+    }
+
     return (
         <div class='usage add'>
-            <Select
-                onChange={v =>
-                    setState({ usage: DEFAULT_RECORD_USAGES[v[0].key] })
-                }
-                items={Object.entries(KINDS).map(([key, display], idx) => ({
-                    display,
-                    idx,
-                    key,
-                }))}
-            />
-            <Show when={state.usage && state.usage.kind == 'blog'}>
+            <button class='styled' onClick={rotate_usage}>
+                {USAGE_KIND[state.usage.kind]}
+            </button>
+            <Show when={state.usage.kind == 'blog'}>
                 <input
-                    class='styled'
-                    placeholder='blog id'
+                    class='styled n'
+                    placeholder='شماره بلاگ'
                     type='number'
                     value={state.usage.kind == 'blog' ? state.usage.id : 0}
                     onInput={e => {
@@ -423,11 +444,28 @@ const UsageAdd: Component<UsageAddProps> = P => {
                     }}
                 />
             </Show>
-            <Show when={state.usage}>
-                <button class='styled icon' onClick={record_update}>
-                    <PlusIcon />
-                </button>
+            <Show when={state.usage.kind == 'free'}>
+                <input
+                    class='styled'
+                    placeholder='مورد استفاده'
+                    value={state.usage.kind == 'free' && state.usage.reason}
+                    onInput={e => {
+                        setState({
+                            usage: {
+                                kind: 'free',
+                                reason: e.currentTarget.value,
+                            },
+                        })
+                    }}
+                />
             </Show>
+            <button
+                class='styled icon'
+                style={{ '--color': 'var(--green)' }}
+                onClick={record_update}
+            >
+                <PlusIcon />
+            </button>
         </div>
     )
 }

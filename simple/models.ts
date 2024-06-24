@@ -152,9 +152,11 @@ export const DEFAULT_BLOG: BlogModel = {
     read_time: 0,
 }
 
-export type RecordUsages = { kind: 'free' } | { kind: 'blog'; id: number }
+export type RecordUsages =
+    | { kind: 'free'; reason: string }
+    | { kind: 'blog'; id: number }
 export const DEFAULT_RECORD_USAGES: { [T in RecordUsages as T['kind']]: T } = {
-    free: { kind: 'free' },
+    free: { kind: 'free', reason: '' },
     blog: { kind: 'blog', id: 1 },
 }
 

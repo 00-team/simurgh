@@ -261,12 +261,6 @@ const Records: Component<RecordProps> = P => {
 
             let data = new FormData()
             data.set('record', el.files[0])
-            data.set(
-                'usage',
-                new Blob([JSON.stringify({ kind: 'free' })], {
-                    type: 'application/json',
-                })
-            )
 
             httpx({
                 url: `/api/projects/${P.project.id}/records/`,
