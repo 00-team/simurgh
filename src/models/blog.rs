@@ -19,7 +19,9 @@ pub struct BlogStyle {
     pub italic: bool,
     pub underline: bool,
     pub code: bool,
+    pub mark: bool,
     pub font_size: u16,
+    pub font_family: Option<String>,
 }
 
 impl BlogStyle {
@@ -78,6 +80,7 @@ impl fmt::Display for BlogAlign {
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 pub struct BlogTextGroup {
     pub content: Vec<String>,
+    pub url: Option<String>,
     pub style: BlogStyle,
 }
 
@@ -96,9 +99,12 @@ pub enum BlogData {
         groups: Vec<BlogTextGroup>,
     },
     Image {
-        record_id: i64,
-        record_salt: String,
+        record_id: Option<i64>,
+        url: String,
+        align: BlogAlign,
+        alt: String,
     },
+    Break,
     #[default]
     Empty,
 }
