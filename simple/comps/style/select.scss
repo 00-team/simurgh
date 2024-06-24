@@ -7,7 +7,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border: 2px solid var(--slate-4);
+        border: 2px solid var(--ca);
         border-radius: var(--radius);
         padding: 0.3rem 0.4rem;
         cursor: pointer;
@@ -18,7 +18,7 @@
             gap: 0.4rem;
 
             .item {
-                background-color: var(--slate-5);
+                background-color: var(--cg);
                 padding: 0.2rem;
                 border-radius: var(--radius);
             }
@@ -27,7 +27,7 @@
 
     .cmp-select-body {
         width: 100%;
-        background-color: var(--slate-1);
+        background-color: var(--cd);
         height: 0px;
         overflow: hidden;
         overflow-y: auto;
@@ -43,7 +43,7 @@
             font-size: 18px;
 
             &:hover {
-                background-color: var(--slate-2);
+                background-color: var(--cg);
             }
 
             &.active {
@@ -53,7 +53,7 @@
 
         &.active {
             height: 150px;
-            border: 2px solid var(--blue-8);
+            border: 2px solid var(--ca);
             padding: 0.5rem 0;
         }
     }
