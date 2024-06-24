@@ -1,0 +1,66 @@
+.cmp-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    .cmp-select-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 2px solid var(--slate-4);
+        border-radius: var(--radius);
+        padding: 0.3rem 0.4rem;
+        cursor: pointer;
+
+        .selected {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+
+            .item {
+                background-color: var(--slate-5);
+                padding: 0.2rem;
+                border-radius: var(--radius);
+            }
+        }
+    }
+
+    .cmp-select-body {
+        width: 100%;
+        background-color: var(--slate-1);
+        height: 0px;
+        overflow: hidden;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        border-radius: var(--radius);
+        transition: height 200ms;
+
+        .item {
+            display: flex;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 18px;
+
+            &:hover {
+                background-color: var(--slate-2);
+            }
+
+            &.active {
+                text-decoration: underline;
+            }
+        }
+
+        &.active {
+            height: 150px;
+            border: 2px solid var(--blue-8);
+            padding: 0.5rem 0;
+        }
+    }
+
+    &.disabled {
+        .cmp-select-head {
+            cursor: default;
+        }
+    }
+}
