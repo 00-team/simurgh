@@ -202,7 +202,7 @@ const Blogs: Component<BlogProps> = P => {
                                     draggable={false}
                                     loading='lazy'
                                     decoding='async'
-                                    src={`/record/bt-${b.id}-${b.thumbnail}`}
+                                    src={`/simurgh-record/bt-${b.id}-${b.thumbnail}`}
                                 />
                             </Show>
                         </div>
@@ -297,7 +297,7 @@ const Records: Component<RecordProps> = P => {
                                     draggable={false}
                                     loading='lazy'
                                     decoding='async'
-                                    src={`/record/r-${r.id}-${r.salt}`}
+                                    src={`/simurgh-record/r-${r.id}-${r.salt}`}
                                 />
                             </Show>
                         </div>

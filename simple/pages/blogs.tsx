@@ -120,7 +120,7 @@ const Blog: Component<BlogProps> = P => {
                         draggable={false}
                         loading='lazy'
                         decoding='async'
-                        src={`/record/bt-${P.b.id}-${P.b.thumbnail}`}
+                        src={`/simurgh-record/bt-${P.b.id}-${P.b.thumbnail}`}
                     />
                 </Show>
             </div>

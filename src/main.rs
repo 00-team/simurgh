@@ -85,7 +85,7 @@ fn config_app(app: &mut web::ServiceConfig) {
                 .disable_content_disposition(),
         );
         app.service(
-            af::Files::new("/record", Config::RECORD_DIR)
+            af::Files::new("/simurgh-record", Config::RECORD_DIR)
                 .disable_content_disposition(),
         );
     }
