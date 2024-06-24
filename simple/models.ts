@@ -80,8 +80,10 @@ export type BlogText = {
 
 export type BlogImage = {
     kind: 'image'
-    record_id: number
-    record_salt: string
+    record_id: number | null
+    url: string
+    align: BlogAlign
+    alt: string
 }
 
 export type BlogBreak = { kind: 'break' }
@@ -113,7 +115,9 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     image: {
         kind: 'image',
         record_id: 0,
-        record_salt: '',
+        url: '',
+        align: 'left',
+        alt: '',
     },
 } as const
 
