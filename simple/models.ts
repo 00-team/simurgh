@@ -30,7 +30,9 @@ export type BlogStyle = {
     italic: boolean
     underline: boolean
     code: boolean
+    mark: boolean
     font_size: number
+    font_family: string | null
 }
 
 export const DEFAULT_STYLE: BlogStyle = {
@@ -39,11 +41,14 @@ export const DEFAULT_STYLE: BlogStyle = {
     italic: false,
     underline: false,
     code: false,
+    mark: false,
     font_size: 18,
+    font_family: null,
 }
 
 export type BlogTextGroup = {
     content: string[]
+    ur: string | null
     style: BlogStyle
 }
 
@@ -53,9 +58,17 @@ export type BlogAlign = 'left' | 'center' | 'right'
 export const BLOG_ALIGN: {
     [k in BlogAlign]: [BlogAlign, () => JSX.Element]
 } = {
-    left: ['center', AlignCenterIcon],
-    center: ['right', AlignRightIcon],
-    right: ['left', AlignLeftIcon],
+    left: ['center', AlignLeftIcon],
+    center: ['right', AlignCenterIcon],
+    right: ['left', AlignRightIcon],
+}
+
+export type BlogHeading = {
+    kind: 'heading'
+    level: number
+    content: string
+    dir: BlogDirection
+    align: BlogAlign
 }
 
 export type BlogText = {
@@ -71,22 +84,19 @@ export type BlogImage = {
     record_salt: string
 }
 
-export type BlogEmpty = {
-    kind: 'empty'
-}
+export type BlogBreak = { kind: 'break' }
+export type BlogEmpty = { kind: 'empty' }
 
-export type BlogHeading = {
-    kind: 'heading'
-    level: number
-    content: string
-    dir: BlogDirection
-    align: BlogAlign
-}
-
-export type BlogData = BlogText | BlogImage | BlogEmpty | BlogHeading
+export type BlogData =
+    | BlogText
+    | BlogImage
+    | BlogEmpty
+    | BlogHeading
+    | BlogBreak
 
 export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     empty: { kind: 'empty' },
+    break: { kind: 'break' },
     heading: {
         kind: 'heading',
         level: 1,
@@ -138,6 +148,8 @@ export const DEFAULT_BLOG: BlogModel = {
     read_time: 0,
 }
 
+export type RecordUsages = { kind: 'free' } | { kind: 'blog'; id: number }
+
 export type RecordModel = {
     id: number
     project: number | null
@@ -146,4 +158,5 @@ export type RecordModel = {
     size: number
     created_at: number
     mime: string | null
+    usages: RecordUsages[]
 }
