@@ -1,4 +1,4 @@
-import { RecordModel } from 'models'
+import { DEFAULT_RECORD_USAGES, RecordModel, RecordUsages } from 'models'
 
 import './style/records.scss'
 import { createStore, produce } from 'solid-js/store'
@@ -22,6 +22,7 @@ import {
     TrashIcon,
 } from 'icons'
 import { Confact, Editable, addAlert } from 'comps'
+import { Select } from 'comps/select'
 
 export default () => {
     type State = {
@@ -79,6 +80,12 @@ export default () => {
                 await new Promise((resolve, reject) => {
                     let data = new FormData()
                     data.set('record', f)
+                    data.set(
+                        'usage',
+                        new Blob([JSON.stringify({ kind: 'free' })], {
+                            type: 'application/json',
+                        })
+                    )
 
                     httpx({
                         url: `/api/projects/${pid}/records/`,
@@ -181,7 +188,7 @@ const Record: Component<RecordProps> = P => {
         httpx({
             url: `/api/projects/${P.pid}/records/${P.r.id}/`,
             method: 'PATCH',
-            json: { name },
+            json: { name, usages: P.r.usages },
             onLoad(x) {
                 if (x.status != 200) return
                 P.update(x.response)
@@ -250,6 +257,12 @@ const Record: Component<RecordProps> = P => {
                 <span class='n'>{fmt_bytes(P.r.size)}</span>
                 <span>تاریخ:</span>
                 <span class='n'>{fmt_datetime(P.r.created_at)}</span>
+            </div>
+            <div class='usages'>
+                {P.r.usages.map(u => (
+                    <div class='usage'>{u.kind}</div>
+                ))}
+                <UsageAdd r={P.r} update={r => P.update(r)} />
             </div>
         </div>
     )
@@ -343,5 +356,78 @@ const DpyText: Component<{ url: string }> = P => {
             dir='auto'
             onClick={e => e.currentTarget.requestFullscreen()}
         />
+    )
+}
+
+type UsageAddProps = {
+    r: RecordModel
+    update(r: RecordModel): void
+}
+const UsageAdd: Component<UsageAddProps> = P => {
+    type State = {
+        usage: RecordUsages | null
+    }
+    const [state, setState] = createStore<State>({
+        usage: null,
+    })
+
+    const KINDS: { [k in RecordUsages['kind']]: string } = {
+        free: 'آزاد',
+        blog: 'بلاگ',
+    }
+
+    function record_update() {
+        if (!state.usage) return
+        let usages = [...P.r.usages, state.usage]
+        httpx({
+            url: `/api/projects/${P.r.project}/records/${P.r.id}/`,
+            method: 'PATCH',
+            json: {
+                name: P.r.name,
+                usages,
+            },
+            onLoad(x) {
+                if (x.status != 200) return
+                P.update(x.response)
+            },
+        })
+    }
+
+    return (
+        <div class='usage add'>
+            <Select
+                onChange={v =>
+                    setState({ usage: DEFAULT_RECORD_USAGES[v[0].key] })
+                }
+                items={Object.entries(KINDS).map(([key, display], idx) => ({
+                    display,
+                    idx,
+                    key,
+                }))}
+            />
+            <Show when={state.usage && state.usage.kind == 'blog'}>
+                <input
+                    class='styled'
+                    placeholder='blog id'
+                    type='number'
+                    value={state.usage.kind == 'blog' ? state.usage.id : 0}
+                    onInput={e => {
+                        setState(
+                            produce(s => {
+                                if (s.usage.kind == 'blog') {
+                                    s.usage.id =
+                                        parseInt(e.currentTarget.value) || 1
+                                }
+                            })
+                        )
+                    }}
+                />
+            </Show>
+            <Show when={state.usage}>
+                <button class='styled icon' onClick={record_update}>
+                    <PlusIcon />
+                </button>
+            </Show>
+        </div>
     )
 }

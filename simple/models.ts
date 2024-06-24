@@ -149,6 +149,10 @@ export const DEFAULT_BLOG: BlogModel = {
 }
 
 export type RecordUsages = { kind: 'free' } | { kind: 'blog'; id: number }
+export const DEFAULT_RECORD_USAGES: { [T in RecordUsages as T['kind']]: T } = {
+    free: { kind: 'free' },
+    blog: { kind: 'blog', id: 1 },
+}
 
 export type RecordModel = {
     id: number

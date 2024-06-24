@@ -1,5 +1,5 @@
 import { Component, Show } from 'solid-js'
-import { BlogImage } from 'models'
+import { BlogImage, RecordUsages } from 'models'
 
 import './style/image.scss'
 import { ImageIcon, XIcon } from 'icons'
@@ -30,8 +30,15 @@ export const EditorImageBlock: Component<Props> = P => {
                 return
             }
 
+            let usage: RecordUsages = { kind: 'blog', id: store.blog.id }
             let data = new FormData()
             data.set('record', el.files[0], store.blog.title || store.blog.slug)
+            data.set(
+                'usage',
+                new Blob([JSON.stringify(usage)], {
+                    type: 'application/json',
+                })
+            )
 
             httpx({
                 url: `/api/projects/${store.blog.project}/records/`,
