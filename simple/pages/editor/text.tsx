@@ -19,11 +19,13 @@ import {
     EyeOffIcon,
     HighlighterIcon,
     ItalicIcon,
+    LinkIcon,
     PaletteIcon,
     PilcrowLeftIcon,
     PilcrowRightIcon,
     RotateCcwIcon,
     SplitIcon,
+    TypeIcon,
     UnderlineIcon,
 } from 'icons'
 import { createStore, produce } from 'solid-js/store'
@@ -408,9 +410,17 @@ const Actions: Component<ActionsProps> = P => {
                 >
                     <HighlighterIcon />
                 </button>
-
                 <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
                 <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
+                <LinkButton idx={P.idx} ag={P.ag} group={P.group} />
+                <button
+                    class='styled icon'
+                    onClick={() =>
+                        alert('selecting custom font\ncoming soon...')
+                    }
+                >
+                    <TypeIcon />
+                </button>
                 <button
                     class='styled icon'
                     style='--color: var(--yellow)'
@@ -485,5 +495,52 @@ const FontSizeButton: Component<FontSizeButtonProps> = P => {
                 <AArrowUpIcon />
             </Show>
         </button>
+    )
+}
+
+type LinkButtonProps = {
+    idx: number
+    group: BlogTextGroup
+    ag: number
+}
+const LinkButton: Component<LinkButtonProps> = P => {
+    type State = {
+        show: boolean
+    }
+    const [state, setState] = createStore<State>({
+        show: false,
+    })
+
+    function set_url(url: string) {
+        setStore(
+            produce(s => {
+                let g = (s.data[P.idx] as BlogText).groups[P.ag]
+                g.url = url || null
+            })
+        )
+    }
+
+    return (
+        <div class='text-link'>
+            <button
+                class='styled icon'
+                classList={{ active: state.show }}
+                style={P.group.url && { '--color': 'var(--green)' }}
+                onClick={() => setState(s => ({ show: !s.show }))}
+            >
+                <LinkIcon />
+            </button>
+            <Show when={state.show}>
+                <div class='link-input'>
+                    <input
+                        class='styled url'
+                        placeholder='e.g. https://00-team.org'
+                        value={P.group.url}
+                        onInput={e => set_url(e.currentTarget.value)}
+                        onChange={() => setState({ show: false })}
+                    />
+                </div>
+            </Show>
+        </div>
     )
 }

@@ -72,6 +72,10 @@
                 border-color: var(--cl);
             }
 
+            input.url {
+                font-family: var(--en);
+            }
+
             &-actions {
                 display: flex;
                 flex-direction: column;

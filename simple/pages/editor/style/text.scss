@@ -13,6 +13,23 @@
         gap: 0.5rem;
         align-items: center;
         justify-content: center;
+
+        .text-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            .link-input {
+                position: absolute;
+                top: calc(100% + 0.5rem);
+                min-width: 300px;
+
+                input {
+                    width: 100%;
+                }
+            }
+        }
     }
 
     .text-section {
