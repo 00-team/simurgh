@@ -26,16 +26,26 @@ pub struct BlogStyle {
 
 impl BlogStyle {
     pub fn css(&self) -> String {
-        let mut style = vec![format!("font-size: {}px", self.font_size)];
-        if let Some(c) = &self.color {
-            if c.len() > 0 {
-                style.push(format!("color: {c}"));
-            }
-        }
+        let mut style =
+            vec![("font-size", Some(format!("{}px", self.font_size)))];
+        style.push(("color", self.color.clone()));
+        style.push(("font-family", self.font_family.clone()));
         if self.underline {
-            style.push("text-decoration: underline".to_string());
+            style.push(("text-decoration", Some("underline".to_string())));
         }
-        style.join(";")
+
+        style
+            .iter()
+            .filter_map(|(k, v)| {
+                if let Some(v) = v {
+                    if v.len() > 0 {
+                        return Some(format!("{k}: {v}"));
+                    }
+                }
+                None
+            })
+            .collect::<Vec<_>>()
+            .join(";")
     }
 }
 
