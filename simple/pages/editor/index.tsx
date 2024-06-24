@@ -133,6 +133,12 @@ const EditorBlock: Component<EditorBlockProps> = P => {
         text: EditorTextBlock,
         image: EditorImageBlock,
         empty: EditorEmptyBlock,
+        break: () => (
+            <div class='block-break'>
+                خط افقی
+                <hr />
+            </div>
+        ),
     }
 
     return (
