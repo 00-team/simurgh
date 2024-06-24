@@ -23,6 +23,7 @@ pub struct Record {
     pub size: i64,
     pub created_at: i64,
     pub mime: Option<String>,
+    #[schema(value_type = Vec<RecordUsage>)]
     pub usages: JsonStr<Vec<RecordUsage>>,
 }
 
