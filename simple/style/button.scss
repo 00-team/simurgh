@@ -17,6 +17,10 @@ button.styled {
     justify-content: center;
     align-items: center;
 
+    &.active {
+        background-color: var(--color);
+    }
+
     &.icon {
         width: 32px;
         height: 32px;
