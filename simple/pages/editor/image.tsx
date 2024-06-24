@@ -1,5 +1,5 @@
 import { Component, Show } from 'solid-js'
-import { BlogImage, RecordUsages } from 'models'
+import { BlogImage, DEFAULT_BLOCKS, RecordModel, RecordUsages } from 'models'
 
 import './style/image.scss'
 import { ImageIcon, XIcon } from 'icons'
@@ -46,11 +46,12 @@ export const EditorImageBlock: Component<Props> = P => {
                 data,
                 onLoad(x) {
                     if (x.status != 200) return
+                    let r: RecordModel = x.response
                     setStore(
                         produce(s => {
                             let b = s.data[P.idx] as BlogImage
-                            b.record_salt = x.response.salt
-                            b.record_id = x.response.id
+                            b.record_id = r.id
+                            b.url = `/simurgh-record/r-${r.id}-${r.salt}`
                         })
                     )
                 },
@@ -62,7 +63,7 @@ export const EditorImageBlock: Component<Props> = P => {
     return (
         <div class='block-image'>
             <Show
-                when={P.block.record_salt}
+                when={P.block.url}
                 fallback={
                     <button class='styled icon' onClick={upload_record}>
                         <ImageIcon />
@@ -73,16 +74,14 @@ export const EditorImageBlock: Component<Props> = P => {
                     decoding='async'
                     loading='lazy'
                     draggable={false}
-                    src={`/record/r-${P.block.record_id}-${P.block.record_salt}`}
+                    src={P.block.url}
                 />
                 <button
                     class='styled icon remove'
                     onClick={() => {
                         setStore(
                             produce(s => {
-                                let b = s.data[P.idx] as BlogImage
-                                b.record_salt = ''
-                                b.record_id = 0
+                                s.data[P.idx] = DEFAULT_BLOCKS.image
                             })
                         )
                     }}
