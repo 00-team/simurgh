@@ -17,6 +17,7 @@ import {
     CodeXmlIcon,
     EyeIcon,
     EyeOffIcon,
+    HighlighterIcon,
     ItalicIcon,
     PaletteIcon,
     PilcrowLeftIcon,
@@ -405,7 +406,7 @@ const Actions: Component<ActionsProps> = P => {
                     classList={{ active: P.group.style.mark }}
                     onClick={() => set_style({ mark: !P.group.style.mark })}
                 >
-                    M
+                    <HighlighterIcon />
                 </button>
 
                 <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
