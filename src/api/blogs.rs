@@ -8,7 +8,8 @@ use utoipa::{OpenApi, ToSchema};
 use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::blog::{
-    Blog, BlogData, BlogDirection, BlogStatus, BlogStyle, BlogTextGroup,
+    Blog, BlogAlign, BlogData, BlogDirection, BlogStatus, BlogStyle,
+    BlogTextGroup,
 };
 use crate::models::project::Project;
 use crate::models::user::User;
@@ -25,7 +26,7 @@ use crate::{utils, AppState};
     ),
     components(schemas(
         Blog, BlogData, BlogStatus, BlogStyle, BlogUpdateBody,
-        BlogTextGroup, BlogDirection, BlogThumbnailUpload,
+        BlogTextGroup, BlogDirection, BlogAlign, BlogThumbnailUpload,
     )),
     servers((url = "/projects/{pid}/blogs")),
     modifiers(&UpdatePaths)
