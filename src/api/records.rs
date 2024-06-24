@@ -52,6 +52,7 @@ pub struct RecordUpload {
     #[schema(value_type = String, format = Binary)]
     #[multipart(limit = "200MB")]
     pub record: TempFile,
+    #[schema(value_type = RecordUsage)]
     pub usage: Option<MPJson<RecordUsage>>,
 }
 
