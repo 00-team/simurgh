@@ -1,4 +1,10 @@
-import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'icons'
+import {
+    AlignCenterIcon,
+    AlignLeftIcon,
+    AlignRightIcon,
+    LeftToRightIcon,
+    RightToLeftIcon,
+} from 'icons'
 import { JSX } from 'solid-js'
 
 export type UserModel = {
@@ -59,14 +65,20 @@ export const DEFAULT_TEXT_GROUP: BlogTextGroup = {
 }
 
 export type BlogDirection = 'ltr' | 'rtl'
-export type BlogAlign = 'left' | 'center' | 'right'
-
-export const BLOG_ALIGN: {
-    [k in BlogAlign]: [BlogAlign, () => JSX.Element]
+export const BLOG_DIRECTION: {
+    [k in BlogDirection]: [BlogDirection, () => JSX.Element, string]
 } = {
-    left: ['center', AlignLeftIcon],
-    center: ['right', AlignCenterIcon],
-    right: ['left', AlignRightIcon],
+    ltr: ['rtl', LeftToRightIcon, 'چپ به راست'],
+    rtl: ['ltr', RightToLeftIcon, 'راست به چپ'],
+}
+
+export type BlogAlign = 'left' | 'center' | 'right'
+export const BLOG_ALIGN: {
+    [k in BlogAlign]: [BlogAlign, () => JSX.Element, string]
+} = {
+    left: ['center', AlignLeftIcon, 'چپ'],
+    center: ['right', AlignCenterIcon, 'وسط'],
+    right: ['left', AlignRightIcon, 'راست'],
 }
 
 export type BlogHeading = {

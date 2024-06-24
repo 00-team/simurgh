@@ -536,7 +536,7 @@ export const UnderlineIcon = () => (
     </svg>
 )
 
-export const PilcrowLeftIcon = () => (
+export const RightToLeftIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
@@ -546,15 +546,13 @@ export const PilcrowLeftIcon = () => (
         stroke-linecap='round'
         stroke-linejoin='round'
     >
-        <path d='M14 3v11' />
-        <path d='M14 9h-3a3 3 0 0 1 0-6h9' />
-        <path d='M18 3v11' />
-        <path d='M22 18H2l4-4' />
-        <path d='m6 22-4-4' />
+        <rect width='16' height='6' x='2' y='4' rx='2' />
+        <rect width='9' height='6' x='9' y='14' rx='2' />
+        <path d='M22 22V2' />
     </svg>
 )
 
-export const PilcrowRightIcon = () => (
+export const LeftToRightIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
@@ -564,11 +562,9 @@ export const PilcrowRightIcon = () => (
         stroke-linecap='round'
         stroke-linejoin='round'
     >
-        <path d='M10 3v11' />
-        <path d='M10 9H7a1 1 0 0 1 0-6h8' />
-        <path d='M14 3v11' />
-        <path d='m18 14 4 4H2' />
-        <path d='m22 18-4 4' />
+        <rect width='9' height='6' x='6' y='14' rx='2' />
+        <rect width='16' height='6' x='6' y='4' rx='2' />
+        <path d='M2 2v20' />
     </svg>
 )
 

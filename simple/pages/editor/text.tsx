@@ -1,6 +1,7 @@
 import { Component, Show, onCleanup, onMount } from 'solid-js'
 import {
     BLOG_ALIGN,
+    BLOG_DIRECTION,
     BlogStyle,
     BlogText,
     BlogTextGroup,
@@ -21,8 +22,6 @@ import {
     ItalicIcon,
     LinkIcon,
     PaletteIcon,
-    PilcrowLeftIcon,
-    PilcrowRightIcon,
     RotateCcwIcon,
     SplitIcon,
     TypeIcon,
@@ -434,23 +433,18 @@ const Actions: Component<ActionsProps> = P => {
                 onClick={() =>
                     set_attr(b => ({ align: BLOG_ALIGN[b.align][0] }))
                 }
-                title={'align: ' + P.block.align}
+                title={BLOG_ALIGN[P.block.align][2]}
             >
                 {BLOG_ALIGN[P.block.align][1]()}
             </button>
             <button
                 class='styled icon'
                 onClick={() =>
-                    set_attr(b => ({ dir: b.dir == 'ltr' ? 'rtl' : 'ltr' }))
+                    set_attr(b => ({ dir: BLOG_DIRECTION[b.dir][0] }))
                 }
-                title={'dir: ' + P.block.dir}
+                title={BLOG_DIRECTION[P.block.dir][2]}
             >
-                <Show
-                    when={P.block.dir == 'ltr'}
-                    fallback={<PilcrowRightIcon />}
-                >
-                    <PilcrowLeftIcon />
-                </Show>
+                {BLOG_DIRECTION[P.block.dir][1]()}
             </button>
         </div>
     )

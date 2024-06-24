@@ -1,11 +1,9 @@
-import { Component, JSX, Show } from 'solid-js'
+import { Component, JSX } from 'solid-js'
 
 import './style/heading.scss'
-import { BLOG_ALIGN, BlogHeading } from 'models'
+import { BLOG_ALIGN, BLOG_DIRECTION, BlogHeading } from 'models'
 import { setStore } from './store'
 import { produce } from 'solid-js/store'
-import { PilcrowLeftIcon, PilcrowRightIcon } from 'icons'
-import { Dynamic } from 'solid-js/web'
 
 type Props = {
     idx: number
@@ -76,28 +74,21 @@ export const EditorHeadingBlock: Component<Props> = P => {
                 </button>
                 <button
                     class='styled icon'
-                    onClick={() => {
-                        set_attr(b => ({
-                            dir: b.dir == 'ltr' ? 'rtl' : 'ltr',
-                        }))
-                    }}
+                    onClick={() =>
+                        set_attr(b => ({ align: BLOG_ALIGN[b.align][0] }))
+                    }
+                    title={BLOG_ALIGN[P.block.align][2]}
                 >
-                    <Show
-                        when={P.block.dir == 'ltr'}
-                        fallback={<PilcrowRightIcon />}
-                    >
-                        <PilcrowLeftIcon />
-                    </Show>
+                    {BLOG_ALIGN[P.block.align][1]()}
                 </button>
                 <button
                     class='styled icon'
-                    onClick={() => {
-                        set_attr(b => ({
-                            align: BLOG_ALIGN[b.align][0],
-                        }))
-                    }}
+                    onClick={() =>
+                        set_attr(b => ({ dir: BLOG_DIRECTION[b.dir][0] }))
+                    }
+                    title={BLOG_DIRECTION[P.block.dir][2]}
                 >
-                    {BLOG_ALIGN[P.block.align][1]()}
+                    {BLOG_DIRECTION[P.block.dir][1]()}
                 </button>
             </div>
         </div>
