@@ -2,6 +2,7 @@ input.styled {
     background-color: var(--cd);
     border: 2px solid var(--cg);
     font-size: 18px;
+    font-family: inherit;
     border-radius: var(--radius);
     padding: 0.25rem;
     color: var(--cl);
@@ -17,8 +18,8 @@ textarea.styled {
     background-color: var(--cd);
     border: 2px solid var(--cg);
     font-size: 18px;
-    border-radius: var(--radius);
     font-family: inherit;
+    border-radius: var(--radius);
     padding: 0.25rem;
     color: var(--cl);
 
