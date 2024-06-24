@@ -46,7 +46,8 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
                 }
             }
         }
-        _ => rsx!(),
+        BlogData::Break => rsx! { hr {} },
+        BlogData::Empty => rsx!(),
     });
 
     rsx! { for e in elements { e } }.render()
