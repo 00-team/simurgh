@@ -30,7 +30,7 @@ create table if not exists records (
     size integer not null,
     created_at integer not null,
     mime text,
-    uses text not null default '[]'
+    usages text not null default '[]'
 );
 
 create table if not exists blogs (

@@ -1,5 +1,6 @@
 use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
+use actix_multipart::form::json::Json as MPJson;
 use actix_web::web::{Data, Json, Query};
 use actix_web::{delete, get, patch, post, HttpResponse, Scope};
 use serde::Deserialize;
@@ -7,8 +8,8 @@ use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
-use crate::models::record::Record;
-use crate::models::{AppErr, ListInput, Response};
+use crate::models::record::{Record, RecordUsage};
+use crate::models::{AppErr, JsonStr, ListInput, Response};
 use crate::utils::CutOff;
 use crate::{utils, AppState};
 
@@ -18,7 +19,7 @@ use crate::{utils, AppState};
     paths(
         record_list, record_get, record_update, record_add, record_delete
     ),
-    components(schemas(Record, RecordUpload, RecordUpdateBody)),
+    components(schemas(Record, RecordUpload, RecordUpdateBody, RecordUsage)),
     servers((url = "/projects/{pid}/records")),
     modifiers(&UpdatePaths)
 )]
@@ -51,6 +52,7 @@ pub struct RecordUpload {
     #[schema(value_type = String, format = Binary)]
     #[multipart(limit = "200MB")]
     pub record: TempFile,
+    pub usage: Option<MPJson<RecordUsage>>,
 }
 
 #[utoipa::path(
@@ -72,10 +74,15 @@ async fn record_add(
     let mut name = form.record.file_name.unwrap_or(project.name);
     name.cut_off(255);
 
+    let mut usages = JsonStr(Vec::<RecordUsage>::new());
+    if let Some(u) = form.usage {
+        usages.push(u.0);
+    }
+
     let result = sqlx::query! {
-        "insert into records(project, name, salt, size, created_at, mime)
-        values(?,?,?,?,?,?)",
-        project.id, name, salt, size, now, mime
+        "insert into records(project, name, salt, size, created_at, mime, usages)
+        values(?,?,?,?,?,?,?)",
+        project.id, name, salt, size, now, mime, usages
     }
     .execute(&state.sql)
     .await?;
@@ -87,6 +94,7 @@ async fn record_add(
         name,
         size,
         mime,
+        usages,
         created_at: now,
     };
 
@@ -117,6 +125,7 @@ async fn record_get(record: Record) -> Response<Record> {
 #[derive(Deserialize, ToSchema)]
 struct RecordUpdateBody {
     name: String,
+    usages: Vec<RecordUsage>
 }
 
 #[utoipa::path(
@@ -133,10 +142,11 @@ async fn record_update(
     let mut record = record;
     record.name = body.name.clone();
     record.name.cut_off(255);
+    record.usages = JsonStr(body.usages.clone());
 
     sqlx::query! {
-        "update records set name = ? where id = ?",
-        record.name, record.id
+        "update records set name = ?, usages = ? where id = ?",
+        record.name, record.usages, record.id
     }
     .execute(&state.sql)
     .await?;
