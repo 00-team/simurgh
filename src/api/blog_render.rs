@@ -26,13 +26,23 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
                 _ => rsx! { h2 { style: "{style}", "{content}" } },
             }
         }
-        BlogData::Image { record_id, record_salt } => {
+        BlogData::Image { url, alt, align, .. } => {
             rsx! {
-                img {
-                    src: "/record/r-{record_id}-{record_salt}",
-                    loading: "lazy",
-                    decode: "async",
-                    draggable: false
+                div {
+                    style: "text-align: {align}",
+
+                    img {
+                        src: "{url}",
+                        alt: "{alt}",
+                        loading: "lazy",
+                        decode: "async",
+                        draggable: false,
+                    }
+
+                    span {
+                        class: "image-alt",
+                        "{alt}"
+                    }
                 }
             }
         }
@@ -67,6 +77,14 @@ fn Group<'a>(group: &'a BlogTextGroup) -> Element {
 
     if group.style.code {
         el = rsx! { code { el } };
+    }
+
+    if group.style.mark {
+        el = rsx! { mark { el } };
+    }
+
+    if let Some(url) = &group.url {
+        el = rsx! { a { href: "{url}", el } };
     }
 
     el
