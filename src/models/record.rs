@@ -6,7 +6,7 @@ use utoipa::ToSchema;
 use super::{AppErrNotFound, JsonStr};
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
-#[serde(tag = "kind")]
+#[serde(tag = "kind", rename_all = "snake_case")]
 pub enum RecordUsage {
     Blog {
         id: i64,
