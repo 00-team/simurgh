@@ -28,6 +28,7 @@ import {
     UnderlineIcon,
 } from 'icons'
 import { createStore, produce } from 'solid-js/store'
+import { Action, Tooltip } from 'comps'
 
 function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
     return {
@@ -346,106 +347,95 @@ const Actions: Component<ActionsProps> = P => {
     return (
         <div class='text-actions'>
             <Show when={state.spliter}>
-                <button class='styled icon' onClick={new_group}>
-                    <SplitIcon />
-                </button>
+                <Action
+                    onAct={new_group}
+                    icon={SplitIcon}
+                    title={'گروه جدید'}
+                />
             </Show>
-            <button
-                class='styled icon'
-                onClick={() => setStore(s => ({ show_groups: !s.show_groups }))}
-            >
-                <Show when={store.show_groups} fallback={<EyeIcon />}>
-                    <EyeOffIcon />
-                </Show>
-            </button>
+            <Action
+                icon={() => (
+                    <Show when={store.show_groups} fallback={<EyeIcon />}>
+                        <EyeOffIcon />
+                    </Show>
+                )}
+                onAct={() => setStore(s => ({ show_groups: !s.show_groups }))}
+                title={
+                    store.show_groups
+                        ? 'مخفی کردن گروه ها'
+                        : 'نشان دادن گروه ها'
+                }
+            />
             <Show when={P.group && !state.spliter}>
-                <button
-                    class='styled icon'
-                    style={{ '--color': P.group.style.color }}
-                    onClick={() => {
+                <Action
+                    color={P.group.style.color}
+                    icon={PaletteIcon}
+                    title='رنگ'
+                    onAct={() => {
                         let el = document.createElement('input')
                         el.setAttribute('type', 'color')
                         el.setAttribute('value', P.group.style.color)
                         el.oninput = () => set_style({ color: el.value })
                         el.click()
                     }}
-                >
-                    <PaletteIcon />
-                </button>
-                <button
-                    class='styled icon'
-                    classList={{ active: P.group.style.bold }}
-                    onClick={() => set_style({ bold: !P.group.style.bold })}
-                >
-                    <BoldIcon />
-                </button>
-                <button
-                    class='styled icon'
-                    classList={{ active: P.group.style.italic }}
-                    onClick={() => set_style({ italic: !P.group.style.italic })}
-                >
-                    <ItalicIcon />
-                </button>
-                <button
-                    class='styled icon'
-                    classList={{ active: P.group.style.underline }}
-                    onClick={() =>
+                />
+                <Action
+                    active={P.group.style.bold}
+                    onAct={() => set_style({ bold: !P.group.style.bold })}
+                    icon={BoldIcon}
+                    title='پررنگ'
+                />
+                <Action
+                    active={P.group.style.italic}
+                    onAct={() => set_style({ italic: !P.group.style.italic })}
+                    icon={ItalicIcon}
+                    title='کج'
+                />
+                <Action
+                    active={P.group.style.underline}
+                    onAct={() =>
                         set_style({ underline: !P.group.style.underline })
                     }
-                >
-                    <UnderlineIcon />
-                </button>
-                <button
-                    class='styled icon'
-                    classList={{ active: P.group.style.code }}
-                    onClick={() => set_style({ code: !P.group.style.code })}
-                >
-                    <CodeXmlIcon />
-                </button>
-                <button
-                    class='styled icon'
-                    classList={{ active: P.group.style.mark }}
-                    onClick={() => set_style({ mark: !P.group.style.mark })}
-                >
-                    <HighlighterIcon />
-                </button>
+                    icon={UnderlineIcon}
+                    title='خط زیر'
+                />
+                <Action
+                    active={P.group.style.code}
+                    onAct={() => set_style({ code: !P.group.style.code })}
+                    icon={CodeXmlIcon}
+                    title='کد'
+                />
+                <Action
+                    active={P.group.style.mark}
+                    onAct={() => set_style({ mark: !P.group.style.mark })}
+                    icon={HighlighterIcon}
+                    title='برجسته'
+                />
                 <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
                 <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
                 <LinkButton idx={P.idx} ag={P.ag} group={P.group} />
-                <button
-                    class='styled icon'
-                    onClick={() =>
-                        alert('selecting custom font\ncoming soon...')
-                    }
-                >
-                    <TypeIcon />
-                </button>
-                <button
-                    class='styled icon'
-                    style='--color: var(--yellow)'
-                    onClick={() => set_style(DEFAULT_STYLE)}
-                >
-                    <RotateCcwIcon />
-                </button>
+                <Action
+                    title='تغییر فونت'
+                    onAct={() => alert('selecting custom font\ncoming soon...')}
+                    icon={TypeIcon}
+                />
+                <Action
+                    color='var(--yellow)'
+                    onAct={() => set_style(DEFAULT_STYLE)}
+                    icon={RotateCcwIcon}
+                    title='بازنشانی'
+                />
             </Show>
-            <button
-                class='styled icon'
-                onClick={() =>
-                    set_attr(b => ({ align: BLOG_ALIGN[b.align][0] }))
-                }
+            <Action
+                onAct={() => set_attr(b => ({ align: BLOG_ALIGN[b.align][0] }))}
                 title={BLOG_ALIGN[P.block.align][2]}
-            >
-                {BLOG_ALIGN[P.block.align][1]()}
-            </button>
-            <button
-                class='styled icon'
-                onClick={() =>
-                    set_attr(b => ({ dir: BLOG_DIRECTION[b.dir][0] }))
-                }
+                icon={BLOG_ALIGN[P.block.align][1]}
+            />
+            <Action
+                onAct={() => set_attr(b => ({ dir: BLOG_DIRECTION[b.dir][0] }))}
                 title={BLOG_DIRECTION[P.block.dir][2]}
-            >
-                {BLOG_DIRECTION[P.block.dir][1]()}
-            </button>
+                icon={BLOG_DIRECTION[P.block.dir][1]}
+            />
         </div>
     )
 }
@@ -485,6 +475,11 @@ const FontSizeButton: Component<FontSizeButtonProps> = P => {
                 timer = setInterval(add_size, 100)
             }}
         >
+            <Tooltip
+                children={
+                    P.dir == 1 ? 'افزایش اندازه فونت' : 'کاهش اندازه فونت'
+                }
+            />
             <Show when={P.dir == 1} fallback={<AArrowDownIcon />}>
                 <AArrowUpIcon />
             </Show>
@@ -516,14 +511,13 @@ const LinkButton: Component<LinkButtonProps> = P => {
 
     return (
         <div class='text-link'>
-            <button
-                class='styled icon'
-                classList={{ active: state.show }}
-                style={P.group.url && { '--color': 'var(--green)' }}
-                onClick={() => setState(s => ({ show: !s.show }))}
-            >
-                <LinkIcon />
-            </button>
+            <Action
+                active={state.show}
+                color={P.group.url && 'var(--green)'}
+                onAct={() => setState(s => ({ show: !s.show }))}
+                icon={LinkIcon}
+                title='لینک'
+            />
             <Show when={state.show}>
                 <div class='link-input'>
                     <input
