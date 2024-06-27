@@ -5,16 +5,10 @@
     max-width: 30vw;
     max-height: 30vw;
     position: fixed;
-    /* top: 0; */
-    /* pointer-events: none; */
-    /* bottom: calc(100% + 1rem); */
     background-color: var(--black);
     border-radius: var(--radius);
     border: 2px solid $bc;
     padding: 0.5rem 1rem;
-    /* display: none; */
-    /* left: 70%; */
-    /* transform: translateX(-30%); */
 
     &::after {
         content: '';
@@ -29,9 +23,5 @@
         border-right: 2px solid $bc;
         top: 100%;
         left: 20%;
-    }
-
-    &.show {
-        display: block;
     }
 }
