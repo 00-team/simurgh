@@ -4,6 +4,7 @@ import { BlogData, BlogEmpty, DEFAULT_BLOCKS } from 'models'
 import { produce } from 'solid-js/store'
 
 import './style/empty.scss'
+import { Action } from 'comps'
 
 type Props = {
     idx: number
@@ -28,12 +29,7 @@ export const EditorEmptyBlock: Component<Props> = P => {
     return (
         <div class='block-empty'>
             {Object.entries(BLOCKS).map(([k, v]) => (
-                <button
-                    class='styled'
-                    onClick={() => update(k as BlogData['kind'])}
-                >
-                    {v}
-                </button>
+                <Action onAct={() => update(k as BlogData['kind'])} text={v} />
             ))}
         </div>
     )

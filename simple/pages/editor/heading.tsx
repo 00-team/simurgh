@@ -4,6 +4,7 @@ import './style/heading.scss'
 import { BLOG_ALIGN, BLOG_DIRECTION, BlogHeading } from 'models'
 import { setStore } from './store'
 import { produce } from 'solid-js/store'
+import { Action } from 'comps'
 
 type Props = {
     idx: number
@@ -59,9 +60,8 @@ export const EditorHeadingBlock: Component<Props> = P => {
                 {HEADING[P.block.level]({ children: P.block.content })}
             </div>
             <div class='heading-actions'>
-                <button
-                    class='styled icon'
-                    onClick={() => {
+                <Action
+                    onAct={() => {
                         set_attr(b => {
                             let level = b.level + 1
                             if (level > 6) level = 1
@@ -69,27 +69,27 @@ export const EditorHeadingBlock: Component<Props> = P => {
                             return { level }
                         })
                     }}
-                >
-                    H{P.block.level}
-                </button>
-                <button
-                    class='styled icon'
-                    onClick={() =>
-                        set_attr(b => ({ align: BLOG_ALIGN[b.align][0] }))
+                    icon={() => 'H' + P.block.level}
+                />
+                <Action
+                    onAct={() =>
+                        setStore(
+                            produce(s => {
+                                let b = s.data[P.idx] as BlogHeading
+                                b.align = BLOG_ALIGN[b.align][0]
+                            })
+                        )
                     }
                     title={BLOG_ALIGN[P.block.align][2]}
-                >
-                    {BLOG_ALIGN[P.block.align][1]()}
-                </button>
-                <button
-                    class='styled icon'
-                    onClick={() =>
+                    icon={BLOG_ALIGN[P.block.align][1]}
+                />
+                <Action
+                    onAct={() =>
                         set_attr(b => ({ dir: BLOG_DIRECTION[b.dir][0] }))
                     }
                     title={BLOG_DIRECTION[P.block.dir][2]}
-                >
-                    {BLOG_DIRECTION[P.block.dir][1]()}
-                </button>
+                    icon={BLOG_DIRECTION[P.block.dir][1]}
+                />
             </div>
         </div>
     )

@@ -9,7 +9,7 @@ import {
 
 import './style/image.scss'
 import { ImageIcon, XIcon } from 'icons'
-import { addAlert } from 'comps'
+import { Action, addAlert } from 'comps'
 import { httpx } from 'shared'
 import { setStore, store } from './store'
 import { produce } from 'solid-js/store'
@@ -72,9 +72,12 @@ export const EditorImageBlock: Component<Props> = P => {
                 when={P.block.url}
                 fallback={
                     <div class='image-input'>
-                        <button class='styled icon' onClick={upload_record}>
-                            <ImageIcon />
-                        </button>
+                        <Action
+                            onAct={upload_record}
+                            icon={ImageIcon}
+                            color='var(--green)'
+                            title='بارگزاری عکس'
+                        />
                         <input
                             class='styled url'
                             placeholder='image url'
@@ -131,21 +134,19 @@ export const EditorImageBlock: Component<Props> = P => {
                     />
                 </div>
                 <div class='image-actions'>
-                    <button
-                        class='styled icon remove'
-                        onClick={() => {
+                    <Action
+                        color='var(--red)'
+                        onAct={() => {
                             setStore(
                                 produce(s => {
                                     s.data[P.idx] = DEFAULT_BLOCKS.image
                                 })
                             )
                         }}
-                    >
-                        <XIcon />
-                    </button>
-                    <button
-                        class='styled icon'
-                        onClick={() =>
+                        icon={XIcon}
+                    />
+                    <Action
+                        onAct={() =>
                             setStore(
                                 produce(s => {
                                     let b = s.data[P.idx] as BlogImage
@@ -153,10 +154,9 @@ export const EditorImageBlock: Component<Props> = P => {
                                 })
                             )
                         }
-                        title={'align: ' + P.block.align}
-                    >
-                        {BLOG_ALIGN[P.block.align][1]()}
-                    </button>
+                        title={BLOG_ALIGN[P.block.align][2]}
+                        icon={BLOG_ALIGN[P.block.align][1]}
+                    />
                 </div>
             </Show>
         </div>
