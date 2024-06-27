@@ -12,13 +12,19 @@ type TextProps = {
 type Props = (IconProps | TextProps) & {
     onAct(): void
     title?: JSX.Element
+    color?: string
+    active?: boolean
 }
 
 export const Action: Component<Props> = P => {
     return (
         <button
             class='styled'
-            classList={{ icon: 'icon' in P }}
+            classList={{
+                icon: 'icon' in P,
+                active: P.active,
+            }}
+            style={{ '--color': P.color }}
             onClick={P.onAct}
         >
             <Show when={P.title}>
