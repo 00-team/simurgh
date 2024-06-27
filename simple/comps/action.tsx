@@ -16,7 +16,11 @@ type Props = (IconProps | TextProps) & {
 
 export const Action: Component<Props> = P => {
     return (
-        <button class='styled' classList={{ icon: 'icon' in P }}>
+        <button
+            class='styled'
+            classList={{ icon: 'icon' in P }}
+            onClick={P.onAct}
+        >
             <Show when={P.title}>
                 <Tooltip>{P.title}</Tooltip>
             </Show>
