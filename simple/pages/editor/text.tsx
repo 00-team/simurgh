@@ -16,8 +16,6 @@ import {
     AArrowUpIcon,
     BoldIcon,
     CodeXmlIcon,
-    EyeIcon,
-    EyeOffIcon,
     HighlighterIcon,
     ItalicIcon,
     LinkIcon,
