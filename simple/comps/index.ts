@@ -1,4 +1,5 @@
 export * from './pagination'
+export * from './action'
 export * from './tooltip'
 export * from './alert'
 export * from './trash'
