@@ -13,24 +13,23 @@ export const Tooltip: Component<Props> = P => {
 
     type State = {
         show: boolean
-        top?: string
-        bottom?: string
-        left?: string
-        right?: string
+        x?: number
+        y?: number
+        p?: number
     }
     const [state, setState] = createStore<State>({
         show: false,
     })
 
     function enter(e: { currentTarget: HTMLElement } & MouseEvent) {
-        setState({ show: true })
-        if (!tooltip) return
         const p = e.currentTarget.getBoundingClientRect()
+        setState({ show: true, x: ~~p.left, p: ~~(p.width / 2) })
+        if (!tooltip) return
         const c = tooltip.getBoundingClientRect()
         if (p.top < c.height) {
-            setState({ top: p.bottom + 'px', left: p.left + 'px' })
+            setState({ y: ~~p.bottom })
         } else {
-            setState({ top: p.top - c.height - 10 + 'px', left: p.left + 'px' })
+            setState({ y: ~~(p.top - c.height - 10) })
         }
     }
 
@@ -52,7 +51,15 @@ export const Tooltip: Component<Props> = P => {
         <div class='cmp-tooltip-decoy' ref={decoy}>
             <Show when={state.show}>
                 <Portal>
-                    <div class='cmp-tooltip' ref={tooltip} style={{ ...state }}>
+                    <div
+                        class='cmp-tooltip'
+                        ref={tooltip}
+                        style={{
+                            top: state.y + 'px',
+                            left: state.x + 'px',
+                            '--after-offset': state.p + 'px',
+                        }}
+                    >
                         {P.children}
                     </div>
                 </Portal>

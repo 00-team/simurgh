@@ -22,6 +22,6 @@
         border-bottom: 2px solid $bc;
         border-right: 2px solid $bc;
         top: 100%;
-        left: 20%;
+        left: var(--after-offset, 10%);
     }
 }
