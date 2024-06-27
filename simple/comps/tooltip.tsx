@@ -16,9 +16,11 @@ export const Tooltip: Component<Props> = P => {
         x?: number
         y?: number
         p?: number
+        pb?: boolean
     }
     const [state, setState] = createStore<State>({
         show: false,
+        pb: false,
     })
 
     function enter(e: { currentTarget: HTMLElement } & MouseEvent) {
@@ -26,10 +28,10 @@ export const Tooltip: Component<Props> = P => {
         setState({ show: true, x: ~~p.left, p: ~~(p.width / 2) })
         if (!tooltip) return
         const c = tooltip.getBoundingClientRect()
-        if (p.top < c.height) {
-            setState({ y: ~~p.bottom })
+        if (p.top < c.height + 10) {
+            setState({ y: ~~(p.bottom + 10), pb: true })
         } else {
-            setState({ y: ~~(p.top - c.height - 10) })
+            setState({ y: ~~(p.top - c.height - 10), pb: false })
         }
     }
 
@@ -54,6 +56,7 @@ export const Tooltip: Component<Props> = P => {
                     <div
                         class='cmp-tooltip'
                         ref={tooltip}
+                        classList={{ bottom: state.pb }}
                         style={{
                             top: state.y + 'px',
                             left: state.x + 'px',

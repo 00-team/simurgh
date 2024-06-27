@@ -24,4 +24,10 @@
         top: 100%;
         left: var(--after-offset, 10%);
     }
+
+    &.bottom::after {
+        transform: rotateZ(135deg) rotateY(180deg) translateX(-50%);
+        bottom: 100%;
+        top: unset;
+    }
 }
