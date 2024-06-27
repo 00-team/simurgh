@@ -3,6 +3,8 @@ import {
     ChevronDownIcon,
     ChevronUpIcon,
     DrillIcon,
+    EyeIcon,
+    EyeOffIcon,
     PlusIcon,
     RotateCcwIcon,
     SaveIcon,
@@ -15,7 +17,7 @@ import { httpx } from 'shared'
 import { EditorEmptyBlock } from './empty'
 import { pre_save, setStore, store, unwrap_rec } from './store'
 import { produce } from 'solid-js/store'
-import { Confact } from 'comps'
+import { Action, Confact } from 'comps'
 import { EditorImageBlock } from './image'
 import { BlogData } from 'models'
 import { EditorTextBlock } from './text'
@@ -64,6 +66,24 @@ export default () => {
                     </button>
                 </div>
                 <div>
+                    <Action
+                        icon={() => (
+                            <Show
+                                when={store.show_groups}
+                                fallback={<EyeIcon />}
+                            >
+                                <EyeOffIcon />
+                            </Show>
+                        )}
+                        onAct={() =>
+                            setStore(s => ({ show_groups: !s.show_groups }))
+                        }
+                        title={
+                            store.show_groups
+                                ? 'مخفی کردن گروه ها'
+                                : 'نشان دادن گروه ها'
+                        }
+                    />
                     <button
                         class='styled icon'
                         style={{ '--color': 'var(--green)' }}

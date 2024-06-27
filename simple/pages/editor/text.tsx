@@ -85,7 +85,7 @@ export const EditorTextBlock: Component<Props> = P => {
 
                 groups.push({
                     ...group_data(n),
-                    content: n.textContent.split('\n'),
+                    content: n.innerText.split('\n'),
                 })
             } else {
                 texts += n.textContent || ''
@@ -112,7 +112,7 @@ export const EditorTextBlock: Component<Props> = P => {
     onCleanup(() => document.removeEventListener('editor_pre_save', pre_save))
 
     return (
-        <div class='block-text'>
+        <div class='block-text' onMouseLeave={pre_save}>
             <Actions
                 idx={P.idx}
                 block={P.block}
@@ -137,7 +137,9 @@ export const EditorTextBlock: Component<Props> = P => {
                         if (store.active != P.idx) {
                             setStore({ active: P.idx })
                         }
-                        setState({ placeholder: !e.currentTarget.innerText })
+                        setState({
+                            placeholder: !e.currentTarget.innerText.trim(),
+                        })
                     }}
                     onFocus={() => setStore({ active: P.idx })}
                     contenteditable={'plaintext-only'}
@@ -353,19 +355,6 @@ const Actions: Component<ActionsProps> = P => {
                     title={'گروه جدید'}
                 />
             </Show>
-            <Action
-                icon={() => (
-                    <Show when={store.show_groups} fallback={<EyeIcon />}>
-                        <EyeOffIcon />
-                    </Show>
-                )}
-                onAct={() => setStore(s => ({ show_groups: !s.show_groups }))}
-                title={
-                    store.show_groups
-                        ? 'مخفی کردن گروه ها'
-                        : 'نشان دادن گروه ها'
-                }
-            />
             <Show when={P.group && !state.spliter}>
                 <Action
                     color={P.group.style.color}

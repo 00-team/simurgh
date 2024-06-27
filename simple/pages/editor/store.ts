@@ -1,4 +1,4 @@
-import { BlogData, BlogModel, BlogTextGroup, DEFAULT_BLOG } from 'models'
+import { BlogData, BlogModel, DEFAULT_BLOG } from 'models'
 import { createEffect, createRoot } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
