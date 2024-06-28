@@ -10,12 +10,32 @@
 
     .actions {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         padding: 1rem;
+
+        margin-top: auto;
 
         > div {
             display: flex;
             gap: 0.25rem;
+
+            button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                background-color: var(--thirty-percent);
+                color: var(--accent-color);
+
+                border: 2px solid var(--ten-percent);
+                border-radius: 100vmax;
+
+                cursor: pointer;
+
+                svg {
+                    margin: 8px;
+                }
+            }
         }
     }
 
@@ -25,17 +45,36 @@
         text-align: center;
 
         &.not-found {
-            display: grid;
-            place-items: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
 
-            backdrop-filter: blur(2px);
+            .new-project {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                background: var(--ten-percent);
+                border: 1px solid var(--accent-color);
+                border: 2px;
+
+                border-radius: 8px;
+
+                cursor: pointer;
+
+                margin-top: 2em;
+                padding: 0.5rem 2rem;
+            }
         }
     }
 
     .project-list {
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem;
+        row-gap: 2rem;
+        column-gap: 3rem;
+        padding: 3rem 0;
         justify-content: space-evenly;
 
         .project {
