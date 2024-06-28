@@ -12,6 +12,7 @@
         place-items: center;
         width: 100%;
         height: 100%;
+        border-radius: 1rem;
         backdrop-filter: blur(2px);
         background-color: #0003;
         box-shadow: inset 0 0 20px 40px #0007;
@@ -19,7 +20,7 @@
         transition: opacity 200ms ease-in-out;
 
         svg {
-            max-width: 32px;
+            max-width: 25px;
         }
     }
 
