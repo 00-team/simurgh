@@ -1,79 +1,145 @@
 .sidebar-fnd {
-    width: 15%;
-    min-width: 200px;
-    flex-shrink: 0;
-    height: 100%;
+    width: clamp(280px, 20%, 300px);
+
     display: flex;
+    align-items: center;
+    justify-content: flex-start;
     flex-direction: column;
-    background-color: var(--cd);
-    border-left: 2px solid var(--ca);
-    padding: 1rem;
-    gap: 2rem;
+    gap: 5vh;
+
+    background-color: var(--thirty-percent);
+    color: var(--accent-color);
+    box-shadow: 0px 0px 30px -15px black;
+
+    border-top-left-radius: 70px;
+    border-bottom-left-radius: 70px;
+
+    padding: 3vh 0;
+    padding-top: 80px;
+
+    position: relative;
+    isolation: isolate;
+
+    @media screen and (max-width: 1024px) {
+        width: 250px;
+    }
+    @media screen and (max-width: 768px) {
+        width: 100%;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
 
     .user {
-        width: 100%;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        flex-shrink: 0;
-        gap: 1rem;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4vh;
+
+        width: 100%;
+
+        padding-bottom: 40px;
+
+        position: relative;
+        isolation: isolate;
+
+        &::after {
+            content: '';
+            width: 90%;
+            height: 1px;
+
+            position: absolute;
+            bottom: 0;
+
+            background-image: linear-gradient(
+                45deg,
+                transparent,
+                var(--accent-color),
+                transparent
+            );
+        }
 
         .img {
-            cursor: pointer;
-            width: 50%;
-            aspect-ratio: 1;
+            width: 100px;
+            aspect-ratio: 1/1;
+
+            border-radius: 100vmax;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            border-radius: 40%;
-            border: 4px solid var(--ca);
 
-            svg {
-                width: 70%;
-                height: 70%;
-            }
+            overflow: hidden;
 
             img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
             }
+            svg {
+                width: 70%;
+                height: 70%;
+            }
         }
-
         .name {
-            cursor: pointer;
-            font-size: 2rem;
-            font-family: var(--fa), sans-serif;
-            width: 100%;
             display: flex;
             align-items: center;
-            text-align: center;
+            justify-content: center;
+
+            width: 100%;
+
+            padding: 0 10px;
+
+            overflow: hidden;
 
             input,
             span {
-                font-family: inherit;
                 width: 100%;
+                text-align: center;
             }
         }
     }
 
     .links {
         width: 100%;
-        height: 100%;
         display: flex;
+        align-items: center;
+        justify-content: center;
         flex-direction: column;
-        direction: rtl;
-        font-size: 1.6rem;
-        gap: 1rem;
+
+        padding: 1em 0;
 
         a {
-            color: var(--cl);
-            text-decoration: none;
-            transition: color 200ms ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            width: 100%;
+
+            padding: 1em;
+
+            color: var(--accent-color);
+
+            cursor: pointer;
+
+            will-change: transform;
+            transition: 0.3s cubic-bezier(0.45, 0.02, 0.09, 0.98);
 
             &:hover {
-                color: var(--ca);
+                > svg {
+                    transform: translateX(-0.4em);
+                }
+            }
+
+            .holder {
+                display: flex;
+                align-items: center;
+                gap: 0.5em;
+            }
+
+            > svg {
+                will-change: transform;
+                transition: 0.3s ease;
             }
         }
     }

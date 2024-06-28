@@ -8,7 +8,7 @@ import {
     SaveIcon,
     TrashIcon,
 } from 'icons'
-import './style/index.scss'
+import './style/base.scss'
 import { useNavigate, useParams } from '@solidjs/router'
 import { Component, Show, createEffect } from 'solid-js'
 import { httpx } from 'shared'

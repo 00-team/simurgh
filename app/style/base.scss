@@ -1,7 +1,6 @@
 @use 'theme';
 @use 'config' as g;
 
-@import './fonts';
 @import './dash';
 @import './root';
 @import './misc';
@@ -20,9 +19,9 @@
 
 body {
     color-scheme: dark;
+    background-color: var(--sixty-percent);
     background-image: url(/assets/pattern.svg);
-    background-color: var(--cd);
-    color: var(--cl);
+    color: var(--accent-color);
 
     height: 100vh;
     width: 100%;
@@ -40,11 +39,6 @@ body {
         height: 100%;
     }
 
-    svg {
-        width: 24px;
-        height: 24px;
-    }
-
     img {
         user-select: none;
     }
@@ -52,8 +46,29 @@ body {
 
 html,
 body {
+    direction: rtl;
     scroll-behavior: smooth;
 }
+
+html {
+    body {
+        @include theme.dark;
+    }
+    background-color: #000;
+}
+
+// html[data-theme='dark'] {
+//     body {
+//         @include theme.dark;
+//     }
+//     background-color: #000;
+// }
+// html[data-theme='light'] {
+//     body {
+//         @include theme.light;
+//     }
+//     background-color: #fff;
+// }
 
 .title_hero {
     font-size: g.$TITLE_FONTSIZE_HERO;
@@ -84,4 +99,16 @@ body {
 .description_small {
     font-size: g.$DESCRIPTION_FONT_SIZE_SMALL;
     font-family: 'yekan';
+}
+
+// reset
+a {
+    color: unset;
+    text-decoration: none;
+    font: inherit;
+}
+button {
+    border: none;
+    margin: 0;
+    cursor: pointer;
 }

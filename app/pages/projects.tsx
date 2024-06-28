@@ -1,10 +1,10 @@
 import { useNavigate, useSearchParams } from '@solidjs/router'
-import './style/projects.scss'
-import { ProjectModel } from 'models'
-import { createStore } from 'solid-js/store'
-import { fmt_bytes, fmt_datetime, httpx } from 'shared'
-import { Show, createEffect } from 'solid-js'
 import { ChevronLeftIcon, ChevronRightIcon } from 'icons'
+import { ProjectModel } from 'models'
+import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import { createEffect, Show } from 'solid-js'
+import { createStore } from 'solid-js/store'
+import './style/projects.scss'
 
 export default () => {
     type State = {
@@ -59,52 +59,88 @@ export default () => {
 
     return (
         <div class='projects-fnd'>
-            <div class='actions'>
-                <div>
+            <Show when={!state.loading && state.projects.length == 0}>
+                <div class='message section_title not-found'>
+                    پروژه ای یافت نشد
                     <button
-                        class='styled icon'
-                        onClick={() => change_page(-1)}
-                        disabled={state.page == 0}
+                        class='new-project title_small'
+                        onClick={projects_new}
                     >
-                        <ChevronLeftIcon />
-                    </button>
-                    <button
-                        class='styled icon'
-                        onClick={() => change_page(+1)}
-                        disabled={state.projects.length < 31}
-                    >
-                        <ChevronRightIcon />
-                    </button>
-                </div>
-                <div>
-                    <button class='styled' onClick={projects_new}>
                         پروژه جدید
                     </button>
                 </div>
-            </div>
-            <Show when={!state.loading && state.projects.length == 0}>
-                <div class='message'>پروژه ای یافت نشد</div>
             </Show>
             <div class='project-list'>
-                {state.projects.map(p => (
-                    <div
-                        class='project'
-                        onClick={() => nav('/projects/' + p.id)}
+                {state.projects.length >= 1 && (
+                    <button
+                        class='new-project title_small'
+                        onClick={projects_new}
                     >
-                        <span>نام:</span>
-                        <span>{p.name}</span>
-                        <span>بلاگ ها:</span>
-                        <span class='n'>{p.blog_count.toLocaleString()}</span>
-                        <span>فایل ها:</span>
-                        <span class='n'>{p.record_count.toLocaleString()}</span>
-                        <span>فضا:</span>
-                        <span class='n'>{fmt_bytes(p.storage)}</span>
-                        <span>تاریخ شروع:</span>
-                        <span class='n'>{fmt_datetime(p.created_at)}</span>
-                        <span>تاریخ آپدیت:</span>
-                        <span class='n'>{fmt_datetime(p.updated_at)}</span>
-                    </div>
-                ))}
+                        پروژه جدید
+                    </button>
+                )}
+                <div class='projects-wrapper'>
+                    {state.projects.map(p => (
+                        <div
+                            class='project title_small'
+                            onClick={() => nav('/projects/' + p.id)}
+                        >
+                            <div class='project-name title'>
+                                <span>{p.name}</span>
+                            </div>
+                            <div class='row'>
+                                <span>بلاگ ها:</span>
+                                <span class='n'>
+                                    {p.blog_count.toLocaleString()}
+                                </span>
+                            </div>
+                            <div class='row'>
+                                <span>فایل ها:</span>
+                                <span class='n'>
+                                    {p.record_count.toLocaleString()}
+                                </span>
+                            </div>
+                            <div class='row '>
+                                <span>فضا:</span>
+                                <span class='n space'>
+                                    {fmt_bytes(p.storage)}
+                                </span>
+                            </div>
+                            <div class='row'>
+                                <span>تاریخ شروع:</span>
+                                <span class='date'>
+                                    {fmt_datetime(p.created_at)}
+                                </span>
+                            </div>
+                            <div class='row'>
+                                <span>تاریخ آپدیت:</span>
+                                <span class='n'>
+                                    {fmt_datetime(p.updated_at)}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div class='actions'>
+                <div>
+                    <button
+                        class='icon'
+                        classList={{ disable: state.projects.length < 31 }}
+                        onClick={() => change_page(+1)}
+                        disabled={state.projects.length < 31}
+                    >
+                        <ChevronRightIcon size={30} />
+                    </button>
+                    <button
+                        class='icon'
+                        onClick={() => change_page(-1)}
+                        classList={{ disable: state.projects.length < 31 }}
+                        disabled={state.page == 0}
+                    >
+                        <ChevronLeftIcon size={30} />
+                    </button>
+                </div>
             </div>
         </div>
     )

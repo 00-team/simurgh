@@ -7,6 +7,12 @@ export const Timer: Component<Props> = P => {
     const [seconds, setSeconds] = createSignal(P.seconds)
     let timer: number
 
+    function convertSectoMin(seconds) {
+        const mins = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return mins + ':' + (secs < 10 ? '0' : '') + secs
+    }
+
     onMount(() => {
         timer = setInterval(() => {
             setSeconds(s => {
@@ -19,5 +25,9 @@ export const Timer: Component<Props> = P => {
         }, 1e3)
     })
 
-    return <span class='cmp-timer'>{seconds()} ثانیه باقی مانده</span>
+    return (
+        <span class='cmp-timer'>
+            {convertSectoMin(seconds())} ثانیه باقی مانده
+        </span>
+    )
 }
