@@ -1,18 +1,24 @@
-import { Show, createEffect } from 'solid-js'
-import './style/sidebar.scss'
-import { self, setSelf } from 'store'
-import { UserIcon } from 'icons'
-import { httpx } from 'shared'
-import { createStore, produce } from 'solid-js/store'
 import { A } from '@solidjs/router'
 import { Editable } from 'comps'
+import { ArrowIcon, ArrowLeftIcon, ProjectIcon, UserIcon } from 'icons'
+import { httpx } from 'shared'
+import { createEffect, Show } from 'solid-js'
+import { createStore, produce } from 'solid-js/store'
+import { self, setSelf } from 'store'
+import './style/sidebar.scss'
 
 export default () => {
     return (
         <div class='sidebar-fnd'>
             <User />
-            <div class='links'>
-                <A href='/projects/'>پروژه ها</A>
+            <div class='links title'>
+                <A href='/projects/'>
+                    <div class='holder'>
+                        <ProjectIcon size={30} />
+                        پروژه ها
+                    </div>
+                    <ArrowIcon />
+                </A>
             </div>
         </div>
     )
@@ -56,6 +62,7 @@ const User = () => {
                 },
             })
         }
+        // @ts-ignore
         input.oncancel = () => input.remove()
         input.click()
     }
@@ -117,7 +124,9 @@ const User = () => {
                     when={state.edit_name}
                     fallback={
                         <Editable onClick={() => setState({ edit_name: true })}>
-                            <span>{self.user.name || '---'}</span>
+                            <span class='title_small'>
+                                {self.user.name || '---'}
+                            </span>
                         </Editable>
                     }
                 >
