@@ -59,32 +59,15 @@ export default () => {
 
     return (
         <div class='projects-fnd'>
-            <div class='actions'>
-                <div>
-                    <button
-                        class='styled icon'
-                        onClick={() => change_page(-1)}
-                        disabled={state.page == 0}
-                    >
-                        <ChevronLeftIcon />
-                    </button>
-                    <button
-                        class='styled icon'
-                        onClick={() => change_page(+1)}
-                        disabled={state.projects.length < 31}
-                    >
-                        <ChevronRightIcon />
-                    </button>
-                </div>
-                <div>
-                    <button class='styled' onClick={projects_new}>
-                        پروژه جدید
-                    </button>
-                </div>
-            </div>
             <Show when={!state.loading && state.projects.length == 0}>
                 <div class='message section_title not-found'>
                     پروژه ای یافت نشد
+                    <button
+                        class='new-project title_small'
+                        onClick={projects_new}
+                    >
+                        پروژه جدید
+                    </button>
                 </div>
             </Show>
             <div class='project-list'>
@@ -107,6 +90,26 @@ export default () => {
                         <span class='n'>{fmt_datetime(p.updated_at)}</span>
                     </div>
                 ))}
+            </div>
+            <div class='actions'>
+                <div>
+                    <button
+                        class='icon'
+                        classList={{ disable: state.projects.length < 31 }}
+                        onClick={() => change_page(+1)}
+                        disabled={state.projects.length < 31}
+                    >
+                        <ChevronRightIcon size={30} />
+                    </button>
+                    <button
+                        class='icon'
+                        onClick={() => change_page(-1)}
+                        classList={{ disable: state.projects.length < 31 }}
+                        disabled={state.page == 0}
+                    >
+                        <ChevronLeftIcon size={30} />
+                    </button>
+                </div>
             </div>
         </div>
     )
