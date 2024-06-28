@@ -9,8 +9,7 @@
         background-color: var(--cd);
         aspect-ratio: 2/1;
         height: 60%;
-        border: 2px solid var(--ca);
-        border-radius: var(--radius);
+        border-radius: 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -23,6 +22,8 @@
                 height: 100%;
                 width: auto;
                 aspect-ratio: 1;
+
+                transform: scaleX(-1);
             }
         }
 
