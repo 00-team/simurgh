@@ -8,6 +8,8 @@
     position: relative;
     isolation: isolate;
 
+    direction: rtl;
+
     .actions {
         display: flex;
         justify-content: center;
@@ -49,58 +51,64 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-
-            .new-project {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                background: var(--ten-percent);
-                border: 1px solid var(--accent-color);
-                border: 2px;
-
-                border-radius: 8px;
-
-                cursor: pointer;
-
-                margin-top: 2em;
-                padding: 0.5rem 2rem;
-            }
         }
     }
 
     .project-list {
         display: flex;
-        flex-wrap: wrap;
-        row-gap: 2rem;
-        column-gap: 3rem;
-        padding: 3rem 0;
-        justify-content: space-evenly;
+        align-items: center;
+        flex-direction: column;
 
-        .project {
-            background-color: var(--cd);
-            cursor: pointer;
-            width: clamp(250px, calc(25% - 3rem), 300px);
-            display: grid;
-            grid-template-columns: 0.5fr 1fr;
-            direction: rtl;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border: 2px solid var(--cl);
-            border-radius: var(--radius);
-            transition: border-color 200ms ease-in-out;
-            font-size: 18px;
-            overflow: hidden;
-            white-space: nowrap;
+        .projects-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            row-gap: 2rem;
+            column-gap: 3rem;
+            padding: 3rem 0;
+            justify-content: space-evenly;
 
-            .n {
-                font-family: var(--en);
-                direction: ltr;
-            }
+            .project {
+                background-color: var(--cd);
+                cursor: pointer;
+                width: clamp(250px, calc(25% - 3rem), 300px);
+                display: grid;
+                grid-template-columns: 0.5fr 1fr;
+                direction: rtl;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                border: 2px solid var(--cl);
+                border-radius: var(--radius);
+                transition: border-color 200ms ease-in-out;
+                font-size: 18px;
+                overflow: hidden;
+                white-space: nowrap;
 
-            &:hover {
-                border-color: var(--ca);
+                .n {
+                    font-family: var(--en);
+                    direction: ltr;
+                }
+
+                &:hover {
+                    border-color: var(--ca);
+                }
             }
         }
+    }
+
+    .new-project {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: var(--ten-percent);
+        border: 1px solid var(--accent-color);
+        border: 2px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        margin-top: 2em;
+        padding: 0.5rem 2rem;
     }
 }
