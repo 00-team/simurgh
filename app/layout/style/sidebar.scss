@@ -17,6 +17,9 @@
     padding: 3vh 0;
     padding-top: 80px;
 
+    position: relative;
+    isolation: isolate;
+
     @media screen and (max-width: 1024px) {
         width: 250px;
     }
@@ -38,6 +41,23 @@
         padding-bottom: 40px;
 
         position: relative;
+        isolation: isolate;
+
+        &::after {
+            content: '';
+            width: 90%;
+            height: 1px;
+
+            position: absolute;
+            bottom: 0;
+
+            background-image: linear-gradient(
+                45deg,
+                transparent,
+                var(--accent-color),
+                transparent
+            );
+        }
 
         .img {
             width: 100px;
