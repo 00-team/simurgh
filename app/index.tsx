@@ -21,8 +21,8 @@ import './style/fonts/imports.scss'
 const Dash: Component<RouteSectionProps> = P => {
     return (
         <div class='dash-fnd'>
-            <div class='content-fnd'>{P.children}</div>
             <Sidebar />
+            <div class='content-fnd'>{P.children}</div>
         </div>
     )
 }
