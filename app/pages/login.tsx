@@ -1,10 +1,10 @@
-import { Logo } from 'icons'
-import './style/login.scss'
-import { createStore } from 'solid-js/store'
+import { Timer } from 'comps'
+import { CodeSvg, EmailSvg, Logo } from 'icons'
 import { httpx } from 'shared'
 import { Show } from 'solid-js'
+import { createStore } from 'solid-js/store'
 import { setSelf } from 'store'
-import { Timer } from 'comps'
+import './style/login.scss'
 
 export default () => {
     type State = {
@@ -79,42 +79,50 @@ export default () => {
                     class='login-form title_small'
                     classList={{ loading: state.loading }}
                 >
-                    <div class='grid'>
-                        <label
-                            for='login-email'
-                            classList={{ disabled: state.stage != 'email' }}
-                        >
-                            ایمیل:
-                        </label>
-                        <input
-                            disabled={state.stage != 'email'}
-                            id='login-email'
-                            type='email'
-                            class='styled'
-                            placeholder='simurgh@example.com'
-                            value={state.email}
-                            onInput={e =>
-                                setState({ email: e.currentTarget.value })
-                            }
-                        />
-                        <label
-                            classList={{ disabled: state.stage != 'code' }}
-                            for='login-code'
-                        >
-                            کد:
-                        </label>
-                        <input
-                            disabled={state.stage != 'code'}
-                            id='login-code'
-                            maxLength={5}
-                            pattern='\d{5,5}'
-                            class='styled'
-                            placeholder='12345'
-                            value={state.code}
-                            onInput={e =>
-                                setState({ code: e.currentTarget.value })
-                            }
-                        />
+                    <div class='inputs'>
+                        <div class='input'>
+                            <label
+                                for='login-email'
+                                classList={{ disabled: state.stage != 'email' }}
+                            >
+                                <EmailSvg />
+                                ایمیل:
+                            </label>
+                            <input
+                                disabled={state.stage != 'email'}
+                                id='login-email'
+                                type='email'
+                                class='title_small'
+                                placeholder='simurgh@example.com'
+                                value={state.email}
+                                onInput={e =>
+                                    setState({ email: e.currentTarget.value })
+                                }
+                            />
+                        </div>
+
+                        <div class='input code'>
+                            <label
+                                classList={{ disabled: state.stage != 'code' }}
+                                for='login-code'
+                            >
+                                <CodeSvg />
+                                کد:
+                            </label>
+                            <input
+                                id='login-code'
+                                class='styled'
+                                disabled={state.stage != 'code'}
+                                maxLength={5}
+                                inputMode={'numeric'}
+                                pattern='\d{5,5}'
+                                placeholder='12345'
+                                value={state.code}
+                                onInput={e =>
+                                    setState({ code: e.currentTarget.value })
+                                }
+                            />
+                        </div>
                     </div>
                     <Show when={state.stage == 'code'}>
                         <Timer seconds={state.expires} />
