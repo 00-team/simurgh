@@ -1,10 +1,10 @@
 import { useNavigate, useSearchParams } from '@solidjs/router'
-import './style/projects.scss'
-import { ProjectModel } from 'models'
-import { createStore } from 'solid-js/store'
-import { fmt_bytes, fmt_datetime, httpx } from 'shared'
-import { Show, createEffect } from 'solid-js'
 import { ChevronLeftIcon, ChevronRightIcon } from 'icons'
+import { ProjectModel } from 'models'
+import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import { createEffect, Show } from 'solid-js'
+import { createStore } from 'solid-js/store'
+import './style/projects.scss'
 
 export default () => {
     type State = {
@@ -83,7 +83,9 @@ export default () => {
                 </div>
             </div>
             <Show when={!state.loading && state.projects.length == 0}>
-                <div class='message'>پروژه ای یافت نشد</div>
+                <div class='message section_title not-found'>
+                    پروژه ای یافت نشد
+                </div>
             </Show>
             <div class='project-list'>
                 {state.projects.map(p => (
