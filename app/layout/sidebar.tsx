@@ -125,7 +125,7 @@ const User = () => {
                     fallback={
                         <Editable onClick={() => setState({ edit_name: true })}>
                             <span class='title_small'>
-                                {self.user.name || '---'}
+                                {self.user.name || 'اسم شما'}
                             </span>
                         </Editable>
                     }
