@@ -71,25 +71,39 @@ export default () => {
                 </div>
             </Show>
             <div class='project-list'>
-                {state.projects.map(p => (
-                    <div
-                        class='project'
-                        onClick={() => nav('/projects/' + p.id)}
+                {state.projects.length >= 1 && (
+                    <button
+                        class='new-project title_small'
+                        onClick={projects_new}
                     >
-                        <span>نام:</span>
-                        <span>{p.name}</span>
-                        <span>بلاگ ها:</span>
-                        <span class='n'>{p.blog_count.toLocaleString()}</span>
-                        <span>فایل ها:</span>
-                        <span class='n'>{p.record_count.toLocaleString()}</span>
-                        <span>فضا:</span>
-                        <span class='n'>{fmt_bytes(p.storage)}</span>
-                        <span>تاریخ شروع:</span>
-                        <span class='n'>{fmt_datetime(p.created_at)}</span>
-                        <span>تاریخ آپدیت:</span>
-                        <span class='n'>{fmt_datetime(p.updated_at)}</span>
-                    </div>
-                ))}
+                        پروژه جدید
+                    </button>
+                )}
+                <div class='projects-wrapper'>
+                    {state.projects.map(p => (
+                        <div
+                            class='project'
+                            onClick={() => nav('/projects/' + p.id)}
+                        >
+                            <span>نام:</span>
+                            <span>{p.name}</span>
+                            <span>بلاگ ها:</span>
+                            <span class='n'>
+                                {p.blog_count.toLocaleString()}
+                            </span>
+                            <span>فایل ها:</span>
+                            <span class='n'>
+                                {p.record_count.toLocaleString()}
+                            </span>
+                            <span>فضا:</span>
+                            <span class='n'>{fmt_bytes(p.storage)}</span>
+                            <span>تاریخ شروع:</span>
+                            <span class='n'>{fmt_datetime(p.created_at)}</span>
+                            <span>تاریخ آپدیت:</span>
+                            <span class='n'>{fmt_datetime(p.updated_at)}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
             <div class='actions'>
                 <div>
