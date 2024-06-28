@@ -15,7 +15,8 @@ const Blog = lazy(() => import('pages/blog'))
 const Blogs = lazy(() => import('pages/blogs'))
 const Editor = lazy(() => import('pages/editor'))
 
-import './style/index.scss'
+import './style/base.scss'
+import './style/fonts/imports.scss'
 
 const Dash: Component<RouteSectionProps> = P => {
     return (
