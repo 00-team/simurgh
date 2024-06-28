@@ -1,0 +1,73 @@
+@font-face {
+    font-family: 'Graduate';
+    src: url('./Graduate/Graduate.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'iranLight';
+    src: url('./iranSans/iran-light.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'iranBold';
+    src: url('./iranSans/iran-bold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'yekanBold';
+    src: url('./iranYekan/IRANYekanWebBold.woff') format('woff2');
+}
+
+@font-face {
+    font-family: 'yekan';
+    src: url('./iranYekan/IRANYekanWebRegular.woff') format('woff2');
+}
+
+@font-face {
+    font-family: 'arvand';
+    src: url('./arvand/arvand.ttf') format('woff2');
+}
+
+@font-face {
+    font-family: 'arvandBold';
+    src: url('./arvand/Arvand-Bold.ttf') format('woff2');
+}
+
+@font-face {
+    font-family: 'ordibehesht';
+    src: url('./ordibehesht/Ordibehesht.TTF') format('truetype');
+}
+
+@font-face {
+    font-family: 'vazir';
+    src:
+        url('./vazir/Vazir.eot'),
+        url('./vazir/Vazir.woff2') format('woff2'),
+        url('./vazir/Vazir.ttf') format('truetype'),
+        url('./vazir/Vazir.woff') format('woff');
+}
+
+// numbers
+@font-face {
+    font-family: 'number';
+    src:
+        url('./vazir/Vazir.eot'),
+        url('./vazir/Vazir.woff2') format('woff2'),
+        url('./vazir/Vazir.ttf') format('truetype'),
+        url('./vazir/Vazir.woff') format('woff');
+    unicode-range: U+0030-0039, U+0660-0669;
+}
+@font-face {
+    font-family: 'Jakarta';
+    src: url('./fonts/PlusJakartaSans[wght].ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Zan';
+    src: url('./fonts/Zan.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Titillium';
+    src: url('./fonts/TitilliumWeb-Regular.ttf') format('truetype');
+}
