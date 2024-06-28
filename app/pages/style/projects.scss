@@ -69,6 +69,8 @@
         flex-direction: column;
 
         .projects-wrapper {
+            width: 100%;
+
             display: flex;
             flex-wrap: wrap;
             row-gap: 2rem;
@@ -77,24 +79,46 @@
             justify-content: space-evenly;
 
             .project {
-                background-color: var(--cd);
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+
+                width: clamp(0px, 100%, 400px);
+
+                background-color: var(--thirty-percent);
                 cursor: pointer;
-                width: clamp(250px, calc(25% - 3rem), 300px);
-                display: grid;
-                grid-template-columns: 0.5fr 1fr;
-                direction: rtl;
-                gap: 0.5rem;
-                padding: 0.5rem;
+
+                padding: 1.5rem 1rem;
                 border: 2px solid var(--cl);
-                border-radius: var(--radius);
+                border-radius: 8px;
                 transition: border-color 200ms ease-in-out;
-                font-size: 18px;
                 overflow: hidden;
                 white-space: nowrap;
 
-                .n {
-                    font-family: var(--en);
-                    direction: ltr;
+                .project-name {
+                    width: 100%;
+                    padding: 0.5em 0;
+                    margin-bottom: 1em;
+
+                    text-align: center;
+                }
+                .row {
+                    width: 100%;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    padding: 0.2em 0;
+
+                    .space {
+                        direction: ltr;
+                    }
+
+                    .date {
+                        font-family: 'number';
+                        direction: ltr;
+                    }
                 }
 
                 &:hover {
