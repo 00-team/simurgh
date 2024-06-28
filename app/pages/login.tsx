@@ -75,7 +75,10 @@ export default () => {
                 <div class='logo'>
                     <Logo />
                 </div>
-                <div class='login-form' classList={{ loading: state.loading }}>
+                <div
+                    class='login-form title_small'
+                    classList={{ loading: state.loading }}
+                >
                     <div class='grid'>
                         <label
                             for='login-email'
@@ -119,12 +122,18 @@ export default () => {
                     <Show
                         when={state.stage == 'email'}
                         fallback={
-                            <button class='styled' onclick={user_login}>
+                            <button
+                                class='cta title_smaller'
+                                onclick={user_login}
+                            >
                                 تایید کد
                             </button>
                         }
                     >
-                        <button class='styled' onclick={verification}>
+                        <button
+                            class='cta title_smaller'
+                            onclick={verification}
+                        >
                             دریافت کد
                         </button>
                     </Show>
