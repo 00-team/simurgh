@@ -5,6 +5,9 @@
     flex-direction: column;
     gap: 2rem;
 
+    position: relative;
+    isolation: isolate;
+
     .actions {
         display: flex;
         justify-content: space-between;
@@ -20,7 +23,13 @@
         width: 100%;
         height: 100%;
         text-align: center;
-        font-size: 3rem;
+
+        &.not-found {
+            display: grid;
+            place-items: center;
+
+            backdrop-filter: blur(2px);
+        }
     }
 
     .project-list {

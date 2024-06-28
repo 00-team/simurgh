@@ -50,6 +50,15 @@
             display: grid;
             place-items: center;
             padding: 3rem;
+
+            &.not-found {
+                position: absolute;
+
+                display: grid;
+                place-items: center;
+
+                backdrop-filter: blur(2px);
+            }
         }
 
         .line {
