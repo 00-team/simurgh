@@ -75,7 +75,14 @@ export default () => {
                 <div class='logo'>
                     <Logo />
                 </div>
-                <div
+                <form
+                    action={''}
+                    onsubmit={e => {
+                        e.preventDefault()
+
+                        if (state.stage == 'email') return verification()
+                        user_login()
+                    }}
                     class='login-form title_small'
                     classList={{ loading: state.loading }}
                 >
@@ -124,28 +131,19 @@ export default () => {
                             />
                         </div>
                     </div>
+
                     <Show when={state.stage == 'code'}>
                         <Timer seconds={state.expires} />
                     </Show>
-                    <Show
-                        when={state.stage == 'email'}
-                        fallback={
-                            <button
-                                class='cta title_smaller'
-                                onclick={user_login}
-                            >
-                                تایید کد
-                            </button>
-                        }
-                    >
-                        <button
-                            class='cta title_smaller'
-                            onclick={verification}
+                    <button class='cta title_smaller' type='submit'>
+                        <Show
+                            when={state.stage == 'email'}
+                            fallback={<>تایید کد</>}
                         >
                             دریافت کد
-                        </button>
-                    </Show>
-                </div>
+                        </Show>
+                    </button>
+                </form>
             </div>
         </div>
     )
