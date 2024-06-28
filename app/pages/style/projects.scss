@@ -34,6 +34,13 @@
 
                 cursor: pointer;
 
+                transition: 0.3s;
+
+                &.disable {
+                    pointer-events: none;
+                    opacity: 0.5;
+                }
+
                 svg {
                     margin: 8px;
                 }
