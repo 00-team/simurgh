@@ -76,11 +76,13 @@ export const UserIcon = () => (
     </svg>
 )
 
-export const ChevronLeftIcon = () => (
+export const ChevronLeftIcon = P => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
         fill='none'
+        width={P.size || 25}
+        height={P.size || 25}
         stroke='currentColor'
         stroke-width='2'
         stroke-linecap='round'
@@ -90,11 +92,13 @@ export const ChevronLeftIcon = () => (
     </svg>
 )
 
-export const ChevronRightIcon = () => (
+export const ChevronRightIcon = P => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
         fill='none'
+        width={P.size || 25}
+        height={P.size || 25}
         stroke='currentColor'
         stroke-width='2'
         stroke-linecap='round'
@@ -310,6 +314,20 @@ export const ArrowLeftIcon = () => (
     >
         <path d='m12 19-7-7 7-7' />
         <path d='M19 12H5' />
+    </svg>
+)
+
+export const ArrowIcon = P => (
+    <svg
+        stroke='currentColor'
+        fill='currentColor'
+        stroke-width='0'
+        viewBox='0 0 512 512'
+        height={P.size || 25}
+        width={P.size || 25}
+        xmlns='http://www.w3.org/2000/svg'
+    >
+        <path d='M217.9 256L345 129c9.4-9.4 9.4-24.6 0-33.9-9.4-9.4-24.6-9.3-34 0L167 239c-9.1 9.1-9.3 23.7-.7 33.1L310.9 417c4.7 4.7 10.9 7 17 7s12.3-2.3 17-7c9.4-9.4 9.4-24.6 0-33.9L217.9 256z'></path>
     </svg>
 )
 
@@ -666,6 +684,22 @@ export const EmailSvg = P => (
     >
         <path fill='none' d='M0 0h24v24H0z'></path>
         <path d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z'></path>
+    </svg>
+)
+export const ProjectIcon = P => (
+    <svg
+        stroke='currentColor'
+        fill='currentColor'
+        stroke-width='0'
+        viewBox='0 0 1024 1024'
+        version='1.1'
+        height={P.size || 25}
+        width={P.size || 25}
+        xmlns='http://www.w3.org/2000/svg'
+    >
+        <defs></defs>
+        <path d='M312.1 591.5c3.1 3.1 8.2 3.1 11.3 0l101.8-101.8 86.1 86.2c3.1 3.1 8.2 3.1 11.3 0l226.3-226.5c3.1-3.1 3.1-8.2 0-11.3l-36.8-36.8c-3.1-3.1-8.2-3.1-11.3 0L517 485.3l-86.1-86.2c-3.1-3.1-8.2-3.1-11.3 0L275.3 543.4c-3.1 3.1-3.1 8.2 0 11.3l36.8 36.8z'></path>
+        <path d='M904 160H548V96c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H120c-17.7 0-32 14.3-32 32v520c0 17.7 14.3 32 32 32h356.4v32L311.6 884.1c-3.7 2.4-4.7 7.3-2.3 11l30.3 47.2v0.1c2.4 3.7 7.4 4.7 11.1 2.3L512 838.9l161.3 105.8c3.7 2.4 8.7 1.4 11.1-2.3v-0.1l30.3-47.2c2.4-3.7 1.3-8.6-2.3-11L548 776.3V744h356c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32z m-40 512H160V232h704v440z'></path>
     </svg>
 )
 
