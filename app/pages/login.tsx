@@ -72,9 +72,6 @@ export default () => {
     return (
         <div class='login-fnd'>
             <div class='login-card'>
-                <div class='logo'>
-                    <Logo />
-                </div>
                 <form
                     action={''}
                     onsubmit={e => {
@@ -144,6 +141,9 @@ export default () => {
                         </Show>
                     </button>
                 </form>
+                <div class='logo'>
+                    <Logo />
+                </div>
             </div>
         </div>
     )
