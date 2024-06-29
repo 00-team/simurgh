@@ -95,7 +95,7 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: 1rem;
+            gap: 3em;
 
             padding: 0.5em;
             padding-bottom: 1rem;
@@ -105,22 +105,20 @@
 
             .blog {
                 width: clamp(0px, 100%, 350px);
-                aspect-ratio: 0.9 / 1;
 
                 display: flex;
+                align-items: center;
                 flex-direction: column;
-                gap: 0.5rem;
-                border: 2px solid var(--accent-color);
 
+                border-radius: 1rem;
                 background-color: var(--thirty-percent);
+                color: var(--accent-color);
+
+                padding: 1rem 0.9rem;
+
+                border-radius: 12px;
 
                 cursor: pointer;
-                flex-shrink: 0;
-
-                border-radius: var(--radius);
-
-                padding: 1em 0.5em;
-
                 transition: 0.2s ease;
 
                 &:hover {
@@ -128,7 +126,13 @@
                 }
 
                 .thumbnail {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
                     width: 100%;
+                    aspect-ratio: 16 / 9;
+                    object-fit: cover;
                     border-radius: 8px;
 
                     overflow: hidden;
@@ -149,6 +153,10 @@
                 .blog-info {
                     display: flex;
                     flex-direction: column;
+
+                    margin-top: 1em;
+
+                    width: 100%;
 
                     direction: rtl;
                     padding: 1rem;
