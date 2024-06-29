@@ -112,7 +112,7 @@ export default () => {
                             }
                         >
                             <input
-                                class='styled'
+                                class='styled title_small'
                                 ref={input_name}
                                 value={state.project.name}
                                 dir='auto'
@@ -238,18 +238,26 @@ const Blogs: Component<BlogProps> = P => {
                                 />
                             </Show>
                         </div>
-                        <div class='blog-info'>
-                            <span>شناسه:</span>
-                            <span class='n'>{b.id}</span>
-                            <span>عنوان:</span>
-                            <span>{b.title || '---'}</span>
+                        <div class='blog-info title_smaller'>
+                            <div class='row'>
+                                <span>شناسه:</span>
+                                <span class='n'>{b.id}</span>
+                            </div>
+                            <div class='row'>
+                                <span>عنوان:</span>
+                                <span>{b.title || '---'}</span>
+                            </div>
                             {/*<span>نشانه:</span>
                             <span class='n'>{b.slug}</span>
                             <span>تاریخ آپدیت:</span>
                             <span class='n'>{fmt_datetime(b.updated_at)}</span>
                             */}
-                            <span>تاریخ شروع:</span>
-                            <span class='n'>{fmt_datetime(b.created_at)}</span>
+                            <div class='row'>
+                                <span>تاریخ شروع:</span>
+                                <span class='n'>
+                                    {fmt_datetime(b.created_at)}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 ))}
