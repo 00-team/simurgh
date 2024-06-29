@@ -86,6 +86,7 @@
                 width: clamp(0px, 100%, 400px);
 
                 background-color: var(--thirty-percent);
+                background-image: linear-gradient(45deg, black, transparent);
                 cursor: pointer;
 
                 padding: 1.5rem 1rem;
