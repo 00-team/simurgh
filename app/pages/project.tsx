@@ -347,13 +347,19 @@ const Records: Component<RecordProps> = P => {
                                 />
                             </Show>
                         </div>
-                        <div class='record-info'>
-                            <span>شناسه:</span>
-                            <span class='n'>{r.id}</span>
-                            <span>حجم:</span>
-                            <span class='n'>{fmt_bytes(r.size)}</span>
-                            <span>نوع:</span>
-                            <span class='n'>{r.mime}</span>
+                        <div class='record-info title_smaller'>
+                            <div class='row'>
+                                <span>شناسه:</span>
+                                <span class='n'>{r.id}</span>
+                            </div>
+                            <div class='row'>
+                                <span>حجم:</span>
+                                <span class='n'>{fmt_bytes(r.size)}</span>
+                            </div>
+                            <div class='row'>
+                                <span>نوع:</span>
+                                <span class='n'>{r.mime}</span>
+                            </div>
                             {/*
                             <span>تاریخ بارگزاری:</span>
                             <span class='n'>{fmt_datetime(r.created_at)}</span>*/}
