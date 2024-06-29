@@ -55,7 +55,7 @@
 }
 
 .actions-cta {
-    margin-top: 1em;
+    margin-top: 2em;
 
     direction: rtl;
 
@@ -71,10 +71,21 @@
             margin-bottom: 1em;
 
             display: flex;
-            gap: 0.5rem;
+            gap: 1.5rem;
             align-items: center;
 
             width: 100%;
+
+            &::after {
+                content: '';
+
+                margin-right: auto;
+
+                width: 75%;
+                height: 2px;
+
+                background-color: white;
+            }
 
             button {
                 height: 100%;
@@ -190,7 +201,7 @@
             flex-shrink: 0;
 
             display: flex;
-            gap: 0.5rem;
+            gap: 1.5rem;
             align-items: center;
 
             margin-bottom: 1em;
@@ -198,6 +209,17 @@
             width: 100%;
 
             direction: rtl;
+
+            &::after {
+                content: '';
+
+                margin-right: auto;
+
+                width: 75%;
+                height: 2px;
+
+                background-color: white;
+            }
 
             button {
                 height: 100%;
