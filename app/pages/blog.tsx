@@ -405,7 +405,7 @@ export default () => {
                                     draggable={false}
                                     loading='lazy'
                                     decoding='async'
-                                    src={`/record/bt-${state.blog.id}-${state.blog.thumbnail}`}
+                                    src={`/simurgh-record/bt-${state.blog.id}-${state.blog.thumbnail}`}
                                 />
                                 <button
                                     class='del-btn styled icon'

@@ -257,7 +257,7 @@ const Record: Component<RecordProps> = P => {
 
 type RecordDpyProps = { r: RecordModel }
 const RecordDpy: Component<RecordDpyProps> = P => {
-    const url = createMemo(() => `/record/r-${P.r.id}-${P.r.salt}`)
+    const url = createMemo(() => `/simurgh-record/r-${P.r.id}-${P.r.salt}`)
 
     return (
         <Switch fallback={<FileIcon />}>

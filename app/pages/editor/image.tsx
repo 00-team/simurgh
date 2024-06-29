@@ -66,7 +66,7 @@ export const EditorImageBlock: Component<Props> = P => {
                     decoding='async'
                     loading='lazy'
                     draggable={false}
-                    src={`/record/r-${P.block.record_id}-${P.block.record_salt}`}
+                    src={`/simurgh-record/r-${P.block.record_id}-${P.block.record_salt}`}
                 />
                 <button
                     class='styled icon remove'

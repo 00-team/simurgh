@@ -1,6 +1,6 @@
 import { A } from '@solidjs/router'
 import { Editable } from 'comps'
-import { ArrowIcon, ArrowLeftIcon, ProjectIcon, UserIcon } from 'icons'
+import { ArrowIcon, ProjectIcon, UserIcon } from 'icons'
 import { httpx } from 'shared'
 import { createEffect, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
@@ -110,10 +110,10 @@ const User = () => {
                     delete_photo()
                 }}
             >
-                <Editable>
+                <Editable img>
                     <Show when={self.user.photo} fallback={<UserIcon />}>
                         <img
-                            src={`/record/up-${self.user.id}-${self.user.photo}/?r=${~~performance.now()}`}
+                            src={`/simurgh-record/up-${self.user.id}-${self.user.photo}/?r=${~~performance.now()}`}
                             draggable={false}
                         />
                     </Show>
@@ -133,7 +133,7 @@ const User = () => {
                     <input
                         ref={input_name}
                         dir='auto'
-                        class='styled'
+                        class='styled title_smaller'
                         placeholder='نام شما'
                         value={self.user.name || ''}
                         maxLength={256}
