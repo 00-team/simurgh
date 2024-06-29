@@ -1,11 +1,11 @@
-import { BlogModel, ProjectModel, RecordModel } from 'models'
-import './style/project.scss'
-import { createStore, produce } from 'solid-js/store'
-import { Component, Show, createEffect } from 'solid-js'
 import { useNavigate, useParams } from '@solidjs/router'
-import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Confact, Editable } from 'comps'
 import { FileIcon, ImageIcon, TrashIcon } from 'icons'
+import { BlogModel, ProjectModel, RecordModel } from 'models'
+import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import { Component, createEffect, Show } from 'solid-js'
+import { createStore, produce } from 'solid-js/store'
+import './style/project.scss'
 
 export default () => {
     type State = {
@@ -82,41 +82,8 @@ export default () => {
 
     return (
         <div class='project-fnd'>
-            <div class='project-info'>
-                <span>نام:</span>
-                <div class='name'>
-                    <Show
-                        when={state.edit_name}
-                        fallback={
-                            <Editable
-                                onClick={() => setState({ edit_name: true })}
-                            >
-                                <span dir='auto' style={{ cursor: 'pointer' }}>
-                                    {state.project.name}
-                                </span>
-                            </Editable>
-                        }
-                    >
-                        <input
-                            class='styled'
-                            ref={input_name}
-                            value={state.project.name}
-                            dir='auto'
-                            placeholder='نام شما'
-                            maxLength={256}
-                            onChange={e => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                project_update({ name: e.currentTarget.value })
-                            }}
-                            onBlur={() => setState({ edit_name: false })}
-                            onContextMenu={e => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                setState({ edit_name: false })
-                            }}
-                        />
-                    </Show>
+            <div class='project-info title_small'>
+                <div class='ctas'>
                     <Confact
                         icon={TrashIcon}
                         onAct={project_delete}
@@ -124,24 +91,86 @@ export default () => {
                         timer_ms={2e3}
                     />
                 </div>
+                <div class='row'>
+                    <span>نام:</span>
+                    <div class='name'>
+                        <Show
+                            when={state.edit_name}
+                            fallback={
+                                <Editable
+                                    onClick={() =>
+                                        setState({ edit_name: true })
+                                    }
+                                >
+                                    <span
+                                        dir='auto'
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        {state.project.name}
+                                    </span>
+                                </Editable>
+                            }
+                        >
+                            <input
+                                class='styled'
+                                ref={input_name}
+                                value={state.project.name}
+                                dir='auto'
+                                placeholder='نام شما'
+                                maxLength={256}
+                                onChange={e => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    project_update({
+                                        name: e.currentTarget.value,
+                                    })
+                                }}
+                                onBlur={() => setState({ edit_name: false })}
+                                onContextMenu={e => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    setState({ edit_name: false })
+                                }}
+                            />
+                        </Show>
+                    </div>
+                </div>
 
-                <span>بلاگ ها:</span>
-                <span class='n'>
-                    {state.project.blog_count.toLocaleString()}
-                </span>
-                <span>فایل ها:</span>
-                <span class='n'>
-                    {state.project.record_count.toLocaleString()}
-                </span>
-                <span>فضا:</span>
-                <span class='n'>{fmt_bytes(state.project.storage)}</span>
-                <span>تاریخ شروع:</span>
-                <span class='n'>{fmt_datetime(state.project.created_at)}</span>
-                <span>تاریخ آپدیت:</span>
-                <span class='n'>{fmt_datetime(state.project.updated_at)}</span>
+                <div class='row'>
+                    <span>بلاگ ها:</span>
+                    <span class='n'>
+                        {state.project.blog_count.toLocaleString()}
+                    </span>
+                </div>
+                <div class='row'>
+                    <span>فایل ها:</span>
+                    <span class='n'>
+                        {state.project.record_count.toLocaleString()}
+                    </span>
+                </div>
+                <div class='row'>
+                    <span>فضا:</span>
+                    <span class='n'>{fmt_bytes(state.project.storage)}</span>
+                </div>
+
+                <div class='row'>
+                    <span>تاریخ شروع:</span>
+                    <span class='n'>
+                        {fmt_datetime(state.project.created_at)}
+                    </span>
+                </div>
+                <div class='row'>
+                    <span>تاریخ آپدیت:</span>
+                    <span class='n'>
+                        {fmt_datetime(state.project.updated_at)}
+                    </span>
+                </div>
             </div>
-            <Blogs project={state.project} />
-            <Records project={state.project} />
+
+            <div class='actions-cta'>
+                <Blogs project={state.project} />
+                <Records project={state.project} />
+            </div>
         </div>
     )
 }
@@ -186,11 +215,14 @@ const Blogs: Component<BlogProps> = P => {
     return (
         <div class='blogs'>
             <div class='actions'>
-                <button class='add-btn styled' onClick={blog_add}>
-                    بلاگ جدید
-                </button>
-                <button class='styled' onClick={() => nav('blogs/')}>
+                <button
+                    class='styled title_smaller'
+                    onClick={() => nav('blogs/')}
+                >
                     بلاگ ها
+                </button>
+                <button class='add-btn styled title_smaller' onClick={blog_add}>
+                    بلاگ جدید
                 </button>
             </div>
             <div class='blog-list'>
@@ -278,11 +310,17 @@ const Records: Component<RecordProps> = P => {
     return (
         <div class='records'>
             <div class='actions'>
-                <button class='add-btn styled' onClick={record_add}>
-                    فایل جدید
-                </button>
-                <button class='styled' onClick={() => nav('records/')}>
+                <button
+                    class='styled title_smaller'
+                    onClick={() => nav('records/')}
+                >
                     فایل ها
+                </button>
+                <button
+                    class='add-btn styled title_smaller'
+                    onClick={record_add}
+                >
+                    فایل جدید
                 </button>
             </div>
             <div class='record-list'>
