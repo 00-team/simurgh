@@ -113,7 +113,7 @@ const User = () => {
                 <Editable>
                     <Show when={self.user.photo} fallback={<UserIcon />}>
                         <img
-                            src={`/record/up-${self.user.id}-${self.user.photo}/?r=${~~performance.now()}`}
+                            src={`/simurgh-record/up-${self.user.id}-${self.user.photo}/?r=${~~performance.now()}`}
                             draggable={false}
                         />
                     </Show>
