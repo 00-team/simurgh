@@ -115,7 +115,7 @@ export default () => {
                             </label>
                             <input
                                 id='login-code'
-                                class='styled'
+                                class='styled title_small'
                                 disabled={state.stage != 'code'}
                                 maxLength={5}
                                 inputMode={'numeric'}
