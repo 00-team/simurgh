@@ -75,6 +75,22 @@
                 cursor: pointer;
                 transition: 0.2s ease;
 
+                position: relative;
+                isolation: isolate;
+
+                .delete-rec {
+                    position: absolute;
+                    width: 100%;
+
+                    display: flex;
+                    align-items: center;
+
+                    button {
+                        margin-left: auto;
+                        margin-right: 1em;
+                    }
+                }
+
                 .dpy {
                     width: 100%;
                     aspect-ratio: 2/1;
