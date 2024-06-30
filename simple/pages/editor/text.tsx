@@ -332,6 +332,19 @@ const Actions: Component<ActionsProps> = P => {
         )
     }
 
+    function reset() {
+        setStore(
+            produce(s => {
+                let b = s.data[P.idx] as BlogText
+                let g = b.groups[P.ag]
+                b.groups[P.ag] = {
+                    ...DEFAULT_TEXT_GROUP,
+                    content: [...g.content],
+                }
+            })
+        )
+    }
+
     function set_attr(
         cb: (b: BlogText) => Partial<Omit<BlogText, 'kind' | 'groups'>>
     ) {
@@ -408,7 +421,7 @@ const Actions: Component<ActionsProps> = P => {
                 />
                 <Action
                     color='var(--yellow)'
-                    onAct={() => set_style(DEFAULT_STYLE)}
+                    onAct={reset}
                     icon={RotateCcwIcon}
                     title='بازنشانی'
                 />
