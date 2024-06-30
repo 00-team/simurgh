@@ -1,12 +1,13 @@
 import { RecordModel } from 'models'
 
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
-import { addAlert, Editable } from 'comps'
+import { addAlert, Confact, Editable } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
     FileIcon,
+    TrashIcon,
 } from 'icons'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import {
@@ -200,6 +201,14 @@ const Record: Component<RecordProps> = P => {
 
     return (
         <div class='record'>
+            <div class='delete-rec'>
+                <Confact
+                    color='var(--red)'
+                    onAct={record_delete}
+                    timer_ms={15e2}
+                    icon={TrashIcon}
+                />
+            </div>
             <div class='dpy'>
                 <RecordDpy r={P.r} />
             </div>
@@ -236,12 +245,6 @@ const Record: Component<RecordProps> = P => {
                                 }}
                             />
                         </Show>
-                        {/* <Confact
-                            color='var(--red)'
-                            onAct={record_delete}
-                            timer_ms={15e2}
-                            icon={TrashIcon}
-                        /> */}
                     </div>
                 </div>
 
