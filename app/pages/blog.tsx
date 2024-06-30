@@ -1,5 +1,3 @@
-import { createStore, produce } from 'solid-js/store'
-import { BlogModel } from 'models'
 import { useNavigate, useParams } from '@solidjs/router'
 import {
     ArrowLeftIcon,
@@ -12,11 +10,13 @@ import {
     WrenchIcon,
     XIcon,
 } from 'icons'
-import { Show, createEffect, createMemo, on } from 'solid-js'
+import { BlogModel } from 'models'
+import { createEffect, createMemo, on, Show } from 'solid-js'
+import { createStore, produce } from 'solid-js/store'
 
-import './style/blog.scss'
+import { addAlert, Confact } from 'comps'
 import { fmt_datetime, fmt_hms, httpx } from 'shared'
-import { Confact, addAlert } from 'comps'
+import './style/blog.scss'
 
 export default () => {
     type State = {
@@ -151,7 +151,7 @@ export default () => {
 
         let el = document.createElement('input')
         el.setAttribute('type', 'file')
-        el.setAttribute('accept', 'image/')
+        el.setAttribute('accept', 'image/*')
         el.onchange = () => {
             if (!el.files || !el.files[0]) return
             if (el.files[0].size > 8388608) {
@@ -260,166 +260,200 @@ export default () => {
                 </div>
             </div>
             <div class='blog-body'>
-                <div class='info'>
-                    <span>شناسه:</span>
-                    <span class='n'>{state.blog.id}</span>
-                    <span>نشانه:</span>
-                    <Show
-                        when={state.editing}
-                        fallback={<span dir='auto'>{state.blog.slug}</span>}
-                    >
-                        <input
-                            maxLength={255}
-                            dir='auto'
-                            value={state.edit.slug}
-                            class='styled'
-                            placeholder='نشانه در لینک'
-                            onInput={e =>
-                                setState(
-                                    produce(s => {
-                                        s.edit.slug = e.currentTarget.value
-                                    })
-                                )
-                            }
-                        />
-                    </Show>
-                    <span>وضعیت:</span>
-                    <Show
-                        when={state.editing}
-                        fallback={
-                            <span dir='auto'>
-                                {STATUS_DPY[state.blog.status][0]}
-                            </span>
-                        }
-                    >
-                        <button
-                            class='styled'
-                            style={{
-                                '--color': STATUS_DPY[state.edit.status][1],
-                            }}
-                            onClick={() =>
-                                setState(
-                                    produce(s => {
-                                        if (s.edit.status == 'draft') {
-                                            s.edit.status = 'published'
-                                        } else {
-                                            s.edit.status = 'draft'
-                                        }
-                                    })
-                                )
+                <div class='info title_small'>
+                    <div class='row'>
+                        <span>شناسه:</span>
+                        <span class='n'>{state.blog.id}</span>
+                    </div>
+                    <div class='row'>
+                        <span>نشانه:</span>
+                        <Show
+                            when={state.editing}
+                            fallback={<span dir='auto'>{state.blog.slug}</span>}
+                        >
+                            <input
+                                maxLength={255}
+                                dir='auto'
+                                value={state.edit.slug}
+                                class='styled'
+                                placeholder='نشانه در لینک'
+                                onInput={e =>
+                                    setState(
+                                        produce(s => {
+                                            s.edit.slug = e.currentTarget.value
+                                        })
+                                    )
+                                }
+                            />
+                        </Show>
+                    </div>
+                    <div class='row'>
+                        <span>وضعیت:</span>
+                        <Show
+                            when={state.editing}
+                            fallback={
+                                <div dir='auto'>
+                                    {STATUS_DPY[state.blog.status][0]}
+                                </div>
                             }
                         >
-                            {STATUS_DPY[state.edit.status][0]}
-                        </button>
-                    </Show>
-
-                    <span>عنوان:</span>
-                    <Show
-                        when={state.editing}
-                        fallback={
-                            <span dir='auto'>{state.blog.title || '---'}</span>
-                        }
-                    >
-                        <input
-                            maxLength={255}
-                            dir='auto'
-                            value={state.edit.title}
-                            class='styled'
-                            placeholder='عنوان'
-                            onInput={e =>
-                                setState(
-                                    produce(s => {
-                                        s.edit.title = e.currentTarget.value
-                                    })
-                                )
-                            }
-                        />
-                    </Show>
-                    <span>توصیف:</span>
-                    <Show
-                        when={state.editing}
-                        fallback={
-                            <p dir='auto'>
-                                {state.blog.detail
-                                    .split('\n')
-                                    .map((l, i, a) => (
-                                        <>
-                                            {l}
-                                            {i < a.length - 1 && <br />}
-                                        </>
-                                    ))}
-                            </p>
-                        }
-                    >
-                        <textarea
-                            dir='auto'
-                            class='styled'
-                            placeholder='توصیف'
-                            value={state.edit.detail}
-                            rows={state.edit.detail.split('\n').length + 1}
-                            maxLength={2047}
-                            onInput={e => {
-                                setState(
-                                    produce(s => {
-                                        s.edit.detail = e.currentTarget.value
-                                    })
-                                )
-                            }}
-                        ></textarea>
-                    </Show>
-                    <span>زمان مطالعه:</span>
-                    <Show
-                        when={state.editing}
-                        fallback={
-                            <span class='read_time'>
-                                {fmt_hms(state.blog.read_time)}
-                            </span>
-                        }
-                    >
-                        <input
-                            class='styled'
-                            type='numer'
-                            value={state.edit.read_time}
-                            onInput={e => {
-                                setState(
-                                    produce(s => {
-                                        s.edit.read_time =
-                                            parseInt(e.currentTarget.value) || 0
-                                    })
-                                )
-                            }}
-                        />
-                    </Show>
-                    <span>تاریخ آعاز:</span>
-                    <span class='n'>{fmt_datetime(state.blog.created_at)}</span>
-                    <span>تاریخ بروزرسانی:</span>
-                    <span class='n'>{fmt_datetime(state.blog.updated_at)}</span>
-                    <Show when={!state.editing}>
-                        <span>بنر:</span>
-                        <div class='thumbnail' onClick={blog_thumbnail_update}>
-                            <Show
-                                when={state.blog.thumbnail}
-                                fallback={<ImageIcon />}
+                            <button
+                                class='styled'
+                                style={{
+                                    '--color': STATUS_DPY[state.edit.status][1],
+                                }}
+                                onClick={() =>
+                                    setState(
+                                        produce(s => {
+                                            if (s.edit.status == 'draft') {
+                                                s.edit.status = 'published'
+                                            } else {
+                                                s.edit.status = 'draft'
+                                            }
+                                        })
+                                    )
+                                }
                             >
-                                <img
-                                    draggable={false}
-                                    loading='lazy'
-                                    decoding='async'
-                                    src={`/simurgh-record/bt-${state.blog.id}-${state.blog.thumbnail}`}
-                                />
-                                <button
-                                    class='del-btn styled icon'
-                                    onClick={e => {
-                                        e.stopPropagation()
-                                        e.preventDefault()
-                                        blog_thumbnail_delete()
-                                    }}
+                                {STATUS_DPY[state.edit.status][0]}
+                            </button>
+                        </Show>
+                    </div>
+
+                    <div class='row'>
+                        <span>عنوان:</span>
+                        <Show
+                            when={state.editing}
+                            fallback={
+                                <span dir='auto'>
+                                    {state.blog.title || '---'}
+                                </span>
+                            }
+                        >
+                            <input
+                                maxLength={255}
+                                dir='auto'
+                                value={state.edit.title}
+                                class='styled'
+                                placeholder='عنوان'
+                                onInput={e =>
+                                    setState(
+                                        produce(s => {
+                                            s.edit.title = e.currentTarget.value
+                                        })
+                                    )
+                                }
+                            />
+                        </Show>
+                    </div>
+
+                    <div class='row'>
+                        <span>توصیف:</span>
+                        <Show
+                            when={state.editing}
+                            fallback={
+                                <p dir='auto'>
+                                    {state.blog.detail
+                                        .split('\n')
+                                        .map((l, i, a) => (
+                                            <>
+                                                {l}
+                                                {i < a.length - 1 && <br />}
+                                            </>
+                                        ))}
+                                </p>
+                            }
+                        >
+                            <textarea
+                                dir='auto'
+                                class='styled'
+                                placeholder='توصیف'
+                                value={state.edit.detail}
+                                rows={state.edit.detail.split('\n').length + 1}
+                                maxLength={2047}
+                                onInput={e => {
+                                    setState(
+                                        produce(s => {
+                                            s.edit.detail =
+                                                e.currentTarget.value
+                                        })
+                                    )
+                                }}
+                            ></textarea>
+                        </Show>
+                    </div>
+
+                    <div class='row'>
+                        <span>زمان مطالعه:</span>
+                        <Show
+                            when={state.editing}
+                            fallback={
+                                <div class='read_time'>
+                                    {fmt_hms(state.blog.read_time)}
+                                </div>
+                            }
+                        >
+                            <input
+                                class='styled'
+                                type='numer'
+                                value={state.edit.read_time}
+                                onInput={e => {
+                                    setState(
+                                        produce(s => {
+                                            s.edit.read_time =
+                                                parseInt(
+                                                    e.currentTarget.value
+                                                ) || 0
+                                        })
+                                    )
+                                }}
+                            />
+                        </Show>
+                    </div>
+
+                    <div class='row'>
+                        <span>تاریخ آعاز:</span>
+                        <span class='n'>
+                            {fmt_datetime(state.blog.created_at)}
+                        </span>
+                    </div>
+
+                    <div class='row'>
+                        <span>تاریخ بروزرسانی:</span>
+                        <span class='n'>
+                            {fmt_datetime(state.blog.updated_at)}
+                        </span>
+                    </div>
+                    <div class='row'>
+                        <Show when={!state.editing}>
+                            <span>بنر:</span>
+                            <div
+                                class='thumbnail'
+                                onClick={blog_thumbnail_update}
+                            >
+                                <Show
+                                    when={state.blog.thumbnail}
+                                    fallback={<ImageIcon />}
                                 >
-                                    <XIcon />
-                                </button>
-                            </Show>
-                        </div>
-                    </Show>
+                                    <img
+                                        draggable={false}
+                                        loading='lazy'
+                                        decoding='async'
+                                        src={`/simurgh-record/bt-${state.blog.id}-${state.blog.thumbnail}`}
+                                    />
+                                    <button
+                                        class='del-btn styled icon'
+                                        onClick={e => {
+                                            e.stopPropagation()
+                                            e.preventDefault()
+                                            blog_thumbnail_delete()
+                                        }}
+                                    >
+                                        <XIcon />
+                                    </button>
+                                </Show>
+                            </div>
+                        </Show>
+                    </div>
                 </div>
                 <div class='preview' ref={preview} />
             </div>
