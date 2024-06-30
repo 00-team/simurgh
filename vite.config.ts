@@ -42,11 +42,12 @@ export default defineConfig(env => {
         },
         build: {
             target: 'esnext',
-            outDir: 'static/dist',
+            outDir: 'dist',
             watch,
             assetsInlineLimit: 0,
             emptyOutDir: true,
             copyPublicDir: false,
+            assetsDir: target[1] + '-assets',
         },
     }
 })
