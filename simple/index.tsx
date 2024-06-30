@@ -30,7 +30,7 @@ const Root = () => {
     return (
         <>
             <Show when={self.loged_in} fallback={<Login />}>
-                <Router>
+                <Router base='/simple'>
                     <Route path='/' component={Dash}>
                         <Route
                             path='/'
