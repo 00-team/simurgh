@@ -1,27 +1,25 @@
 import { RecordModel } from 'models'
 
-import './style/records.scss'
-import { createStore, produce } from 'solid-js/store'
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
-import {
-    Component,
-    Match,
-    Show,
-    Switch,
-    createEffect,
-    createMemo,
-    createSignal,
-} from 'solid-js'
-import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import { addAlert, Editable } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
     FileIcon,
-    PlusIcon,
-    TrashIcon,
 } from 'icons'
-import { Confact, Editable, addAlert } from 'comps'
+import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import {
+    Component,
+    createEffect,
+    createMemo,
+    createSignal,
+    Match,
+    Show,
+    Switch,
+} from 'solid-js'
+import { createStore, produce } from 'solid-js/store'
+import './style/records.scss'
 
 export default () => {
     type State = {
@@ -107,53 +105,53 @@ export default () => {
             <div class='actions'>
                 <div>
                     <button
-                        class='styled icon'
+                        class='go-back icon'
                         style={{ '--color': 'var(--blue)' }}
                         onClick={() => nav('/projects/' + pid)}
                     >
                         <ArrowLeftIcon />
                     </button>
                 </div>
-                <div>
-                    <button
-                        class='styled icon'
-                        disabled={state.page < 1}
-                        onClick={() => record_list(state.page - 1)}
-                    >
-                        <ChevronLeftIcon />
-                    </button>
-                    <button
-                        class='styled icon'
-                        style={{ '--color': 'var(--green)' }}
-                        onClick={record_add}
-                    >
-                        <PlusIcon />
-                    </button>
-                    <button
-                        class='styled icon'
-                        disabled={state.records.length < 32}
-                        onClick={() => record_list(state.page + 1)}
-                    >
-                        <ChevronRightIcon />
-                    </button>
-                </div>
             </div>
             <div class='record-list'>
-                {state.records.map((r, i) => (
-                    <Record
-                        pid={pid}
-                        r={r}
-                        update={record => {
-                            if (!record) return record_list(state.page)
+                <button onclick={record_add} class='new-record title_small'>
+                    فایل جدید
+                </button>
+                <div class='records-wrapper'>
+                    {state.records.map((r, i) => (
+                        <Record
+                            pid={pid}
+                            r={r}
+                            update={record => {
+                                if (!record) return record_list(state.page)
 
-                            setState(
-                                produce(s => {
-                                    s.records[i] = record
-                                })
-                            )
-                        }}
-                    />
-                ))}
+                                setState(
+                                    produce(s => {
+                                        s.records[i] = record
+                                    })
+                                )
+                            }}
+                        />
+                    ))}
+                </div>
+            </div>
+            <div class='pages'>
+                <button
+                    class='icon'
+                    onClick={() => record_list(state.page - 1)}
+                    classList={{ disable: state.records.length < 31 }}
+                    disabled={state.page == 0}
+                >
+                    <ChevronLeftIcon size={30} />
+                </button>
+                <button
+                    class='icon'
+                    classList={{ disable: state.records.length < 31 }}
+                    onClick={() => record_list(state.page + 1)}
+                    disabled={state.records.length < 31}
+                >
+                    <ChevronRightIcon size={30} />
+                </button>
             </div>
         </div>
     )
@@ -206,50 +204,63 @@ const Record: Component<RecordProps> = P => {
                 <RecordDpy r={P.r} />
             </div>
             <div class='line' />
-            <div class='info'>
-                <span>نام:</span>
-                <div class='name'>
-                    <Show
-                        when={edit_name()}
-                        fallback={
-                            <Editable onClick={() => setEditName(true)}>
-                                <span class='name' dir='auto'>
-                                    {P.r.name}
-                                </span>
-                            </Editable>
-                        }
-                    >
-                        <input
-                            ref={input_name}
-                            value={P.r.name}
-                            dir='auto'
-                            placeholder='record name'
-                            class='name styled'
-                            maxLength={255}
-                            onChange={e => update_name(e.currentTarget.value)}
-                            onBlur={() => setEditName(false)}
-                            onContextMenu={e => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                setEditName(false)
-                            }}
-                        />
-                    </Show>
-                    <Confact
-                        color='var(--red)'
-                        onAct={record_delete}
-                        timer_ms={15e2}
-                        icon={TrashIcon}
-                    />
+            <div class='info title_smaller'>
+                <div class='row'>
+                    <span>نام:</span>
+                    <div class='name'>
+                        <Show
+                            when={edit_name()}
+                            fallback={
+                                <Editable onClick={() => setEditName(true)}>
+                                    <span class='name' dir='auto'>
+                                        {P.r.name}
+                                    </span>
+                                </Editable>
+                            }
+                        >
+                            <input
+                                ref={input_name}
+                                value={P.r.name}
+                                dir='auto'
+                                placeholder='record name'
+                                class='name styled'
+                                maxLength={255}
+                                onChange={e =>
+                                    update_name(e.currentTarget.value)
+                                }
+                                onBlur={() => setEditName(false)}
+                                onContextMenu={e => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    setEditName(false)
+                                }}
+                            />
+                        </Show>
+                        {/* <Confact
+                            color='var(--red)'
+                            onAct={record_delete}
+                            timer_ms={15e2}
+                            icon={TrashIcon}
+                        /> */}
+                    </div>
                 </div>
-                <span>شناسه:</span>
-                <span class='n'>{P.r.id}</span>
-                <span>نوع:</span>
-                <span class='n'>{P.r.mime}</span>
-                <span>حجم:</span>
-                <span class='n'>{fmt_bytes(P.r.size)}</span>
-                <span>تاریخ:</span>
-                <span class='n'>{fmt_datetime(P.r.created_at)}</span>
+
+                <div class='row'>
+                    <span>شناسه:</span>
+                    <span class='n'>{P.r.id}</span>
+                </div>
+                <div class='row'>
+                    <span>نوع:</span>
+                    <span class='n'>{P.r.mime}</span>
+                </div>
+                <div class='row'>
+                    <span>حجم:</span>
+                    <span class='n'>{fmt_bytes(P.r.size)}</span>
+                </div>
+                <div class='row'>
+                    <span>تاریخ:</span>
+                    <span class='n'>{fmt_datetime(P.r.created_at)}</span>
+                </div>
             </div>
         </div>
     )
