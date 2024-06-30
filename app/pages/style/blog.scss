@@ -41,17 +41,32 @@
     }
 
     .info {
-        background-color: var(--cd);
-        border: 2px solid var(--ca);
-        border-radius: var(--radius);
-        display: grid;
-        grid-template-columns: 1fr 4fr;
-        gap: 1rem;
-        padding: 1rem;
+        flex-shrink: 0;
+
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        background-color: var(--thirty-percent);
+        margin-top: 1em;
         width: 100%;
+
         direction: rtl;
-        align-items: center;
-        font-family: var(--en), var(--fa);
+
+        padding: 2rem 1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: border-color 200ms ease-in-out;
+
+        border-radius: 1rem;
+
+        .row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
         span {
             white-space: nowrap;
@@ -75,7 +90,6 @@
         }
 
         .read_time {
-            font-family: var(--fa);
         }
 
         .thumbnail {
@@ -86,7 +100,7 @@
             display: grid;
             place-items: center;
             background-color: var(--cg);
-            border-radius: var(--radius);
+            border-radius: 0.5rem;
             overflow: hidden;
             position: relative;
 
