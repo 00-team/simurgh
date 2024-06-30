@@ -1,3 +1,5 @@
+import { useNavigate, useParams } from '@solidjs/router'
+import { Confact } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronDownIcon,
@@ -8,18 +10,16 @@ import {
     SaveIcon,
     TrashIcon,
 } from 'icons'
-import './style/base.scss'
-import { useNavigate, useParams } from '@solidjs/router'
-import { Component, Show, createEffect } from 'solid-js'
-import { httpx } from 'shared'
-import { EditorEmptyBlock } from './empty'
-import { pre_save, setStore, store, unwrap_rec } from './store'
-import { produce } from 'solid-js/store'
-import { Confact } from 'comps'
-import { EditorImageBlock } from './image'
 import { BlogData } from 'models'
-import { EditorTextActions, EditorTextBlock } from './text'
+import { httpx } from 'shared'
+import { Component, createEffect, Show } from 'solid-js'
+import { produce } from 'solid-js/store'
+import { EditorEmptyBlock } from './empty'
 import { EditorHeadingBlock } from './heading'
+import { EditorImageBlock } from './image'
+import { pre_save, setStore, store, unwrap_rec } from './store'
+import './style/index.scss'
+import { EditorTextActions, EditorTextBlock } from './text'
 
 export default () => {
     const nav = useNavigate()
@@ -111,12 +111,12 @@ export default () => {
             <div class='editor-wrapper'>
                 <div class='editor'>
                     <Show when={store.data.length == 0}>
-                        <div class='message'>Add a Block</div>
+                        <div class='message border title'>بلاک اضافه کنید</div>
                     </Show>
                     {store.data.map((block, i, a) => (
                         <>
                             <EditorBlock block={block} idx={i} />
-                            {i != a.length - 1 && <div class='line' />}
+                            {/* {i != a.length - 1 && <div class='line' />} */}
                         </>
                     ))}
                 </div>
