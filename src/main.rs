@@ -7,7 +7,7 @@ use actix_web::{
     get,
     http::header::ContentType,
     middleware,
-    web::{self, scope, Data},
+    web::{scope, Data, ServiceConfig},
     App, HttpResponse, HttpServer, Responder,
 };
 use config::Config;
@@ -21,7 +21,7 @@ mod docs;
 // mod general;
 mod models;
 mod utils;
-// mod vendor;
+mod web;
 
 pub struct AppState {
     pub sql: Pool<Sqlite>,
@@ -75,7 +75,7 @@ async fn rapidoc() -> impl Responder {
     )
 }
 
-fn config_app(app: &mut web::ServiceConfig) {
+fn config_app(app: &mut ServiceConfig) {
     if cfg!(debug_assertions) {
         app.service(
             af::Files::new("/static", "./static").disable_content_disposition(),
@@ -106,6 +106,8 @@ fn config_app(app: &mut web::ServiceConfig) {
             .service(api::projects::router())
             .service(api::verification::verification),
     );
+
+    app.service(web::router());
 }
 
 #[cfg(unix)]
