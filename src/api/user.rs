@@ -20,7 +20,7 @@ use crate::{utils, AppState};
 #[openapi(
     tags((name = "api::user")),
     paths(
-        user_get, user_login, user_update,
+        user_get, user_login, user_logout, user_update,
         user_update_photo, user_delete_photo
     ),
     components(schemas(User, LoginBody, UserUpdateBody, UserPhotoUpload)),
@@ -102,6 +102,28 @@ async fn user_login(
         .finish();
 
     Ok(HttpResponse::Ok().cookie(cook).json(user))
+}
+
+#[utoipa::path(post, responses((status = 200)))]
+#[post("/logout/")]
+/// Logout
+async fn user_logout(user: User, state: Data<AppState>) -> HttpResponse {
+    let _ = sqlx::query! {
+        "update users set token = 'X' where id = ?",
+        user.id
+    }
+    .execute(&state.sql)
+    .await;
+
+    let cook = Cookie::build("Authorization", "XXX")
+        .path("/")
+        .secure(true)
+        .same_site(SameSite::Lax)
+        .http_only(true)
+        .max_age(Duration::seconds(1))
+        .finish();
+
+    HttpResponse::Ok().cookie(cook).finish()
 }
 
 #[utoipa::path(get, responses((status = 200, body = User)))]
@@ -222,6 +244,7 @@ pub fn router() -> Scope {
     Scope::new("/user")
         .service(user_get)
         .service(user_login)
+        .service(user_logout)
         .service(user_update)
         .service(user_update_photo)
         .service(user_delete_photo)

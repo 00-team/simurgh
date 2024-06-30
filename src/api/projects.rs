@@ -8,7 +8,7 @@ use crate::models::blog::Blog;
 use crate::models::project::Project;
 use crate::models::record::Record;
 use crate::models::user::User;
-use crate::models::{AppErr, AppErrNotFound, ListInput, Response};
+use crate::models::{AppErr, ListInput, Response};
 use crate::utils;
 use crate::AppState;
 
