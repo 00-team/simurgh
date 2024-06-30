@@ -38,11 +38,6 @@
         flex-direction: column;
         width: 100%;
         height: max-content;
-        background-color: var(--cd);
-        border-radius: var(--radius);
-        border: 2px solid var(--ca);
-        border-left: 0;
-        border-right: 0;
 
         .message {
             width: 100%;
@@ -50,6 +45,12 @@
             display: grid;
             place-items: center;
             padding: 3rem;
+
+            &.border {
+                border-radius: var(--radius);
+                border: 2px solid var(--ca);
+                background-color: var(--thirty-percent);
+            }
 
             &.not-found {
                 position: absolute;
@@ -73,11 +74,12 @@
             display: flex;
             align-items: center;
             border: 2px solid var(--ca);
-            border-top: 0;
-            border-bottom: 0;
+            border-radius: 0.5rem;
+
+            background-color: var(--thirty-percent);
 
             &.active {
-                border-color: var(--cl);
+                // border-color: var(--cl);
             }
 
             &-actions {
