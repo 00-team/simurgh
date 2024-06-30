@@ -4,7 +4,6 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
     ImageIcon,
-    PlusIcon,
 } from 'icons'
 import { BlogModel } from 'models'
 import { fmt_datetime, httpx } from 'shared'
@@ -72,7 +71,9 @@ export default () => {
                 </div>
             </div>
             <div class='blog-list'>
-                <button class='new-blog title_small'>بلاگ جدید</button>
+                <button class='new-blog title_small' onclick={blog_add}>
+                    بلاگ جدید
+                </button>
                 <div class='blog-wrapper'>
                     {state.blogs.map(b => (
                         <Blog b={b} pid={pid} />
