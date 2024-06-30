@@ -298,7 +298,7 @@ export default () => {
                             }
                         >
                             <button
-                                class='styled'
+                                class='styled title_smaller'
                                 style={{
                                     '--color': STATUS_DPY[state.edit.status][1],
                                 }}
