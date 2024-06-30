@@ -21,13 +21,6 @@ function check_diff {
     fi
 }
 
-if check_diff "config/simurgh.service"; then
-    echo "$EG reload the service"
-    cp config/simurgh.service /etc/systemd/system/ --force
-    systemctl daemon-reload
-    echo $SPACER
-fi
-
 if [ ! -f main.db ]; then
     echo "$EG setup the database"
     cargo sqlx db setup
@@ -35,8 +28,8 @@ if [ ! -f main.db ]; then
 fi
 
 if check_diff "migrations/*"; then
-    echo "$EG update the database"
-    cargo sqlx db setup
+    echo "$EG run all pending migrations"
+    cargo sqlx mig run
     echo $SPACER
 fi
 
@@ -52,14 +45,17 @@ if check_diff "app/*"; then
     echo $SPACER
 fi
 
-if check_diff "src/* Cargo.toml"; then
-    echo "$EG cargo build"
-    cargo build --release
+if check_diff "simple/*"; then
+    echo "$EG build the simple!"
+    target=sl npm run build
     echo $SPACER
 fi
 
-echo "$EG restart simurgh"
-systemctl restart simurgh
-echo $SPACER
+if check_diff "src/*"; then
+    echo "$EG cargo build"
+    cargo build --release
+    systemctl restart simurgh
+    echo $SPACER
+fi
 
 echo "Deploy is Done! ✅"
