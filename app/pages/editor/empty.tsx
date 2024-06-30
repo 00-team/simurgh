@@ -19,16 +19,16 @@ export const EditorEmptyBlock: Component<Props> = P => {
     }
 
     const BLOCKS: { [k in Exclude<BlogData['kind'], 'empty'>]: string } = {
-        heading: 'عنوان',
-        text: 'متن',
         image: 'عکس',
+        text: 'متن',
+        heading: 'عنوان',
     }
 
     return (
         <div class='block-empty'>
             {Object.entries(BLOCKS).map(([k, v]) => (
                 <button
-                    class='styled'
+                    class='styled title_smaller'
                     onClick={() => update(k as BlogData['kind'])}
                 >
                     {v}
