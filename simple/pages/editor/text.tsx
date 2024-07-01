@@ -1,16 +1,14 @@
-import { Component, Show, onCleanup, onMount } from 'solid-js'
 import {
-    BLOG_ALIGN,
-    BLOG_DIRECTION,
     BlogStyle,
     BlogText,
     BlogTextGroup,
-    DEFAULT_STYLE,
+    BLOG_ALIGN,
+    BLOG_DIRECTION,
     DEFAULT_TEXT_GROUP,
 } from 'models'
+import { Component, onCleanup, onMount, Show } from 'solid-js'
 
-import './style/text.scss'
-import { setStore, store, unwrap_rec } from './store'
+import { Action, Tooltip } from 'comps'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
@@ -26,7 +24,8 @@ import {
     UnderlineIcon,
 } from 'icons'
 import { createStore, produce } from 'solid-js/store'
-import { Action, Tooltip } from 'comps'
+import { setStore, store, unwrap_rec } from './store'
+import './style/text.scss'
 
 function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
     return {
