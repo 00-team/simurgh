@@ -52,6 +52,7 @@ export const EditorTextBlock: Component<Props> = P => {
         placeholder: boolean
         ag: number
         group?: BlogTextGroup
+        changed: boolean
     }
     const [state, setState] = createStore<State>({
         placeholder:
@@ -61,6 +62,7 @@ export const EditorTextBlock: Component<Props> = P => {
         get group() {
             return P.block.groups[this.ag]
         },
+        changed: false,
     })
 
     let p: HTMLParagraphElement
@@ -97,6 +99,7 @@ export const EditorTextBlock: Component<Props> = P => {
             texts = ''
         }
 
+        setState({ changed: false })
         setStore(
             produce(s => {
                 let b = s.data[P.idx] as BlogText
@@ -106,7 +109,12 @@ export const EditorTextBlock: Component<Props> = P => {
     }
 
     onMount(() => document.addEventListener('editor_pre_save', pre_save))
-    onCleanup(() => document.removeEventListener('editor_pre_save', pre_save))
+    onCleanup(() => {
+        document.removeEventListener('editor_pre_save', pre_save)
+        if (state.changed) {
+            pre_save()
+        }
+    })
 
     return (
         <div class='block-text'>
@@ -115,6 +123,7 @@ export const EditorTextBlock: Component<Props> = P => {
                 block={P.block}
                 group={state.group}
                 ag={state.ag}
+                onNewGroup={() => setState({ changed: false })}
             />
             <div class='text-section'>
                 <Show when={state.placeholder}>
@@ -136,6 +145,7 @@ export const EditorTextBlock: Component<Props> = P => {
                         }
                         setState({
                             placeholder: !e.currentTarget.innerText.trim(),
+                            changed: true,
                         })
                     }}
                     onFocus={() => setStore({ active: P.idx })}
@@ -183,6 +193,7 @@ export const EditorTextBlock: Component<Props> = P => {
 type ActionsProps = Props & {
     group?: BlogTextGroup
     ag: number
+    onNewGroup(): void
 }
 const Actions: Component<ActionsProps> = P => {
     type State = {
@@ -314,6 +325,7 @@ const Actions: Component<ActionsProps> = P => {
         }
 
         p.innerHTML = ''
+        P.onNewGroup()
         setStore(
             produce(s => {
                 let b = s.data[P.idx] as BlogText
