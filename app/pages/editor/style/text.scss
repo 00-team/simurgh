@@ -17,6 +17,9 @@
         align-items: center;
         justify-content: center;
     }
+    .text-section {
+        width: 100%;
+    }
 
     .placeholder {
         direction: rtl;
@@ -43,6 +46,15 @@
 
             &:hover {
                 outline: 2px solid #fff3;
+            }
+
+            &.code {
+                width: 100%;
+                display: block;
+                padding: 1em;
+                border-radius: 10px;
+                font-family: monospace;
+                background-color: var(--cg);
             }
 
             &.active {
