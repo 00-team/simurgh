@@ -56,6 +56,10 @@
                 font-family: monospace;
                 background-color: var(--cg);
             }
+            &.mark {
+                background-color: mark;
+                color: marktext;
+            }
 
             &.active {
                 outline: 2px solid #0ff3;
