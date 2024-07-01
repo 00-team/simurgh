@@ -1,7 +1,7 @@
 use actix_web::dev::HttpServiceFactory;
 use actix_web::http::header::ContentType;
 use actix_web::middleware::NormalizePath;
-use actix_web::{get, routes, HttpResponse, Scope};
+use actix_web::{routes, HttpResponse, Scope};
 use std::fs::read_to_string;
 
 #[routes]
