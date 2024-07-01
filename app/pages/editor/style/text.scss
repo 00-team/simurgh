@@ -4,10 +4,22 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     padding: 1rem;
 
     position: relative;
     isolation: isolate;
+
+    .text-actions {
+        width: 100%;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+    }
+    .text-section {
+        width: 100%;
+    }
 
     .placeholder {
         direction: rtl;
@@ -31,9 +43,21 @@
             --c2: var(--blue);
 
             line-height: 1.8em;
+            font-family: 'iranSans';
 
             &:hover {
                 outline: 2px solid #fff3;
+            }
+
+            &.code {
+                padding: 0.2em;
+                border-radius: 10px;
+                font-family: monospace;
+                background-color: var(--cg);
+            }
+            &.mark {
+                background-color: mark;
+                color: marktext;
             }
 
             &.active {

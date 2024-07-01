@@ -1,25 +1,27 @@
-import { useNavigate, useParams } from '@solidjs/router'
-import { Confact } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronDownIcon,
     ChevronUpIcon,
     DrillIcon,
+    EyeIcon,
+    EyeOffIcon,
     PlusIcon,
     RotateCcwIcon,
     SaveIcon,
     TrashIcon,
 } from 'icons'
-import { BlogData } from 'models'
-import { httpx } from 'shared'
-import { Component, createEffect, Show } from 'solid-js'
-import { produce } from 'solid-js/store'
-import { EditorEmptyBlock } from './empty'
-import { EditorHeadingBlock } from './heading'
-import { EditorImageBlock } from './image'
-import { pre_save, setStore, store, unwrap_rec } from './store'
 import './style/index.scss'
-import { EditorTextActions, EditorTextBlock } from './text'
+import { useNavigate, useParams } from '@solidjs/router'
+import { Component, Show, createEffect } from 'solid-js'
+import { httpx } from 'shared'
+import { EditorEmptyBlock } from './empty'
+import { pre_save, setStore, store, unwrap_rec } from './store'
+import { produce } from 'solid-js/store'
+import { Action, Confact } from 'comps'
+import { EditorImageBlock } from './image'
+import { BlogData } from 'models'
+import { EditorTextBlock } from './text'
+import { EditorHeadingBlock } from './heading'
 
 export default () => {
     const nav = useNavigate()
@@ -63,10 +65,25 @@ export default () => {
                         <ArrowLeftIcon />
                     </button>
                 </div>
-                <Show when={store.block && store.block.kind == 'text'}>
-                    <EditorTextActions />
-                </Show>
                 <div>
+                    <Action
+                        icon={() => (
+                            <Show
+                                when={store.show_groups}
+                                fallback={<EyeIcon />}
+                            >
+                                <EyeOffIcon />
+                            </Show>
+                        )}
+                        onAct={() =>
+                            setStore(s => ({ show_groups: !s.show_groups }))
+                        }
+                        title={
+                            store.show_groups
+                                ? 'مخفی کردن گروه ها'
+                                : 'نشان دادن گروه ها'
+                        }
+                    />
                     <button
                         class='styled icon'
                         style={{ '--color': 'var(--green)' }}
@@ -111,12 +128,12 @@ export default () => {
             <div class='editor-wrapper'>
                 <div class='editor'>
                     <Show when={store.data.length == 0}>
-                        <div class='message border title'>بلاک اضافه کنید</div>
+                        <div class='message'>Add a Block</div>
                     </Show>
                     {store.data.map((block, i, a) => (
                         <>
                             <EditorBlock block={block} idx={i} />
-                            {/* {i != a.length - 1 && <div class='line' />} */}
+                            {i != a.length - 1 && <div class='line' />}
                         </>
                     ))}
                 </div>
@@ -136,6 +153,12 @@ const EditorBlock: Component<EditorBlockProps> = P => {
         text: EditorTextBlock,
         image: EditorImageBlock,
         empty: EditorEmptyBlock,
+        break: () => (
+            <div class='block-break'>
+                خط افقی
+                <hr />
+            </div>
+        ),
     }
 
     return (

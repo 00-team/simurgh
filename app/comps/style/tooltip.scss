@@ -1,0 +1,33 @@
+.cmp-tooltip {
+    $bc: var(--white);
+
+    width: max-content;
+    max-width: 30vw;
+    max-height: 30vw;
+    position: fixed;
+    background-color: var(--thirty-percent);
+    border-radius: var(--radius);
+    border: 2px solid $bc;
+    padding: 0.5rem 1rem;
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: inherit;
+        transform: rotateZ(45deg) translateX(-50%);
+        $p: 70%;
+        clip-path: polygon($p 0, 100% 0, 100% 100%, 0 100%, 0 $p);
+        border-bottom: 2px solid $bc;
+        border-right: 2px solid $bc;
+        top: 100%;
+        left: var(--after-offset, 10%);
+    }
+
+    &.bottom::after {
+        transform: rotateZ(135deg) rotateY(180deg) translateX(-50%);
+        bottom: 100%;
+        top: unset;
+    }
+}
