@@ -11,7 +11,7 @@ type ChildProps = {
 type Props = {
     show: boolean
     children: JSX.Element
-    getProps(props: ChildProps): void
+    getProps?(props: ChildProps): void
 }
 export const Popup: Component<Props> = P => {
     let decoy: HTMLDivElement
@@ -28,7 +28,7 @@ export const Popup: Component<Props> = P => {
     })
 
     createEffect(() => {
-        if (!decoy) return
+        if (!decoy || !P.getProps) return
         P.getProps({ parent: decoy.parentElement })
     })
 
