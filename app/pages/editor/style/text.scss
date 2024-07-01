@@ -4,10 +4,19 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     padding: 1rem;
 
     position: relative;
     isolation: isolate;
+
+    .text-actions {
+        width: 100%;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+    }
 
     .placeholder {
         direction: rtl;
