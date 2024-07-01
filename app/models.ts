@@ -1,4 +1,10 @@
-import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'icons'
+import {
+    AlignCenterIcon,
+    AlignLeftIcon,
+    AlignRightIcon,
+    LeftToRightIcon,
+    RightToLeftIcon,
+} from 'icons'
 import { JSX } from 'solid-js'
 
 export type UserModel = {
@@ -29,7 +35,10 @@ export type BlogStyle = {
     bold: boolean
     italic: boolean
     underline: boolean
+    code: boolean
+    mark: boolean
     font_size: number
+    font_family: string | null
 }
 
 export const DEFAULT_STYLE: BlogStyle = {
@@ -37,23 +46,33 @@ export const DEFAULT_STYLE: BlogStyle = {
     bold: false,
     italic: false,
     underline: false,
+    code: false,
+    mark: false,
     font_size: 18,
+    font_family: null,
+}
+
+export const DEFAULT_TEXT_GROUP: BlogTextGroup = {
+    content: [],
+    url: null,
+    style: DEFAULT_STYLE,
 }
 
 export type BlogTextGroup = {
     content: string[]
     style: BlogStyle
+    url: string | null
 }
 
 export type BlogDirection = 'ltr' | 'rtl'
 export type BlogAlign = 'left' | 'center' | 'right'
 
 export const BLOG_ALIGN: {
-    [k in BlogAlign]: [BlogAlign, () => JSX.Element]
+    [k in BlogAlign]: [BlogAlign, () => JSX.Element, string]
 } = {
-    left: ['center', AlignCenterIcon],
-    center: ['right', AlignRightIcon],
-    right: ['left', AlignLeftIcon],
+    left: ['center', AlignLeftIcon, 'چپ چین'],
+    center: ['right', AlignCenterIcon, 'وسط چین'],
+    right: ['left', AlignRightIcon, 'راست چین'],
 }
 
 export type BlogText = {
@@ -69,6 +88,7 @@ export type BlogImage = {
     record_salt: string
 }
 
+export type BlogBreak = { kind: 'break' }
 export type BlogEmpty = {
     kind: 'empty'
 }
@@ -81,7 +101,12 @@ export type BlogHeading = {
     align: BlogAlign
 }
 
-export type BlogData = BlogText | BlogImage | BlogEmpty | BlogHeading
+export type BlogData =
+    | BlogText
+    | BlogImage
+    | BlogEmpty
+    | BlogHeading
+    | BlogBreak
 
 export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     empty: { kind: 'empty' },
@@ -120,6 +145,14 @@ export type BlogModel = {
     thumbnail: string | null
     read_time: number
 }
+
+export const BLOG_DIRECTION: {
+    [k in BlogDirection]: [BlogDirection, () => JSX.Element, string]
+} = {
+    ltr: ['rtl', LeftToRightIcon, 'چپ به راست'],
+    rtl: ['ltr', RightToLeftIcon, 'راست به چپ'],
+}
+
 export const DEFAULT_BLOG: BlogModel = {
     id: 0,
     slug: '',
