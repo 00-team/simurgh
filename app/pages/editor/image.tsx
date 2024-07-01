@@ -95,11 +95,8 @@ const ImageUploader: Component<Props> = P => {
             class='upload-area'
             ondragover={e => e.preventDefault()}
             ondrop={e => {
-                console.log('slm')
                 e.preventDefault()
                 const files = e.dataTransfer.files
-
-                console.log(files)
 
                 Array.from(files).forEach(file => {
                     if (file.type.match('image.*')) {

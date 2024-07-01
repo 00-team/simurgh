@@ -76,6 +76,10 @@
         transition: border-color 300ms ease-in-out;
     }
 
+    input {
+        display: none;
+    }
+
     .upload-area__drop-zoon:hover {
         border-color: var(--clr-blue);
     }
@@ -134,10 +138,5 @@
     .drop-zoon--over .drop-zoon__icon,
     .drop-zoon--over .drop-zoon__paragraph {
         opacity: 0.7;
-    }
-
-    .drop-zoon--Uploaded .drop-zoon__icon,
-    .drop-zoon--Uploaded .drop-zoon__paragraph {
-        display: none;
     }
 }
