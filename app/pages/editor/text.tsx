@@ -6,8 +6,10 @@ import {
     BLOG_DIRECTION,
     DEFAULT_TEXT_GROUP,
 } from 'models'
-import { Component, onCleanup, onMount, Show } from 'solid-js'
+import { Component, createEffect, onCleanup, onMount, Show } from 'solid-js'
 
+import { Action } from 'comps/action'
+import { Tooltip } from 'comps/tooltip'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
@@ -25,8 +27,6 @@ import {
 import { createStore, produce } from 'solid-js/store'
 import { setStore, store, unwrap_rec } from './store'
 import './style/text.scss'
-import { Action } from 'comps/action'
-import { Tooltip } from 'comps/tooltip'
 
 function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
     return {
@@ -357,6 +357,10 @@ const Actions: Component<ActionsProps> = P => {
         )
     }
 
+    createEffect(() => {
+        console.log(P.group)
+    })
+
     return (
         <div class='text-actions'>
             <Show when={state.spliter}>
@@ -416,9 +420,7 @@ const Actions: Component<ActionsProps> = P => {
                 <LinkButton idx={P.idx} ag={P.ag} group={P.group} />
                 <Action
                     title='تغییر فونت'
-                    onAct={() =>
-                        alert('selecting custom font\nincoming soon...')
-                    }
+                    onAct={() => alert('selecting custom font\ncoming soon...')}
                     icon={TypeIcon}
                 />
                 <Action
