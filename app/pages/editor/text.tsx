@@ -119,7 +119,9 @@ export const EditorTextBlock: Component<Props> = P => {
             />
             <div class='text-section'>
                 <Show when={state.placeholder}>
-                    <span class='placeholder'>متن خود را وارد کنید ...</span>
+                    <span class='placeholder title_small'>
+                        متن خود را وارد کنید ...
+                    </span>
                 </Show>
                 <p
                     ref={p}
