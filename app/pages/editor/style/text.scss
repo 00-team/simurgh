@@ -27,6 +27,8 @@
             --c1: var(--green);
             --c2: var(--blue);
 
+            line-height: 1.8em;
+
             &:hover {
                 outline: 2px solid #fff3;
             }
