@@ -6,6 +6,9 @@
     justify-content: center;
     padding: 1rem;
 
+    position: relative;
+    isolation: isolate;
+
     .placeholder {
         direction: rtl;
         opacity: 0.6;
@@ -45,6 +48,7 @@
             }
             &.underline {
                 text-decoration: underline;
+                text-underline-offset: 0.4em;
             }
         }
 
