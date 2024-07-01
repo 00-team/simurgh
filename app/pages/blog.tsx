@@ -365,11 +365,18 @@ export default () => {
                         >
                             <textarea
                                 dir='auto'
-                                class='styled'
+                                class=' title_smaller'
                                 placeholder='توصیف'
                                 value={state.edit.detail}
-                                rows={state.edit.detail.split('\n').length + 1}
+                                rows={
+                                    state.edit.detail.split('\n').length + 1 <
+                                    10
+                                        ? 10
+                                        : state.edit.detail.split('\n').length +
+                                          1
+                                }
                                 maxLength={2047}
+                                cols={50}
                                 onInput={e => {
                                     setState(
                                         produce(s => {
@@ -394,7 +401,8 @@ export default () => {
                         >
                             <input
                                 class='styled'
-                                type='numer'
+                                type='number'
+                                inputMode='numeric'
                                 value={state.edit.read_time}
                                 onInput={e => {
                                     setState(
