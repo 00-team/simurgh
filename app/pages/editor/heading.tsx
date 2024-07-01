@@ -1,11 +1,10 @@
 import { Component, JSX, Show } from 'solid-js'
 
-import './style/heading.scss'
-import { BLOG_ALIGN, BlogHeading } from 'models'
-import { setStore } from './store'
-import { produce } from 'solid-js/store'
 import { PilcrowLeftIcon, PilcrowRightIcon } from 'icons'
-import { Dynamic } from 'solid-js/web'
+import { BlogHeading, BLOG_ALIGN } from 'models'
+import { produce } from 'solid-js/store'
+import { setStore } from './store'
+import './style/heading.scss'
 
 type Props = {
     idx: number
@@ -25,12 +24,12 @@ export const EditorHeadingBlock: Component<Props> = P => {
     const HEADING: {
         [k in 1 | 2 | 3 | 4 | 5 | 6]: Component<{ children: JSX.Element }>
     } = {
-        1: P => <h1>{P.children}</h1>,
-        2: P => <h2>{P.children}</h2>,
-        3: P => <h3>{P.children}</h3>,
-        4: P => <h4>{P.children}</h4>,
-        5: P => <h5>{P.children}</h5>,
-        6: P => <h6>{P.children}</h6>,
+        1: P => <h1 class='section_title'>{P.children}</h1>,
+        2: P => <h2 class='title_hero'>{P.children}</h2>,
+        3: P => <h3 class='title'>{P.children}</h3>,
+        4: P => <h4 class='title'>{P.children}</h4>,
+        5: P => <h5 class='title'>{P.children}</h5>,
+        6: P => <h6 class='title'>{P.children}</h6>,
     }
 
     return (
@@ -43,7 +42,7 @@ export const EditorHeadingBlock: Component<Props> = P => {
                 }}
             >
                 <input
-                    class='styled'
+                    class='styled title_small'
                     value={P.block.content}
                     style={{
                         'text-align': P.block.align,
