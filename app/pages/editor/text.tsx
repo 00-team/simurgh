@@ -101,7 +101,9 @@ export const EditorTextBlock: Component<Props> = P => {
     return (
         <div class='block-text'>
             <Show when={placeholder()}>
-                <span class='placeholder title_smaller'>متن خود را وارد کنید ...</span>
+                <span class='placeholder title_smaller'>
+                    متن خود را وارد کنید ...
+                </span>
             </Show>
             <p
                 ref={p}
@@ -143,6 +145,7 @@ export const EditorTextBlock: Component<Props> = P => {
                             e.stopPropagation()
                             setStore({ tg: i })
                         }}
+                        class='title_smaller'
                     >
                         {g.content.map((line, li, a) => (
                             <>
