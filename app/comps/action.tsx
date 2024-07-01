@@ -19,7 +19,7 @@ type Props = (IconProps | TextProps) & {
 export const Action: Component<Props> = P => {
     return (
         <button
-            class='styled'
+            class='styled ttle_small'
             classList={{
                 icon: 'icon' in P,
                 active: P.active,
