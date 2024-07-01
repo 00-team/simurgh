@@ -1,5 +1,3 @@
-use std::fs::read_to_string;
-
 use actix_files as af;
 use actix_multipart::form::tempfile::TempFileConfig;
 use actix_multipart::form::MultipartFormConfig;
@@ -25,13 +23,6 @@ mod web;
 
 pub struct AppState {
     pub sql: Pool<Sqlite>,
-}
-
-#[get("/")]
-async fn index() -> impl Responder {
-    let result = read_to_string("static/dist/index.html")
-        .unwrap_or("err reading index.html".to_string());
-    HttpResponse::Ok().content_type(ContentType::html()).body(result)
 }
 
 #[get("/openapi.json")]
@@ -81,10 +72,6 @@ fn config_app(app: &mut ServiceConfig) {
             af::Files::new("/static", "./static").disable_content_disposition(),
         );
         app.service(
-            af::Files::new("/assets", "./static/dist/assets")
-                .disable_content_disposition(),
-        );
-        app.service(
             af::Files::new("/simurgh-record", Config::RECORD_DIR)
                 .disable_content_disposition(),
         );
@@ -99,7 +86,7 @@ fn config_app(app: &mut ServiceConfig) {
         ),
     );
 
-    app.service(openapi).service(rapidoc).service(index);
+    app.service(openapi).service(rapidoc);
     app.service(
         scope("/api")
             .service(api::user::router())
