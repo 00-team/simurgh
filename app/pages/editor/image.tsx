@@ -118,31 +118,6 @@ const ImageUploader: Component<Props> = P => {
                     class='drop-zoon__preview-image'
                     draggable='false'
                 />
-                <input
-                    type='file'
-                    id='fileInput'
-                    class='drop-zoon__file-input'
-                    accept='image/*'
-                />
-            </div>
-
-            <div
-                id='fileDetails'
-                class='upload-area__file-details file-details'
-            >
-                <h3 class='file-details__title'>فایل اپلود شده</h3>
-
-                <div id='uploadedFile' class='uploaded-file'>
-                    <div class='uploaded-file__icon-container'>
-                        <i class='bx bxs-file-blank uploaded-file__icon'></i>
-                        <span class='uploaded-file__icon-text'></span>
-                    </div>
-
-                    <div id='uploadedFileInfo' class='uploaded-file__info'>
-                        <span class='uploaded-file__name'>Proejct 1</span>
-                        <span class='uploaded-file__counter'>0%</span>
-                    </div>
-                </div>
             </div>
         </div>
     )
