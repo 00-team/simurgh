@@ -14,6 +14,100 @@ export const CircleAlertIcon = () => (
     </svg>
 )
 
+export const TypeIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <polyline points='4 7 4 4 20 4 20 7' />
+        <line x1='9' x2='15' y1='20' y2='20' />
+        <line x1='12' x2='12' y1='4' y2='20' />
+    </svg>
+)
+
+export const HighlighterIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='m9 11-6 6v3h9l3-3' />
+        <path d='m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4' />
+    </svg>
+)
+
+export const CodeXmlIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='m18 16 4-4-4-4' />
+        <path d='m6 8-4 4 4 4' />
+        <path d='m14.5 4-5 16' />
+    </svg>
+)
+
+export const RightToLeftIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <rect width='16' height='6' x='2' y='4' rx='2' />
+        <rect width='9' height='6' x='9' y='14' rx='2' />
+        <path d='M22 22V2' />
+    </svg>
+)
+
+export const LeftToRightIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <rect width='9' height='6' x='6' y='14' rx='2' />
+        <rect width='16' height='6' x='6' y='4' rx='2' />
+        <path d='M2 2v20' />
+    </svg>
+)
+
+export const LinkIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+    >
+        <path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71' />
+        <path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71' />
+    </svg>
+)
+
 export const CircleCheckIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
