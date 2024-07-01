@@ -1,4 +1,8 @@
-.cmp-tooltip {
+.cmp-popup-decoy {
+    display: none;
+}
+
+.cmp-popup {
     $bc: var(--white);
 
     width: max-content;
