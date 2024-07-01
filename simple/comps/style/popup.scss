@@ -6,13 +6,10 @@
     $bc: var(--white);
 
     width: max-content;
-    max-width: 30vw;
-    max-height: 30vw;
     position: fixed;
     background-color: var(--black);
     border-radius: var(--radius);
     border: 2px solid $bc;
-    padding: 0.5rem 1rem;
 
     &::after {
         content: '';

@@ -42,8 +42,11 @@ export const Tooltip: Component<Props> = P => {
             getProps={p => {
                 setState({ parent: p.parent })
             }}
+            background='var(--black)'
         >
-            {P.children}
+            <div class='cmp-tooltip' style={{ padding: '0.5rem 1rem' }}>
+                {P.children}
+            </div>
         </Popup>
     )
 }

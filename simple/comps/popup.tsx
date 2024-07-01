@@ -12,6 +12,7 @@ type Props = {
     show: boolean
     children: JSX.Element
     getProps?(props: ChildProps): void
+    background?: string
 }
 export const Popup: Component<Props> = P => {
     let decoy: HTMLDivElement
@@ -58,6 +59,7 @@ export const Popup: Component<Props> = P => {
                             top: state.y + 'px',
                             left: state.x + 'px',
                             '--after-offset': state.p + 'px',
+                            background: P.background,
                         }}
                     >
                         {P.children}

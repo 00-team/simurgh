@@ -1,11 +1,10 @@
-import { Component, Show, onCleanup, onMount } from 'solid-js'
+import { Component, Show, createSignal, onCleanup, onMount } from 'solid-js'
 import {
     BLOG_ALIGN,
     BLOG_DIRECTION,
     BlogStyle,
     BlogText,
     BlogTextGroup,
-    DEFAULT_STYLE,
     DEFAULT_TEXT_GROUP,
 } from 'models'
 
@@ -26,7 +25,7 @@ import {
     UnderlineIcon,
 } from 'icons'
 import { createStore, produce } from 'solid-js/store'
-import { Action, Tooltip } from 'comps'
+import { Action, ColorPicker, Tooltip } from 'comps'
 
 function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
     return {
@@ -58,7 +57,7 @@ export const EditorTextBlock: Component<Props> = P => {
         placeholder:
             P.block.groups.length == 0 ||
             !P.block.groups.find(g => g.content.length),
-        ag: -1,
+        ag: 0,
         get group() {
             return P.block.groups[this.ag]
         },
@@ -110,7 +109,7 @@ export const EditorTextBlock: Component<Props> = P => {
     onCleanup(() => document.removeEventListener('editor_pre_save', pre_save))
 
     return (
-        <div class='block-text' onMouseLeave={pre_save}>
+        <div class='block-text'>
             <Actions
                 idx={P.idx}
                 block={P.block}
@@ -367,17 +366,9 @@ const Actions: Component<ActionsProps> = P => {
                 />
             </Show>
             <Show when={P.group && !state.spliter}>
-                <Action
+                <ColorButton
                     color={P.group.style.color}
-                    icon={PaletteIcon}
-                    title='رنگ'
-                    onAct={() => {
-                        let el = document.createElement('input')
-                        el.setAttribute('type', 'color')
-                        el.setAttribute('value', P.group.style.color)
-                        el.oninput = () => set_style({ color: el.value })
-                        el.click()
-                    }}
+                    setColor={color => set_style({ color })}
                 />
                 <Action
                     active={P.group.style.bold}
@@ -530,5 +521,38 @@ const LinkButton: Component<LinkButtonProps> = P => {
                 </div>
             </Show>
         </div>
+    )
+}
+
+type ColorButtonProps = {
+    color?: string
+    setColor(color?: string): void
+}
+const ColorButton: Component<ColorButtonProps> = P => {
+    const [show, setShow] = createSignal(false)
+
+    return (
+        <Action
+            color={P.color}
+            icon={() => (
+                <>
+                    <PaletteIcon />
+                    <ColorPicker
+                        show={show()}
+                        onChange={P.setColor}
+                        default={P.color}
+                    />
+                </>
+            )}
+            title='رنگ'
+            onAct={() => {
+                setShow(s => !s)
+                // let el = document.createElement('input')
+                // el.setAttribute('type', 'color')
+                // el.setAttribute('value', P.group.style.color)
+                // el.oninput = () => set_style({ color: el.value })
+                // el.click()
+            }}
+        />
     )
 }
