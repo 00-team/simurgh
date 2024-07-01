@@ -66,6 +66,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+
+            textarea {
+                resize: vertical;
+                background-color: var(--thirty-percent);
+                border: 2px solid var(--cg);
+                border-radius: 0.5rem;
+                padding: 0.5em;
+                line-height: 1.8em;
+            }
         }
 
         span {
