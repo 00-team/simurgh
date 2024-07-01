@@ -6,6 +6,9 @@
     justify-content: center;
     padding: 1rem;
 
+    position: relative;
+    isolation: isolate;
+
     .placeholder {
         direction: rtl;
         opacity: 0.6;
@@ -27,6 +30,8 @@
             --c1: var(--green);
             --c2: var(--blue);
 
+            line-height: 1.8em;
+
             &:hover {
                 outline: 2px solid #fff3;
             }
@@ -43,6 +48,7 @@
             }
             &.underline {
                 text-decoration: underline;
+                text-underline-offset: 0.4em;
             }
         }
 

@@ -12,6 +12,8 @@
         padding: 1rem;
         justify-content: space-between;
 
+        margin-bottom: 1em;
+
         div {
             flex-wrap: wrap;
             display: flex;
@@ -38,6 +40,7 @@
         flex-direction: column;
         width: 100%;
         height: max-content;
+        gap: 1.5rem;
 
         .message {
             width: 100%;
