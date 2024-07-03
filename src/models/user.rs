@@ -119,12 +119,12 @@ impl FromRequest for User {
 
         Box::pin(async move {
             if token.is_none() {
-                return Err(AppErrForbidden("token was not found"));
+                return Err(AppErrForbidden(Some("token was not found")));
             }
 
             let (id, token) = match parse_token(&token.unwrap()) {
                 Some(t) => t,
-                None => return Err(AppErrForbidden("invalid token")),
+                None => return Err(AppErrForbidden(Some("invalid token"))),
             };
 
             let token = hex::encode(sha2::Sha512::digest(&token));
@@ -138,7 +138,7 @@ impl FromRequest for User {
             .await?;
 
             if user.banned {
-                return Err(AppErrForbidden("banned"));
+                return Err(AppErrForbidden(Some("banned")));
             }
 
             user.token.cut_off(32);
@@ -156,7 +156,7 @@ impl FromRequest for Admin {
         Box::pin(async {
             let user = user.await?;
             if !user.admin {
-                return Err(AppErrForbidden("forbidden"));
+                return Err(AppErrForbidden(None));
             }
 
             Ok(Admin(user))
