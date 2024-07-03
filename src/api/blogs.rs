@@ -142,7 +142,7 @@ async fn blog_update(
     let mut blog = blog;
 
     if body.slug.len() < 3 {
-        return Err(AppErrBadRequest("حداقل طول نشانه 3 حرف است"));
+        return Err(AppErrBadRequest(Some("حداقل طول نشانه 3 حرف است")));
     }
 
     blog.slug = body.slug.clone();

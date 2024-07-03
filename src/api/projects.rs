@@ -41,7 +41,7 @@ async fn projects_add(
     user: User, body: Json<ProjectAddBody>, state: Data<AppState>,
 ) -> Response<Project> {
     if !cfg!(debug_assertions) && !user.client {
-        return Err(AppErrForbidden("you are not a Client"));
+        return Err(AppErrForbidden(Some("you are not a Client")));
     }
 
     let now = utils::now();

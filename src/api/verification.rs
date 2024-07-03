@@ -118,20 +118,21 @@ pub async fn verify(
     let mut vdb = VDB.lock().await;
     vdb.retain(|_, v| v.expires - now > 0);
 
-    let v = vdb.get_mut(email).ok_or(AppErrBadRequest("bad verification"))?;
+    let v =
+        vdb.get_mut(email).ok_or(AppErrBadRequest(Some("bad verification")))?;
 
     v.tries += 1;
 
     if v.action != action {
-        return Err(AppErrBadRequest("invalid action"));
+        return Err(AppErrBadRequest(Some("invalid action")));
     }
 
     if v.code != code {
         if v.tries > 2 {
-            return Err(AppErrBadRequest("too many tries"));
+            return Err(AppErrBadRequest(Some("too many tries")));
         }
 
-        return Err(AppErrBadRequest("invalid code"));
+        return Err(AppErrBadRequest(Some("invalid code")));
     }
 
     vdb.remove(email);

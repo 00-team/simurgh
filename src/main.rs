@@ -78,11 +78,13 @@ fn config_app(app: &mut ServiceConfig) {
     }
 
     app.app_data(TempFileConfig::default().error_handler(|e, _| {
-        actix_web::Error::from(AppErrBadRequest(&e.to_string()))
+        actix_web::Error::from(AppErrBadRequest(Some(&e.to_string())))
     }));
     app.app_data(
         MultipartFormConfig::default().total_limit(209_715_200).error_handler(
-            |e, _| actix_web::Error::from(AppErrBadRequest(&e.to_string())),
+            |e, _| {
+                actix_web::Error::from(AppErrBadRequest(Some(&e.to_string())))
+            },
         ),
     );
 

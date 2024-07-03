@@ -113,7 +113,7 @@ pub async fn send_code(email: &str, code: &str) -> Result<(), AppErr> {
         .from(config().mail_from.clone())
         .to(email
             .parse()
-            .map_err(|_| AppErrBadRequest("could not parse to email"))?)
+            .map_err(|_| AppErrBadRequest(Some("could not parse to email")))?)
         .subject("Simurgh Verification")
         .date_now()
         .multipart(
