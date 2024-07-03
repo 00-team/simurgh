@@ -9,7 +9,8 @@ import {
 import { Popup } from './popup'
 
 import './style/color-picker.scss'
-import { createStore } from 'solid-js/store'
+import { createStore, produce } from 'solid-js/store'
+import { store } from 'pages/editor/store'
 
 type Props = {
     default?: string
@@ -112,7 +113,7 @@ export const ColorPicker: Component<Props> = P => {
                 style={{ '--rgb': rgb_str() }}
             >
                 <div
-                    class='ccp-gradient'
+                    class='ccp-gradient ccp-checkered'
                     ref={ref}
                     onClick={move}
                     onMouseDown={() => setState({ active: true })}
@@ -125,15 +126,23 @@ export const ColorPicker: Component<Props> = P => {
                 </div>
                 <Silinder
                     class='hue'
-                    default={state.hsv.h / 3.6}
+                    value={state.hsv.h / 3.6}
                     onChange={h =>
                         setState(s => ({ hsv: { ...s.hsv, h: h * 3.6 } }))
                     }
                 />
                 <Silinder
-                    class='alpha'
-                    default={state.alpha}
+                    class='alpha ccp-checkered'
+                    value={state.alpha}
                     onChange={alpha => setState({ alpha })}
+                />
+                <SavedColors
+                    current={hex()}
+                    setColor={c => {
+                        let [rgb, alpha] = HexToRGB(c)
+                        let hsv = RGBtoHSV(rgb)
+                        setState({ alpha, hsv, x: hsv.s, y: 100 - hsv.v })
+                    }}
                 />
             </div>
         </Popup>
@@ -143,20 +152,17 @@ export const ColorPicker: Component<Props> = P => {
 type SilinderProps = {
     class?: string
     onChange(value: number): void
-    default?: number
+    value: number
 }
 const Silinder: Component<SilinderProps> = P => {
     type State = {
-        value: number
         active: boolean
     }
     const [state, setState] = createStore<State>({
-        value: P.default || 0,
         active: false,
     })
     let ref: HTMLDivElement
 
-    createEffect(() => P.onChange(state.value))
     onMount(() => document.addEventListener('mouseup', inactive))
     onCleanup(() => document.removeEventListener('mouseup', inactive))
 
@@ -166,17 +172,9 @@ const Silinder: Component<SilinderProps> = P => {
 
     function move(e: { currentTarget: HTMLDivElement } & MouseEvent) {
         const { left, right } = ref.getBoundingClientRect()
-        if (e.clientX < left) {
-            setState({ value: 0 })
-            return
-        }
-        if (e.clientX > right) {
-            setState({ value: 100 })
-            return
-        }
-
-        let t = 100 / (right - left)
-        setState({ value: (e.clientX - left) * t })
+        if (e.clientX < left) return P.onChange(0)
+        if (e.clientX > right) return P.onChange(100)
+        P.onChange((e.clientX - left) * (100 / (right - left)))
     }
 
     createEffect(() => {
@@ -192,7 +190,86 @@ const Silinder: Component<SilinderProps> = P => {
             onClick={move}
             onMouseDown={() => setState({ active: true })}
         >
-            <div class='ccp-dot' style={{ '--v': state.value + '%' }}></div>
+            <div class='ccp-dot' style={{ '--v': P.value + '%' }}></div>
+        </div>
+    )
+}
+
+type SavedColorsProps = {
+    setColor(hex: string): void
+    current: string
+}
+const SavedColors: Component<SavedColorsProps> = P => {
+    type State = {
+        colors: string[]
+        active: number
+    }
+    const [state, setState] = createStore<State>({
+        colors: get_colors(),
+        active: -1,
+    })
+
+    createEffect(() => {
+        localStorage.setItem('ccp-saved-colors', JSON.stringify(state.colors))
+    })
+
+    function get_colors(): string[] {
+        let fst = localStorage.getItem('ccp-saved-colors')
+        let colors: string[] = []
+        if (fst) colors = JSON.parse(fst) || []
+
+        if (colors.length > 5) colors = colors.slice(0, 5)
+        if (colors.length < 5) {
+            let empty = Array.from(Array(5 - colors.length), () => '')
+            colors = colors.concat(empty)
+        }
+
+        return colors
+    }
+
+    createEffect(
+        on(
+            () => P.current,
+            () => {
+                if (state.active == -1) return
+                setState(
+                    produce(s => {
+                        if (s.colors.find(c => c == P.current)) return
+                        s.colors[state.active] = P.current
+                    })
+                )
+            }
+        )
+    )
+
+    createEffect(
+        on(
+            () => state.active,
+            () => {
+                if (state.active == -1) return
+                if (!state.colors[state.active]) return
+                P.setColor(state.colors[state.active])
+            }
+        )
+    )
+
+    return (
+        <div class='ccp-saved-colors'>
+            {state.colors.map((c, i) => (
+                <div
+                    class='ccp-checkered'
+                    classList={{ active: state.active == i }}
+                    style={{ '--color': c }}
+                    onContextMenu={e => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setState(produce(s => (s.colors[i] = '')))
+                    }}
+                    onClick={() => {
+                        setState(s => ({ active: s.active == i ? -1 : i }))
+                    }}
+                />
+            ))}
         </div>
     )
 }
@@ -296,7 +373,7 @@ function HexToRGB(hex: string): [RGB, number] {
         rgb = { r, g, b }
         alpha = a || 255
     }
-    return [rgb, alpha / 255]
+    return [rgb, alpha / 2.55]
 }
 
 function RGBToStr({ r, g, b }: RGB, alpha?: number): string {
