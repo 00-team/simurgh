@@ -265,6 +265,16 @@ const Record: Component<RecordProps> = P => {
                     <span class='n'>{fmt_datetime(P.r.created_at)}</span>
                 </div>
             </div>
+            <div class='usages'>
+                <h3 class='title'>استفاده ها</h3>
+                <div class='usages-wrapper'>
+                    <div class='usage title_smaller'>لورم</div>
+                    <div class='usage title_smaller'>لورم</div>
+                    <div class='usage title_smaller'>لورم</div>
+                    <div class='usage title_smaller'>لورم</div>
+                </div>
+                <div class='add-usage'></div>
+            </div>
         </div>
     )
 }
