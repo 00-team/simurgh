@@ -16,6 +16,8 @@ create table if not exists projects (
     name text not null,
     storage integer not null default 0,
     blog_count integer not null default 0,
+    blog_category_count integer not null default 0,
+    blog_tag_count integer not null default 0,
     record_count integer not null default 0,
     created_at integer not null,
     updated_at integer not null default 0,
@@ -57,6 +59,7 @@ create table if not exists blog_categories (
     project integer not null references projects(id) on delete cascade,
     label text not null,
     detail text not null default '',
+    count integer not null default 0,
     unique(slug, project)
 );
 
@@ -66,6 +69,7 @@ create table if not exists blog_tags (
     project integer not null references projects(id) on delete cascade,
     label text not null,
     detail text not null default '',
+    count integer not null default 0,
     unique(slug, project)
 );
 

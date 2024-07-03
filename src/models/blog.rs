@@ -19,6 +19,7 @@ pub struct BlogCategory {
     pub project: Option<i64>,
     pub label: String,
     pub detail: String,
+    pub count: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
@@ -28,6 +29,7 @@ pub struct BlogTag {
     pub project: Option<i64>,
     pub label: String,
     pub detail: String,
+    pub count: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]

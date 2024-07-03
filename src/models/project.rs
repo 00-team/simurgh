@@ -12,6 +12,8 @@ pub struct Project {
     pub name: String,
     pub storage: i64,
     pub blog_count: i64,
+    pub blog_category_count: i64,
+    pub blog_tag_count: i64,
     pub record_count: i64,
     pub created_at: i64,
     pub updated_at: i64,
