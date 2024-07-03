@@ -8,7 +8,7 @@ use crate::models::blog::Blog;
 use crate::models::project::Project;
 use crate::models::record::Record;
 use crate::models::user::User;
-use crate::models::{AppErr, ListInput, Response};
+use crate::models::{AppErr, AppErrForbidden, ListInput, Response};
 use crate::utils;
 use crate::AppState;
 
@@ -40,6 +40,10 @@ struct ProjectAddBody {
 async fn projects_add(
     user: User, body: Json<ProjectAddBody>, state: Data<AppState>,
 ) -> Response<Project> {
+    if !cfg!(debug_assertions) && !user.client {
+        return Err(AppErrForbidden("you are not a Client"));
+    }
+
     let now = utils::now();
     sqlx::query! {
         "insert into projects(user, name, created_at) values(?, ?, ?)",
