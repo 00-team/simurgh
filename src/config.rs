@@ -13,7 +13,8 @@ impl Config {
     pub const RECORD_DIR: &'static str = "./record/";
     pub const TOKEN_ABC: &'static [u8] = b"!@#$%^&*_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*_+";
     pub const CODE_ABC: &'static [u8] = b"0123456789";
-    pub const SLUG_ABC: &'static [u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
+    pub const SLUG_ABC: &'static [u8] =
+        b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
 }
 
 pub fn config() -> &'static Config {

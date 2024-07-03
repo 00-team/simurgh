@@ -1,6 +1,6 @@
+use actix_multipart::form::json::Json as MPJson;
 use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::MultipartForm;
-use actix_multipart::form::json::Json as MPJson;
 use actix_web::web::{Data, Json, Query};
 use actix_web::{delete, get, patch, post, HttpResponse, Scope};
 use serde::Deserialize;
@@ -126,7 +126,7 @@ async fn record_get(record: Record) -> Response<Record> {
 #[derive(Deserialize, ToSchema)]
 struct RecordUpdateBody {
     name: String,
-    usages: Vec<RecordUsage>
+    usages: Vec<RecordUsage>,
 }
 
 #[utoipa::path(

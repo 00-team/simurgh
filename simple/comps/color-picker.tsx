@@ -10,7 +10,6 @@ import { Popup } from './popup'
 
 import './style/color-picker.scss'
 import { createStore, produce } from 'solid-js/store'
-import { store } from 'pages/editor/store'
 
 type Props = {
     default?: string
