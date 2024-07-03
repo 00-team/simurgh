@@ -5,6 +5,8 @@ in house content management service for 00 Team
 ## Todos
 
 -   [ ] create custom color picker with opacity
+    -   [ ] history of old choices
+    -   [ ] ability to chose a variable color e.g.: `var(--accect)`
 -   [x] image block style's like alignment and ...
 -   [ ] blog category and tags
 -   [ ] audio block
