@@ -26,7 +26,9 @@ impl AppErr {
     }
 
     pub fn default() -> Self {
-        Self { status: 500, subject: "خطای سیستمی".to_string(), content: None }
+        Self {
+            status: 500, subject: "خطای سیستمی".to_string(), content: None
+        }
     }
 }
 
