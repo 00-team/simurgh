@@ -1,6 +1,5 @@
-use actix_web::{dev::Payload, web::Data, HttpRequest};
 use serde::{Deserialize, Serialize};
-use std::{fmt, future::Future, pin::Pin};
+use std::fmt;
 use utoipa::ToSchema;
 
 use super::JsonStr;
@@ -158,28 +157,6 @@ pub struct Blog {
     pub thumbnail: Option<String>,
 }
 
-impl actix_web::FromRequest for Blog {
-    type Error = crate::models::AppErr;
-    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
-
-    fn from_request(rq: &HttpRequest, pl: &mut Payload) -> Self::Future {
-        let project = super::project::Project::from_request(rq, pl);
-        let path = actix_web::web::Path::<(i64, i64)>::extract(rq);
-        let state = rq.app_data::<Data<crate::AppState>>().unwrap();
-        let pool = state.sql.clone();
-
-        Box::pin(async move {
-            let path = path.await?;
-            let project = project.await?;
-            let result = sqlx::query_as! {
-                Blog,
-                "select * from blogs where id = ? and project = ?",
-                path.1, project.id
-            }
-            .fetch_one(&pool)
-            .await?;
-
-            Ok(result)
-        })
-    }
-}
+super::from_request_under_project!(Blog, "blogs");
+super::from_request_under_project!(BlogCategory, "blog_categories");
+super::from_request_under_project!(BlogTag, "blog_tags");
