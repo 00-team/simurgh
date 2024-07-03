@@ -19,7 +19,7 @@ use crate::AppState;
         projects_add, projects_list, projects_get, projects_update,
         projects_delete
     ),
-    components(schemas(Project, ProjectAddBody)),
+    components(schemas(Project, ProjectAddBody, ProjectUpdateBody)),
     servers((url = "/projects")),
     modifiers(&UpdatePaths)
 )]
@@ -89,20 +89,20 @@ async fn projects_get(project: Project) -> Response<Project> {
 }
 
 #[derive(Deserialize, ToSchema)]
-struct UpdateBody {
+struct ProjectUpdateBody {
     name: String,
 }
 
 #[utoipa::path(
     patch,
     params(("id" = i64, Path, example = 1)),
-    request_body = UpdateBody,
+    request_body = ProjectUpdateBody,
     responses((status = 200, body = Project))
 )]
 /// Update
 #[patch("/{id}/")]
 async fn projects_update(
-    project: Project, body: Json<UpdateBody>, state: Data<AppState>,
+    project: Project, body: Json<ProjectUpdateBody>, state: Data<AppState>,
 ) -> Response<Project> {
     let mut project = project;
     let now = utils::now();
