@@ -12,6 +12,24 @@ super::sql_enum! {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
+pub struct BlogCategory {
+    pub id: i64,
+    pub slug: String,
+    pub project: Option<i64>,
+    pub label: String,
+    pub detail: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
+pub struct BlogTag {
+    pub id: i64,
+    pub slug: String,
+    pub project: Option<i64>,
+    pub label: String,
+    pub detail: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 pub struct BlogStyle {
     pub color: Option<String>,
@@ -124,8 +142,9 @@ pub struct Blog {
     pub id: i64,
     pub slug: String,
     pub status: BlogStatus,
-    pub project: Option<i64>,
     pub author: Option<i64>,
+    pub project: Option<i64>,
+    pub category: Option<i64>,
     pub created_at: i64,
     pub updated_at: i64,
     pub title: String,
