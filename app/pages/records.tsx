@@ -273,7 +273,20 @@ const Record: Component<RecordProps> = P => {
                     <div class='usage title_smaller'>لورم</div>
                     <div class='usage title_smaller'>لورم</div>
                 </div>
-                <div class='add-usage'></div>
+                <div class='add-usage title_small'>
+                    <div class='toggle-btn'></div>
+                    <div class='input'>
+                        <input
+                            type='text'
+                            class='title_smaller'
+                            name=''
+                            id=''
+                        />
+                    </div>
+                    <div class='add-btn'>
+                        <ArrowLeftIcon />
+                    </div>
+                </div>
             </div>
         </div>
     )
