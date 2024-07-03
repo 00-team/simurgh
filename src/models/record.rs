@@ -51,7 +51,7 @@ impl actix_web::FromRequest for Record {
             if record.project == Some(project.id) || user.admin {
                 Ok(record)
             } else {
-                Err(AppErrNotFound("یافت نشد"))
+                Err(AppErrNotFound(None))
             }
         })
     }

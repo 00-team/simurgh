@@ -44,7 +44,7 @@ impl actix_web::FromRequest for Project {
             if project.user == Some(user.id) || user.admin {
                 Ok(project)
             } else {
-                Err(AppErrNotFound("یافت نشد"))
+                Err(AppErrNotFound(None))
             }
         })
     }
