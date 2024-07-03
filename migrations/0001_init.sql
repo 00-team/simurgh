@@ -37,6 +37,7 @@ create table if not exists blogs (
     id integer primary key not null,
     slug text not null,
     status integer not null default 0,
+    category integer references blog_categories(id) on delete set null,
     project integer references projects(id) on delete set null,
     author integer references users(id) on delete set null,
     created_at integer not null,
@@ -50,3 +51,27 @@ create table if not exists blogs (
     unique(slug, project)
 );
 
+create table if not exists blog_categories (
+    id integer primary key not null,
+    slug text not null,
+    project integer not null references projects(id) on delete cascade,
+    label text not null,
+    detail text not null default '',
+    unique(slug, project)
+);
+
+create table if not exists blog_tags (
+    id integer primary key not null,
+    slug text not null,
+    project integer not null references projects(id) on delete cascade,
+    label text not null,
+    detail text not null default '',
+    unique(slug, project)
+);
+
+create table if not exists blog_tag (
+    id integer primary key not null,
+    blog integer not null references blogs(id) on delete cascade,
+    tag integer not null references blog_tags(id) on delete cascade,
+    unique(blog, tag)
+);
