@@ -107,12 +107,12 @@ macro_rules! error_helper {
     ($name:ident, $status:ident, $subject:literal) => {
         #[doc = concat!("Helper function that wraps any error and generates a `", stringify!($status), "` response.")]
         #[allow(non_snake_case)]
-        pub fn $name(err: &str) -> AppErr {
-            log::error!("err {} - {}", stringify!($status), err);
+        pub fn $name(err: Option<&str>) -> AppErr {
+            log::error!("err {} - {:?}", stringify!($status), err);
             AppErr {
                 status: StatusCode::$status.as_u16(),
                 subject: $subject.to_string(),
-                content: Some(err.to_string())
+                content: err.map(|s| s.to_string())
             }
         }
     };
