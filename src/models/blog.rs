@@ -16,7 +16,7 @@ super::sql_enum! {
 pub struct BlogCategory {
     pub id: i64,
     pub slug: String,
-    pub project: Option<i64>,
+    pub project: i64,
     pub label: String,
     pub detail: String,
     pub count: i64,
@@ -26,7 +26,7 @@ pub struct BlogCategory {
 pub struct BlogTag {
     pub id: i64,
     pub slug: String,
-    pub project: Option<i64>,
+    pub project: i64,
     pub label: String,
     pub detail: String,
     pub count: i64,
