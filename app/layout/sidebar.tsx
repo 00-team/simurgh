@@ -1,6 +1,6 @@
 import { A } from '@solidjs/router'
 import { Editable } from 'comps'
-import { ArrowIcon, ProjectIcon, UserIcon } from 'icons'
+import { ArrowIcon, LogoutIcon, ProjectIcon, UserIcon } from 'icons'
 import { httpx } from 'shared'
 import { createEffect, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
@@ -19,6 +19,13 @@ export default () => {
                     </div>
                     <ArrowIcon />
                 </A>
+            </div>
+            <div class='logout title'>
+                <div class='holder'>
+                    <LogoutIcon size={30} />
+                    خروج
+                </div>
+                <ArrowIcon />
             </div>
         </div>
     )
