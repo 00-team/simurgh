@@ -55,6 +55,17 @@
                 background-color: var(--thirty-percent);
             }
 
+            &.add-block {
+                border-radius: 1rem;
+                background-color: var(--thirty-percent);
+
+                .add-cta {
+                    padding: 0.7em 2em;
+                    border-radius: 0.8rem;
+                    background-color: var(--ca);
+                }
+            }
+
             &.not-found {
                 position: absolute;
 
