@@ -143,4 +143,21 @@
             }
         }
     }
+    .logout {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--alert-error);
+        width: 100%;
+        padding: 1em;
+
+        margin-top: auto;
+
+        .holder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1em;
+        }
+    }
 }
