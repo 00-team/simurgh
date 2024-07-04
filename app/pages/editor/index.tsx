@@ -5,6 +5,7 @@ import {
     ChevronDownIcon,
     ChevronUpIcon,
     DrillIcon,
+    EraseIcon,
     EyeIcon,
     EyeOffIcon,
     PlusIcon,
@@ -118,7 +119,7 @@ export default () => {
                         }}
                     />
                     <Confact
-                        icon={DrillIcon}
+                        icon={EraseIcon}
                         color='var(--yellow)'
                         timer_ms={1000}
                         onAct={() => setStore({ data: [] })}
