@@ -266,27 +266,39 @@ const Record: Component<RecordProps> = P => {
                 </div>
             </div>
             <div class='usages'>
-                <h3 class='title'>استفاده ها</h3>
+                <h3 class='title_small'>استفاده ها</h3>
                 <div class='usages-wrapper'>
                     <div class='usage title_smaller'>لورم</div>
                     <div class='usage title_smaller'>لورم</div>
                     <div class='usage title_smaller'>لورم</div>
                     <div class='usage title_smaller'>لورم</div>
                 </div>
-                <div class='add-usage title_small'>
-                    <div class='toggle-btn'></div>
-                    <div class='input'>
-                        <input
-                            type='text'
-                            class='title_smaller'
-                            name=''
-                            id=''
-                        />
-                    </div>
-                    <div class='add-btn'>
-                        <ArrowLeftIcon />
-                    </div>
+                <AddUsage />
+            </div>
+        </div>
+    )
+}
+
+const AddUsage: Component = P => {
+    return (
+        <div class='add-usage title_small'>
+            <div class='toggle-btn'>
+                <div class='usage-holder title_smaller'>
+                    <div class='holder title_small'>آزاد</div>
+                    <div class='holder title_small blog'>بلاگ</div>
                 </div>
+            </div>
+            <div class='input'>
+                <input
+                    type='text'
+                    class='title_smaller'
+                    name=''
+                    id=''
+                    placeholder='مورد استفاده...'
+                />
+            </div>
+            <div class='add-btn'>
+                <ArrowLeftIcon />
             </div>
         </div>
     )
