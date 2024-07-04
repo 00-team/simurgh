@@ -202,6 +202,13 @@
 
                             min-width: 90px;
                             background-color: var(--ca);
+
+                            transition: 0.3s
+                                cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
+                            &:hover {
+                                background-color: var(--alert-error);
+                            }
                         }
                     }
 
