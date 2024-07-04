@@ -139,19 +139,19 @@ export default () => {
             <div class='pages'>
                 <button
                     class='icon'
-                    onClick={() => record_list(state.page - 1)}
-                    classList={{ disable: state.records.length < 31 }}
-                    disabled={state.page == 0}
-                >
-                    <ChevronLeftIcon size={30} />
-                </button>
-                <button
-                    class='icon'
                     classList={{ disable: state.records.length < 31 }}
                     onClick={() => record_list(state.page + 1)}
                     disabled={state.records.length < 31}
                 >
                     <ChevronRightIcon size={30} />
+                </button>
+                <button
+                    class='icon'
+                    onClick={() => record_list(state.page - 1)}
+                    classList={{ disable: state.records.length < 31 }}
+                    disabled={state.page == 0}
+                >
+                    <ChevronLeftIcon size={30} />
                 </button>
             </div>
         </div>
