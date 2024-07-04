@@ -464,6 +464,26 @@ export const ArrowIcon = P => (
     </svg>
 )
 
+export const LogoutIcon = P => (
+    <svg
+        stroke='currentColor'
+        fill='currentColor'
+        stroke-width='0'
+        viewBox='0 0 512 512'
+        height={P.size || 30}
+        width={P.size || 30}
+        xmlns='http://www.w3.org/2000/svg'
+    >
+        <path
+            fill='none'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            stroke-width='32'
+            d='M304 336v40a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V136a40 40 0 0 1 40-40h152c22.09 0 48 17.91 48 40v40m64 160 80-80-80-80m-192 80h256'
+        ></path>
+    </svg>
+)
+
 export const ArrowUpLeftIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
