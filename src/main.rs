@@ -33,6 +33,7 @@ async fn openapi() -> impl Responder {
     doc.merge(api::projects::ApiDoc::openapi());
     doc.merge(api::blogs::ApiDoc::openapi());
     doc.merge(api::blog_categories::ApiDoc::openapi());
+    doc.merge(api::blog_tags::ApiDoc::openapi());
     doc.merge(api::records::ApiDoc::openapi());
 
     // let mut admin_doc = ApiDoc::openapi();

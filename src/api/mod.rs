@@ -1,4 +1,5 @@
 pub mod blog_categories;
+pub mod blog_tags;
 pub mod blog_render;
 pub mod blogs;
 pub mod projects;
