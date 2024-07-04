@@ -345,26 +345,40 @@ const AddUsage: Component<AddUsageProps> = P => {
                         })
 
                     setstate({ usage: { kind: 'blog', id: 0 } })
-
-                    console.log(state.usage.kind)
                 }}
             >
                 <div
                     class='usage-holder title_smaller'
                     classList={{ active: state.usage.kind === 'blog' }}
                 >
-                    <div class='holder title_small'>آزاد</div>
-                    <div class='holder title_small blog'>بلاگ</div>
+                    <div class='holder '>آزاد</div>
+                    <div class='holder  blog'>بلاگ</div>
                 </div>
             </div>
             <div class='input'>
-                <input
-                    type='text'
-                    class='title_smaller'
-                    name=''
-                    id=''
-                    placeholder='مورد استفاده...'
-                />
+                {state.usage.kind === 'free' ? (
+                    <>
+                        <input
+                            type='text'
+                            class='title_smaller'
+                            name=''
+                            id=''
+                            placeholder='مورد استفاده...'
+                        />
+                    </>
+                ) : (
+                    <>
+                        <input
+                            type='number'
+                            class='title_smaller'
+                            name=''
+                            id=''
+                            inputMode={'numeric'}
+                            placeholder='شماره مقاله...'
+                            min={0}
+                        />
+                    </>
+                )}
             </div>
             <div class='add-btn'>
                 <ArrowLeftIcon />
