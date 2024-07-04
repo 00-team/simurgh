@@ -172,6 +172,26 @@ const Record: Component<RecordProps> = P => {
         input_name.focus()
     })
 
+    function record_update(
+        data: Partial<Pick<RecordModel, 'name' | 'usages'>>
+    ) {
+        httpx({
+            url: `/api/projects/${P.pid}/records/${P.r.id}/`,
+            method: 'PATCH',
+            json: { name: P.r.name, usages: P.r.usages, ...data },
+            onLoad(x) {
+                if (x.status != 200) return
+                P.update(x.response)
+            },
+        })
+    }
+
+    function remove_usage(idx: number) {
+        let usages = [...P.r.usages]
+        usages.splice(idx, 1)
+        record_update({ usages })
+    }
+
     function update_name(name: string) {
         setEditName(false)
         name = name.slice(0, 255)
@@ -268,10 +288,16 @@ const Record: Component<RecordProps> = P => {
             <div class='usages'>
                 <h3 class='title_small'>استفاده ها</h3>
                 <div class='usages-wrapper'>
-                    <div class='usage title_smaller'>لورم</div>
-                    <div class='usage title_smaller'>لورم</div>
-                    <div class='usage title_smaller'>لورم</div>
-                    <div class='usage title_smaller'>لورم</div>
+                    {P.r.usages.map((u, ui) => (
+                        <div
+                            class='usage title_smaller'
+                            onclick={() => remove_usage(ui)}
+                        >
+                            {u.kind === 'free'
+                                ? u.reason || 'خالی'
+                                : u.kind + ' ' + u.id}
+                        </div>
+                    ))}
                 </div>
                 <AddUsage record={P.r} update={r => P.update(r)} />
             </div>
