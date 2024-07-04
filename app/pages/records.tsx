@@ -335,7 +335,14 @@ const AddUsage: Component<AddUsageProps> = P => {
     }
 
     return (
-        <div class='add-usage title_small'>
+        <form
+            action={''}
+            onsubmit={e => {
+                e.preventDefault()
+                record_update()
+            }}
+            class='add-usage title_small'
+        >
             <div
                 class='toggle-btn'
                 onclick={() => {
@@ -364,6 +371,14 @@ const AddUsage: Component<AddUsageProps> = P => {
                             name=''
                             id=''
                             placeholder='مورد استفاده...'
+                            onInput={e => {
+                                setstate({
+                                    usage: {
+                                        kind: 'free',
+                                        reason: e.currentTarget.value,
+                                    },
+                                })
+                            }}
                         />
                     </>
                 ) : (
@@ -376,14 +391,26 @@ const AddUsage: Component<AddUsageProps> = P => {
                             inputMode={'numeric'}
                             placeholder='شماره مقاله...'
                             min={0}
+                            oninput={e => {
+                                setstate(
+                                    produce(s => {
+                                        if (s.usage.kind == 'blog') {
+                                            s.usage.id =
+                                                parseInt(
+                                                    e.currentTarget.value
+                                                ) || 1
+                                        }
+                                    })
+                                )
+                            }}
                         />
                     </>
                 )}
             </div>
-            <div class='add-btn'>
+            <button class='add-btn' type='submit'>
                 <ArrowLeftIcon />
-            </div>
-        </div>
+            </button>
+        </form>
     )
 }
 
