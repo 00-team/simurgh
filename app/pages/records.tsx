@@ -1,4 +1,4 @@
-import { RecordModel } from 'models'
+import { RecordModel, RecordUsages } from 'models'
 
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { addAlert, Confact, Editable } from 'comps'
@@ -273,17 +273,60 @@ const Record: Component<RecordProps> = P => {
                     <div class='usage title_smaller'>لورم</div>
                     <div class='usage title_smaller'>لورم</div>
                 </div>
-                <AddUsage />
+                <AddUsage record={P.r} update={r => P.update(r)} />
             </div>
         </div>
     )
 }
 
-const AddUsage: Component = P => {
+type AddUsageProps = {
+    record: RecordModel
+    update(record: RecordModel): void
+}
+const AddUsage: Component<AddUsageProps> = P => {
+    type State = {
+        usage: RecordUsages
+    }
+
+    const [state, setstate] = createStore<State>({
+        usage: { kind: 'free', reason: '' },
+    })
+
+    function record_update() {
+        let usages = [...P.record.usages, state.usage]
+        httpx({
+            url: `/api/projects/${P.record.project}/records/${P.record.id}/`,
+            method: 'PATCH',
+            json: {
+                name: P.record.name,
+                usages,
+            },
+            onLoad(x) {
+                if (x.status != 200) return
+                P.update(x.response)
+            },
+        })
+    }
+
     return (
         <div class='add-usage title_small'>
-            <div class='toggle-btn'>
-                <div class='usage-holder title_smaller'>
+            <div
+                class='toggle-btn'
+                onclick={() => {
+                    if (state.usage.kind === 'blog')
+                        return setstate({
+                            usage: { kind: 'free', reason: '' },
+                        })
+
+                    setstate({ usage: { kind: 'blog', id: 0 } })
+
+                    console.log(state.usage.kind)
+                }}
+            >
+                <div
+                    class='usage-holder title_smaller'
+                    classList={{ active: state.usage.kind === 'blog' }}
+                >
                     <div class='holder title_small'>آزاد</div>
                     <div class='holder title_small blog'>بلاگ</div>
                 </div>
