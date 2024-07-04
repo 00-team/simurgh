@@ -167,7 +167,7 @@ const EditorBlock: Component<EditorBlockProps> = P => {
         image: EditorImageBlock,
         empty: EditorEmptyBlock,
         break: () => (
-            <div class='block-break'>
+            <div class='block-break title_smaller'>
                 خط افقی
                 <hr />
             </div>
