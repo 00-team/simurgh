@@ -1,8 +1,11 @@
+import { useNavigate, useParams } from '@solidjs/router'
+import { Action, Confact } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronDownIcon,
     ChevronUpIcon,
     DrillIcon,
+    EraseIcon,
     EyeIcon,
     EyeOffIcon,
     PlusIcon,
@@ -10,18 +13,16 @@ import {
     SaveIcon,
     TrashIcon,
 } from 'icons'
-import './style/index.scss'
-import { useNavigate, useParams } from '@solidjs/router'
-import { Component, Show, createEffect } from 'solid-js'
-import { httpx } from 'shared'
-import { EditorEmptyBlock } from './empty'
-import { pre_save, setStore, store, unwrap_rec } from './store'
-import { produce } from 'solid-js/store'
-import { Action, Confact } from 'comps'
-import { EditorImageBlock } from './image'
 import { BlogData } from 'models'
-import { EditorTextBlock } from './text'
+import { httpx } from 'shared'
+import { Component, createEffect, Show } from 'solid-js'
+import { produce } from 'solid-js/store'
+import { EditorEmptyBlock } from './empty'
 import { EditorHeadingBlock } from './heading'
+import { EditorImageBlock } from './image'
+import { pre_save, setStore, store, unwrap_rec } from './store'
+import './style/index.scss'
+import { EditorTextBlock } from './text'
 
 export default () => {
     const nav = useNavigate()
@@ -118,7 +119,7 @@ export default () => {
                         }}
                     />
                     <Confact
-                        icon={DrillIcon}
+                        icon={EraseIcon}
                         color='var(--yellow)'
                         timer_ms={1000}
                         onAct={() => setStore({ data: [] })}
@@ -128,7 +129,20 @@ export default () => {
             <div class='editor-wrapper'>
                 <div class='editor'>
                     <Show when={store.data.length == 0}>
-                        <div class='message'>Add a Block</div>
+                        <div class='message add-block'>
+                            <button
+                                class='add-cta title'
+                                onClick={() =>
+                                    setStore(
+                                        produce(s => {
+                                            s.data.push({ kind: 'empty' })
+                                        })
+                                    )
+                                }
+                            >
+                                بلاک اضافه کنید
+                            </button>
+                        </div>
                     </Show>
                     {store.data.map((block, i, a) => (
                         <>
@@ -154,7 +168,7 @@ const EditorBlock: Component<EditorBlockProps> = P => {
         image: EditorImageBlock,
         empty: EditorEmptyBlock,
         break: () => (
-            <div class='block-break'>
+            <div class='block-break title_smaller'>
                 خط افقی
                 <hr />
             </div>

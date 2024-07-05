@@ -359,10 +359,6 @@ const Actions: Component<ActionsProps> = P => {
         )
     }
 
-    createEffect(() => {
-        console.log(P.group)
-    })
-
     return (
         <div class='text-actions'>
             <Show when={state.spliter}>

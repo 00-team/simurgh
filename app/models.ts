@@ -52,27 +52,41 @@ export const DEFAULT_STYLE: BlogStyle = {
     font_family: null,
 }
 
+export type BlogTextGroup = {
+    content: string[]
+    url: string | null
+    style: BlogStyle
+}
+
 export const DEFAULT_TEXT_GROUP: BlogTextGroup = {
     content: [],
     url: null,
     style: DEFAULT_STYLE,
 }
 
-export type BlogTextGroup = {
-    content: string[]
-    style: BlogStyle
-    url: string | null
+export type BlogDirection = 'ltr' | 'rtl'
+export const BLOG_DIRECTION: {
+    [k in BlogDirection]: [BlogDirection, () => JSX.Element, string]
+} = {
+    ltr: ['rtl', LeftToRightIcon, 'چپ به راست'],
+    rtl: ['ltr', RightToLeftIcon, 'راست به چپ'],
 }
 
-export type BlogDirection = 'ltr' | 'rtl'
 export type BlogAlign = 'left' | 'center' | 'right'
-
 export const BLOG_ALIGN: {
     [k in BlogAlign]: [BlogAlign, () => JSX.Element, string]
 } = {
-    left: ['center', AlignLeftIcon, 'چپ چین'],
-    center: ['right', AlignCenterIcon, 'وسط چین'],
-    right: ['left', AlignRightIcon, 'راست چین'],
+    left: ['center', AlignLeftIcon, 'چپ'],
+    center: ['right', AlignCenterIcon, 'وسط'],
+    right: ['left', AlignRightIcon, 'راست'],
+}
+
+export type BlogHeading = {
+    kind: 'heading'
+    level: number
+    content: string
+    dir: BlogDirection
+    align: BlogAlign
 }
 
 export type BlogText = {
@@ -84,22 +98,14 @@ export type BlogText = {
 
 export type BlogImage = {
     kind: 'image'
-    record_id: number
-    record_salt: string
+    record_id: number | null
+    url: string
+    align: BlogAlign
+    alt: string
 }
 
 export type BlogBreak = { kind: 'break' }
-export type BlogEmpty = {
-    kind: 'empty'
-}
-
-export type BlogHeading = {
-    kind: 'heading'
-    level: number
-    content: string
-    dir: BlogDirection
-    align: BlogAlign
-}
+export type BlogEmpty = { kind: 'empty' }
 
 export type BlogData =
     | BlogText
@@ -110,6 +116,7 @@ export type BlogData =
 
 export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     empty: { kind: 'empty' },
+    break: { kind: 'break' },
     heading: {
         kind: 'heading',
         level: 1,
@@ -126,7 +133,9 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     image: {
         kind: 'image',
         record_id: 0,
-        record_salt: '',
+        url: '',
+        align: 'left',
+        alt: '',
     },
 } as const
 
@@ -145,14 +154,6 @@ export type BlogModel = {
     thumbnail: string | null
     read_time: number
 }
-
-export const BLOG_DIRECTION: {
-    [k in BlogDirection]: [BlogDirection, () => JSX.Element, string]
-} = {
-    ltr: ['rtl', LeftToRightIcon, 'چپ به راست'],
-    rtl: ['ltr', RightToLeftIcon, 'راست به چپ'],
-}
-
 export const DEFAULT_BLOG: BlogModel = {
     id: 0,
     slug: '',
@@ -172,7 +173,6 @@ export const DEFAULT_BLOG: BlogModel = {
 export type RecordUsages =
     | { kind: 'free'; reason: string }
     | { kind: 'blog'; id: number }
-
 export const DEFAULT_RECORD_USAGES: { [T in RecordUsages as T['kind']]: T } = {
     free: { kind: 'free', reason: '' },
     blog: { kind: 'blog', id: 1 },

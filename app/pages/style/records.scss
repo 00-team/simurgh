@@ -65,7 +65,7 @@
             justify-content: space-evenly;
 
             .record {
-                width: clamp(0px, 100%, 350px);
+                width: clamp(0px, 100%, 400px);
                 display: flex;
                 align-items: center;
                 flex-direction: column;
@@ -183,7 +183,7 @@
                     margin-top: 1em;
 
                     .usages-wrapper {
-                        margin-top: 1rem;
+                        margin-block: 1rem;
 
                         width: 100%;
                         display: flex;
@@ -196,12 +196,19 @@
                             display: flex;
                             align-items: center;
                             justify-content: center;
-                            padding: 5px;
+                            padding: 5px 10px;
 
                             border-radius: 2rem;
 
                             min-width: 90px;
                             background-color: var(--ca);
+
+                            transition: 0.3s
+                                cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
+                            &:hover {
+                                background-color: var(--alert-error);
+                            }
                         }
                     }
 
@@ -212,6 +219,68 @@
                         justify-content: space-between;
 
                         gap: 0.5em;
+
+                        margin-top: 1em;
+
+                        .toggle-btn {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 0.5em;
+
+                            border: 1px solid var(--ca);
+                            padding: 0.3em 0.8em;
+                            border-radius: 8px;
+
+                            transition: 0.3s ease;
+
+                            &:hover {
+                                background-color: var(--ca);
+                            }
+
+                            .usage-holder {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                position: relative;
+                                isolation: isolate;
+
+                                min-width: 60px;
+
+                                overflow: hidden;
+
+                                .holder {
+                                    transition: 0.3s
+                                        cubic-bezier(0.45, 0.02, 0.09, 0.98);
+                                    &.blog {
+                                        position: absolute;
+                                        inset: 0;
+                                        width: 100%;
+                                        height: 100%;
+
+                                        text-align: center;
+
+                                        transform: translateY(200%);
+                                    }
+                                }
+
+                                &.active {
+                                    .holder {
+                                        transform: translateY(-200%);
+
+                                        &.blog {
+                                            transform: translateY(0);
+                                        }
+                                    }
+                                }
+                            }
+
+                            .icon {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                        }
 
                         .input {
                             flex: 1 0 0;

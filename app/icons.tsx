@@ -398,6 +398,41 @@ export const PlusIcon = () => (
     </svg>
 )
 
+export const EraseIcon = () => (
+    <svg
+        stroke='currentColor'
+        fill='currentColor'
+        stroke-width='0'
+        viewBox='0 0 24 24'
+        height='25'
+        width='25'
+        xmlns='http://www.w3.org/2000/svg'
+    >
+        <path d='M12.48 3 7.73 7.75 3 12.59a2 2 0 0 0 0 2.82l4.3 4.3A1 1 0 0 0 8 20h12v-2h-7l7.22-7.22a2 2 0 0 0 0-2.83L15.31 3a2 2 0 0 0-2.83 0zM8.41 18l-4-4 4.75-4.84.74-.75 4.95 4.95-4.56 4.56-.07.08z'></path>
+    </svg>
+)
+
+export const ToggleIcon = P => (
+    <svg
+        stroke='currentColor'
+        fill='none'
+        stroke-width='0'
+        viewBox='0 0 24 24'
+        height={P.size || 25}
+        width={P.size || 25}
+        xmlns='http://www.w3.org/2000/svg'
+    >
+        <path
+            d='M4.99255 12.9841C4.44027 12.9841 3.99255 13.4318 3.99255 13.9841C3.99255 14.3415 4.18004 14.6551 4.46202 14.8319L7.14964 17.5195C7.54016 17.9101 8.17333 17.9101 8.56385 17.5195C8.95438 17.129 8.95438 16.4958 8.56385 16.1053L7.44263 14.9841H14.9926C15.5448 14.9841 15.9926 14.5364 15.9926 13.9841C15.9926 13.4318 15.5448 12.9841 14.9926 12.9841L5.042 12.9841C5.03288 12.984 5.02376 12.984 5.01464 12.9841H4.99255Z'
+            fill='currentColor'
+        ></path>
+        <path
+            d='M19.0074 11.0159C19.5597 11.0159 20.0074 10.5682 20.0074 10.0159C20.0074 9.6585 19.82 9.3449 19.538 9.16807L16.8504 6.48045C16.4598 6.08993 15.8267 6.08993 15.4361 6.48045C15.0456 6.87098 15.0456 7.50414 15.4361 7.89467L16.5574 9.01589L9.00745 9.01589C8.45516 9.01589 8.00745 9.46361 8.00745 10.0159C8.00745 10.5682 8.45516 11.0159 9.00745 11.0159L18.958 11.0159C18.9671 11.016 18.9762 11.016 18.9854 11.0159H19.0074Z'
+            fill='currentColor'
+        ></path>
+    </svg>
+)
+
 export const ArrowLeftIcon = P => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -426,6 +461,26 @@ export const ArrowIcon = P => (
         xmlns='http://www.w3.org/2000/svg'
     >
         <path d='M217.9 256L345 129c9.4-9.4 9.4-24.6 0-33.9-9.4-9.4-24.6-9.3-34 0L167 239c-9.1 9.1-9.3 23.7-.7 33.1L310.9 417c4.7 4.7 10.9 7 17 7s12.3-2.3 17-7c9.4-9.4 9.4-24.6 0-33.9L217.9 256z'></path>
+    </svg>
+)
+
+export const LogoutIcon = P => (
+    <svg
+        stroke='currentColor'
+        fill='currentColor'
+        stroke-width='0'
+        viewBox='0 0 512 512'
+        height={P.size || 30}
+        width={P.size || 30}
+        xmlns='http://www.w3.org/2000/svg'
+    >
+        <path
+            fill='none'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            stroke-width='32'
+            d='M304 336v40a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V136a40 40 0 0 1 40-40h152c22.09 0 48 17.91 48 40v40m64 160 80-80-80-80m-192 80h256'
+        ></path>
     </svg>
 )
 

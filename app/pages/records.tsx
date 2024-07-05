@@ -1,4 +1,4 @@
-import { RecordModel } from 'models'
+import { RecordModel, RecordUsages } from 'models'
 
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { addAlert, Confact, Editable } from 'comps'
@@ -139,19 +139,19 @@ export default () => {
             <div class='pages'>
                 <button
                     class='icon'
-                    onClick={() => record_list(state.page - 1)}
-                    classList={{ disable: state.records.length < 31 }}
-                    disabled={state.page == 0}
-                >
-                    <ChevronLeftIcon size={30} />
-                </button>
-                <button
-                    class='icon'
                     classList={{ disable: state.records.length < 31 }}
                     onClick={() => record_list(state.page + 1)}
                     disabled={state.records.length < 31}
                 >
                     <ChevronRightIcon size={30} />
+                </button>
+                <button
+                    class='icon'
+                    onClick={() => record_list(state.page - 1)}
+                    classList={{ disable: state.records.length < 31 }}
+                    disabled={state.page == 0}
+                >
+                    <ChevronLeftIcon size={30} />
                 </button>
             </div>
         </div>
@@ -171,6 +171,26 @@ const Record: Component<RecordProps> = P => {
         if (!edit_name()) return
         input_name.focus()
     })
+
+    function record_update(
+        data: Partial<Pick<RecordModel, 'name' | 'usages'>>
+    ) {
+        httpx({
+            url: `/api/projects/${P.pid}/records/${P.r.id}/`,
+            method: 'PATCH',
+            json: { name: P.r.name, usages: P.r.usages, ...data },
+            onLoad(x) {
+                if (x.status != 200) return
+                P.update(x.response)
+            },
+        })
+    }
+
+    function remove_usage(idx: number) {
+        let usages = [...P.r.usages]
+        usages.splice(idx, 1)
+        record_update({ usages })
+    }
 
     function update_name(name: string) {
         setEditName(false)
@@ -266,29 +286,131 @@ const Record: Component<RecordProps> = P => {
                 </div>
             </div>
             <div class='usages'>
-                <h3 class='title'>استفاده ها</h3>
+                <h3 class='title_small'>استفاده ها</h3>
                 <div class='usages-wrapper'>
-                    <div class='usage title_smaller'>لورم</div>
-                    <div class='usage title_smaller'>لورم</div>
-                    <div class='usage title_smaller'>لورم</div>
-                    <div class='usage title_smaller'>لورم</div>
+                    {P.r.usages.map((u, ui) => (
+                        <div
+                            class='usage title_smaller'
+                            onclick={() => remove_usage(ui)}
+                        >
+                            {u.kind === 'free'
+                                ? u.reason || 'خالی'
+                                : u.kind + ' ' + u.id}
+                        </div>
+                    ))}
                 </div>
-                <div class='add-usage title_small'>
-                    <div class='toggle-btn'></div>
-                    <div class='input'>
+                <AddUsage record={P.r} update={r => P.update(r)} />
+            </div>
+        </div>
+    )
+}
+
+type AddUsageProps = {
+    record: RecordModel
+    update(record: RecordModel): void
+}
+const AddUsage: Component<AddUsageProps> = P => {
+    type State = {
+        usage: RecordUsages
+    }
+
+    const [state, setstate] = createStore<State>({
+        usage: { kind: 'free', reason: '' },
+    })
+
+    function record_update() {
+        let usages = [...P.record.usages, state.usage]
+        httpx({
+            url: `/api/projects/${P.record.project}/records/${P.record.id}/`,
+            method: 'PATCH',
+            json: {
+                name: P.record.name,
+                usages,
+            },
+            onLoad(x) {
+                if (x.status != 200) return
+                P.update(x.response)
+            },
+        })
+    }
+
+    return (
+        <form
+            action={''}
+            onsubmit={e => {
+                e.preventDefault()
+                record_update()
+            }}
+            class='add-usage title_small'
+        >
+            <div
+                class='toggle-btn'
+                onclick={() => {
+                    if (state.usage.kind === 'blog')
+                        return setstate({
+                            usage: { kind: 'free', reason: '' },
+                        })
+
+                    setstate({ usage: { kind: 'blog', id: 0 } })
+                }}
+            >
+                <div
+                    class='usage-holder title_smaller'
+                    classList={{ active: state.usage.kind === 'blog' }}
+                >
+                    <div class='holder '>آزاد</div>
+                    <div class='holder  blog'>بلاگ</div>
+                </div>
+            </div>
+            <div class='input'>
+                {state.usage.kind === 'free' ? (
+                    <>
                         <input
                             type='text'
                             class='title_smaller'
                             name=''
                             id=''
+                            placeholder='مورد استفاده...'
+                            onInput={e => {
+                                setstate({
+                                    usage: {
+                                        kind: 'free',
+                                        reason: e.currentTarget.value,
+                                    },
+                                })
+                            }}
                         />
-                    </div>
-                    <div class='add-btn'>
-                        <ArrowLeftIcon />
-                    </div>
-                </div>
+                    </>
+                ) : (
+                    <>
+                        <input
+                            type='number'
+                            class='title_smaller'
+                            name=''
+                            id=''
+                            inputMode={'numeric'}
+                            placeholder='شماره مقاله...'
+                            min={0}
+                            oninput={e => {
+                                setstate(
+                                    produce(s => {
+                                        if (s.usage.kind == 'blog') {
+                                            s.usage.id =
+                                                parseInt(
+                                                    e.currentTarget.value
+                                                ) || 1
+                                        }
+                                    })
+                                )
+                            }}
+                        />
+                    </>
+                )}
             </div>
-        </div>
+            <button class='add-btn' type='submit'>
+                <ArrowLeftIcon />
+            </button>
+        </form>
     )
 }
 

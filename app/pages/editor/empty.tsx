@@ -22,6 +22,7 @@ export const EditorEmptyBlock: Component<Props> = P => {
         image: 'عکس',
         text: 'متن',
         heading: 'عنوان',
+        break: 'خط افقی',
     }
 
     return (

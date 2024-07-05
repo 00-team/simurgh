@@ -126,8 +126,8 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     },
     text: {
         kind: 'text',
-        dir: 'ltr',
-        align: 'left',
+        dir: 'rtl',
+        align: 'right',
         groups: [],
     },
     image: {

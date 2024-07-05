@@ -1,6 +1,6 @@
 # Simurgh
 
-in house content management service for 00 Team
+In house content management service for 00 Team.
 
 ## Todos
 
