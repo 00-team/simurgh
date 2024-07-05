@@ -4,7 +4,7 @@ use actix_web::{
     dev::Payload,
     http::header::{self, AUTHORIZATION},
     web::Data,
-    FromRequest, HttpRequest,
+    FromRequest, HttpMessage, HttpRequest,
 };
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
@@ -14,7 +14,9 @@ use crate::{utils::CutOff, AppState};
 
 use super::{AppErr, AppErrForbidden};
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
+#[derive(
+    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
+)]
 pub struct User {
     pub id: i64,
     pub email: String,
@@ -111,13 +113,18 @@ impl FromRequest for User {
     type Error = AppErr;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
-    fn from_request(req: &HttpRequest, _pl: &mut Payload) -> Self::Future {
-        let state = req.app_data::<Data<AppState>>().unwrap();
-        let pool = state.sql.clone();
-        let token = extract_token(req);
-        // let token = BearerAuth::from_request(req, pl);
-
+    fn from_request(rq: &HttpRequest, _pl: &mut Payload) -> Self::Future {
+        let rq = rq.clone();
         Box::pin(async move {
+            let mut ext = rq.extensions_mut();
+            let user = ext.get::<User>();
+            if let Some(u) = user {
+                return Ok(u.clone());
+            }
+
+            log::info!("looking for user...");
+            let pool = &rq.app_data::<Data<AppState>>().unwrap().sql;
+            let token = extract_token(&rq);
             if token.is_none() {
                 return Err(AppErrForbidden(Some("token was not found")));
             }
@@ -134,7 +141,7 @@ impl FromRequest for User {
                 "select * from users where id = ? and token = ?",
                 id, token
             }
-            .fetch_one(&pool)
+            .fetch_one(pool)
             .await?;
 
             if user.banned {
@@ -142,6 +149,8 @@ impl FromRequest for User {
             }
 
             user.token.cut_off(32);
+
+            ext.insert(user.clone());
             Ok(user)
         })
     }
