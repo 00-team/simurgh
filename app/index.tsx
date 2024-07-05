@@ -1,5 +1,5 @@
 import { Navigate, Route, Router, RouteSectionProps } from '@solidjs/router'
-import { Component, lazy } from 'solid-js'
+import { Component, createEffect, lazy } from 'solid-js'
 import { render, Show } from 'solid-js/web'
 
 import { Alert } from 'comps'
