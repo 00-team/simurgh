@@ -7,7 +7,7 @@ use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::blog::BlogCategory;
 use crate::models::project::Project;
-use crate::models::{AppErr, AppErrBadRequest, ListInput, Response};
+use crate::models::{AppErr, ListInput, Response};
 use crate::utils::CutOff;
 use crate::{utils, AppState};
 
@@ -129,9 +129,7 @@ async fn category_update(
 ) -> Response<BlogCategory> {
     let mut category = category;
 
-    if body.slug.len() < 3 {
-        return Err(AppErrBadRequest(Some("حداقل طول نشانه 3 حرف است")));
-    }
+    utils::verify_slug(&body.slug)?;
 
     category.slug = body.slug.clone();
     category.slug.cut_off(255);

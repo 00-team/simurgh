@@ -13,6 +13,18 @@ use serde::Serialize;
 use std::io::{self, Read, Write};
 use std::path::Path;
 
+pub fn verify_slug(slug: &str) -> Result<(), AppErr> {
+    if slug.len() < 3 {
+        return Err(AppErrBadRequest(Some("حداقل طول نشانه 3 کاراکتر است")));
+    }
+
+    if !slug.chars().all(|c| Config::SLUG_ABC.contains(&(c as u8))) {
+        return Err(AppErrBadRequest(Some("نشانه شامل کاراکترهای نامعتبر است")));
+    }
+
+    Ok(())
+}
+
 pub fn now() -> i64 {
     chrono::Local::now().timestamp()
 }

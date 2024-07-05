@@ -7,7 +7,7 @@ use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::blog::BlogTag;
 use crate::models::project::Project;
-use crate::models::{AppErr, AppErrBadRequest, ListInput, Response};
+use crate::models::{AppErr, ListInput, Response};
 use crate::utils::CutOff;
 use crate::{utils, AppState};
 
@@ -116,9 +116,7 @@ async fn tag_update(
 ) -> Response<BlogTag> {
     let mut tag = tag;
 
-    if body.slug.len() < 3 {
-        return Err(AppErrBadRequest(Some("حداقل طول نشانه 3 حرف است")));
-    }
+    utils::verify_slug(&body.slug)?;
 
     tag.slug = body.slug.clone();
     tag.slug.cut_off(255);
