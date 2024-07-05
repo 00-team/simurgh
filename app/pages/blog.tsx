@@ -400,7 +400,7 @@ export default () => {
                             }
                         >
                             <input
-                                class='styled'
+                                class='styled title_small'
                                 type='number'
                                 inputMode='numeric'
                                 value={state.edit.read_time}
