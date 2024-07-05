@@ -1,7 +1,7 @@
 .editor-fnd .editor .block-text {
     width: 100%;
     display: flex;
-    gap: 0.5rem;
+    gap: 2.5rem;
     align-items: center;
     justify-content: center;
     flex-direction: column;
@@ -27,6 +27,9 @@
         user-select: none;
         pointer-events: none;
         position: absolute;
+
+        width: 100%;
+        text-align: center;
     }
 
     .text-content {
