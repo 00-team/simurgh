@@ -96,6 +96,8 @@
             border: 2px solid var(--ca);
             border-radius: 0.5rem;
 
+            min-height: 200px;
+
             background-color: var(--thirty-percent);
 
             &.active {
