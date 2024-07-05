@@ -5,8 +5,10 @@ use std::{
 };
 
 use actix_web::{
-    body::BoxBody, error::PayloadError, http::StatusCode, HttpResponse,
-    ResponseError,
+    body::BoxBody,
+    error::PayloadError,
+    http::{header::ToStrError, StatusCode},
+    HttpResponse, ResponseError,
 };
 use awc::error::{JsonPayloadError, SendRequestError};
 use serde::Serialize;
@@ -102,6 +104,7 @@ impl_from_err!(SendRequestError);
 impl_from_err!(FromUtf8Error);
 impl_from_err!(serde_json::Error);
 impl_from_err!(tempfile::PersistError);
+impl_from_err!(ToStrError);
 
 macro_rules! error_helper {
     ($name:ident, $status:ident, $subject:literal) => {

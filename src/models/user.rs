@@ -113,16 +113,13 @@ impl FromRequest for User {
     type Error = AppErr;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
-    fn from_request(rq: &HttpRequest, _pl: &mut Payload) -> Self::Future {
+    fn from_request(rq: &HttpRequest, _: &mut Payload) -> Self::Future {
         let rq = rq.clone();
         Box::pin(async move {
-            let mut ext = rq.extensions_mut();
-            let user = ext.get::<User>();
-            if let Some(u) = user {
-                return Ok(u.clone());
+            if let Some(user) = rq.extensions().get::<User>() {
+                return Ok(user.clone());
             }
 
-            log::info!("looking for user...");
             let pool = &rq.app_data::<Data<AppState>>().unwrap().sql;
             let token = extract_token(&rq);
             if token.is_none() {
@@ -150,6 +147,7 @@ impl FromRequest for User {
 
             user.token.cut_off(32);
 
+            let mut ext = rq.extensions_mut();
             ext.insert(user.clone());
             Ok(user)
         })

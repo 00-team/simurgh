@@ -11,7 +11,9 @@ super::sql_enum! {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
+#[derive(
+    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
+)]
 pub struct BlogCategory {
     pub id: i64,
     pub slug: String,
@@ -21,7 +23,9 @@ pub struct BlogCategory {
     pub count: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
+#[derive(
+    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
+)]
 pub struct BlogTag {
     pub id: i64,
     pub slug: String,
@@ -138,7 +142,9 @@ pub enum BlogData {
     Empty,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
+#[derive(
+    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
+)]
 pub struct Blog {
     pub id: i64,
     pub slug: String,

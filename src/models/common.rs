@@ -17,7 +17,7 @@ pub struct ListInput {
     pub page: u32,
 }
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Clone)]
 pub struct JsonStr<T>(pub T);
 
 // impl<T> JsonStr<T> {
@@ -109,80 +109,40 @@ macro_rules! sql_enum {
     };
 }
 
-macro_rules! from_request {
-    ($name:ident, $table:literal) => {
-        impl actix_web::FromRequest for $name {
-            type Error = crate::models::AppErr;
-            type Future = std::pin::Pin<
-                Box<
-                    dyn std::future::Future<Output = Result<Self, Self::Error>>,
-                >,
-            >;
-
-            fn from_request(
-                req: &actix_web::HttpRequest, _: &mut actix_web::dev::Payload,
-            ) -> Self::Future {
-                let path = actix_web::web::Path::<(i64,)>::extract(req);
-                let state = req
-                    .app_data::<actix_web::web::Data<crate::AppState>>()
-                    .unwrap();
-                let pool = state.sql.clone();
-
-                Box::pin(async move {
-                    let path = path.await?;
-                    let result = sqlx::query_as! {
-                        $name,
-                        "select * from " + $table + " where id = ?",
-                        path.0
-                    }
-                    .fetch_one(&pool)
-                    .await?;
-
-                    Ok(result)
-                })
-            }
-        }
-    };
-}
-
 macro_rules! from_request_under_project {
     ($name:ident, $table:literal) => {
-        impl actix_web::FromRequest for $name {
-            type Error = crate::models::AppErr;
-            type Future = std::pin::Pin<
-                Box<
-                    dyn std::future::Future<Output = Result<Self, Self::Error>>,
-                >,
-            >;
+impl actix_web::FromRequest for $name {
+    type Error = crate::models::AppErr;
+    type Future = std::pin::Pin<Box<dyn std::future::Future<Output = Result<Self, Self::Error>>>>;
 
-            fn from_request(
-                rq: &actix_web::HttpRequest, pl: &mut actix_web::dev::Payload,
-            ) -> Self::Future {
-                let project = super::project::Project::from_request(rq, pl);
-                let path = actix_web::web::Path::<(i64, i64)>::extract(rq);
-                let state = rq
-                    .app_data::<actix_web::web::Data<crate::AppState>>()
-                    .unwrap();
-                let pool = state.sql.clone();
-
-                Box::pin(async move {
-                    let path = path.await?;
-                    let project = project.await?;
-                    let result = sqlx::query_as! {
-                        $name,
-                        "select * from " + $table + " where id = ? AND project = ?",
-                        path.1, project.id
-                    }
-                    .fetch_one(&pool)
-                    .await?;
-
-                    Ok(result)
-                })
+    fn from_request(rq: &actix_web::HttpRequest, _: &mut actix_web::dev::Payload) -> Self::Future {
+        let rq = rq.clone();
+        Box::pin(async move {
+            if let Some(result) = actix_web::HttpMessage::extensions(&rq).get::<$name>() {
+                return Ok(result.clone());
             }
-        }
+
+            let path = actix_web::web::Path::<(i64, i64)>::extract(&rq).await?;
+            let project = super::project::Project::extract(&rq).await?;
+            let pool = &rq.app_data::<actix_web::web::Data<crate::AppState>>().unwrap().sql;
+
+            let result = sqlx::query_as! {
+                $name,
+                "select * from " + $table + " where id = ? AND project = ?",
+                path.1, project.id
+            }
+            .fetch_one(pool)
+            .await?;
+
+            let mut ext = actix_web::HttpMessage::extensions_mut(&rq);
+            ext.insert(result.clone());
+
+            Ok(result)
+        })
+    }
+}
     };
 }
 
-pub(crate) use from_request;
 pub(crate) use from_request_under_project;
 pub(crate) use sql_enum;

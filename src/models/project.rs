@@ -1,11 +1,16 @@
-use actix_web::{dev::Payload, web::Data, HttpRequest};
+use actix_web::{
+    dev::Payload, http::header::AUTHORIZATION, web::Data, HttpMessage,
+    HttpRequest,
+};
 use serde::{Deserialize, Serialize};
 use std::{future::Future, pin::Pin};
 use utoipa::ToSchema;
 
-use super::AppErrNotFound;
+use super::{AppErrForbidden, AppErrNotFound};
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default)]
+#[derive(
+    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
+)]
 pub struct Project {
     pub id: i64,
     pub user: Option<i64>,
@@ -20,32 +25,60 @@ pub struct Project {
     pub api_key: Option<String>,
 }
 
+#[derive(Debug)]
+struct ApiKey(String);
+
+impl actix_web::FromRequest for ApiKey {
+    type Error = crate::models::AppErr;
+    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+
+    fn from_request(rq: &HttpRequest, _: &mut Payload) -> Self::Future {
+        let rq = rq.clone();
+        Box::pin(async move {
+            let auth = rq.headers().get(AUTHORIZATION);
+            let auth = auth.ok_or(AppErrForbidden(None))?;
+            Ok(ApiKey(auth.to_str()?.to_string()))
+        })
+    }
+}
+
 impl actix_web::FromRequest for Project {
     type Error = crate::models::AppErr;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
-    fn from_request(rq: &HttpRequest, pl: &mut Payload) -> Self::Future {
-        let user = super::user::User::from_request(rq, pl);
-        let path = actix_web::web::Path::<(i64,)>::extract(rq);
-        let state = rq.app_data::<Data<crate::AppState>>().unwrap();
-        let pool = state.sql.clone();
-
+    fn from_request(rq: &HttpRequest, _: &mut Payload) -> Self::Future {
+        let rq = rq.clone();
         Box::pin(async move {
-            let user = user.await?;
-            let path = path.await?;
+            if let Some(project) = rq.extensions().get::<Project>() {
+                return Ok(project.clone());
+            }
+
+            let pool = &rq.app_data::<Data<crate::AppState>>().unwrap().sql;
+            let path = actix_web::web::Path::<(i64,)>::extract(&rq).await?;
             let project = sqlx::query_as! {
                 Project,
                 "select * from projects where id = ?",
                 path.0
             }
-            .fetch_one(&pool)
+            .fetch_one(pool)
             .await?;
 
-            if project.user == Some(user.id) || user.admin {
-                Ok(project)
+            if let Ok(user) = super::user::User::extract(&rq).await {
+                if !user.admin && project.user != Some(user.id) {
+                    return Err(AppErrNotFound(None));
+                }
+            } else if let Ok(api_key) = ApiKey::extract(&rq).await {
+                if project.api_key != Some(api_key.0) {
+                    return Err(AppErrNotFound(None));
+                }
             } else {
-                Err(AppErrNotFound(None))
+                return Err(AppErrNotFound(None));
             }
+
+            let mut ext = rq.extensions_mut();
+            ext.insert(project.clone());
+
+            Ok(project)
         })
     }
 }

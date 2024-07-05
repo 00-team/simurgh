@@ -19,7 +19,9 @@ pub fn verify_slug(slug: &str) -> Result<(), AppErr> {
     }
 
     if !slug.chars().all(|c| Config::SLUG_ABC.contains(&(c as u8))) {
-        return Err(AppErrBadRequest(Some("نشانه شامل کاراکترهای نامعتبر است")));
+        return Err(AppErrBadRequest(Some(
+            "نشانه شامل کاراکترهای نامعتبر است",
+        )));
     }
 
     Ok(())
