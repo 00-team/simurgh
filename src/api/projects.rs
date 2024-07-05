@@ -1,15 +1,17 @@
 use actix_web::web::{Data, Json, Query};
 use actix_web::{delete, get, patch, post, HttpResponse, Scope};
+use rand::Rng;
 use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
+use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::blog::Blog;
 use crate::models::project::Project;
 use crate::models::record::Record;
 use crate::models::user::User;
 use crate::models::{AppErr, AppErrForbidden, ListInput, Response};
-use crate::utils;
+use crate::utils::{self, CutOff};
 use crate::AppState;
 
 #[derive(OpenApi)]
@@ -44,10 +46,14 @@ async fn projects_add(
         return Err(AppErrForbidden(Some("you are not a Client")));
     }
 
+    let api_key = utils::get_random_string(
+        Config::TOKEN_ABC,
+        rand::thread_rng().gen_range(42..69),
+    );
     let now = utils::now();
     sqlx::query! {
-        "insert into projects(user, name, created_at) values(?, ?, ?)",
-        user.id, body.name, now
+        "insert into projects(user, name, created_at, api_key) values(?,?,?,?)",
+        user.id, body.name, now, api_key
     }
     .execute(&state.sql)
     .await?;
@@ -55,6 +61,8 @@ async fn projects_add(
     Ok(Json(Project {
         user: Some(user.id),
         name: body.name.clone(),
+        created_at: now,
+        api_key: Some(api_key),
         ..Default::default()
     }))
 }
@@ -95,6 +103,7 @@ async fn projects_get(project: Project) -> Response<Project> {
 #[derive(Deserialize, ToSchema)]
 struct ProjectUpdateBody {
     name: String,
+    api_key: Option<bool>,
 }
 
 #[utoipa::path(
@@ -109,16 +118,28 @@ async fn projects_update(
     project: Project, body: Json<ProjectUpdateBody>, state: Data<AppState>,
 ) -> Response<Project> {
     let mut project = project;
-    let now = utils::now();
+
+    project.name.clone_from(&body.name);
+    project.name.cut_off(255);
+    project.updated_at = utils::now();
+
+    if let Some(ak) = body.api_key {
+        if ak {
+            project.api_key = Some(utils::get_random_string(
+                Config::TOKEN_ABC,
+                rand::thread_rng().gen_range(42..69),
+            ));
+        } else {
+            project.api_key = None;
+        }
+    }
+
     sqlx::query! {
-        "update projects set name = ?, updated_at = ? where id = ?",
-        body.name, now, project.id,
+        "update projects set name = ?, updated_at = ?, api_key = ? where id = ?",
+        project.name, project.updated_at, project.api_key, project.id,
     }
     .execute(&state.sql)
     .await?;
-
-    project.name.clone_from(&body.name);
-    project.updated_at = now;
 
     Ok(Json(project))
 }
