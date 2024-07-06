@@ -102,7 +102,7 @@ const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
             onMouseEnter={pbf_pause}
             onMouseLeave={pbf_play}
         >
-            <div class='head'>
+            <div class='head title'>
                 {ALERT_ICON[P.a.type]()}
                 <span>{P.a.subject}</span>
                 <div />
@@ -111,7 +111,7 @@ const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
                 </button>
             </div>
             <Show when={P.a.content}>
-                <div class='body'>
+                <div class='body title_smaller'>
                     <p>
                         {P.a.content.split('\n').map(line => (
                             <>
