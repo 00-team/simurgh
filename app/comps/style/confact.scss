@@ -2,18 +2,25 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid var(--color);
-    isolation: isolate;
-    position: relative;
-    overflow: hidden;
-    background-color: var(--cd);
-    cursor: pointer;
-    padding: 0.25rem;
-    transition: 220ms ease-in-out;
-    transition-property: border-color, background-color, color;
+
     width: 32px;
     height: 32px;
+
+    border: 2px solid var(--ten-percent);
+    background-color: var(--thirty-percent);
     border-radius: var(--radius);
+
+    padding: 0.25rem;
+
+    cursor: pointer;
+
+    isolation: isolate;
+    position: relative;
+
+    transition: 220ms ease-in-out;
+    transition-property: border-color, background-color, color;
+
+    overflow: hidden;
 
     &:disabled {
         pointer-events: none;
