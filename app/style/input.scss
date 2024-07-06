@@ -1,13 +1,15 @@
 input.styled {
-    background-color: var(--cd);
+    background-color: var(--primary-color);
     border: none;
     border-bottom: 2px solid var(--cg);
     border-radius: var(--radius);
     padding: 0.25rem;
-    color: var(--cl);
+    color: var(--accent-color);
+
+    transition: border-color 0.3s;
 
     &:focus {
-        border-color: var(--ca);
+        border-color: var(--ten-percent);
         outline: 0;
     }
 }
