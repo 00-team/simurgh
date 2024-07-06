@@ -50,11 +50,17 @@ body {
     scroll-behavior: smooth;
 }
 
-html {
+html[data-theme='dark'] {
     body {
         @include theme.dark;
     }
-    background-color: #000;
+    background-color: var(--sixty-percent);
+}
+html[data-theme='light'] {
+    body {
+        @include theme.light;
+    }
+    background-color: var(--sixty-percent);
 }
 
 // html[data-theme='dark'] {
