@@ -19,7 +19,7 @@ import { produce } from 'solid-js/store'
 import { EditorEmptyBlock } from './empty'
 import { EditorHeadingBlock } from './heading'
 import { EditorImageBlock } from './image'
-import { pre_save, setStore, store, unwrap_rec } from './store'
+import { setStore, store } from './store'
 import './style/index.scss'
 import { EditorTextBlock } from './text'
 
@@ -69,7 +69,25 @@ export default () => {
             <div class='editor-container'>
                 <div class='actions'>
                     <div class='ctas left'>
-                        <Confact
+                        <button class='cta title_smaller'>
+                            <div class='holder'>ذخیره</div>
+                            <div class='icon'>
+                                <SaveIcon />
+                            </div>
+                        </button>
+                        <button class='cta title_smaller erase'>
+                            <div class='holder'>پاک کردن</div>
+                            <div class='icon'>
+                                <EraseIcon />
+                            </div>
+                        </button>
+                        <button class='cta title_smaller reset'>
+                            <div class='holder'> ریست </div>
+                            <div class='icon'>
+                                <RotateCcwIcon />
+                            </div>
+                        </button>
+                        {/* <Confact
                             icon={SaveIcon}
                             color='var(--green)'
                             timer_ms={700}
@@ -93,7 +111,7 @@ export default () => {
                             color='var(--yellow)'
                             timer_ms={1000}
                             onAct={() => setStore({ data: [] })}
-                        />
+                        /> */}
                     </div>
                     <div class='ctas right'>
                         <button
