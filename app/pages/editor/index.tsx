@@ -4,7 +4,6 @@ import {
     ArrowLeftIcon,
     ChevronDownIcon,
     ChevronUpIcon,
-    DrillIcon,
     EraseIcon,
     EyeIcon,
     EyeOffIcon,
@@ -57,7 +56,7 @@ export default () => {
 
     return (
         <div class='editor-fnd'>
-            <div class='actions'>
+            <div class='go-back'>
                 <div>
                     <button
                         class='styled icon'
@@ -66,90 +65,95 @@ export default () => {
                         <ArrowLeftIcon />
                     </button>
                 </div>
-                <div>
-                    <Action
-                        icon={() => (
-                            <Show
-                                when={store.show_groups}
-                                fallback={<EyeIcon />}
-                            >
-                                <EyeOffIcon />
-                            </Show>
-                        )}
-                        onAct={() =>
-                            setStore(s => ({ show_groups: !s.show_groups }))
-                        }
-                        title={
-                            store.show_groups
-                                ? 'مخفی کردن گروه ها'
-                                : 'نشان دادن گروه ها'
-                        }
-                    />
-                    <button
-                        class='styled icon'
-                        style={{ '--color': 'var(--green)' }}
-                        onClick={() =>
-                            setStore(
-                                produce(s => {
-                                    s.data.push({ kind: 'empty' })
-                                })
-                            )
-                        }
-                    >
-                        <PlusIcon />
-                    </button>
-                    <Confact
-                        icon={SaveIcon}
-                        color='var(--green)'
-                        timer_ms={700}
-                        onAct={() => {
-                            document.dispatchEvent(pre_save)
-                            blog_update_data()
-                        }}
-                    />
-
-                    <Confact
-                        icon={RotateCcwIcon}
-                        color='var(--yellow)'
-                        timer_ms={1000}
-                        onAct={() => {
-                            setStore(s => ({
-                                data: unwrap_rec(s.blog.data),
-                            }))
-                        }}
-                    />
-                    <Confact
-                        icon={EraseIcon}
-                        color='var(--yellow)'
-                        timer_ms={1000}
-                        onAct={() => setStore({ data: [] })}
-                    />
-                </div>
             </div>
-            <div class='editor-wrapper'>
-                <div class='editor'>
-                    <Show when={store.data.length == 0}>
-                        <div class='message add-block'>
-                            <button
-                                class='add-cta title'
-                                onClick={() =>
-                                    setStore(
-                                        produce(s => {
-                                            s.data.push({ kind: 'empty' })
-                                        })
-                                    )
-                                }
-                            >
-                                بلاک اضافه کنید
-                            </button>
-                        </div>
-                    </Show>
-                    {store.data.map((block, i, a) => (
-                        <>
-                            <EditorBlock block={block} idx={i} />
-                            {i != a.length - 1 && <div class='line' />}
-                        </>
-                    ))}
+            <div class='editor-container'>
+                <div class='actions'>
+                    <div class='ctas left'>
+                        <Confact
+                            icon={SaveIcon}
+                            color='var(--green)'
+                            timer_ms={700}
+                            onAct={() => {
+                                document.dispatchEvent(pre_save)
+                                blog_update_data()
+                            }}
+                        />
+                        <Confact
+                            icon={RotateCcwIcon}
+                            color='var(--yellow)'
+                            timer_ms={1000}
+                            onAct={() => {
+                                setStore(s => ({
+                                    data: unwrap_rec(s.blog.data),
+                                }))
+                            }}
+                        />
+                        <Confact
+                            icon={EraseIcon}
+                            color='var(--yellow)'
+                            timer_ms={1000}
+                            onAct={() => setStore({ data: [] })}
+                        />
+                    </div>
+                    <div class='ctas right'>
+                        <button
+                            class='styled icon'
+                            style={{ '--color': 'var(--green)' }}
+                            onClick={() =>
+                                setStore(
+                                    produce(s => {
+                                        s.data.push({ kind: 'empty' })
+                                    })
+                                )
+                            }
+                        >
+                            <PlusIcon />
+                        </button>
+                        <Action
+                            icon={() => (
+                                <Show
+                                    when={store.show_groups}
+                                    fallback={<EyeIcon />}
+                                >
+                                    <EyeOffIcon />
+                                </Show>
+                            )}
+                            onAct={() =>
+                                setStore(s => ({ show_groups: !s.show_groups }))
+                            }
+                            title={
+                                store.show_groups
+                                    ? 'مخفی کردن گروه ها'
+                                    : 'نشان دادن گروه ها'
+                            }
+                        />
+                    </div>
+                </div>
+                <div class='editor-wrapper'>
+                    <div class='editor'>
+                        <Show when={store.data.length == 0}>
+                            <div class='message add-block'>
+                                <button
+                                    class='add-cta title'
+                                    onClick={() =>
+                                        setStore(
+                                            produce(s => {
+                                                s.data.push({ kind: 'empty' })
+                                            })
+                                        )
+                                    }
+                                >
+                                    بلاک اضافه کنید
+                                </button>
+                            </div>
+                        </Show>
+                        {store.data.map((block, i, a) => (
+                            <>
+                                <EditorBlock block={block} idx={i} />
+                                {i != a.length - 1 && <div class='line' />}
+                            </>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
@@ -168,7 +172,7 @@ const EditorBlock: Component<EditorBlockProps> = P => {
         image: EditorImageBlock,
         empty: EditorEmptyBlock,
         break: () => (
-            <div class='block-break title_smaller'>
+            <div class='block-break title_small'>
                 خط افقی
                 <hr />
             </div>
