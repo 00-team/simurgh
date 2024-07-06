@@ -1,9 +1,31 @@
 .popup {
-    width: 100%;
-    height: 100%;
-
     position: absolute;
     inset: 0;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgb(0 0 0 / 50%);
+    backdrop-filter: blur(2px);
+
+    width: 100%;
+    height: 100%;
+
     z-index: 2;
+
+    .popup-wrapper {
+        width: clamp(0px, 100%, 700px);
+        height: 400px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        padding: 1em 2em;
+
+        background-color: var(--thirty-percent);
+        border-radius: 2rem;
+    }
 }
