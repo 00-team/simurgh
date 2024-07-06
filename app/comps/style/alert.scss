@@ -28,11 +28,10 @@
         pointer-events: all;
         overflow: hidden;
         width: clamp(0px, 100%, 300px);
-        border-radius: var(--radius);
+        border-radius: 0.8rem;
         padding: 1rem;
         position: relative;
-        background-color: var(--cd);
-        border: 2px solid var(--cg);
+        background-color: var(--thirty-percent);
         cursor: pointer;
 
         ::-webkit-scrollbar {
@@ -72,8 +71,6 @@
 
             span {
                 text-transform: capitalize;
-                font-size: 18px;
-                font-weight: bold;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
