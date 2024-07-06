@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from '@solidjs/router'
-import { Action, Confact } from 'comps'
+import { Confact } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronDownIcon,
@@ -114,7 +114,30 @@ export default () => {
                         /> */}
                     </div>
                     <div class='ctas right'>
-                        <button
+                        <button class='cta title_smaller see'>
+                            <div class='holder'>
+                                {' '}
+                                {store.show_groups
+                                    ? 'مخفی کردن گروه ها'
+                                    : 'نشان دادن گروه ها'}{' '}
+                            </div>
+                            <div class='icon'>
+                                <Show
+                                    when={store.show_groups}
+                                    fallback={<EyeIcon />}
+                                >
+                                    <EyeOffIcon />
+                                </Show>
+                            </div>
+                        </button>
+                        <button class='cta title_smaller add'>
+                            <div class='holder'>اضافه بلاک</div>
+                            <div class='icon'>
+                                <PlusIcon />
+                            </div>
+                        </button>
+
+                        {/* <button
                             class='styled icon'
                             style={{ '--color': 'var(--green)' }}
                             onClick={() =>
@@ -144,7 +167,7 @@ export default () => {
                                     ? 'مخفی کردن گروه ها'
                                     : 'نشان دادن گروه ها'
                             }
-                        />
+                        /> */}
                     </div>
                 </div>
                 <div class='editor-wrapper'>
