@@ -4,122 +4,136 @@
     flex-direction: column;
     overflow: hidden;
 
-    .actions {
-        flex-wrap: wrap;
+    .editor-container {
         width: 100%;
-        display: flex;
-        gap: 1rem;
-        padding: 1rem;
-        justify-content: space-between;
-
-        margin-bottom: 1em;
-
-        div {
-            flex-wrap: wrap;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .editor-text-actions {
-            button.active {
-                background-color: var(--color);
-            }
-        }
-    }
-
-    .editor-wrapper {
         height: 100%;
-        padding: 0 1rem 1rem 1rem;
-        width: 100%;
-        display: flex;
-        overflow-y: auto;
-    }
-
-    .editor {
         display: flex;
         flex-direction: column;
-        width: 100%;
-        height: max-content;
-        gap: 1.5rem;
+        align-items: center;
+        gap: 1em;
 
-        .message {
+        .actions {
+            flex-wrap: wrap;
             width: 100%;
-            height: 100%;
-            display: grid;
-            place-items: center;
-            padding: 3rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
 
-            &.border {
-                border-radius: var(--radius);
-                border: 2px solid var(--ca);
-                background-color: var(--thirty-percent);
-            }
+            margin-block: 1em;
 
-            &.add-block {
-                border-radius: 1rem;
-                background-color: var(--thirty-percent);
+            .ctas {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1em;
 
-                .add-cta {
-                    padding: 0.7em 2em;
-                    border-radius: 0.8rem;
-                    background-color: var(--ca);
+                div {
+                    flex-wrap: wrap;
+                    display: flex;
+                    gap: 0.5rem;
                 }
             }
 
-            &.not-found {
-                position: absolute;
-
-                display: grid;
-                place-items: center;
-                backdrop-filter: blur(2px);
+            .editor-text-actions {
+                button.active {
+                    background-color: var(--color);
+                }
             }
         }
 
-        .line {
-            width: 100%;
-            height: 2px;
-            background-color: var(--ca);
-            flex-shrink: 0;
-        }
-
-        .block-break {
-            width: 100%;
-            text-align: center;
-            padding: 0 1rem;
-        }
-
-        .block {
-            flex-shrink: 0;
+        .editor-wrapper {
+            height: 100%;
             width: 100%;
             display: flex;
-            align-items: center;
-            border: 2px solid var(--ca);
-            border-radius: 0.5rem;
+            overflow-y: auto;
+        }
 
-            min-height: 200px;
+        .editor {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: max-content;
+            gap: 1.5rem;
 
-            background-color: var(--thirty-percent);
-
-            &.active {
-                // border-color: var(--cl);
-            }
-
-            &-actions {
-                display: flex;
-                flex-direction: column;
-                flex-shrink: 0;
-                width: max-content;
-                gap: 0.5rem;
-                align-items: flex-end;
-                padding: 1rem;
-                height: 100%;
-            }
-
-            .content {
+            .message {
                 width: 100%;
                 height: 100%;
                 display: grid;
                 place-items: center;
+                padding: 3rem;
+
+                &.border {
+                    border-radius: var(--radius);
+                    border: 2px solid var(--ca);
+                    background-color: var(--thirty-percent);
+                }
+
+                &.add-block {
+                    border-radius: 1rem;
+                    background-color: var(--thirty-percent);
+
+                    .add-cta {
+                        padding: 0.7em 2em;
+                        border-radius: 0.8rem;
+                        background-color: var(--ca);
+                    }
+                }
+
+                &.not-found {
+                    position: absolute;
+
+                    display: grid;
+                    place-items: center;
+                    backdrop-filter: blur(2px);
+                }
+            }
+
+            .line {
+                width: 100%;
+                height: 2px;
+                background-color: var(--ca);
+                flex-shrink: 0;
+            }
+
+            .block-break {
+                width: 100%;
+                text-align: center;
+                padding: 0 1rem;
+            }
+
+            .block {
+                flex-shrink: 0;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                border: 2px solid var(--ca);
+                border-radius: 0.5rem;
+
+                min-height: 200px;
+
+                background-color: var(--thirty-percent);
+
+                &.active {
+                    // border-color: var(--cl);
+                }
+
+                &-actions {
+                    display: flex;
+                    flex-direction: column;
+                    flex-shrink: 0;
+                    width: max-content;
+                    gap: 0.5rem;
+                    align-items: flex-end;
+                    padding: 1rem;
+                    height: 100%;
+                }
+
+                .content {
+                    width: 100%;
+                    height: 100%;
+                    display: grid;
+                    place-items: center;
+                }
             }
         }
     }
