@@ -6,7 +6,7 @@
     align-items: center;
 
     .login-card {
-        background-color: var(--cd);
+        background-color: var(--thirty-percent);
         aspect-ratio: 2/1;
         height: 60%;
         border-radius: 16px;
@@ -18,12 +18,22 @@
             height: 100%;
             width: 50%;
 
+            g {
+                fill: var(--ten-percent);
+            }
             svg {
                 height: 100%;
                 width: auto;
                 aspect-ratio: 1;
 
                 transform: scaleX(-1);
+
+                path:not(:nth-child(1)) {
+                    fill: var(--ten-percent);
+                }
+                path#simurgh {
+                    fill: var(--accent-color);
+                }
             }
         }
 
@@ -78,12 +88,14 @@
 
                 border: none;
                 border-radius: 0px;
-                border-bottom: 1px solid white;
+                border-bottom: 2px solid var(--sixty-percent);
 
-                transition: border 0.3s ease;
+                color: var(--accent-color);
 
                 background-color: transparent;
                 padding: 0.5em 0;
+
+                transition: border 0.3s ease;
 
                 &:invalid {
                     border-color: var(--alert-error);
@@ -99,9 +111,9 @@
 
                 font-family: 'iranbold';
 
-                color: black;
+                color: var(--primary-color);
 
-                background-color: var(--addon-percent);
+                background-color: var(--ten-percent);
                 border: 0;
                 border-radius: 10px;
 
