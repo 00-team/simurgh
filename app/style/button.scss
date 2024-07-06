@@ -1,19 +1,23 @@
 button.styled {
-    --color: var(--ca);
+    --color: var(--ten-percent);
 
-    background-color: var(--cd);
-    color: var(--cl);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--thirty-percent);
+    color: var(--accent-color);
+
     border: 2px;
     border-color: var(--color);
     border-style: solid;
     border-radius: var(--radius);
+
     cursor: pointer;
+
     padding: 0.25rem 2rem;
     transition: 220ms ease-in-out;
     transition-property: border-color, background-color, color;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
     &.active {
         background-color: var(--color);
