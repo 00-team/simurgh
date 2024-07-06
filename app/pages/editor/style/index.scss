@@ -78,6 +78,12 @@
                     &.reset {
                         --bg-color: var(--alert-error);
                     }
+                    &.add {
+                        --bg-color: var(--alert-success);
+                    }
+                    &.see {
+                        --bg-color: #5600ff;
+                    }
 
                     .icon {
                         width: 25px;
