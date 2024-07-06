@@ -19,7 +19,7 @@ import { produce } from 'solid-js/store'
 import { EditorEmptyBlock } from './empty'
 import { EditorHeadingBlock } from './heading'
 import { EditorImageBlock } from './image'
-import { setStore, store } from './store'
+import { pre_save, setStore, store } from './store'
 import './style/index.scss'
 import { EditorTextBlock } from './text'
 
@@ -69,7 +69,13 @@ export default () => {
             <div class='editor-container'>
                 <div class='actions'>
                     <div class='ctas left'>
-                        <button class='cta title_smaller'>
+                        <button
+                            class='cta title_smaller'
+                            onclick={() => {
+                                document.dispatchEvent(pre_save)
+                                blog_update_data()
+                            }}
+                        >
                             <div class='holder'>ذخیره</div>
                             <div class='icon'>
                                 <SaveIcon />
@@ -114,7 +120,12 @@ export default () => {
                         /> */}
                     </div>
                     <div class='ctas right'>
-                        <button class='cta title_smaller see'>
+                        <button
+                            class='cta title_smaller see'
+                            onclick={() =>
+                                setStore(s => ({ show_groups: !s.show_groups }))
+                            }
+                        >
                             <div class='holder'>
                                 {' '}
                                 {store.show_groups
@@ -130,16 +141,8 @@ export default () => {
                                 </Show>
                             </div>
                         </button>
-                        <button class='cta title_smaller add'>
-                            <div class='holder'>اضافه بلاک</div>
-                            <div class='icon'>
-                                <PlusIcon />
-                            </div>
-                        </button>
-
-                        {/* <button
-                            class='styled icon'
-                            style={{ '--color': 'var(--green)' }}
+                        <button
+                            class='cta title_smaller add'
                             onClick={() =>
                                 setStore(
                                     produce(s => {
@@ -148,26 +151,11 @@ export default () => {
                                 )
                             }
                         >
-                            <PlusIcon />
+                            <div class='holder'>اضافه بلاک</div>
+                            <div class='icon'>
+                                <PlusIcon />
+                            </div>
                         </button>
-                        <Action
-                            icon={() => (
-                                <Show
-                                    when={store.show_groups}
-                                    fallback={<EyeIcon />}
-                                >
-                                    <EyeOffIcon />
-                                </Show>
-                            )}
-                            onAct={() =>
-                                setStore(s => ({ show_groups: !s.show_groups }))
-                            }
-                            title={
-                                store.show_groups
-                                    ? 'مخفی کردن گروه ها'
-                                    : 'نشان دادن گروه ها'
-                            }
-                        /> */}
                     </div>
                 </div>
                 <div class='editor-wrapper'>
