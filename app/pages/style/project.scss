@@ -3,7 +3,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 5vh 3vw;
     gap: 1rem;
 
     .project-info {
@@ -11,17 +11,20 @@
 
         display: flex;
         flex-direction: column;
-
-        direction: rtl;
-        width: 100%;
-        background-color: var(--cd);
-        padding: 1rem;
-        border-radius: var(--radius);
         gap: 0.5rem;
-        overflow: hidden;
+
+        width: 100%;
+        padding: 1.5rem;
+
+        background-color: var(--thirty-percent);
+        border-radius: 1rem;
+        border: 2px solid var(--ca);
+
         text-overflow: ellipsis;
         white-space: nowrap;
-        border: 2px solid var(--ca);
+
+        direction: rtl;
+        overflow: hidden;
 
         .ctas {
             width: 100%;
