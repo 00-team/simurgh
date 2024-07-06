@@ -4,13 +4,23 @@
     flex-direction: column;
     overflow: hidden;
 
+    padding: 5vh 3vw;
+
     .editor-container {
         width: 100%;
         height: 100%;
+
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 1em;
+
+        background: var(--primary-color);
+        border-radius: 2rem;
+        margin: 0 auto;
+        // margin-top: 2rem ;
+
+        overflow: hidden;
 
         .actions {
             flex-wrap: wrap;
@@ -20,6 +30,7 @@
             justify-content: space-between;
 
             margin-block: 1em;
+            padding: 2rem;
 
             .ctas {
                 display: flex;
@@ -46,6 +57,9 @@
             width: 100%;
             display: flex;
             overflow-y: auto;
+
+            padding: 0 2rem;
+            padding-bottom: 2rem;
         }
 
         .editor {
