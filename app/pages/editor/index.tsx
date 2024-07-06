@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from '@solidjs/router'
-import { Confact } from 'comps'
+import { addAlert, Confact } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronDownIcon,
@@ -49,6 +49,12 @@ export default () => {
             json: store.data,
             onLoad(x) {
                 if (x.status != 200) return
+                addAlert({
+                    subject: 'موفق',
+                    content: 'بلاگ شما با موفقیت ذخیره شد.',
+                    type: 'success',
+                    timeout: 10,
+                })
                 setStore({ blog: x.response })
             },
         })
