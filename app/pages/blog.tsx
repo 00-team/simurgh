@@ -463,7 +463,18 @@ export default () => {
                         </Show>
                     </div>
                 </div>
-                <div class='preview' ref={preview} />
+
+                <div class='preview-container'>
+                    <h2 class='section_title'>پیش نمایش مقاله</h2>
+                    {preview && preview.childElementCount <= 0 && (
+                        <div class='preview-default'>
+                            <h4 class='title_small'>
+                                پیش نمایش در اینجا میاید.
+                            </h4>
+                        </div>
+                    )}
+                    <div class='preview' ref={preview}></div>
+                </div>
             </div>
         </div>
     )
