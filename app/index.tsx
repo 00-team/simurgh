@@ -2,7 +2,7 @@ import { Navigate, Route, Router, RouteSectionProps } from '@solidjs/router'
 import { Component, createEffect, lazy, onMount } from 'solid-js'
 import { render, Show } from 'solid-js/web'
 
-import { Alert } from 'comps'
+import { Alert, Popup } from 'comps'
 import { self, setTheme, theme } from 'store'
 
 import Sidebar from 'layout/sidebar'
@@ -22,7 +22,10 @@ const Dash: Component<RouteSectionProps> = P => {
     return (
         <div class='dash-fnd'>
             <Sidebar />
-            <div class='content-fnd'>{P.children}</div>
+            <div class='content-fnd'>
+                {P.children}
+                <Popup />
+            </div>
         </div>
     )
 }
