@@ -1,9 +1,9 @@
 import { Navigate, Route, Router, RouteSectionProps } from '@solidjs/router'
-import { Component, createEffect, lazy } from 'solid-js'
+import { Component, createEffect, lazy, onMount } from 'solid-js'
 import { render, Show } from 'solid-js/web'
 
 import { Alert } from 'comps'
-import { self } from 'store'
+import { self, setTheme, theme } from 'store'
 
 import Sidebar from 'layout/sidebar'
 import NotFound from 'pages/404'
@@ -28,6 +28,20 @@ const Dash: Component<RouteSectionProps> = P => {
 }
 
 const Root = () => {
+    const prefersDarkColorScheme = () =>
+        matchMedia && matchMedia('(prefers-color-scheme: dark)').matches
+
+    onMount(() => {
+        if (prefersDarkColorScheme()) {
+            // debug
+            // setTheme('dark')
+        }
+        setTheme('light')
+    })
+
+    createEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme())
+    })
     return (
         <>
             <Show when={self.loged_in} fallback={<Login />}>
