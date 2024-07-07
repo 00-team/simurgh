@@ -12,7 +12,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 1em;
+        flex-direction: column;
+        gap: 1.5em;
 
         .actions-wrapper {
             display: flex;
@@ -22,6 +23,14 @@
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             border-radius: 0.8rem;
             overflow: hidden;
+
+            &.headings {
+                direction: rtl;
+
+                .action {
+                    font-family: iranSans;
+                }
+            }
 
             .action {
                 background-color: transparent;
@@ -33,9 +42,19 @@
                 }
 
                 &.active {
+                    color: white;
                     background-color: var(--sixty-percent);
                 }
             }
+        }
+
+        .actions-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 3em;
         }
     }
 
