@@ -20,7 +20,7 @@ import { setPopup } from 'store/popup'
 import { EditorEmptyBlock } from './empty'
 import { EditorHeadingBlock } from './heading'
 import { EditorImageBlock } from './image'
-import { pre_save, setStore, store } from './store'
+import { pre_save, setStore, store, unwrap_rec } from './store'
 import './style/index.scss'
 import { EditorTextBlock } from './text'
 
@@ -96,7 +96,7 @@ export default () => {
                                     Icon: EraseIcon,
                                     title: 'پاک کردن',
                                     type: 'warning',
-                                    onSubmit: () => alert('slm'),
+                                    onSubmit: () => setStore({ data: [] }),
                                     content: 'مطمعن به پاک کردن هستید؟',
                                 })
                             }}
@@ -114,7 +114,11 @@ export default () => {
                                     Icon: RotateCcwIcon,
                                     title: 'ریست کردن',
                                     type: 'error',
-                                    onSubmit: () => alert('slm'),
+                                    onSubmit: () => {
+                                        setStore(s => ({
+                                            data: unwrap_rec(s.blog.data),
+                                        }))
+                                    },
                                     content: 'مطمعن به ریست کردن هستید؟',
                                 })
                             }}
@@ -124,31 +128,6 @@ export default () => {
                                 <RotateCcwIcon />
                             </div>
                         </button>
-                        {/* <Confact
-                            icon={SaveIcon}
-                            color='var(--green)'
-                            timer_ms={700}
-                            onAct={() => {
-                                document.dispatchEvent(pre_save)
-                                blog_update_data()
-                            }}
-                        />
-                        <Confact
-                            icon={RotateCcwIcon}
-                            color='var(--yellow)'
-                            timer_ms={1000}
-                            onAct={() => {
-                                setStore(s => ({
-                                    data: unwrap_rec(s.blog.data),
-                                }))
-                            }}
-                        />
-                        <Confact
-                            icon={EraseIcon}
-                            color='var(--yellow)'
-                            timer_ms={1000}
-                            onAct={() => setStore({ data: [] })}
-                        /> */}
                     </div>
                     <div class='ctas right'>
                         <button
