@@ -1,4 +1,4 @@
-import { Component, JSX, Show } from 'solid-js'
+import { Component, JSX } from 'solid-js'
 
 import { PilcrowLeftIcon, PilcrowRightIcon } from 'icons'
 import { BlogHeading, BLOG_ALIGN } from 'models'
@@ -48,24 +48,33 @@ export const EditorHeadingBlock: Component<Props> = P => {
                 >
                     H{P.block.level}
                 </button>
-                <button
-                    class='styled icon'
-                    onClick={() => {
-                        set_attr(b => ({
-                            dir: b.dir == 'ltr' ? 'rtl' : 'ltr',
-                        }))
-                    }}
-                >
-                    <Show
-                        when={P.block.dir == 'ltr'}
-                        fallback={<PilcrowRightIcon />}
+                <div class='actions-wrapper directions'>
+                    <button
+                        classList={{ active: P.block.dir === 'rtl' }}
+                        class='action icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                dir: 'rtl',
+                            }))
+                        }}
+                    >
+                        <PilcrowRightIcon />
+                    </button>
+                    <button
+                        classList={{ active: P.block.dir === 'ltr' }}
+                        class='action icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                dir: 'ltr',
+                            }))
+                        }}
                     >
                         <PilcrowLeftIcon />
-                    </Show>
-                </button>
-                <div class='aligns'>
+                    </button>
+                </div>
+                <div class='actions-wrapper aligns'>
                     <button
-                        class='align icon'
+                        class='action icon'
                         onClick={() => {
                             set_attr(b => ({
                                 align: 'left',
@@ -76,7 +85,7 @@ export const EditorHeadingBlock: Component<Props> = P => {
                         {BLOG_ALIGN['left'][1]()}
                     </button>
                     <button
-                        class='align icon'
+                        class='action icon'
                         onClick={() => {
                             set_attr(b => ({
                                 align: 'center',
@@ -87,7 +96,7 @@ export const EditorHeadingBlock: Component<Props> = P => {
                         {BLOG_ALIGN['center'][1]()}
                     </button>
                     <button
-                        class='align icon'
+                        class='action icon'
                         onClick={() => {
                             set_attr(b => ({
                                 align: 'right',
