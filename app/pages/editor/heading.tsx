@@ -35,77 +35,123 @@ export const EditorHeadingBlock: Component<Props> = P => {
     return (
         <div class='block-heading'>
             <div class='heading-actions'>
-                <button
-                    class='styled icon'
-                    onClick={() => {
-                        set_attr(b => {
-                            let level = b.level + 1
-                            if (level > 6) level = 1
-                            if (level < 1) level = 6
-                            return { level }
-                        })
-                    }}
-                >
-                    H{P.block.level}
-                </button>
-                <div class='actions-wrapper directions'>
+                <div class='actions-wrapper headings'>
                     <button
-                        classList={{ active: P.block.dir === 'rtl' }}
-                        class='action icon'
+                        class='action title_smaller'
+                        classList={{ active: P.block.level === 1 }}
                         onClick={() => {
-                            set_attr(b => ({
-                                dir: 'rtl',
-                            }))
+                            set_attr(b => ({ level: 1 }))
                         }}
                     >
-                        <PilcrowRightIcon />
+                        عنوان
                     </button>
                     <button
-                        classList={{ active: P.block.dir === 'ltr' }}
-                        class='action icon'
+                        class='action title_smaller'
+                        classList={{ active: P.block.level === 2 }}
                         onClick={() => {
-                            set_attr(b => ({
-                                dir: 'ltr',
-                            }))
+                            set_attr(b => ({ level: 2 }))
                         }}
                     >
-                        <PilcrowLeftIcon />
+                        سر صفحه
+                    </button>
+                    <button
+                        class='action title_smaller'
+                        classList={{ active: P.block.level === 3 }}
+                        onClick={() => {
+                            set_attr(b => ({ level: 3 }))
+                        }}
+                    >
+                        عنوان فرعی
+                    </button>
+                    <button
+                        class='action title_smaller'
+                        classList={{ active: P.block.level === 4 }}
+                        onClick={() => {
+                            set_attr(b => ({ level: 4 }))
+                        }}
+                    >
+                        عنوان بند
+                    </button>
+                    <button
+                        class='action title_smaller'
+                        classList={{ active: P.block.level === 5 }}
+                        onClick={() => {
+                            set_attr(b => ({ level: 5 }))
+                        }}
+                    >
+                        عنوان کوچک
+                    </button>
+                    <button
+                        class='action title_smaller'
+                        classList={{ active: P.block.level === 6 }}
+                        onClick={() => {
+                            set_attr(b => ({ level: 6 }))
+                        }}
+                    >
+                        عنوان کوچک تر
                     </button>
                 </div>
-                <div class='actions-wrapper aligns'>
-                    <button
-                        class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                align: 'left',
-                            }))
-                        }}
-                        classList={{ active: P.block.align === 'left' }}
-                    >
-                        {BLOG_ALIGN['left'][1]()}
-                    </button>
-                    <button
-                        class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                align: 'center',
-                            }))
-                        }}
-                        classList={{ active: P.block.align === 'center' }}
-                    >
-                        {BLOG_ALIGN['center'][1]()}
-                    </button>
-                    <button
-                        class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                align: 'right',
-                            }))
-                        }}
-                        classList={{ active: P.block.align === 'right' }}
-                    >
-                        {BLOG_ALIGN['right'][1]()}
-                    </button>
+
+                <div class='actions-row'>
+                    <div class='actions-wrapper directions'>
+                        <button
+                            classList={{ active: P.block.dir === 'rtl' }}
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    dir: 'rtl',
+                                }))
+                            }}
+                        >
+                            <PilcrowRightIcon />
+                        </button>
+                        <button
+                            classList={{ active: P.block.dir === 'ltr' }}
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    dir: 'ltr',
+                                }))
+                            }}
+                        >
+                            <PilcrowLeftIcon />
+                        </button>
+                    </div>
+                    <div class='actions-wrapper aligns'>
+                        <button
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    align: 'left',
+                                }))
+                            }}
+                            classList={{ active: P.block.align === 'left' }}
+                        >
+                            {BLOG_ALIGN['left'][1]()}
+                        </button>
+                        <button
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    align: 'center',
+                                }))
+                            }}
+                            classList={{ active: P.block.align === 'center' }}
+                        >
+                            {BLOG_ALIGN['center'][1]()}
+                        </button>
+                        <button
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    align: 'right',
+                                }))
+                            }}
+                            classList={{ active: P.block.align === 'right' }}
+                        >
+                            {BLOG_ALIGN['right'][1]()}
+                        </button>
+                    </div>
                 </div>
             </div>
             <div
