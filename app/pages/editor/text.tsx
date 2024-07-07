@@ -7,8 +7,6 @@ import {
 } from 'models'
 import { Component, onCleanup, onMount, Show } from 'solid-js'
 
-import { Action } from 'comps/action'
-import { Tooltip } from 'comps/tooltip'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
@@ -522,19 +520,24 @@ const Actions: Component<ActionsProps> = P => {
                         </button>
 
                         <LinkButton idx={P.idx} ag={P.ag} group={P.group} />
-                        <Action
-                            title='تغییر فونت'
-                            onAct={() =>
+
+                        <button
+                            class='action flex title_smaller'
+                            classList={{ active: P.group.style.mark }}
+                            onclick={() =>
                                 alert('selecting custom font\ncoming soon...')
                             }
-                            icon={TypeIcon}
-                        />
-                        <Action
-                            color='var(--yellow)'
-                            onAct={reset}
-                            icon={RotateCcwIcon}
-                            title='بازنشانی'
-                        />
+                        >
+                            <TypeIcon />
+                        </button>
+                        <button
+                            class='action flex title_smaller'
+                            classList={{ active: P.group.style.mark }}
+                            onclick={reset}
+                            style={{ color: 'var(--yellow)' }}
+                        >
+                            <RotateCcwIcon />
+                        </button>
                     </div>
                 </div>
             </Show>
@@ -590,16 +593,15 @@ const DefaultActions: Component = () => {
                 <button class='action'>
                     <LinkIcon />
                 </button>
-                <Action
-                    title='تغییر فونت'
-                    onAct={() => alert('selecting custom font\ncoming soon...')}
-                    icon={TypeIcon}
-                />
-                <Action
-                    color='var(--yellow)'
-                    icon={RotateCcwIcon}
-                    title='بازنشانی'
-                />
+                <button class='action flex title_smaller'>
+                    <TypeIcon />
+                </button>
+                <button
+                    class='action flex title_smaller'
+                    style={{ color: 'var(--yellow)' }}
+                >
+                    <RotateCcwIcon />
+                </button>
             </div>
         </div>
     )
@@ -634,17 +636,12 @@ const FontSizeButton: Component<FontSizeButtonProps> = P => {
 
     return (
         <button
-            class='styled icon'
+            class='action icon'
             onClick={add_size}
             onMouseDown={() => {
                 timer = setInterval(add_size, 100)
             }}
         >
-            <Tooltip
-                children={
-                    P.dir == 1 ? 'افزایش اندازه فونت' : 'کاهش اندازه فونت'
-                }
-            />
             <Show when={P.dir == 1} fallback={<AArrowDownIcon />}>
                 <AArrowUpIcon />
             </Show>
