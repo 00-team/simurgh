@@ -34,31 +34,6 @@ export const EditorHeadingBlock: Component<Props> = P => {
 
     return (
         <div class='block-heading'>
-            <div
-                class='heading'
-                style={{
-                    'text-align': P.block.align,
-                    direction: P.block.dir,
-                }}
-            >
-                <input
-                    class='styled title_small'
-                    value={P.block.content}
-                    style={{
-                        'text-align': P.block.align,
-                        direction: P.block.dir,
-                    }}
-                    onInput={e =>
-                        setStore(
-                            produce(s => {
-                                let b = s.data[P.idx] as BlogHeading
-                                b.content = e.currentTarget.value
-                            })
-                        )
-                    }
-                />
-                {HEADING[P.block.level]({ children: P.block.content })}
-            </div>
             <div class='heading-actions'>
                 <button
                     class='styled icon'
@@ -88,16 +63,66 @@ export const EditorHeadingBlock: Component<Props> = P => {
                         <PilcrowLeftIcon />
                     </Show>
                 </button>
-                <button
-                    class='styled icon'
-                    onClick={() => {
-                        set_attr(b => ({
-                            align: BLOG_ALIGN[b.align][0],
-                        }))
+                <div class='aligns'>
+                    <button
+                        class='align icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                align: 'left',
+                            }))
+                        }}
+                        classList={{ active: P.block.align === 'left' }}
+                    >
+                        {BLOG_ALIGN['left'][1]()}
+                    </button>
+                    <button
+                        class='align icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                align: 'center',
+                            }))
+                        }}
+                        classList={{ active: P.block.align === 'center' }}
+                    >
+                        {BLOG_ALIGN['center'][1]()}
+                    </button>
+                    <button
+                        class='align icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                align: 'right',
+                            }))
+                        }}
+                        classList={{ active: P.block.align === 'right' }}
+                    >
+                        {BLOG_ALIGN['right'][1]()}
+                    </button>
+                </div>
+            </div>
+            <div
+                class='heading'
+                style={{
+                    'text-align': P.block.align,
+                    direction: P.block.dir,
+                }}
+            >
+                <input
+                    class='styled title_small'
+                    value={P.block.content}
+                    style={{
+                        'text-align': P.block.align,
+                        direction: P.block.dir,
                     }}
-                >
-                    {BLOG_ALIGN[P.block.align][1]()}
-                </button>
+                    onInput={e =>
+                        setStore(
+                            produce(s => {
+                                let b = s.data[P.idx] as BlogHeading
+                                b.content = e.currentTarget.value
+                            })
+                        )
+                    }
+                />
+                {HEADING[P.block.level]({ children: P.block.content })}
             </div>
         </div>
     )
