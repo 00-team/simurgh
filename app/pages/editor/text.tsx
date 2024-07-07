@@ -463,32 +463,38 @@ const Actions: Component<ActionsProps> = P => {
                         }}
                     /> */}
                     <div class='actions-wrapper'>
-                        <Action
-                            active={P.group.style.bold}
-                            onAct={() =>
+                        <button
+                            class='action title_smaller '
+                            // style={{ color: P.group.style.color }}
+                            classList={{ active: P.group.style.bold }}
+                            onclick={() =>
                                 set_style({ bold: !P.group.style.bold })
                             }
-                            icon={BoldIcon}
-                            title='پررنگ'
-                        />
-                        <Action
-                            active={P.group.style.italic}
-                            onAct={() =>
+                        >
+                            <BoldIcon />
+                        </button>
+                        <button
+                            class='action title_smaller '
+                            // style={{ color: P.group.style.color }}
+                            classList={{ active: P.group.style.italic }}
+                            onclick={() =>
                                 set_style({ italic: !P.group.style.italic })
                             }
-                            icon={ItalicIcon}
-                            title='کج'
-                        />
-                        <Action
-                            active={P.group.style.underline}
-                            onAct={() =>
+                        >
+                            <ItalicIcon />
+                        </button>
+                        <button
+                            class='action title_smaller '
+                            // style={{ color: P.group.style.color }}
+                            classList={{ active: P.group.style.underline }}
+                            onclick={() =>
                                 set_style({
                                     underline: !P.group.style.underline,
                                 })
                             }
-                            icon={UnderlineIcon}
-                            title='خط زیر'
-                        />
+                        >
+                            <UnderlineIcon />
+                        </button>
                     </div>
 
                     <div class='actions-wrapper'>
