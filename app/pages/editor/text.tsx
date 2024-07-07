@@ -437,7 +437,10 @@ const Actions: Component<ActionsProps> = P => {
                 </div>
             </div>
 
-            <Show when={P.group && !state.spliter}>
+            <Show
+                when={P.group && !state.spliter}
+                fallback={<DefaultActions />}
+            >
                 <div class='actions-row'>
                     <div class='actions-wrapper'>
                         <button
@@ -535,6 +538,69 @@ const Actions: Component<ActionsProps> = P => {
                     </div>
                 </div>
             </Show>
+        </div>
+    )
+}
+
+const DefaultActions: Component = () => {
+    return (
+        <div class='actions-row'>
+            <div class='actions-wrapper disable'>
+                <button
+                    class='action title_smaller flex'
+                    // style={{ color: P.group.style.color }}
+                >
+                    رنگ
+                    <PaletteIcon />
+                </button>
+                <button
+                    class='action title_smaller '
+                    // style={{ color: P.group.style.color }}
+                >
+                    <AArrowUpIcon />
+                </button>
+                <button
+                    class='action title_smaller '
+                    // style={{ color: P.group.style.color }}
+                >
+                    <AArrowDownIcon />
+                </button>
+            </div>
+            <div class='actions-wrapper disable'>
+                <button class='action title_smaller '>
+                    <BoldIcon />
+                </button>
+                <button class='action title_smaller '>
+                    <ItalicIcon />
+                </button>
+                <button class='action title_smaller '>
+                    <UnderlineIcon />
+                </button>
+            </div>
+
+            <div class='actions-wrapper disable'>
+                <button class='action'>
+                    <CodeXmlIcon />
+                </button>
+
+                <button class='action'>
+                    <HighlighterIcon />
+                </button>
+
+                <button class='action'>
+                    <LinkIcon />
+                </button>
+                <Action
+                    title='تغییر فونت'
+                    onAct={() => alert('selecting custom font\ncoming soon...')}
+                    icon={TypeIcon}
+                />
+                <Action
+                    color='var(--yellow)'
+                    icon={RotateCcwIcon}
+                    title='بازنشانی'
+                />
+            </div>
         </div>
     )
 }
