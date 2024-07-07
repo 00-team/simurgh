@@ -2,7 +2,7 @@ import { createStore } from 'solid-js/store'
 
 import { JSX } from 'solid-js'
 
-type popupTypes = 'success' | 'info' | 'error'
+type popupTypes = 'success' | 'info' | 'error' | 'warning'
 
 type PopupProps = {
     show: boolean
@@ -16,7 +16,7 @@ type PopupProps = {
     onReject: () => void
 }
 
-const defualt_popup: PopupProps = {
+const DEFAULT_POPUP: PopupProps = {
     show: false,
     type: 'info',
     content: '',
@@ -26,6 +26,6 @@ const defualt_popup: PopupProps = {
     title: '',
 }
 
-const [popup, setPopup] = createStore<PopupProps>(defualt_popup)
+const [popup, setPopup] = createStore<PopupProps>(DEFAULT_POPUP)
 
-export { popup, setPopup, type PopupProps, type popupTypes }
+export { popup, setPopup, type PopupProps, type popupTypes, DEFAULT_POPUP }
