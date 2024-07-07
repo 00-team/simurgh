@@ -1,4 +1,6 @@
 .popup {
+    --color: var(--alert-success);
+
     position: absolute;
     inset: 0;
 
@@ -19,6 +21,20 @@
 
     transition: 0.3s cubic-bezier(0.45, 0.02, 0.09, 0.98);
 
+    &.info {
+        --color: var(--alert-info);
+    }
+    &.warning {
+        --color: #ffff00;
+
+        .popup-wrapper .ctas .submit {
+            color: black;
+        }
+    }
+    &.error {
+        --color: var(--alert-error);
+    }
+
     &.show {
         opacity: 1;
         visibility: visible;
@@ -30,12 +46,50 @@
 
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         flex-direction: column;
 
-        padding: 1em 2em;
+        padding: 3em 2em;
+        padding-bottom: 2em;
 
+        background-image: linear-gradient(
+            to bottom,
+            var(--color) 0%,
+            transparent 50%
+        );
         background-color: var(--thirty-percent);
         border-radius: 2rem;
+
+        svg {
+            width: 100px;
+            height: 100px;
+        }
+
+        h3 {
+            margin-top: -1em;
+        }
+        p {
+            margin-top: -2em;
+        }
+
+        .ctas {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8em;
+
+            button {
+                padding: 1em 3em;
+                background: var(--sixty-percent);
+                border-radius: 0.8rem;
+
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+                color: white;
+
+                &.submit {
+                    background-color: var(--color);
+                }
+            }
+        }
     }
 }
