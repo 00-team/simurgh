@@ -1,15 +1,29 @@
-import { Component } from 'solid-js'
-import { popup } from 'store/popup'
+import { Component, createEffect } from 'solid-js'
+import { produce } from 'solid-js/store'
+import { DEFAULT_POPUP, popup, setPopup } from 'store/popup'
 
 import './style/popup.scss'
 
 export const Popup: Component = P => {
+    createEffect(() => {
+        console.log(popup)
+    })
     return (
-        <div class='popup' classList={{ show: popup.show }}>
+        <div class={`popup ${popup.type}`} classList={{ show: popup.show }}>
             <form
                 onsubmit={e => {
                     e.preventDefault()
                     popup.onSubmit()
+                    setPopup({ show: false })
+                }}
+                onreset={e => {
+                    e.preventDefault()
+                    setPopup(
+                        produce(s => {
+                            s = DEFAULT_POPUP
+                            return s
+                        })
+                    )
                 }}
                 class='popup-wrapper'
             >
@@ -19,14 +33,11 @@ export const Popup: Component = P => {
                 <p class='title_smaller'>{popup.content}</p>
 
                 <div class='ctas'>
-                    <button class='cta submit title_small'>تایید</button>
-                    <button
-                        class='cta reject title_small'
-                        onclick={() => {
-                            popup.onReject()
-                        }}
-                    >
+                    <button type={'reset'} class='cta reject title_smaller'>
                         لغو
+                    </button>
+                    <button class='cta submit title_smaller' type='submit'>
+                        تایید
                     </button>
                 </div>
             </form>
