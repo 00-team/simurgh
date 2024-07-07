@@ -29,6 +29,10 @@
 
             transition: opacity 0.3s;
 
+            &.no-overflow {
+                overflow: visible;
+            }
+
             &.disable {
                 opacity: 0.7;
                 pointer-events: none;
@@ -48,7 +52,7 @@
                     background-color: var(--sixty-percent);
                 }
 
-                &.spliter {
+                &.flex {
                     display: flex;
                     align-items: center;
                     justify-content: center;
