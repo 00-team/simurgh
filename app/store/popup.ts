@@ -19,13 +19,13 @@ type PopupProps = {
 const DEFAULT_POPUP: PopupProps = {
     show: false,
     type: 'info',
-    content: '',
     Icon: null,
+    title: '',
+    content: '',
     onReject: () => {},
     onSubmit: () => {},
-    title: '',
 }
 
-const [popup, setPopup] = createStore<PopupProps>(DEFAULT_POPUP)
+const [popup, setPopup] = createStore<PopupProps>({ ...DEFAULT_POPUP })
 
 export { popup, setPopup, type PopupProps, type popupTypes, DEFAULT_POPUP }
