@@ -1,29 +1,21 @@
 import { Component, createEffect } from 'solid-js'
-import { produce } from 'solid-js/store'
 import { DEFAULT_POPUP, popup, setPopup } from 'store/popup'
 
 import './style/popup.scss'
 
 export const Popup: Component = P => {
-    createEffect(() => {
-        console.log(popup)
-    })
     return (
         <div class={`popup ${popup.type}`} classList={{ show: popup.show }}>
             <form
                 onsubmit={e => {
                     e.preventDefault()
                     popup.onSubmit()
-                    setPopup({ show: false })
+                    setPopup({ ...DEFAULT_POPUP })
                 }}
                 onreset={e => {
                     e.preventDefault()
-                    setPopup(
-                        produce(s => {
-                            s = DEFAULT_POPUP
-                            return s
-                        })
-                    )
+                    popup.onReject()
+                    setPopup({ ...DEFAULT_POPUP })
                 }}
                 class='popup-wrapper'
             >
