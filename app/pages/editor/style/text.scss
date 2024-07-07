@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 1rem;
+    padding: 2rem;
 
     position: relative;
     isolation: isolate;
@@ -13,9 +13,57 @@
     .text-actions {
         width: 100%;
         display: flex;
-        gap: 0.5rem;
+        gap: 1.5rem;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+
+        .actions-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            border-radius: 0.8rem;
+            overflow: hidden;
+
+            transition: opacity 0.3s;
+
+            &.disable {
+                opacity: 0.7;
+                pointer-events: none;
+            }
+
+            .action {
+                background-color: transparent;
+                padding: 10px 12px;
+
+                svg {
+                    width: 25px;
+                    height: 25px;
+                }
+
+                &.active {
+                    color: white;
+                    background-color: var(--sixty-percent);
+                }
+
+                &.spliter {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5em;
+                }
+            }
+        }
+        .actions-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 3em;
+        }
     }
     .text-section {
         width: 100%;
