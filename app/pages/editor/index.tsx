@@ -16,6 +16,7 @@ import { BlogData } from 'models'
 import { httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { produce } from 'solid-js/store'
+import { setPopup } from 'store/popup'
 import { EditorEmptyBlock } from './empty'
 import { EditorHeadingBlock } from './heading'
 import { EditorImageBlock } from './image'
@@ -87,13 +88,37 @@ export default () => {
                                 <SaveIcon />
                             </div>
                         </button>
-                        <button class='cta title_smaller erase'>
+                        <button
+                            class='cta title_smaller erase'
+                            onClick={() => {
+                                setPopup({
+                                    show: true,
+                                    Icon: EraseIcon,
+                                    title: 'پاک کردن',
+                                    type: 'warning',
+                                    onSubmit: () => alert('slm'),
+                                    content: 'مطمعن به پاک کردن هستید؟',
+                                })
+                            }}
+                        >
                             <div class='holder'>پاک کردن</div>
                             <div class='icon'>
                                 <EraseIcon />
                             </div>
                         </button>
-                        <button class='cta title_smaller reset'>
+                        <button
+                            class='cta title_smaller reset'
+                            onClick={() => {
+                                setPopup({
+                                    show: true,
+                                    Icon: RotateCcwIcon,
+                                    title: 'ریست کردن',
+                                    type: 'error',
+                                    onSubmit: () => alert('slm'),
+                                    content: 'مطمعن به ریست کردن هستید؟',
+                                })
+                            }}
+                        >
                             <div class='holder'> ریست </div>
                             <div class='icon'>
                                 <RotateCcwIcon />
