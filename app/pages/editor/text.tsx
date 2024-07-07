@@ -3,10 +3,9 @@ import {
     BlogText,
     BlogTextGroup,
     BLOG_ALIGN,
-    BLOG_DIRECTION,
     DEFAULT_TEXT_GROUP,
 } from 'models'
-import { Component, createEffect, onCleanup, onMount, Show } from 'solid-js'
+import { Component, onCleanup, onMount, Show } from 'solid-js'
 
 import { Action } from 'comps/action'
 import { Tooltip } from 'comps/tooltip'
@@ -19,6 +18,8 @@ import {
     ItalicIcon,
     LinkIcon,
     PaletteIcon,
+    PilcrowLeftIcon,
+    PilcrowRightIcon,
     RotateCcwIcon,
     SplitIcon,
     TypeIcon,
@@ -361,83 +362,147 @@ const Actions: Component<ActionsProps> = P => {
 
     return (
         <div class='text-actions'>
-            <Show when={state.spliter}>
-                <Action
-                    onAct={new_group}
-                    icon={SplitIcon}
-                    title={'گروه جدید'}
-                />
-            </Show>
+            <div class='actions-row'>
+                <div
+                    class='actions-wrapper '
+                    classList={{ disable: !state.spliter }}
+                >
+                    <button
+                        class='action icon title_small spliter'
+                        onClick={new_group}
+                        classList={{ active: P.block.align === 'left' }}
+                    >
+                        گروه جدید
+                        <SplitIcon />
+                    </button>
+                </div>
+                <div class='actions-wrapper'>
+                    <button
+                        class='action icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                align: 'left',
+                            }))
+                        }}
+                        classList={{ active: P.block.align === 'left' }}
+                    >
+                        {BLOG_ALIGN['left'][1]()}
+                    </button>
+                    <button
+                        class='action icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                align: 'center',
+                            }))
+                        }}
+                        classList={{ active: P.block.align === 'center' }}
+                    >
+                        {BLOG_ALIGN['center'][1]()}
+                    </button>
+                    <button
+                        class='action icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                align: 'right',
+                            }))
+                        }}
+                        classList={{ active: P.block.align === 'right' }}
+                    >
+                        {BLOG_ALIGN['right'][1]()}
+                    </button>
+                </div>
+                <div class='actions-wrapper directions'>
+                    <button
+                        classList={{ active: P.block.dir === 'rtl' }}
+                        class='action icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                dir: 'rtl',
+                            }))
+                        }}
+                    >
+                        <PilcrowRightIcon />
+                    </button>
+                    <button
+                        classList={{ active: P.block.dir === 'ltr' }}
+                        class='action icon'
+                        onClick={() => {
+                            set_attr(b => ({
+                                dir: 'ltr',
+                            }))
+                        }}
+                    >
+                        <PilcrowLeftIcon />
+                    </button>
+                </div>
+            </div>
+
             <Show when={P.group && !state.spliter}>
-                <Action
-                    color={P.group.style.color}
-                    icon={PaletteIcon}
-                    title='رنگ'
-                    onAct={() => {
-                        let el = document.createElement('input')
-                        el.setAttribute('type', 'color')
-                        el.setAttribute('value', P.group.style.color)
-                        el.oninput = () => set_style({ color: el.value })
-                        el.click()
-                    }}
-                />
-                <Action
-                    active={P.group.style.bold}
-                    onAct={() => set_style({ bold: !P.group.style.bold })}
-                    icon={BoldIcon}
-                    title='پررنگ'
-                />
-                <Action
-                    active={P.group.style.italic}
-                    onAct={() => set_style({ italic: !P.group.style.italic })}
-                    icon={ItalicIcon}
-                    title='کج'
-                />
-                <Action
-                    active={P.group.style.underline}
-                    onAct={() =>
-                        set_style({ underline: !P.group.style.underline })
-                    }
-                    icon={UnderlineIcon}
-                    title='خط زیر'
-                />
-                <Action
-                    active={P.group.style.code}
-                    onAct={() => set_style({ code: !P.group.style.code })}
-                    icon={CodeXmlIcon}
-                    title='کد'
-                />
-                <Action
-                    active={P.group.style.mark}
-                    onAct={() => set_style({ mark: !P.group.style.mark })}
-                    icon={HighlighterIcon}
-                    title='برجسته'
-                />
-                <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
-                <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
-                <LinkButton idx={P.idx} ag={P.ag} group={P.group} />
-                <Action
-                    title='تغییر فونت'
-                    onAct={() => alert('selecting custom font\ncoming soon...')}
-                    icon={TypeIcon}
-                />
-                <Action
-                    color='var(--yellow)'
-                    onAct={reset}
-                    icon={RotateCcwIcon}
-                    title='بازنشانی'
-                />
+                <div class='actions-row'>
+                    <Action
+                        color={P.group.style.color}
+                        icon={PaletteIcon}
+                        title='رنگ'
+                        onAct={() => {
+                            let el = document.createElement('input')
+                            el.setAttribute('type', 'color')
+                            el.setAttribute('value', P.group.style.color)
+                            el.oninput = () => set_style({ color: el.value })
+                            el.click()
+                        }}
+                    />
+                    <Action
+                        active={P.group.style.bold}
+                        onAct={() => set_style({ bold: !P.group.style.bold })}
+                        icon={BoldIcon}
+                        title='پررنگ'
+                    />
+                    <Action
+                        active={P.group.style.italic}
+                        onAct={() =>
+                            set_style({ italic: !P.group.style.italic })
+                        }
+                        icon={ItalicIcon}
+                        title='کج'
+                    />
+                    <Action
+                        active={P.group.style.underline}
+                        onAct={() =>
+                            set_style({ underline: !P.group.style.underline })
+                        }
+                        icon={UnderlineIcon}
+                        title='خط زیر'
+                    />
+                    <Action
+                        active={P.group.style.code}
+                        onAct={() => set_style({ code: !P.group.style.code })}
+                        icon={CodeXmlIcon}
+                        title='کد'
+                    />
+                    <Action
+                        active={P.group.style.mark}
+                        onAct={() => set_style({ mark: !P.group.style.mark })}
+                        icon={HighlighterIcon}
+                        title='برجسته'
+                    />
+                    <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
+                    <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
+                    <LinkButton idx={P.idx} ag={P.ag} group={P.group} />
+                    <Action
+                        title='تغییر فونت'
+                        onAct={() =>
+                            alert('selecting custom font\ncoming soon...')
+                        }
+                        icon={TypeIcon}
+                    />
+                    <Action
+                        color='var(--yellow)'
+                        onAct={reset}
+                        icon={RotateCcwIcon}
+                        title='بازنشانی'
+                    />
+                </div>
             </Show>
-            <Action
-                onAct={() => set_attr(b => ({ align: BLOG_ALIGN[b.align][0] }))}
-                title={BLOG_ALIGN[P.block.align][2]}
-                icon={BLOG_ALIGN[P.block.align][1]}
-            />
-            <Action
-                onAct={() => set_attr(b => ({ dir: BLOG_DIRECTION[b.dir][0] }))}
-                title={BLOG_DIRECTION[P.block.dir][2]}
-                icon={BLOG_DIRECTION[P.block.dir][1]}
-            />
         </div>
     )
 }
