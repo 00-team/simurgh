@@ -498,7 +498,7 @@ const Actions: Component<ActionsProps> = P => {
                         </button>
                     </div>
 
-                    <div class='actions-wrapper'>
+                    <div class='actions-wrapper no-overflow'>
                         <button
                             class='action'
                             classList={{ active: P.group.style.code }}
@@ -675,23 +675,23 @@ const LinkButton: Component<LinkButtonProps> = P => {
         <div class='text-link'>
             <button
                 class='action'
-                classList={{ active: state.show }}
+                classList={{
+                    active: state.show,
+                    linked: P.group.url && P.group.url.length >= 1,
+                }}
                 onclick={() => setState(s => ({ show: !s.show }))}
-                style={{ color: P.group.url && 'var(--green)' }}
             >
                 <LinkIcon />
             </button>
-            <Show when={state.show}>
-                <div class='link-input'>
-                    <input
-                        class='styled url'
-                        placeholder='e.g. https://00-team.org'
-                        value={P.group.url}
-                        onInput={e => set_url(e.currentTarget.value)}
-                        onChange={() => setState({ show: false })}
-                    />
-                </div>
-            </Show>
+            <div class='link-input' classList={{ show: state.show }}>
+                <input
+                    class=' url title_smaller'
+                    placeholder='e.g. https://00-team.org'
+                    value={P.group.url || ''}
+                    onInput={e => set_url(e.currentTarget.value)}
+                    onChange={() => setState({ show: false })}
+                />
+            </div>
         </div>
     )
 }
