@@ -54,6 +54,14 @@
                         --bg-color: var(--alert-success);
                     }
                 }
+                &.reset {
+                    margin-left: 1em;
+
+                    --bg-color: yellow;
+                }
+                &.save {
+                    --bg-color: var(--alert-success);
+                }
                 svg {
                     width: 25px;
                     height: 25px;
@@ -103,7 +111,7 @@
         .row {
             width: 100%;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
 
             textarea {
@@ -131,8 +139,7 @@
             font-family: inherit;
         }
 
-        p {
-            background-color: var(--cg);
+        .project-desc {
             padding: 0.5rem;
             border-radius: var(--radius);
         }
