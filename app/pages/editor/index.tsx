@@ -64,14 +64,12 @@ export default () => {
     return (
         <div class='editor-fnd'>
             <div class='go-back'>
-                <div>
-                    <button
-                        class='styled icon'
-                        onClick={() => nav(`/projects/${pid}/blogs/${bid}/`)}
-                    >
-                        <ArrowLeftIcon />
-                    </button>
-                </div>
+                <button
+                    class='go-back-btn icon'
+                    onClick={() => nav(`/projects/${pid}/blogs/${bid}/`)}
+                >
+                    <ArrowLeftIcon />
+                </button>
             </div>
             <div class='editor-container'>
                 <div class='actions'>
