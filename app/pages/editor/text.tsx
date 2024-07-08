@@ -523,7 +523,6 @@ const Actions: Component<ActionsProps> = P => {
 
                         <button
                             class='action flex title_smaller'
-                            classList={{ active: P.group.style.mark }}
                             onclick={() =>
                                 alert('selecting custom font\ncoming soon...')
                             }
@@ -532,7 +531,6 @@ const Actions: Component<ActionsProps> = P => {
                         </button>
                         <button
                             class='action flex title_smaller'
-                            classList={{ active: P.group.style.mark }}
                             onclick={reset}
                             style={{ color: 'var(--yellow)' }}
                         >
