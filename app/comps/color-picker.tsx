@@ -272,7 +272,10 @@ const SavedColors: Component<SavedColorsProps> = P => {
                     onClick={() => {
                         setState(s => ({ active: s.active == i ? -1 : i }))
                     }}
-                />
+                >
+                    <div class="color"></div>
+                    <div class="background-svg"></div>
+                </div>
             ))}
         </div>
     )
