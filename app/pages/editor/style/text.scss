@@ -32,14 +32,24 @@
             &.no-overflow {
                 overflow: visible;
 
-                .action {
+                > * {
                     &:last-child {
                         border-top-right-radius: inherit;
                         border-bottom-right-radius: inherit;
+
+                        .color-action {
+                            border-top-right-radius: inherit;
+                            border-bottom-right-radius: inherit;
+                        }
                     }
                     &:nth-child(1) {
                         border-top-left-radius: inherit;
                         border-bottom-left-radius: inherit;
+
+                        .color-action {
+                            border-top-left-radius: inherit;
+                            border-bottom-left-radius: inherit;
+                        }
                     }
                 }
             }
@@ -53,7 +63,9 @@
                 background-color: transparent;
                 padding: 10px 12px;
 
-                transition: background-color 0.3s;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
 
                 svg {
                     width: 25px;
@@ -62,6 +74,7 @@
 
                 &.hover {
                     &:hover {
+                        color: white;
                         background-color: var(--sixty-percent);
                     }
                 }
@@ -86,6 +99,25 @@
             justify-content: center;
 
             gap: 3em;
+        }
+
+        .color-btn {
+            position: relative;
+            isolation: isolate;
+
+            .color-picker {
+                position: absolute;
+                top: calc(100% + 1em);
+
+                visibility: hidden;
+                opacity: 0;
+
+                transition: 0.3s;
+                &.show {
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
         }
 
         .text-link {
