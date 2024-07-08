@@ -5,6 +5,7 @@ import { BlogModel, ProjectModel, RecordModel } from 'models'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
+import { setPopup } from 'store/popup'
 import './style/project.scss'
 
 export default () => {
@@ -84,12 +85,22 @@ export default () => {
         <div class='project-fnd'>
             <div class='project-info title_small'>
                 <div class='ctas'>
-                    <Confact
-                        icon={TrashIcon}
-                        onAct={project_delete}
-                        color='var(--red)'
-                        timer_ms={2e3}
-                    />
+                    <button
+                        class='cta delete-project title_smaller'
+                        onClick={() =>
+                            setPopup({
+                                show: true,
+                                content: 'از حذف پروژه مطمعنید؟',
+                                Icon: TrashIcon,
+                                onSubmit: () => project_delete(),
+                                type: 'error',
+                                title: 'حذف پروژه',
+                            })
+                        }
+                    >
+                        <TrashIcon />
+                        حذف پروژه
+                    </button>
                 </div>
                 <div class='row'>
                     <span>نام:</span>
