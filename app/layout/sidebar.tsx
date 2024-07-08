@@ -1,5 +1,5 @@
-import { A, useNavigate } from '@solidjs/router'
-import { Editable } from 'comps'
+import { A } from '@solidjs/router'
+import { Editable, ThemeSwtich } from 'comps'
 import { ArrowIcon, LogoutIcon, ProjectIcon, UserIcon } from 'icons'
 import { httpx } from 'shared'
 import { createEffect, Show } from 'solid-js'
@@ -11,6 +11,7 @@ export default () => {
     return (
         <div class='sidebar-fnd'>
             <User />
+            <ThemeSwtich />
             <div class='links title'>
                 <A href='/projects/'>
                     <div class='holder'>
