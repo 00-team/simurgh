@@ -219,22 +219,6 @@ export default () => {
                     </button>
                 </div>
                 <div class='ctas'>
-                    <Show when={state.editing && changed()}>
-                        <Confact
-                            icon={SaveIcon}
-                            onAct={blog_update}
-                            timer_ms={700}
-                            color='var(--green)'
-                        />
-                    </Show>
-                    <Show when={state.editing && changed()}>
-                        <Confact
-                            icon={RotateCcwIcon}
-                            onAct={reset}
-                            timer_ms={700}
-                            color='var(--blue)'
-                        />
-                    </Show>
                     <button
                         class='cta title_smaller editor'
                         classList={{ active: state.editing }}
@@ -272,6 +256,34 @@ export default () => {
                         حذف مقاله
                         <TrashIcon />
                     </button>
+
+                    <Show when={state.editing && changed()}>
+                        <button
+                            class='cta title_smaller reset'
+                            onClick={() => {
+                                setPopup({
+                                    show: true,
+                                    content: 'از ریست کردن مطمعنید؟',
+                                    Icon: RotateCcwIcon,
+                                    onSubmit: () => reset(),
+                                    type: 'warning',
+                                    title: 'ریست کردن',
+                                })
+                            }}
+                        >
+                            ریست کردن
+                            <RotateCcwIcon />
+                        </button>
+                    </Show>
+                    <Show when={state.editing && changed()}>
+                        <button
+                            class='cta title_smaller save'
+                            onClick={blog_update}
+                        >
+                            ذخیره
+                            <SaveIcon />
+                        </button>
+                    </Show>
                 </div>
             </div>
             <div class='blog-body'>
@@ -348,8 +360,8 @@ export default () => {
                                 maxLength={255}
                                 dir='auto'
                                 value={state.edit.title}
-                                class='styled'
-                                placeholder='عنوان'
+                                class='styled title_small'
+                                placeholder='عنوان...'
                                 onInput={e =>
                                     setState(
                                         produce(s => {
@@ -366,7 +378,7 @@ export default () => {
                         <Show
                             when={state.editing}
                             fallback={
-                                <p dir='auto'>
+                                <p class='project-desc' dir='auto'>
                                     {state.blog.detail
                                         .split('\n')
                                         .map((l, i, a) => (
