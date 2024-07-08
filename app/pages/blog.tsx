@@ -16,6 +16,7 @@ import { createStore, produce } from 'solid-js/store'
 
 import { addAlert, Confact } from 'comps'
 import { fmt_datetime, fmt_hms, httpx } from 'shared'
+import { setPopup } from 'store/popup'
 import './style/blog.scss'
 
 export default () => {
@@ -251,12 +252,22 @@ export default () => {
                     >
                         <WrenchIcon />
                     </button>
-                    <Confact
-                        icon={TrashIcon}
-                        onAct={blog_delete}
-                        timer_ms={1500}
-                        color='var(--red)'
-                    />
+                    <button
+                        class='styled icon'
+                        classList={{ active: state.editing }}
+                        onClick={() =>
+                            setPopup({
+                                show: true,
+                                content: 'از حذف مقاله مطمعنید؟',
+                                Icon: TrashIcon,
+                                onSubmit: () => blog_delete(),
+                                type: 'error',
+                                title: 'حذف مقاله',
+                            })
+                        }
+                    >
+                        <TrashIcon />
+                    </button>
                 </div>
             </div>
             <div class='blog-body'>
