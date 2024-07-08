@@ -5,7 +5,7 @@ import {
     BLOG_ALIGN,
     DEFAULT_TEXT_GROUP,
 } from 'models'
-import { Component, onCleanup, onMount, Show } from 'solid-js'
+import { Component, createSignal, onCleanup, onMount, Show } from 'solid-js'
 
 import {
     AArrowDownIcon,
@@ -26,6 +26,7 @@ import {
 import { createStore, produce } from 'solid-js/store'
 import { setStore, store, unwrap_rec } from './store'
 import './style/text.scss'
+import { ColorPicker } from 'comps/color-picker'
 
 function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
     return {
@@ -440,14 +441,11 @@ const Actions: Component<ActionsProps> = P => {
                 fallback={<DefaultActions />}
             >
                 <div class='actions-row'>
-                    <div class='actions-wrapper'>
-                        <button
-                            class='action title_smaller flex'
-                            // style={{ color: P.group.style.color }}
-                        >
-                            رنگ
-                            <PaletteIcon />
-                        </button>
+                    <div class='actions-wrapper no-overflow'>
+                        <ColorButton
+                            color={P.group.style.color}
+                            setColor={color => set_style({ color })}
+                        />
                         <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
                         <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
                     </div>
@@ -551,7 +549,6 @@ const DefaultActions: Component = () => {
                     class='action title_smaller flex'
                     // style={{ color: P.group.style.color }}
                 >
-                    رنگ
                     <PaletteIcon />
                 </button>
                 <button
@@ -690,6 +687,33 @@ const LinkButton: Component<LinkButtonProps> = P => {
                     onChange={() => setState({ show: false })}
                 />
             </div>
+        </div>
+    )
+}
+
+type ColorButtonProps = {
+    color?: string
+    setColor(color?: string): void
+}
+const ColorButton: Component<ColorButtonProps> = P => {
+    const [show, setShow] = createSignal(false)
+
+    return (
+        <div class='color-btn'>
+            <button
+                onClick={() => setShow(s => !s)}
+                class='action icon color-action'
+                classList={{
+                    active: show(),
+                }}
+            >
+                <PaletteIcon />
+            </button>
+            <ColorPicker
+                show={show()}
+                onChange={P.setColor}
+                default={P.color}
+            />
         </div>
     )
 }
