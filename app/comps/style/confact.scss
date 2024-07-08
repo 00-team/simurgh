@@ -22,6 +22,11 @@
 
     overflow: hidden;
 
+    svg {
+        width: 25px;
+        height: 25px;
+    }
+
     &:disabled {
         pointer-events: none;
     }
