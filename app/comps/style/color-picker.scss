@@ -1,0 +1,114 @@
+.color-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+
+    background-color: var(--thirty-percent);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 1rem;
+
+    .ccp-dot {
+        border: 2px solid var(--cl);
+        box-shadow: 0 0 0 2px #000;
+        position: absolute;
+        height: 20px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+    }
+
+    .ccp-gradient {
+        width: 250px;
+        aspect-ratio: 1;
+        user-select: none;
+        border-radius: 0.8rem;
+        background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, var(--a)),
+                transparent
+            ),
+            linear-gradient(to left, var(--hue), rgba(255, 255, 255, var(--a)));
+
+        position: relative;
+        isolation: isolate;
+
+        .ccp-dot {
+            left: var(--x);
+            top: var(--y);
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    .ccp-checkered::before {
+        content: '';
+        border-radius: inherit;
+        position: absolute;
+        inset: 0;
+        background: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="white" d="M1,0H2V1H1V0ZM0,1H1V2H0V1Z"/><path fill="gray" d="M0,0H1V1H0V0ZM1,1H2V2H1V1Z"/></svg>');
+        background-size: 0.5em;
+        z-index: -1;
+
+        opacity: var(--opacity);
+    }
+
+    .ccp-silinder {
+        height: 20px;
+        user-select: none;
+        border-radius: 10px;
+
+        position: relative;
+        isolation: isolate;
+
+        .ccp-dot {
+            transform: translateX(-50%);
+            left: clamp(10px, var(--v), calc(100% - 10px));
+        }
+    }
+
+    .ccp-silinder.hue {
+        background: linear-gradient(
+            to right,
+            hsl(0, 100%, 50%),
+            hsl(60, 100%, 50%),
+            hsl(120, 100%, 50%),
+            hsl(180, 100%, 50%),
+            hsl(240, 100%, 50%),
+            hsl(300, 100%, 50%),
+            hsl(0, 100%, 50%)
+        );
+    }
+
+    .ccp-silinder.alpha {
+        background: linear-gradient(to right, transparent, var(--rgb));
+        background-size: 100%, 0.5em;
+    }
+
+    .ccp-saved-colors {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4%;
+
+        div {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            border: 2px solid var(--cg);
+            border-radius: var(--radius);
+            cursor: pointer;
+            user-select: none;
+            background-color: var(--color);
+
+            transition: 0.3s box-shadow;
+            &.active {
+                box-shadow: 0 0 10px var(--rgb);
+            }
+        }
+
+        .ccp-checkered::before {
+            z-index: 0;
+            opacity: var(--saved-op);
+        }
+    }
+}
