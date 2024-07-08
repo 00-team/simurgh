@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from '@solidjs/router'
-import { addAlert, Confact } from 'comps'
+import { addAlert } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronDownIcon,
@@ -232,7 +232,7 @@ const EditorBlock: Component<EditorBlockProps> = P => {
             </div>
             <div class='block-actions'>
                 <button
-                    class='styled icon'
+                    class='block-action icon'
                     disabled={P.idx == 0}
                     onClick={e => {
                         e.stopPropagation()
@@ -248,20 +248,29 @@ const EditorBlock: Component<EditorBlockProps> = P => {
                 >
                     <ChevronUpIcon />
                 </button>
-                <Confact
-                    icon={TrashIcon}
-                    color='var(--red)'
-                    timer_ms={500}
-                    onAct={() => {
-                        setStore(
-                            produce(s => {
-                                s.data.splice(P.idx, 1)
-                            })
-                        )
-                    }}
-                />
                 <button
-                    class='styled icon'
+                    class='block-action icon delete'
+                    onclick={() => {
+                        setPopup({
+                            show: true,
+                            content: 'از حذف کردن بلاک مطمعنید؟',
+                            Icon: TrashIcon,
+                            onSubmit: () => {
+                                setStore(
+                                    produce(s => {
+                                        s.data.splice(P.idx, 1)
+                                    })
+                                )
+                            },
+                            title: 'حذف بلاک',
+                            type: 'error',
+                        })
+                    }}
+                >
+                    <TrashIcon />
+                </button>
+                <button
+                    class='block-action icon'
                     disabled={P.idx == store.data.length - 1}
                     onClick={e => {
                         e.preventDefault()
