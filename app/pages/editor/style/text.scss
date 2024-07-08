@@ -53,14 +53,22 @@
                 background-color: transparent;
                 padding: 10px 12px;
 
+                transition: background-color 0.3s;
+
                 svg {
                     width: 25px;
                     height: 25px;
                 }
 
+                &.hover {
+                    &:hover {
+                        background-color: var(--sixty-percent);
+                    }
+                }
+
                 &.active {
-                    color: white;
                     background-color: var(--sixty-percent);
+                    color: white;
                 }
 
                 &.flex {
