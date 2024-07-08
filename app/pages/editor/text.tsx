@@ -465,7 +465,7 @@ const Actions: Component<ActionsProps> = P => {
                     /> */}
                     <div class='actions-wrapper'>
                         <button
-                            class='action title_smaller '
+                            class='action icon title_smaller '
                             // style={{ color: P.group.style.color }}
                             classList={{ active: P.group.style.bold }}
                             onclick={() =>
@@ -475,7 +475,7 @@ const Actions: Component<ActionsProps> = P => {
                             <BoldIcon />
                         </button>
                         <button
-                            class='action title_smaller '
+                            class='action icon title_smaller '
                             // style={{ color: P.group.style.color }}
                             classList={{ active: P.group.style.italic }}
                             onclick={() =>
@@ -485,7 +485,7 @@ const Actions: Component<ActionsProps> = P => {
                             <ItalicIcon />
                         </button>
                         <button
-                            class='action title_smaller '
+                            class='action icon title_smaller '
                             // style={{ color: P.group.style.color }}
                             classList={{ active: P.group.style.underline }}
                             onclick={() =>
@@ -500,7 +500,7 @@ const Actions: Component<ActionsProps> = P => {
 
                     <div class='actions-wrapper no-overflow'>
                         <button
-                            class='action'
+                            class='action icon'
                             classList={{ active: P.group.style.code }}
                             onclick={() =>
                                 set_style({ code: !P.group.style.code })
@@ -510,7 +510,7 @@ const Actions: Component<ActionsProps> = P => {
                         </button>
 
                         <button
-                            class='action'
+                            class='action icon'
                             classList={{ active: P.group.style.mark }}
                             onclick={() =>
                                 set_style({ mark: !P.group.style.mark })
@@ -557,43 +557,43 @@ const DefaultActions: Component = () => {
                     <PaletteIcon />
                 </button>
                 <button
-                    class='action title_smaller '
+                    class='action icon title_smaller '
                     // style={{ color: P.group.style.color }}
                 >
                     <AArrowUpIcon />
                 </button>
                 <button
-                    class='action title_smaller '
+                    class='action icon title_smaller '
                     // style={{ color: P.group.style.color }}
                 >
                     <AArrowDownIcon />
                 </button>
             </div>
             <div class='actions-wrapper disable'>
-                <button class='action title_smaller '>
+                <button class='action icon title_smaller '>
                     <BoldIcon />
                 </button>
-                <button class='action title_smaller '>
+                <button class='action icon title_smaller '>
                     <ItalicIcon />
                 </button>
-                <button class='action title_smaller '>
+                <button class='action icon title_smaller '>
                     <UnderlineIcon />
                 </button>
             </div>
 
             <div class='actions-wrapper disable'>
-                <button class='action'>
+                <button class='action icon'>
                     <CodeXmlIcon />
                 </button>
 
-                <button class='action'>
+                <button class='action icon'>
                     <HighlighterIcon />
                 </button>
 
-                <button class='action'>
+                <button class='action icon'>
                     <LinkIcon />
                 </button>
-                <button class='action flex title_smaller'>
+                <button class='action icon flex title_smaller'>
                     <TypeIcon />
                 </button>
                 <button
@@ -674,7 +674,7 @@ const LinkButton: Component<LinkButtonProps> = P => {
     return (
         <div class='text-link'>
             <button
-                class='action'
+                class='action icon'
                 classList={{
                     active: state.show,
                     linked: P.group.url && P.group.url.length >= 1,
