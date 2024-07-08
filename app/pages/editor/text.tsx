@@ -636,7 +636,7 @@ const FontSizeButton: Component<FontSizeButtonProps> = P => {
 
     return (
         <button
-            class='action icon'
+            class='action icon hover'
             onClick={add_size}
             onMouseDown={() => {
                 timer = setInterval(add_size, 100)
