@@ -187,26 +187,44 @@
                 width: 100%;
                 display: flex;
                 align-items: center;
-                border: 2px solid var(--ca);
-                border-radius: 0.8rem;
 
                 min-height: 200px;
-
-                background-color: var(--thirty-percent);
 
                 &.active {
                     // border-color: var(--cl);
                 }
 
-                &-actions {
+                .block-actions {
                     display: flex;
+                    align-items: center;
+                    justify-content: center;
                     flex-direction: column;
-                    flex-shrink: 0;
-                    width: max-content;
-                    gap: 0.5rem;
-                    align-items: flex-end;
-                    padding: 1rem;
-                    height: 100%;
+                    gap: 1em;
+
+                    padding-left: 1em;
+
+                    .block-action {
+                        border-radius: 100vmax;
+                        padding: 10px;
+
+                        &:not(.delete) {
+                            border: 2px solid var(--ca);
+                        }
+
+                        &.delete {
+                            background-color: color-mix(
+                                in srgb,
+                                var(--alert-error) 80%,
+                                white
+                            );
+                            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+                        }
+
+                        svg {
+                            width: 25px;
+                            height: 25px;
+                        }
+                    }
                 }
 
                 .content {
@@ -214,6 +232,10 @@
                     height: 100%;
                     display: grid;
                     place-items: center;
+
+                    border: 2px solid var(--ca);
+                    border-radius: 0.8rem;
+                    background-color: var(--thirty-percent);
                 }
             }
         }
