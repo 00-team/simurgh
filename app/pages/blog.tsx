@@ -202,7 +202,7 @@ export default () => {
     return (
         <div class='blog-fnd'>
             <div class='actions'>
-                <div>
+                <div class='ctas'>
                     <button
                         class='styled icon'
                         style={{ '--color': 'var(--blue)' }}
@@ -217,18 +217,8 @@ export default () => {
                     >
                         <ArrowLeftIcon />
                     </button>
-                    <button
-                        class='styled icon'
-                        onClick={() =>
-                            nav(
-                                `/projects/${pid}/blogs/${state.blog.id}/editor/`
-                            )
-                        }
-                    >
-                        <TextCursorIcon />
-                    </button>
                 </div>
-                <div>
+                <div class='ctas'>
                     <Show when={state.editing && changed()}>
                         <Confact
                             icon={SaveIcon}
@@ -246,14 +236,27 @@ export default () => {
                         />
                     </Show>
                     <button
-                        class='styled icon edit-btn'
+                        class='cta title_smaller editor'
+                        classList={{ active: state.editing }}
+                        onClick={() =>
+                            nav(
+                                `/projects/${pid}/blogs/${state.blog.id}/editor/`
+                            )
+                        }
+                    >
+                        باز کردن ادیتور
+                        <TextCursorIcon />
+                    </button>
+                    <button
+                        class='cta title_smaller edit'
                         classList={{ active: state.editing }}
                         onClick={() => setState(s => ({ editing: !s.editing }))}
                     >
+                        {state.editing ? 'تایید ویرایش' : 'ویرایش مقاله'}
                         <WrenchIcon />
                     </button>
                     <button
-                        class='styled icon'
+                        class='cta title_smaller delete '
                         classList={{ active: state.editing }}
                         onClick={() =>
                             setPopup({
@@ -266,6 +269,7 @@ export default () => {
                             })
                         }
                     >
+                        حذف مقاله
                         <TrashIcon />
                     </button>
                 </div>
