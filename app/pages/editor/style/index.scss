@@ -8,6 +8,31 @@
 
     .go-back {
         margin-bottom: 1em;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .go-back-btn {
+            margin-right: auto;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--thirty-percent);
+
+            border: 2px solid var(--accent-color);
+            border-radius: 100vmax;
+
+            cursor: pointer;
+
+            transition: 220ms ease-in-out;
+            transition-property: border-color, background-color, color;
+
+            svg {
+                margin: 8px;
+            }
+        }
     }
 
     .editor-container {
