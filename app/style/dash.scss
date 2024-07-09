@@ -18,5 +18,9 @@
         isolation: isolate;
 
         // padding: 5vh 3vw;
+
+        &::-webkit-scrollbar {
+            background-color: transparent;
+        }
     }
 }
