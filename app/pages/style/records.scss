@@ -3,6 +3,9 @@
     flex-direction: column;
     width: 100%;
 
+    padding: 5vh 3vw;
+    padding-bottom: 0;
+
     direction: rtl;
 
     .actions {
@@ -16,13 +19,14 @@
             gap: 0.5rem;
 
             margin-right: auto;
+
             .go-back {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 background-color: var(--thirty-percent);
                 color: var(--accent-color);
-                border: 2px solid var(--ten-percent);
+                border: 2px solid var(--accent-color);
                 border-radius: 100vmax;
                 cursor: pointer;
                 transition: 0.3s;
@@ -46,12 +50,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
             background: var(--ten-percent);
-            border: 1px solid var(--accent-color);
-            border: 2px;
+            color: white;
+
             border-radius: 8px;
+
             cursor: pointer;
-            margin-top: 2em;
             padding: 0.5rem 2rem;
         }
 
