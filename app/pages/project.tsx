@@ -246,6 +246,12 @@ const Blogs: Component<BlogProps> = P => {
                 <button class='add-btn styled title_smaller' onClick={blog_add}>
                     بلاگ جدید
                 </button>
+                <button
+                    class='new-blog title_small'
+                    onclick={() => nav('blogs/categories/')}
+                >
+                    دسته بندی ها
+                </button>
             </div>
             <div class='blog-list'>
                 {state.blogs.slice(0, 3).map(b => (
