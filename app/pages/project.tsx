@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from '@solidjs/router'
-import { Confact, Editable } from 'comps'
-import { FileIcon, ImageIcon, TrashIcon } from 'icons'
+import { Editable } from 'comps'
+import { ArrowLeftIcon, FileIcon, ImageIcon, TrashIcon } from 'icons'
 import { BlogModel, ProjectModel, RecordModel } from 'models'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
@@ -83,6 +83,17 @@ export default () => {
 
     return (
         <div class='project-fnd'>
+            <div class='actions'>
+                <div>
+                    <button
+                        class='  go-back icon'
+                        style={{ '--color': 'var(--blue)' }}
+                        onClick={() => nav('/projects/')}
+                    >
+                        <ArrowLeftIcon size={25} />
+                    </button>
+                </div>
+            </div>
             <div class='project-info title_small'>
                 <div class='ctas'>
                     <button
