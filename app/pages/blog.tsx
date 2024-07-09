@@ -204,14 +204,14 @@ export default () => {
             <div class='actions'>
                 <div class='ctas'>
                     <button
-                        class='styled icon'
+                        class='go-back icon'
                         style={{ '--color': 'var(--blue)' }}
                         onClick={() => nav(`/projects/${pid}/`)}
                     >
                         <ArrowUpLeftIcon />
                     </button>
                     <button
-                        class='styled icon'
+                        class='go-back icon'
                         style={{ '--color': 'var(--blue)' }}
                         onClick={() => nav(`/projects/${pid}/blogs/`)}
                     >
