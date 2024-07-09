@@ -27,7 +27,7 @@ export const ColorPicker: Component<Props> = P => {
         x: 0,
         y: 0,
         active: false,
-        alpha: 0,
+        alpha: 100,
         hsv: {
             h: 0,
             s: 100,
@@ -46,6 +46,10 @@ export const ColorPicker: Component<Props> = P => {
     function inactive() {
         setState({ active: false })
     }
+
+    createEffect(() => {
+        console.log(state.alpha)
+    })
 
     onMount(() => document.addEventListener('mouseup', inactive))
     onCleanup(() => document.removeEventListener('mouseup', inactive))
@@ -273,8 +277,8 @@ const SavedColors: Component<SavedColorsProps> = P => {
                         setState(s => ({ active: s.active == i ? -1 : i }))
                     }}
                 >
-                    <div class="color"></div>
-                    <div class="background-svg"></div>
+                    <div class='color'></div>
+                    <div class='background-svg'></div>
                 </div>
             ))}
         </div>
