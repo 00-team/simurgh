@@ -110,6 +110,10 @@
 
         padding: 1em 0;
 
+        @media screen and (max-height: 800px) {
+            padding: 0;
+        }
+
         a {
             display: flex;
             align-items: center;
