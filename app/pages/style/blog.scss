@@ -22,6 +22,24 @@
             align-items: center;
             gap: 0.5rem;
 
+            .go-back {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: var(--thirty-percent);
+                color: var(--accent-color);
+                border: 2px solid var(--accent-color);
+                border-radius: 100vmax;
+                cursor: pointer;
+                transition: 0.3s;
+
+                svg {
+                    width: 25px;
+                    height: 25px;
+                    margin: 10px;
+                }
+            }
+
             .cta {
                 --bg-color: #00c4ff;
 
