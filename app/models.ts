@@ -163,6 +163,14 @@ export type BlogCategory = {
     project: number
     slug: string
 }
+export type BlogTag = {
+    count: number
+    detail: string
+    id: number
+    label: string
+    project: number
+    slug: string
+}
 
 export const DEFAULT_BLOG: BlogModel = {
     id: 0,
