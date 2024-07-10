@@ -1,12 +1,9 @@
-use actix_web::{
-    dev::Payload, http::header::AUTHORIZATION, web::Data, HttpMessage,
-    HttpRequest,
-};
+use actix_web::{dev::Payload, web::Data, HttpMessage, HttpRequest};
 use serde::{Deserialize, Serialize};
 use std::{future::Future, pin::Pin};
 use utoipa::ToSchema;
 
-use super::{AppErrForbidden, AppErrNotFound};
+use super::{auth::Authorization, AppErrBadAuth, AppErrNotFound};
 
 #[derive(
     Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
@@ -35,9 +32,11 @@ impl actix_web::FromRequest for ApiKey {
     fn from_request(rq: &HttpRequest, _: &mut Payload) -> Self::Future {
         let rq = rq.clone();
         Box::pin(async move {
-            let auth = rq.headers().get(AUTHORIZATION);
-            let auth = auth.ok_or(AppErrForbidden(None))?;
-            Ok(ApiKey(auth.to_str()?.to_string()))
+            let auth = Authorization::extract(&rq).await?;
+            if auth.prefix != "api-key" {
+                return Err(AppErrBadAuth(None));
+            }
+            Ok(ApiKey(auth.token))
         })
     }
 }
