@@ -67,9 +67,6 @@ section.categories {
                 &.add {
                     --bg-color: var(--alert-success);
                 }
-                &.see {
-                    --bg-color: var(--alert-info);
-                }
 
                 .icon {
                     width: 25px;
@@ -82,6 +79,7 @@ section.categories {
     .categories-wrapper {
         display: flex;
         align-items: center;
+        flex-direction: column;
 
         padding: 1em 1.5em;
 
@@ -92,126 +90,86 @@ section.categories {
 
         background-color: var(--thirty-percent);
 
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
+        table {
+            margin-top: 4em;
 
-        &.active {
-            .see {
-                transform: translateX(-200%);
-            }
-            .add {
-                transform: translateX(0);
-            }
-        }
-
-        .see {
             width: 100%;
-            height: 100%;
+            color: var(--accent-color);
 
-            display: flex;
-            align-items: center;
-            flex-direction: column;
+            border-spacing: 0;
+            border-radius: 0.8rem;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
-            will-change: transform;
+            overflow: hidden;
+            direction: rtl;
 
-            transition: 0.5s cubic-bezier(0.45, 0.02, 0.09, 0.98);
-
-            table {
-                margin-top: 4em;
-
-                width: 100%;
-                color: var(--accent-color);
-
-                border-spacing: 0;
-                border-radius: 0.8rem;
-                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
-                overflow: hidden;
-                direction: rtl;
-
-                thead {
-                    td,
-                    th {
-                        border: 1px solid black;
-
-                        padding: 1em 0.25em;
-                    }
-                    tr {
-                        background: var(--accent-color);
-                        color: var(--primary-color);
-                    }
-                }
-                tbody {
-                    &.empty {
-                        position: relative;
-                        isolation: isolate;
-
-                        height: 300px;
-
-                        &::before {
-                            content: 'دسته بندی برای نمایش وجود ندارد!';
-
-                            position: absolute;
-
-                            width: 100%;
-                            height: 100%;
-
-                            display: grid;
-                            place-items: center;
-                            font-family: 'iranBold';
-                            font-size: 2em;
-                        }
-                    }
-
-                    tr {
-                        background: var(--primary-color);
-                        color: var(--accent-color);
-
-                        transition: 0.3s;
-
-                        &:nth-child(even) {
-                            background-color: color-mix(
-                                in srgb,
-                                var(--accent-color) 10%,
-                                var(--primary-color)
-                            );
-                        }
-                    }
-                }
-
+            thead {
                 td,
                 th {
-                    text-align: center;
+                    border: 1px solid black;
 
                     padding: 1em 0.25em;
                 }
                 tr {
-                    position: relative;
-                    isolation: isolate;
-                }
-
-                .id {
-                    width: clamp(0px, 60px, 100px);
-                }
-                .count {
-                    width: clamp(0px, 150px, 200px);
+                    background: var(--accent-color);
+                    color: var(--primary-color);
                 }
             }
-        }
+            tbody {
+                &.empty {
+                    position: relative;
+                    isolation: isolate;
 
-        .add {
-            position: absolute;
-            inset: 0;
+                    height: 300px;
 
-            width: 100%;
-            height: 100%;
+                    &::before {
+                        content: 'دسته بندی برای نمایش وجود ندارد!';
 
-            transform: translateX(200%);
+                        position: absolute;
 
-            will-change: transform;
+                        width: 100%;
+                        height: 100%;
 
-            transition: 0.5s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+                        display: grid;
+                        place-items: center;
+                        font-family: 'iranBold';
+                        font-size: 2em;
+                    }
+                }
+
+                tr {
+                    background: var(--primary-color);
+                    color: var(--accent-color);
+
+                    transition: 0.3s;
+
+                    &:nth-child(even) {
+                        background-color: color-mix(
+                            in srgb,
+                            var(--accent-color) 10%,
+                            var(--primary-color)
+                        );
+                    }
+                }
+            }
+
+            td,
+            th {
+                text-align: center;
+
+                padding: 1em 0.25em;
+            }
+            tr {
+                position: relative;
+                isolation: isolate;
+            }
+
+            .id {
+                width: clamp(0px, 60px, 100px);
+            }
+            .count {
+                width: clamp(0px, 150px, 200px);
+            }
         }
     }
 }
