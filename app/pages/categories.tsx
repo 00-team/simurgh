@@ -1,5 +1,5 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
-import { ArrowLeftIcon } from 'icons'
+import { ArrowLeftIcon, PlusIcon } from 'icons'
 import { BlogCategory } from 'models'
 import { httpx } from 'shared'
 import { createEffect } from 'solid-js'
@@ -48,6 +48,14 @@ export default () => {
                         onClick={() => nav('/projects/' + pid)}
                     >
                         <ArrowLeftIcon size={25} />
+                    </button>
+                </div>
+                <div class='ctas'>
+                    <button class='cta title_smaller add' onClick={() => {}}>
+                        <div class='holder'>دسته بندی جدید </div>
+                        <div class='icon'>
+                            <PlusIcon />
+                        </div>
                     </button>
                 </div>
             </div>
