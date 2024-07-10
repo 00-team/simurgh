@@ -48,6 +48,79 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
         }
         BlogData::Break => rsx! { hr {} },
         BlogData::Empty => rsx!(),
+        BlogData::Map { latitude, longitude, align } => rsx! {
+            div {
+                style: "text-align: {align}",
+
+                iframe {
+                    frameborder: "0",
+                    src: "https://www.google.com/maps/embed/v1/place?q={latitude},{longitude}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+                }
+            }
+        },
+        BlogData::Audio { url, align, .. } => rsx! {
+            div {
+                style: "text-align: {align}",
+                audio {
+                    src: "{url}",
+                    controls: true,
+                }
+            }
+        },
+        BlogData::Video { url, align, .. } => rsx! {
+            div {
+                style: "text-align: {align}",
+                video {
+                    src: "{url}",
+                    controls: true,
+                }
+            }
+        },
+        BlogData::List { ordered, items, align, dir } => rsx! {
+            ul {
+                style: "direction: {dir};text-align: {align}",
+                for (txt, sub) in items {
+                    li {
+                        txt
+                        if let Some(items) = sub {
+                            for (txt, sub) in items {
+                                li {
+                                    txt
+                                    if let Some(items) = sub {
+                                        for txt in items { li { txt } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        BlogData::CheckList { ordered, items, align, dir } => rsx! {
+            ul {
+                style: "direction: {dir};text-align: {align}",
+                for ((txt, ch), sub) in items {
+                    li {
+                        input { "type": "checkbox", checked: "{ch}" }
+                        txt
+                        if let Some(items) = sub {
+                            for ((txt, ch), sub) in items {
+                                li {
+                                    input { "type": "checkbox", checked: "{ch}" }
+                                    txt
+                                    if let Some(items) = sub {
+                                        for (txt, ch) in items { li {
+                                            input { "type": "checkbox", checked: "{ch}" }
+                                            txt
+                                        } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
     });
 
     rsx! { for e in elements { e } }.render()
