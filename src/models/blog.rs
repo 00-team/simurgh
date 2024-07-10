@@ -137,6 +137,36 @@ pub enum BlogData {
         align: BlogAlign,
         alt: String,
     },
+    Audio {
+        record_id: Option<i64>,
+        url: String,
+        align: BlogAlign,
+    },
+    Video {
+        record_id: Option<i64>,
+        url: String,
+        align: BlogAlign,
+    },
+    Map {
+        latitude: f64,
+        longitude: f64,
+        align: BlogAlign,
+    },
+    List {
+        ordered: bool,
+        items: Vec<(String, Option<Vec<(String, Option<Vec<String>>)>>)>,
+        align: BlogAlign,
+        dir: BlogDirection,
+    },
+    CheckList {
+        ordered: bool,
+        items: Vec<(
+            (String, bool),
+            Option<Vec<((String, bool), Option<Vec<(String, bool)>>)>>,
+        )>,
+        align: BlogAlign,
+        dir: BlogDirection,
+    },
     Break,
     #[default]
     Empty,
