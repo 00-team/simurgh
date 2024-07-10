@@ -67,6 +67,9 @@ section.categories {
                 &.add {
                     --bg-color: var(--alert-success);
                 }
+                &.see {
+                    --bg-color: var(--alert-info);
+                }
 
                 .icon {
                     width: 25px;
@@ -79,7 +82,6 @@ section.categories {
     .categories-wrapper {
         display: flex;
         align-items: center;
-        flex-direction: column;
 
         padding: 1em 1.5em;
 
@@ -90,86 +92,126 @@ section.categories {
 
         background-color: var(--thirty-percent);
 
-        table {
-            margin-top: 4em;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
 
+        &.active {
+            .see {
+                transform: translateX(-200%);
+            }
+            .add {
+                transform: translateX(0);
+            }
+        }
+
+        .see {
             width: 100%;
-            color: var(--accent-color);
+            height: 100%;
 
-            border-spacing: 0;
-            border-radius: 0.8rem;
-            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
 
-            overflow: hidden;
-            direction: rtl;
+            will-change: transform;
 
-            thead {
+            transition: 0.5s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
+            table {
+                margin-top: 4em;
+
+                width: 100%;
+                color: var(--accent-color);
+
+                border-spacing: 0;
+                border-radius: 0.8rem;
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+                overflow: hidden;
+                direction: rtl;
+
+                thead {
+                    td,
+                    th {
+                        border: 1px solid black;
+
+                        padding: 1em 0.25em;
+                    }
+                    tr {
+                        background: var(--accent-color);
+                        color: var(--primary-color);
+                    }
+                }
+                tbody {
+                    &.empty {
+                        position: relative;
+                        isolation: isolate;
+
+                        height: 300px;
+
+                        &::before {
+                            content: 'دسته بندی برای نمایش وجود ندارد!';
+
+                            position: absolute;
+
+                            width: 100%;
+                            height: 100%;
+
+                            display: grid;
+                            place-items: center;
+                            font-family: 'iranBold';
+                            font-size: 2em;
+                        }
+                    }
+
+                    tr {
+                        background: var(--primary-color);
+                        color: var(--accent-color);
+
+                        transition: 0.3s;
+
+                        &:nth-child(even) {
+                            background-color: color-mix(
+                                in srgb,
+                                var(--accent-color) 10%,
+                                var(--primary-color)
+                            );
+                        }
+                    }
+                }
+
                 td,
                 th {
-                    border: 1px solid black;
+                    text-align: center;
 
                     padding: 1em 0.25em;
                 }
                 tr {
-                    background: var(--accent-color);
-                    color: var(--primary-color);
-                }
-            }
-            tbody {
-                &.empty {
                     position: relative;
                     isolation: isolate;
-
-                    height: 300px;
-
-                    &::before {
-                        content: 'دسته بندی برای نمایش وجود ندارد!';
-
-                        position: absolute;
-
-                        width: 100%;
-                        height: 100%;
-
-                        display: grid;
-                        place-items: center;
-                        font-family: 'iranBold';
-                        font-size: 2em;
-                    }
                 }
 
-                tr {
-                    background: var(--primary-color);
-                    color: var(--accent-color);
-
-                    transition: 0.3s;
-
-                    &:nth-child(even) {
-                        background-color: color-mix(
-                            in srgb,
-                            var(--accent-color) 10%,
-                            var(--primary-color)
-                        );
-                    }
+                .id {
+                    width: clamp(0px, 60px, 100px);
+                }
+                .count {
+                    width: clamp(0px, 150px, 200px);
                 }
             }
+        }
 
-            td,
-            th {
-                text-align: center;
+        .add {
+            position: absolute;
+            inset: 0;
 
-                padding: 1em 0.25em;
-            }
-            tr {
-                position: relative;
-                isolation: isolate;
-            }
+            width: 100%;
+            height: 100%;
 
-            .id {
-                width: clamp(0px, 60px, 100px);
-            }
-            .count {
-                width: clamp(0px, 150px, 200px);
-            }
+            transform: translateX(200%);
+
+            will-change: transform;
+
+            transition: 0.5s cubic-bezier(0.45, 0.02, 0.09, 0.98);
         }
     }
 }
