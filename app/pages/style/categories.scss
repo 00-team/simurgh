@@ -84,6 +84,27 @@ section.categories {
                 }
             }
             tbody {
+                &.empty {
+                    position: relative;
+                    isolation: isolate;
+
+                    height: 300px;
+
+                    &::before {
+                        content: 'دسته بندی برای نمایش وجود ندارد!';
+
+                        position: absolute;
+
+                        width: 100%;
+                        height: 100%;
+
+                        display: grid;
+                        place-items: center;
+                        font-family: 'iranBold';
+                        font-size: 2em;
+                    }
+                }
+
                 tr {
                     background: var(--primary-color);
                     color: var(--accent-color);
