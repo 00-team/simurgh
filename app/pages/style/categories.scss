@@ -84,7 +84,6 @@ section.categories {
         padding: 1em 1.5em;
 
         width: 100%;
-        height: 100%;
 
         border-radius: 1rem;
 
@@ -104,6 +103,10 @@ section.categories {
             direction: rtl;
 
             thead {
+                th {
+                    position: sticky;
+                    top: 0;
+                }
                 td,
                 th {
                     border: 1px solid black;
@@ -150,6 +153,46 @@ section.categories {
                             var(--primary-color)
                         );
                     }
+
+                    &:hover {
+                        .edit {
+                            opacity: 1;
+                        }
+                    }
+
+                    .edit {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0.5em;
+
+                        opacity: 0.5;
+
+                        transition: 0.5s;
+
+                        button {
+                            border-radius: 0.5rem;
+                            box-shadow: color-mix(
+                                    in srgb,
+                                    var(--accent-color) 30%,
+                                    transparent
+                                )
+                                0px 5px 15px;
+                        }
+
+                        .dlt {
+                            color: var(--alert-error);
+                        }
+                        .edit {
+                            color: orange;
+                        }
+                        svg {
+                            width: 25px;
+                            height: 25px;
+
+                            margin: 8px;
+                        }
+                    }
                 }
             }
 
@@ -168,6 +211,9 @@ section.categories {
                 width: clamp(0px, 60px, 100px);
             }
             .count {
+                width: clamp(0px, 150px, 200px);
+            }
+            .config {
                 width: clamp(0px, 150px, 200px);
             }
         }
