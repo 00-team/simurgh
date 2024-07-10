@@ -1,6 +1,6 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { addAlert } from 'comps'
-import { ArrowLeftIcon, PlusIcon } from 'icons'
+import { ArrowLeftIcon, PencilIcon, PlusIcon, TrashIcon } from 'icons'
 import { BlogCategory } from 'models'
 import { httpx } from 'shared'
 import { Component, createEffect, createSignal } from 'solid-js'
@@ -98,6 +98,7 @@ export default () => {
                             <th class='detail'>توضیح </th>
                             <th class='project'>پروژه</th>
                             <th class='count'>تعداد استفاده</th>
+                            <th class='config'></th>
                         </tr>
                     </thead>
                     <tbody
@@ -140,6 +141,14 @@ const Category: Component<CategoryProps> = P => {
                     </td>
                     <td>{P.category.project}</td>
                     <td>{P.category.count}</td>
+                    <td class='edit'>
+                        <button class='dlt icon'>
+                            <TrashIcon />
+                        </button>
+                        <button class='edit icon'>
+                            <PencilIcon />
+                        </button>
+                    </td>
                 </tr>
             )}
         </>
