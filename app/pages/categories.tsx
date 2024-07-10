@@ -4,18 +4,19 @@ import { ArrowLeftIcon, PencilIcon, PlusIcon, TrashIcon } from 'icons'
 import { BlogCategory } from 'models'
 import { httpx } from 'shared'
 import { Component, createEffect, createSignal } from 'solid-js'
-import { createStore, produce } from 'solid-js/store'
+import { createStore, produce, SetStoreFunction } from 'solid-js/store'
+import { setPopup } from 'store/popup'
 import './style/categories.scss'
+
+type State = {
+    categories: BlogCategory[]
+    page: number
+}
 
 export default () => {
     const { pid } = useParams()
     const nav = useNavigate()
     const [params, setParams] = useSearchParams()
-
-    type State = {
-        categories: BlogCategory[]
-        page: number
-    }
 
     const [state, setState] = createStore<State>({
         categories: [],
@@ -108,7 +109,12 @@ export default () => {
                         {state.categories.length >= 1 ? (
                             <>
                                 {state.categories.map(C => {
-                                    return <Category category={C} />
+                                    return (
+                                        <Category
+                                            setState={setState}
+                                            category={C}
+                                        />
+                                    )
                                 })}
                             </>
                         ) : (
@@ -123,9 +129,37 @@ export default () => {
 
 interface CategoryProps {
     category: BlogCategory
+    setState: SetStoreFunction<State>
 }
 const Category: Component<CategoryProps> = P => {
     const [editable, seteditable] = createSignal(false)
+    const { pid } = useParams()
+
+    function delete_category(category_id: number) {
+        httpx({
+            url: `/api/projects/${pid}/blog-categories/${category_id}/`,
+            method: 'DELETE',
+            params: { pid, bcid: category_id },
+            onLoad(x) {
+                if (x.status != 200) return
+
+                addAlert({
+                    type: 'success',
+                    content: 'دسته بندی شما با موفقیت حذف شد',
+                    subject: 'موفق!',
+                    timeout: 3,
+                })
+
+                P.setState(
+                    produce(s => {
+                        s.categories = s.categories.filter(
+                            s => s.id !== category_id
+                        )
+                    })
+                )
+            },
+        })
+    }
 
     return (
         <>
@@ -142,7 +176,20 @@ const Category: Component<CategoryProps> = P => {
                     <td>{P.category.project}</td>
                     <td>{P.category.count}</td>
                     <td class='edit'>
-                        <button class='dlt icon'>
+                        <button
+                            class='dlt icon'
+                            onclick={() =>
+                                setPopup({
+                                    show: true,
+                                    content: 'از حذف دسته بندی مطمعنید؟',
+                                    Icon: TrashIcon,
+                                    title: 'حذف دسته بندی',
+                                    type: 'error',
+                                    onSubmit: () =>
+                                        delete_category(P.category.id),
+                                })
+                            }
+                        >
                             <TrashIcon />
                         </button>
                         <button class='edit icon'>
