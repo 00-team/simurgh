@@ -106,7 +106,6 @@ export type BlogImage = {
 
 export type BlogVideo = {
     align: 'left' | 'center' | 'right'
-    Allowed: 'left' | 'center' | 'right'
     kind: 'video'
     record_id: number | null
     url: string
@@ -201,6 +200,24 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
         url: '',
         align: 'left',
         alt: '',
+    },
+    audio: {
+        align: 'center',
+        kind: 'audio',
+        record_id: 0,
+        url: '',
+    },
+    map: {
+        align: 'center',
+        kind: 'map',
+        latitude: 0,
+        longitude: 0,
+    },
+    video: {
+        align: 'center',
+        kind: 'video',
+        record_id: 0,
+        url: '',
     },
 } as const
 
