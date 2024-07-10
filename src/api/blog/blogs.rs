@@ -8,8 +8,8 @@ use utoipa::{OpenApi, ToSchema};
 use crate::config::Config;
 use crate::docs::UpdatePaths;
 use crate::models::blog::{
-    Blog, BlogAlign, BlogData, BlogDirection, BlogStatus, BlogStyle,
-    BlogTextGroup,
+    Blog, BlogAlign, BlogCheckListItem, BlogData, BlogDirection, BlogListItem,
+    BlogStatus, BlogStyle, BlogTextGroup,
 };
 use crate::models::project::Project;
 use crate::models::user::User;
@@ -27,6 +27,7 @@ use crate::{utils, AppState};
     components(schemas(
         Blog, BlogData, BlogStatus, BlogStyle, BlogUpdateBody,
         BlogTextGroup, BlogDirection, BlogAlign, BlogThumbnailUpload,
+        BlogListItem, BlogCheckListItem
     )),
     servers((url = "/projects/{pid}/blogs")),
     modifiers(&UpdatePaths)
@@ -187,7 +188,7 @@ async fn blog_update(
 }
 
 #[utoipa::path(
-    patch,
+    put,
     params(("pid" = i64, Path, example = 1), ("bid" = i64, Path, example = 1)),
     request_body = Vec<BlogData>,
     responses((status = 200, body = Blog))

@@ -118,6 +118,21 @@ pub struct BlogTextGroup {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+pub struct BlogListItem {
+    pub text: String,
+    #[schema(example = json!([]))]
+    pub children: Option<Vec<Self>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+pub struct BlogCheckListItem {
+    pub checked: bool,
+    pub text: String,
+    #[schema(example = json!([]))]
+    pub children: Option<Vec<Self>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
 #[serde(rename_all = "snake_case", tag = "kind")]
 pub enum BlogData {
     Heading {
@@ -154,16 +169,13 @@ pub enum BlogData {
     },
     List {
         ordered: bool,
-        items: Vec<(String, Option<Vec<(String, Option<Vec<String>>)>>)>,
+        items: Vec<BlogListItem>,
         align: BlogAlign,
         dir: BlogDirection,
     },
     CheckList {
         ordered: bool,
-        items: Vec<(
-            (String, bool),
-            Option<Vec<((String, bool), Option<Vec<(String, bool)>>)>>,
-        )>,
+        items: Vec<BlogCheckListItem>,
         align: BlogAlign,
         dir: BlogDirection,
     },
