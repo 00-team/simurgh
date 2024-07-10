@@ -61,7 +61,7 @@ const Root = () => {
                             <Route path='/records/' component={Records} />
                             <Route path='/blogs' component={Blogs} />
                             <Route
-                                path='/blogs/categories/'
+                                path='/blogs-categories/'
                                 component={Categories}
                             />
                             <Route path='/blogs/:bid'>

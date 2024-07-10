@@ -248,7 +248,7 @@ const Blogs: Component<BlogProps> = P => {
                 </button>
                 <button
                     class='new-blog title_small'
-                    onclick={() => nav('blogs/categories/')}
+                    onclick={() => nav('blogs-categories/')}
                 >
                     دسته بندی ها
                 </button>
