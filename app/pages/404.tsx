@@ -4,8 +4,10 @@ import './style/404.scss'
 export default () => {
     return (
         <div class='not-found-fnd'>
-            <h1>صفحه مورد نظر شما پیدا نشد!</h1>
-            <A href='/'>خانه</A>
+            <h1 class='section_title'>صفحه مورد نظر شما پیدا نشد!</h1>
+            <A href='/' class='title'>
+                خانه
+            </A>
         </div>
     )
 }
