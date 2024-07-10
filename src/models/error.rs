@@ -47,6 +47,9 @@ impl ResponseError for AppErr {
     }
 
     fn error_response(&self) -> HttpResponse<BoxBody> {
+        if self.status == 500 {
+            log::error!("AppErr: {} - {:?}", self.subject, self.content);
+        }
         HttpResponse::build(self.status_code()).json(self)
     }
 }
@@ -102,7 +105,6 @@ macro_rules! impl_from_err {
         impl From<$ty> for AppErr {
             fn from(value: $ty) -> Self {
                 let value = value.to_string();
-                log::error!("err 500: {}", value);
                 Self {
                     status: 500,
                     subject: stringify!($ty).to_string(),
@@ -129,7 +131,6 @@ macro_rules! error_helper {
         #[doc = concat!("Helper function that wraps any error and generates a `", stringify!($status), "` response.")]
         #[allow(non_snake_case)]
         pub fn $name(err: Option<&str>) -> AppErr {
-            log::error!("err {} - {:?}", stringify!($status), err);
             AppErr {
                 status: StatusCode::$status.as_u16(),
                 subject: $subject.to_string(),
