@@ -59,11 +59,29 @@ impl From<sqlx::Error> for AppErr {
                 subject: "یافت نشد".to_string(),
                 content: None,
             },
-            _ => Self {
-                status: 500,
-                subject: "خطای سیستم".to_string(),
-                content: None,
-            },
+            sqlx::Error::Database(e) => {
+                let code = e.code();
+                if code.is_none() {
+                    log::error!("sqlx db error: {e:#?}");
+                    return Self::default();
+                }
+                let code = code.unwrap().to_string();
+                match code.as_str() {
+                    "2067" | "1555" => Self {
+                        status: 400,
+                        subject: "مورد مشابهی پیدا شد".to_string(),
+                        content: None,
+                    },
+                    _ => {
+                        log::error!("sqlx db error: {e:#?}");
+                        Self::default()
+                    }
+                }
+            }
+            _ => {
+                log::error!("sqlx error: {value:#?}");
+                Self::default()
+            }
         }
     }
 }
@@ -124,3 +142,4 @@ macro_rules! error_helper {
 error_helper!(AppErrBadRequest, BAD_REQUEST, "درخواست بد");
 error_helper!(AppErrNotFound, NOT_FOUND, "پیدا نشد");
 error_helper!(AppErrForbidden, FORBIDDEN, "ممنوع");
+error_helper!(AppErrBadAuth, FORBIDDEN, "احراز هویت نامعتبر");
