@@ -3,7 +3,7 @@ import { addAlert } from 'comps'
 import { ArrowLeftIcon, PlusIcon } from 'icons'
 import { BlogCategory } from 'models'
 import { httpx } from 'shared'
-import { createEffect } from 'solid-js'
+import { Component, createEffect, createSignal } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import './style/categories.scss'
 
@@ -107,16 +107,7 @@ export default () => {
                         {state.categories.length >= 1 ? (
                             <>
                                 {state.categories.map(C => {
-                                    return (
-                                        <tr>
-                                            <td>{C.id}</td>
-                                            <td>{C.slug}</td>
-                                            <td>{C.label}</td>
-                                            <td>{C.detail}</td>
-                                            <td>{C.project}</td>
-                                            <td>{C.count}</td>
-                                        </tr>
-                                    )
+                                    return <Category category={C} />
                                 })}
                             </>
                         ) : (
@@ -126,5 +117,31 @@ export default () => {
                 </table>
             </div>
         </section>
+    )
+}
+
+interface CategoryProps {
+    category: BlogCategory
+}
+const Category: Component<CategoryProps> = P => {
+    const [editable, seteditable] = createSignal(false)
+
+    return (
+        <>
+            {editable() ? (
+                <></>
+            ) : (
+                <tr>
+                    <td>{P.category.id}</td>
+                    <td>{P.category.slug}</td>
+                    <td>{P.category.label || 'بی نام'}</td>
+                    <td class='description'>
+                        {P.category.detail || 'بدون توضیح'}
+                    </td>
+                    <td>{P.category.project}</td>
+                    <td>{P.category.count}</td>
+                </tr>
+            )}
+        </>
     )
 }
