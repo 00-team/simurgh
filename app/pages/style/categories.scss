@@ -160,6 +160,12 @@ section.categories {
                         }
                     }
 
+                    &.active {
+                        .edit {
+                            opacity: 1;
+                        }
+                    }
+
                     .edit {
                         display: flex;
                         align-items: center;
@@ -186,11 +192,25 @@ section.categories {
                         .edit {
                             color: orange;
                         }
+                        .save {
+                            background-color: #00c4ff;
+                        }
                         svg {
                             width: 25px;
                             height: 25px;
 
                             margin: 8px;
+                        }
+                    }
+
+                    td {
+                        .inp {
+                            width: 80%;
+
+                            border: none;
+                            border-bottom: 1px solid var(--accent-color);
+                            color: var(--accent-color);
+                            padding: 0.5em 0;
                         }
                     }
                 }
