@@ -41,6 +41,38 @@ section.categories {
                     margin: 10px;
                 }
             }
+
+            .cta {
+                --bg-color: #00c4ff;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1em;
+
+                border-radius: 0.5rem;
+
+                background-color: var(--thirty-percent);
+                padding: 0.5em 2em;
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+                background-image: linear-gradient(
+                    304deg,
+                    var(--bg-color),
+                    transparent 50%
+                );
+
+                position: relative;
+                isolation: isolate;
+
+                &.add {
+                    --bg-color: var(--alert-success);
+                }
+
+                .icon {
+                    width: 25px;
+                    height: 25px;
+                }
+            }
         }
     }
 
