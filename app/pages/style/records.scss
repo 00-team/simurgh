@@ -87,14 +87,32 @@
 
                 .delete-rec {
                     position: absolute;
+                    top: 0;
+
                     width: 100%;
 
                     display: flex;
                     align-items: center;
 
-                    button {
-                        margin-left: auto;
-                        margin-right: 1em;
+                    .cta {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        margin: 0.5em;
+
+                        border-radius: 0.5rem;
+                        background-color: var(--thirty-percent);
+
+                        color: var(--alert-error);
+                        border: 2px solid var(--alert-error);
+
+                        svg {
+                            width: 25px;
+                            height: 25px;
+
+                            margin: 8px;
+                        }
                     }
                 }
 
@@ -298,11 +316,12 @@
                             input {
                                 width: 100%;
                                 height: 100%;
-                                border: none;
-                                background-color: transparent;
-                                color: white;
 
-                                border-bottom: 1px solid white;
+                                background-color: transparent;
+                                color: var(--accent-color);
+
+                                border: none;
+                                border-bottom: 1px solid var(--accent-color);
                             }
                         }
 
