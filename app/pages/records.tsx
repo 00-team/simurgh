@@ -1,7 +1,7 @@
 import { RecordModel, RecordUsages } from 'models'
 
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
-import { addAlert, Confact, Editable } from 'comps'
+import { addAlert, Editable } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronLeftIcon,
@@ -20,6 +20,7 @@ import {
     Switch,
 } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
+import { setPopup } from 'store/popup'
 import './style/records.scss'
 
 export default () => {
@@ -222,12 +223,21 @@ const Record: Component<RecordProps> = P => {
     return (
         <div class='record'>
             <div class='delete-rec'>
-                <Confact
-                    color='var(--red)'
-                    onAct={record_delete}
-                    timer_ms={15e2}
-                    icon={TrashIcon}
-                />
+                <button
+                    class='cta delete'
+                    onclick={() => {
+                        setPopup({
+                            show: true,
+                            title: 'حذف فایل',
+                            Icon: TrashIcon,
+                            type: 'error',
+                            content: 'از حذف فایل مطمعنید؟',
+                            onSubmit: () => record_delete(),
+                        })
+                    }}
+                >
+                    <TrashIcon />
+                </button>
             </div>
             <div class='dpy'>
                 <RecordDpy r={P.r} />
@@ -430,7 +440,7 @@ const RecordDpy: Component<RecordDpyProps> = P => {
                         loading='lazy'
                         decoding='async'
                         src={url()}
-                        onClick={e => e.currentTarget.requestFullscreen()}
+                        // onClick={e => e.currentTarget.requestFullscreen()}
                     />
                 </Show>
             </Match>
