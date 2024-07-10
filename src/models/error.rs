@@ -142,3 +142,4 @@ macro_rules! error_helper {
 error_helper!(AppErrBadRequest, BAD_REQUEST, "درخواست بد");
 error_helper!(AppErrNotFound, NOT_FOUND, "پیدا نشد");
 error_helper!(AppErrForbidden, FORBIDDEN, "ممنوع");
+error_helper!(AppErrBadAuth, FORBIDDEN, "احراز هویت نامعتبر");
