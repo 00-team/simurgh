@@ -86,19 +86,21 @@ async fn blog_tag_add(
 async fn blog_tag_delete(
     blog: Blog, path: Path<(i64, i64, i64)>, state: Data<AppState>,
 ) -> Result<HttpResponse, AppErr> {
-    sqlx::query! {
+    let result = sqlx::query! {
         "delete from blog_tag where blog = ? AND tag = ?",
         blog.id, path.2
     }
     .execute(&state.sql)
     .await?;
 
-    sqlx::query! {
-        "update blog_tags set count = count - 1 where id = ?",
-        path.2
+    if result.rows_affected() != 0 {
+        sqlx::query! {
+            "update blog_tags set count = count - 1 where id = ?",
+            path.2
+        }
+        .execute(&state.sql)
+        .await?;
     }
-    .execute(&state.sql)
-    .await?;
 
     Ok(HttpResponse::Ok().finish())
 }
