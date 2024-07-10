@@ -23,6 +23,9 @@ export const EditorEmptyBlock: Component<Props> = P => {
         text: 'متن',
         heading: 'عنوان',
         break: 'خط افقی',
+        audio: 'صوت',
+        video: 'ویدیو',
+        map: 'نقشه',
     }
 
     return (
