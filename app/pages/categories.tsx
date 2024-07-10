@@ -1,17 +1,18 @@
-import { useNavigate } from '@solidjs/router'
+import { useNavigate, useParams } from '@solidjs/router'
 import { ArrowLeftIcon } from 'icons'
 import './style/categories.scss'
 
 export default () => {
+    const { pid } = useParams()
     const nav = useNavigate()
 
     return (
         <section class='categories'>
             <div class='actions'>
-                <div>
+                <div class='ctas'>
                     <button
                         class='  go-back icon'
-                        onClick={() => nav('/blogs/')}
+                        onClick={() => nav('/projects/' + pid)}
                     >
                         <ArrowLeftIcon size={25} />
                     </button>
