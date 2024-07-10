@@ -7,12 +7,20 @@
     justify-content: center;
 
     h1 {
-        font-size: 3rem;
+        color: white;
+
         direction: rtl;
     }
 
     a {
-        color: var(--cl);
-        font-size: 2.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--ten-percent);
+        color: var(--primary-color);
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 2em;
+        padding: 0.5rem 2rem;
     }
 }
