@@ -154,6 +154,16 @@ export type BlogModel = {
     thumbnail: string | null
     read_time: number
 }
+
+export type BlogCategory = {
+    count: number
+    detail: string
+    id: number
+    label: string
+    project: number
+    slug: string
+}
+
 export const DEFAULT_BLOG: BlogModel = {
     id: 0,
     slug: '',
