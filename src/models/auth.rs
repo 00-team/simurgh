@@ -6,7 +6,7 @@ use actix_web::{
     FromRequest, HttpMessage, HttpRequest,
 };
 
-use super::{AppErr, AppErrForbidden};
+use super::{AppErr, AppErrBadAuth};
 
 #[derive(Debug, Clone)]
 pub struct Authorization {
@@ -41,19 +41,19 @@ impl FromRequest for Authorization {
                 .get(AUTHORIZATION)
                 .map_or(None, |v| v.to_str().map(|v| v.to_string()).ok())
                 .or_else(|| rq.headers().get_all(COOKIE).find_map(cookie_auth))
-                .ok_or(AppErrForbidden(Some("authorization not found")))?;
+                .ok_or(AppErrBadAuth(None))?;
 
             let mut tokens = value.splitn(2, ' ');
             let prefix = tokens
                 .next()
                 .map(|v| v.to_string())
-                .ok_or(AppErrForbidden(Some("invalid authorization")))?
+                .ok_or(AppErrBadAuth(None))?
                 .to_lowercase();
 
             let token = tokens
                 .next()
                 .map(|v| v.to_string())
-                .ok_or(AppErrForbidden(Some("invalid authorization")))?;
+                .ok_or(AppErrBadAuth(None))?;
 
             let auth = Authorization { token, prefix };
             let mut ext = rq.extensions_mut();
