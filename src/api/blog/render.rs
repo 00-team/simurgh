@@ -1,6 +1,9 @@
 use cercis::prelude::*;
 
-use crate::models::blog::{BlogData, BlogTextGroup};
+use crate::models::blog::{
+    BlogAlign, BlogCheckListItem, BlogData, BlogDirection, BlogListItem,
+    BlogTextGroup,
+};
 
 pub fn blog_render(data: &Vec<BlogData>) -> String {
     let elements = data.iter().map(|b| match b {
@@ -8,9 +11,7 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
             rsx! {
                 p {
                     style: "direction: {dir};text-align: {align}",
-                    for g in groups {
-                        Group { group: g }
-                    }
+                    for g in groups { Group { group: g } }
                 }
             }
         }
@@ -76,48 +77,19 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
                 }
             }
         },
-        BlogData::List { ordered, items, align, dir } => rsx! {
-            ul {
-                style: "direction: {dir};text-align: {align}",
-                for (txt, sub) in items {
-                    li {
-                        txt
-                        if let Some(items) = sub {
-                            for (txt, sub) in items {
-                                li {
-                                    txt
-                                    if let Some(items) = sub {
-                                        for txt in items { li { txt } }
-                                    }
-                                }
-                            }
-                        }
-                    }
+        BlogData::List { ordered, dir, align, items } => rsx! {
+            BlogListOrder {
+                ordered: ordered, dir: dir, align: align,
+                for item in items {
+                    ListItem { ordered: ordered, dir: dir, align: align, item: item }
                 }
             }
         },
         BlogData::CheckList { ordered, items, align, dir } => rsx! {
-            ul {
-                style: "direction: {dir};text-align: {align}",
-                for ((txt, ch), sub) in items {
-                    li {
-                        input { "type": "checkbox", checked: "{ch}" }
-                        txt
-                        if let Some(items) = sub {
-                            for ((txt, ch), sub) in items {
-                                li {
-                                    input { "type": "checkbox", checked: "{ch}" }
-                                    txt
-                                    if let Some(items) = sub {
-                                        for (txt, ch) in items { li {
-                                            input { "type": "checkbox", checked: "{ch}" }
-                                            txt
-                                        } }
-                                    }
-                                }
-                            }
-                        }
-                    }
+            BlogListOrder {
+                ordered: ordered, dir: dir, align: align,
+                for item in items {
+                    CheckListItem { ordered: ordered, dir: dir, align: align, item: item }
                 }
             }
         },
@@ -128,10 +100,9 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
 
 #[component]
 fn Group<'a>(group: &'a BlogTextGroup) -> Element {
-    let style = group.style.css();
     let mut el = rsx! {
         span {
-            style: "{style}",
+            style: "{group.style.css()}",
             for (idx, line) in group.content.iter().enumerate() {
                 "{line}"
                 if idx != group.content.len() - 1 {
@@ -162,4 +133,59 @@ fn Group<'a>(group: &'a BlogTextGroup) -> Element {
     }
 
     el
+}
+
+#[component]
+fn BlogListOrder<'a>(
+    ordered: &'a bool, dir: &'a BlogDirection, align: &'a BlogAlign,
+    children: Element<'a>,
+) -> Element {
+    rsx! {
+        if **ordered {
+            ol { style: "direction: {dir};text-align: {align}", children }
+        } else {
+            ul { style: "direction: {dir};text-align: {align}", children }
+        }
+    }
+}
+
+#[component]
+fn ListItem<'a>(
+    ordered: &'a bool, dir: &'a BlogDirection, align: &'a BlogAlign,
+    item: &'a BlogListItem,
+) -> Element {
+    rsx! {
+        li {
+            "{item.text}"
+            if let Some(children) = &item.children {
+                BlogListOrder {
+                    ordered: ordered, dir: dir, align: align,
+                    for item in children {
+                        ListItem { ordered: ordered, dir: dir, align: align, item: item }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn CheckListItem<'a>(
+    ordered: &'a bool, dir: &'a BlogDirection, align: &'a BlogAlign,
+    item: &'a BlogCheckListItem,
+) -> Element {
+    rsx! {
+        li {
+            input { "type": "checkbox", checked: "{item.checked}" }
+            "{item.text}"
+            if let Some(children) = &item.children {
+                BlogListOrder {
+                    ordered: ordered, dir: dir, align: align,
+                    for item in children {
+                        CheckListItem { ordered: ordered, dir: dir, align: align, item: item }
+                    }
+                }
+            }
+        }
+    }
 }
