@@ -1,8 +1,7 @@
 use cercis::prelude::*;
 
 use crate::models::blog::{
-    BlogAlign, BlogCheckListItem, BlogData, BlogDirection, BlogListItem,
-    BlogTextGroup,
+    BlogCheckListItem, BlogData, BlogListItem, BlogTextGroup,
 };
 
 pub fn blog_render(data: &Vec<BlogData>) -> String {
@@ -77,19 +76,25 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
                 }
             }
         },
-        BlogData::List { ordered, dir, align, items } => rsx! {
-            BlogListOrder {
-                ordered: ordered, dir: dir, align: align,
-                for item in items {
-                    ListItem { ordered: ordered, dir: dir, align: align, item: item }
+        BlogData::List { ordered, dir, align, items } => {
+            let style = format!("direction: {dir};text-align: {align}");
+            rsx! {
+                BlogListOrder {
+                    ordered: ordered, style: style,
+                    for item in items {
+                        ListItem { ordered: ordered, item: item }
+                    }
                 }
             }
         },
-        BlogData::CheckList { ordered, items, align, dir } => rsx! {
-            BlogListOrder {
-                ordered: ordered, dir: dir, align: align,
-                for item in items {
-                    CheckListItem { ordered: ordered, dir: dir, align: align, item: item }
+        BlogData::CheckList { ordered, items, align, dir } => {
+            let style = format!("direction: {dir};text-align: {align}");
+            rsx! {
+                BlogListOrder {
+                    ordered: ordered, style: style,
+                    for item in items {
+                        CheckListItem { ordered: ordered, item: item }
+                    }
                 }
             }
         },
@@ -137,31 +142,34 @@ fn Group<'a>(group: &'a BlogTextGroup) -> Element {
 
 #[component]
 fn BlogListOrder<'a>(
-    ordered: &'a bool, dir: &'a BlogDirection, align: &'a BlogAlign,
-    children: Element<'a>,
+    ordered: &'a bool, style: Option<String>, children: Element<'a>,
 ) -> Element {
-    rsx! {
-        if **ordered {
-            ol { style: "direction: {dir};text-align: {align}", children }
+    if let Some(style) = style {
+        return if **ordered {
+            rsx! {ol { style: "{style}", children }}
         } else {
-            ul { style: "direction: {dir};text-align: {align}", children }
-        }
+            rsx! {ul { style: "{style}", children }}
+        };
     }
+
+    rsx! { if **ordered { ol { children } } else { ul { children } } }
 }
 
 #[component]
-fn ListItem<'a>(
-    ordered: &'a bool, dir: &'a BlogDirection, align: &'a BlogAlign,
-    item: &'a BlogListItem,
-) -> Element {
+fn ListItem<'a>(ordered: &'a bool, item: &'a BlogListItem) -> Element {
+    let children = match &item.children {
+        Some(c) if c.len() != 0 => Some(c),
+        _ => None,
+    };
+
     rsx! {
         li {
             "{item.text}"
-            if let Some(children) = &item.children {
+            if let Some(children) = children {
                 BlogListOrder {
-                    ordered: ordered, dir: dir, align: align,
-                    for item in children {
-                        ListItem { ordered: ordered, dir: dir, align: align, item: item }
+                    ordered: ordered,
+                    for child in children {
+                        ListItem { ordered: ordered, item: child }
                     }
                 }
             }
@@ -171,18 +179,22 @@ fn ListItem<'a>(
 
 #[component]
 fn CheckListItem<'a>(
-    ordered: &'a bool, dir: &'a BlogDirection, align: &'a BlogAlign,
-    item: &'a BlogCheckListItem,
+    ordered: &'a bool, item: &'a BlogCheckListItem,
 ) -> Element {
+    let children = match &item.children {
+        Some(c) if c.len() != 0 => Some(c),
+        _ => None,
+    };
+
     rsx! {
         li {
             input { "type": "checkbox", checked: "{item.checked}" }
             "{item.text}"
-            if let Some(children) = &item.children {
+            if let Some(children) = children {
                 BlogListOrder {
-                    ordered: ordered, dir: dir, align: align,
+                    ordered: ordered,
                     for item in children {
-                        CheckListItem { ordered: ordered, dir: dir, align: align, item: item }
+                        CheckListItem { ordered: ordered, item: item }
                     }
                 }
             }
