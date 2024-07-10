@@ -74,8 +74,8 @@ create table if not exists blog_tags (
 );
 
 create table if not exists blog_tag (
-    id integer primary key not null,
     blog integer not null references blogs(id) on delete cascade,
     tag integer not null references blog_tags(id) on delete cascade,
-    unique(blog, tag)
+    unique(blog, tag),
+    primary key(blog, tag)
 );

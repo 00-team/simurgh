@@ -126,6 +126,7 @@ struct BlogUpdateBody {
     title: String,
     detail: String,
     read_time: i64,
+    category: Option<i64>,
 }
 
 #[utoipa::path(
@@ -143,6 +144,9 @@ async fn blog_update(
 
     utils::verify_slug(&body.slug)?;
 
+    let old_category = blog.category;
+    let new_category = body.category;
+
     blog.slug = body.slug.clone();
     blog.slug.cut_off(255);
     blog.status = body.status.clone();
@@ -152,15 +156,32 @@ async fn blog_update(
     blog.detail = body.detail.clone();
     blog.detail.cut_off(2047);
     blog.read_time = body.read_time.clone();
+    blog.category = body.category;
 
     sqlx::query! {
         "update blogs set slug = ?, status = ?, updated_at = ?, title = ?,
-        detail = ?, read_time = ? where id = ?",
+        detail = ?, read_time = ?, category = ? where id = ?",
         blog.slug, blog.status, blog.updated_at, blog.title,
-        blog.detail, blog.read_time, blog.id
+        blog.detail, blog.read_time, blog.category, blog.id
     }
     .execute(&state.sql)
     .await?;
+
+    if old_category == new_category {
+        return Ok(Json(blog));
+    }
+
+    if let Some(cid) = new_category {
+        sqlx::query! { "update blog_categories set count = count + 1 where id = ?", cid }
+        .execute(&state.sql)
+        .await?;
+    }
+
+    if let Some(cid) = old_category {
+        sqlx::query! { "update blog_categories set count = count - 1 where id = ?", cid }
+        .execute(&state.sql)
+        .await?;
+    }
 
     Ok(Json(blog))
 }
@@ -187,7 +208,7 @@ async fn blog_update_data(
     });
 
     blog.updated_at = utils::now();
-    blog.html = super::blog_render::blog_render(&data);
+    blog.html = super::render::blog_render(&data);
     blog.data = JsonStr(data);
 
     sqlx::query! {
@@ -330,4 +351,5 @@ pub fn router() -> Scope {
         .service(blog_delete)
         .service(blog_thumbnail_update)
         .service(blog_thumbnail_delete)
+        .service(super::blog_tag::router())
 }

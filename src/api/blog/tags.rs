@@ -88,7 +88,7 @@ async fn tag_add(project: Project, state: Data<AppState>) -> Response<BlogTag> {
 #[utoipa::path(
     get,
     params(("pid" = i64, Path, example = 1), ("btid" = i64, Path, example = 1)),
-    responses((status = 200, body = Blog))
+    responses((status = 200, body = BlogTag))
 )]
 /// Get
 #[get("/{btid}/")]
@@ -107,7 +107,7 @@ struct BlogTagUpdateBody {
     patch,
     params(("pid" = i64, Path, example = 1), ("btid" = i64, Path, example = 1)),
     request_body = BlogTagUpdateBody,
-    responses((status = 200, body = Blog))
+    responses((status = 200, body = BlogTag))
 )]
 /// Update
 #[patch("/{btid}/")]

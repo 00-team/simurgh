@@ -100,7 +100,7 @@ async fn category_add(
 #[utoipa::path(
     get,
     params(("pid" = i64, Path, example = 1), ("bcid" = i64, Path, example = 1)),
-    responses((status = 200, body = Blog))
+    responses((status = 200, body = BlogCategory))
 )]
 /// Get
 #[get("/{bcid}/")]
@@ -119,7 +119,7 @@ struct BlogCategoryUpdateBody {
     patch,
     params(("pid" = i64, Path, example = 1), ("bcid" = i64, Path, example = 1)),
     request_body = BlogCategoryUpdateBody,
-    responses((status = 200, body = Blog))
+    responses((status = 200, body = BlogCategory))
 )]
 /// Update
 #[patch("/{bcid}/")]
