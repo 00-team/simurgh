@@ -59,15 +59,29 @@ impl From<sqlx::Error> for AppErr {
                 subject: "یافت نشد".to_string(),
                 content: None,
             },
-            sqlx::Error::Database(e) => match e.code() {
-                Some(c) if c == "2067" => Self {
-                    status: 400,
-                    subject: "مورد مشابهی پیدا شد".to_string(),
-                    content: None,
-                },
-                _ => Self::default(),
-            },
-            _ => Self::default(),
+            sqlx::Error::Database(e) => {
+                let code = e.code();
+                if code.is_none() {
+                    log::error!("sqlx db error: {e:#?}");
+                    return Self::default();
+                }
+                let code = code.unwrap().to_string();
+                match code.as_str() {
+                    "2067" | "1555" => Self {
+                        status: 400,
+                        subject: "مورد مشابهی پیدا شد".to_string(),
+                        content: None,
+                    },
+                    _ => {
+                        log::error!("sqlx db error: {e:#?}");
+                        Self::default()
+                    }
+                }
+            }
+            _ => {
+                log::error!("sqlx error: {value:#?}");
+                Self::default()
+            }
         }
     }
 }
