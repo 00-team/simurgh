@@ -5,4 +5,46 @@
     gap: 1rem;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    gap: 1em;
+
+    direction: rtl;
+
+    .row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1em;
+
+        .cta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5em;
+
+            background-color: var(--thirty-percent);
+            color: var(--accent-color);
+            border: 2px;
+            border-color: var(--accent-color);
+            border-style: solid;
+            border-radius: 0.4rem;
+
+            cursor: pointer;
+
+            padding: 0.25rem 2rem;
+            transition: 220ms ease-in-out;
+            transition-property: border-color, background-color, color;
+
+            &:hover {
+                color: var(--thirty-percent);
+                background-color: var(--accent-color);
+            }
+
+            svg {
+                width: 25px;
+                height: 25px;
+            }
+        }
+    }
 }
