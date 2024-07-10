@@ -14,7 +14,7 @@ section.categories {
 
         width: 100%;
 
-        padding: 1.5em 2rem;
+        padding: 0.5rem;
 
         .ctas {
             display: flex;
@@ -40,6 +40,82 @@ section.categories {
                     height: 25px;
                     margin: 10px;
                 }
+            }
+        }
+    }
+
+    .categories-wrapper {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        padding: 1em 1.5em;
+
+        width: 100%;
+        height: 100%;
+
+        border-radius: 1rem;
+
+        background-color: var(--thirty-percent);
+
+        table {
+            margin-top: 4em;
+
+            width: 100%;
+            color: var(--accent-color);
+
+            border-spacing: 0;
+            border-radius: 0.8rem;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+            overflow: hidden;
+            direction: rtl;
+
+            thead {
+                td,
+                th {
+                    border: 1px solid black;
+
+                    padding: 1em 0.25em;
+                }
+                tr {
+                    background: var(--accent-color);
+                    color: var(--primary-color);
+                }
+            }
+            tbody {
+                tr {
+                    background: var(--primary-color);
+                    color: var(--accent-color);
+
+                    transition: 0.3s;
+
+                    &:nth-child(even) {
+                        background-color: color-mix(
+                            in srgb,
+                            var(--accent-color) 10%,
+                            var(--primary-color)
+                        );
+                    }
+                }
+            }
+
+            td,
+            th {
+                text-align: center;
+
+                padding: 1em 0.25em;
+            }
+            tr {
+                position: relative;
+                isolation: isolate;
+            }
+
+            .id {
+                width: clamp(0px, 60px, 100px);
+            }
+            .count {
+                width: clamp(0px, 150px, 200px);
             }
         }
     }
