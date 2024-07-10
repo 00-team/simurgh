@@ -12,6 +12,7 @@ import Projects from 'pages/projects'
 const Project = lazy(() => import('pages/project'))
 const Records = lazy(() => import('pages/records'))
 const Categories = lazy(() => import('pages/categories'))
+const Tags = lazy(() => import('pages/tags'))
 const Blog = lazy(() => import('pages/blog'))
 const Blogs = lazy(() => import('pages/blogs'))
 const Editor = lazy(() => import('pages/editor'))
@@ -64,6 +65,7 @@ const Root = () => {
                                 path='/blogs-categories/'
                                 component={Categories}
                             />
+                            <Route path='/blogs-tags/' component={Tags} />
                             <Route path='/blogs/:bid'>
                                 <Route path='/' component={Blog} />
                                 <Route path='/editor/' component={Editor} />
