@@ -34,6 +34,7 @@ async fn openapi() -> impl Responder {
     doc.merge(api::blog::blogs::ApiDoc::openapi());
     doc.merge(api::blog::blog_tag::ApiDoc::openapi());
     doc.merge(api::blog::categories::ApiDoc::openapi());
+    doc.merge(api::blog::ssr::ApiDoc::openapi());
     doc.merge(api::blog::tags::ApiDoc::openapi());
     doc.merge(api::records::ApiDoc::openapi());
 
