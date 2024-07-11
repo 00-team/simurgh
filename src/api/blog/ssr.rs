@@ -55,7 +55,7 @@ async fn ssr_list(
                             src: "/simurgh-record/bt-{blog.id}-{t}"
                         }
                     }
-                    
+
                     h2 {"{blog.title}"}
                     span { "read time: {blog.read_time}" }
                     span {
