@@ -17,12 +17,15 @@ import { httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { produce } from 'solid-js/store'
 import { setPopup } from 'store/popup'
+import { EditorAudioBlock } from './audio'
 import { EditorEmptyBlock } from './empty'
 import { EditorHeadingBlock } from './heading'
 import { EditorImageBlock } from './image'
+import { EditorMapBlock } from './map'
 import { pre_save, setStore, store, unwrap_rec } from './store'
 import './style/index.scss'
 import { EditorTextBlock } from './text'
+import { EditorVideoBlock } from './video'
 
 export default () => {
     const nav = useNavigate()
@@ -214,6 +217,9 @@ const EditorBlock: Component<EditorBlockProps> = P => {
                 <hr />
             </div>
         ),
+        audio: EditorAudioBlock,
+        video: EditorVideoBlock,
+        map: EditorMapBlock,
     }
 
     return (
