@@ -59,7 +59,20 @@ export const EditorEmptyBlock: Component<Props> = P => {
             </div>
             <div class='row'>
                 {Object.entries(BLOCKS)
-                    .splice(3, 10)
+                    .splice(3, 7)
+                    .map(([k, V]) => (
+                        <button
+                            class='cta title_smaller'
+                            onClick={() => update(k as BlogData['kind'])}
+                        >
+                            <V.Component />
+                            {V.label}
+                        </button>
+                    ))}
+            </div>
+            <div class='row'>
+                {Object.entries(BLOCKS)
+                    .splice(7, 11)
                     .map(([k, V]) => (
                         <button
                             class='cta title_smaller'
