@@ -25,3 +25,4 @@ record/
 logs/
 old/
 .env
+static/ssr/
