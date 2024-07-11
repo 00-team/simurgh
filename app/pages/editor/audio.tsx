@@ -1,6 +1,6 @@
 import { addAlert } from 'comps'
-import { AudioIcon } from 'icons'
-import { BlogAudio, RecordModel, RecordUsages } from 'models'
+import { AudioIcon, XIcon } from 'icons'
+import { BlogAudio, DEFAULT_BLOCKS, RecordModel, RecordUsages } from 'models'
 import { httpx } from 'shared'
 import { Component, Show } from 'solid-js'
 import { produce } from 'solid-js/store'
@@ -16,7 +16,19 @@ export const EditorAudioBlock: Component<Props> = P => {
     return (
         <div class='block-audio'>
             <Show when={P.block.url} fallback={<AudioUploader {...P} />}>
-                <></>
+                <audio draggable={false} src={P.block.url} controls />
+                <button
+                    class='styled icon remove'
+                    onClick={() => {
+                        setStore(
+                            produce(s => {
+                                s.data[P.idx] = DEFAULT_BLOCKS.audio
+                            })
+                        )
+                    }}
+                >
+                    <XIcon />
+                </button>
             </Show>
         </div>
     )
