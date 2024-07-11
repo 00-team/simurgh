@@ -1,0 +1,126 @@
+.simurgh--blogs {
+    width: 100%;
+    padding: 5vh 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    row-gap: calc(10vh + 10px);
+    column-gap: calc(3vw + 5px);
+
+    .blog-card {
+        width: clamp(0px, 100%, 400px);
+        aspect-ratio: 0.8/1;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+
+        border-radius: 10px;
+        box-shadow: 0px 5px 20px -10px black;
+
+        img {
+            width: 90%;
+            flex: 0.2;
+
+            transform: translateY(-25%);
+
+            border-radius: 5px;
+            box-shadow: 0px 5px 20px -10px black;
+        }
+
+        h2 {
+            margin-top: -2em;
+        }
+
+        .details {
+            width: 90%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            flex-wrap: wrap;
+
+            .detail {
+                padding: 1em;
+                display: flex;
+                align-items: center;
+                gap: 1.5em;
+
+                position: relative;
+                isolation: isolate;
+
+                transition: 0.5s ease;
+
+                @media screen and (max-width: 768px) {
+                    color: white;
+                }
+                svg {
+                    color: white;
+                }
+                &::before {
+                    content: '';
+
+                    position: absolute;
+                    right: 4px;
+                    height: 40px;
+                    width: 40px;
+
+                    border-radius: 100vmax;
+
+                    background-color: var(--ten-percent);
+
+                    z-index: -1;
+
+                    transition: 0.5s cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
+                    @media screen and (max-width: 768px) {
+                        width: 100%;
+                        height: 30px;
+                    }
+                }
+
+                &:hover {
+                    color: white;
+                    &::before {
+                        width: 100%;
+                    }
+                }
+
+                &.publish {
+                    &:before {
+                        right: unset;
+                        left: 4px;
+                    }
+                }
+            }
+        }
+
+        .card-caption {
+            text-align: center;
+            width: 90%;
+
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-height: 1.8em;
+            overflow: hidden;
+        }
+
+        .link-container {
+            border-radius: 5px;
+            border: none;
+
+            text-align: center;
+            color: var(--primary-color);
+
+            padding: 1rem 2rem;
+            width: 90%;
+            margin: 1rem 0;
+
+            background: var(--sixty-percent);
+        }
+    }
+}
