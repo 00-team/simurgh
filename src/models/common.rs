@@ -1,6 +1,9 @@
 use std::ops;
 
+use actix_web::body::BoxBody;
 use actix_web::web::Json;
+use actix_web::{http::header::ContentType, HttpResponse};
+use actix_web::{HttpRequest, Responder};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use sqlx::{
     encode::IsNull,
@@ -17,14 +20,27 @@ pub struct ListInput {
     pub page: u32,
 }
 
+#[derive(Debug)]
+pub struct Html(pub String);
+
+impl ops::Deref for Html {
+    type Target = String;
+
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+
+impl Responder for Html {
+    type Body = BoxBody;
+
+    fn respond_to(self, _: &HttpRequest) -> HttpResponse<Self::Body> {
+        HttpResponse::Ok().content_type(ContentType::html()).body(self.0)
+    }
+}
+
 #[derive(Debug, Deserialize, Default, Clone)]
 pub struct JsonStr<T>(pub T);
-
-// impl<T> JsonStr<T> {
-//     pub fn into_inner(self) -> T {
-//         self.0
-//     }
-// }
 
 impl<T> ops::Deref for JsonStr<T> {
     type Target = T;
