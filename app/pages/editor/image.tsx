@@ -1,4 +1,4 @@
-import { BlogImage } from 'models'
+import { BlogImage, DEFAULT_BLOCKS, RecordModel, RecordUsages } from 'models'
 import { Component, Show } from 'solid-js'
 
 import { addAlert } from 'comps'
@@ -16,7 +16,7 @@ export const EditorImageBlock: Component<Props> = P => {
     return (
         <div class='block-image'>
             <Show
-                when={P.block.record_salt}
+                when={P.block.url}
                 fallback={
                     // <button class='styled icon' onClick={upload_record}>
                     //     <ImageIcon />
@@ -28,16 +28,14 @@ export const EditorImageBlock: Component<Props> = P => {
                     decoding='async'
                     loading='lazy'
                     draggable={false}
-                    src={`/simurgh-record/r-${P.block.record_id}-${P.block.record_salt}`}
+                    src={P.block.url}
                 />
                 <button
                     class='styled icon remove'
                     onClick={() => {
                         setStore(
                             produce(s => {
-                                let b = s.data[P.idx] as BlogImage
-                                b.record_salt = ''
-                                b.record_id = 0
+                                s.data[P.idx] = DEFAULT_BLOCKS.image
                             })
                         )
                     }}
@@ -56,9 +54,8 @@ const ImageUploader: Component<Props> = P => {
             target: HTMLInputElement
         }
     ) {
-        const el = e.target
-        if (!el.files || !el.files[0]) return
-        if (el.files[0].size > 209715200) {
+        if (!e.target.files || !e.target.files[0]) return
+        if (e.target.files[0].size > 209715200) {
             addAlert({
                 type: 'error',
                 subject: 'حجم فایل',
@@ -69,8 +66,19 @@ const ImageUploader: Component<Props> = P => {
             return
         }
 
+        let usage: RecordUsages = { kind: 'blog', id: store.blog.id }
         let data = new FormData()
-        data.set('record', el.files[0], store.blog.title || store.blog.slug)
+        data.set(
+            'record',
+            e.target.files[0],
+            store.blog.title || store.blog.slug
+        )
+        data.set(
+            'usage',
+            new Blob([JSON.stringify(usage)], {
+                type: 'application/json',
+            })
+        )
 
         httpx({
             url: `/api/projects/${store.blog.project}/records/`,
@@ -78,11 +86,12 @@ const ImageUploader: Component<Props> = P => {
             data,
             onLoad(x) {
                 if (x.status != 200) return
+                let r: RecordModel = x.response
                 setStore(
                     produce(s => {
                         let b = s.data[P.idx] as BlogImage
-                        b.record_salt = x.response.salt
-                        b.record_id = x.response.id
+                        b.record_id = r.id
+                        b.url = `/simurgh-record/r-${r.id}-${r.salt}`
                     })
                 )
             },
@@ -128,11 +137,12 @@ const ImageUploader: Component<Props> = P => {
                                 data,
                                 onLoad(x) {
                                     if (x.status != 200) return
+                                    let r: RecordModel = x.response
                                     setStore(
                                         produce(s => {
                                             let b = s.data[P.idx] as BlogImage
-                                            b.record_salt = x.response.salt
-                                            b.record_id = x.response.id
+                                            b.record_id = r.id
+                                            b.url = `/simurgh-record/r-${r.id}-${r.salt}`
                                         })
                                     )
                                 },
@@ -156,7 +166,7 @@ const ImageUploader: Component<Props> = P => {
                 for='img-input'
             >
                 <div class='drop-zoon__icon icon'>
-                    <ImageIcon size={60} />
+                    <ImageIcon />
                 </div>
                 <p class='drop-zoon__paragraph title_smaller'>
                     فایل خود را اینجا بندازید یا کلیک کنید.

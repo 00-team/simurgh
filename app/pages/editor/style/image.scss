@@ -88,6 +88,9 @@
         display: flex;
         color: var(--clr-blue);
         transition: opacity 300ms ease-in-out;
+
+        width: 60px;
+        height: 60px;
     }
 
     .drop-zoon__paragraph {
