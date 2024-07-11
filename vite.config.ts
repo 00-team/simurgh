@@ -34,6 +34,10 @@ export default defineConfig(env => {
                     target: target[0],
                     changeOrigin: true,
                 },
+                '/record/': {
+                    target: target[0],
+                    changeOrigin: true,
+                },
                 '/simurgh-record/': {
                     target: target[0],
                     changeOrigin: true,

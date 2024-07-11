@@ -1,4 +1,4 @@
-.simurgh--blogs {
+section.simurgh--blogs {
     width: 100%;
     padding: 5vh 3vw;
     display: flex;
@@ -8,7 +8,7 @@
     row-gap: calc(10vh + 10px);
     column-gap: calc(3vw + 5px);
 
-    .blog-card {
+    figure {
         width: clamp(0px, 100%, 400px);
         aspect-ratio: 0.8/1;
 
@@ -34,7 +34,8 @@
             margin-top: -2em;
         }
 
-        .details {
+        // TODO: update this after updating the html in ssr
+        /* .details {
             width: 90%;
 
             display: flex;
@@ -95,10 +96,10 @@
                         left: 4px;
                     }
                 }
-            }
-        }
+            } 
+        } */
 
-        .card-caption {
+        figcaption {
             text-align: center;
             width: 90%;
 
@@ -109,7 +110,7 @@
             overflow: hidden;
         }
 
-        .link-container {
+        a {
             border-radius: 5px;
             border: none;
 

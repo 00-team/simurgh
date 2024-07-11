@@ -50,14 +50,26 @@ async fn ssr_list(
                 figure {
                     if let Some(t) = blog.thumbnail {
                         img {
-                            decode: "async", loading: "lazy",
+                            decode: "async",
+                            loading: "lazy",
                             src: "/simurgh-record/bt-{blog.id}-{t}"
                         }
                     }
                     
                     h2 {"{blog.title}"}
                     span { "read time: {blog.read_time}" }
-                    span { "date creation: {blog.created_at}" }
+                    span {
+                        "date creation: {blog.created_at}"
+                        svg {
+                            width: 24,
+                            height: 24,
+                            image {
+                                "xlink:href": "/simurgh-ssrs/icon/calendar-days.svg",
+                                width: 24,
+                                height: 24,
+                            }
+                        }
+                    }
                     figcaption {"{blog.detail}"}
                     a { href: "/blogs/{blog.id}/", "دیدن بیشتر" }
                 }

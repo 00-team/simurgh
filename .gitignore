@@ -25,4 +25,5 @@ record/
 logs/
 old/
 .env
-static/ssr/
+static/ssr/style/
+static/ssr/script/
