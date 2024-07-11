@@ -232,7 +232,7 @@ pub struct BlogThumbnailUpload {
 #[utoipa::path(
     put,
     params(("pid" = i64, Path, example = 1), ("bid" = i64, Path, example = 1)),
-    request_body(content = RecordUpload, content_type = "multipart/form-data"),
+    request_body(content = BlogThumbnailUpload, content_type = "multipart/form-data"),
     responses((status = 200, body = Blog))
 )]
 /// Thumbnail Update
