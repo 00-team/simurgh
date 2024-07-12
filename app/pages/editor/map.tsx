@@ -1,13 +1,14 @@
 import { BlogMap } from 'models'
-import { Component, createEffect, onCleanup, onMount, Show } from 'solid-js'
+import { Component, createEffect, onCleanup, onMount } from 'solid-js'
 
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-import { SaveIcon } from 'icons'
-import { createStore } from 'solid-js/store'
+import { DEFAULT_BLOCKS } from 'models'
+
+import { createStore, produce } from 'solid-js/store'
+import { setStore } from './store'
 import './style/map.scss'
-import { setPopup } from 'store/popup'
 
 type Props = {
     idx: number
@@ -23,61 +24,31 @@ L.Icon.Default.mergeOptions({
 })
 
 export const EditorMapBlock: Component<Props> = P => {
-    return (
-        <div class='block-map'>
-            <Show
-                when={P.block.latitude !== 0 && P.block.longitude !== 0}
-                fallback={<MapNewMarker {...P} />}
-            >
-                <MapWIthMarker {...P} />
-            </Show>
-        </div>
-    )
-}
-
-const MapWIthMarker: Component<Props> = P => {
-    let map
-
-    onMount(() => {
-        map = L.map('map').setView([P.block.latitude, P.block.longitude], 13)
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }).addTo(map)
-
-        L.marker([P.block.latitude, P.block.longitude]).addTo(map)
-
-        onCleanup(() => {
-            map.remove()
-        })
+    const [marker, setMarker] = createStore({
+        lat: P.block.latitude || DEFAULT_BLOCKS['map'].latitude,
+        lng: P.block.longitude || DEFAULT_BLOCKS['map'].longitude,
     })
-    return (
-        <div
-            id='map'
-            style={{ height: '500px', width: 'clamp(0px,100%,1500px)' }}
-        ></div>
-    )
-}
 
-const MapNewMarker: Component<Props> = () => {
-    const [marker, setMarker] = createStore({ lat: '', lng: '' })
     let map
     let oldMarker
 
     onMount(() => {
-        map = L.map('map').setView([35.6997005458638, 51.337867620465936], 13)
+        map = L.map('map').setView([marker.lat, marker.lng], 15)
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map)
+
+        update_map()
 
         map.on('click', function (e) {
             if (oldMarker) {
                 map.removeLayer(oldMarker)
             }
             setMarker(e.latlng)
+
+            update_map()
         })
 
         createEffect(() => {
@@ -91,30 +62,25 @@ const MapNewMarker: Component<Props> = () => {
             map.remove()
         })
     })
+
+    function update_map() {
+        setStore(
+            produce(s => {
+                let b = s.data[P.idx] as BlogMap
+                b.latitude = marker.lat
+                b.longitude = marker.lng
+            })
+        )
+    }
+
     return (
-        <>
+        <div class='block-map'>
             <h3 class='title'>نقطه روی نقشه رو انتخاب کنید</h3>
             <p class='title_smaller'>با کلیک کردن میتونید نقطه رو عوض کنید.</p>
-            <button
-                class='cta save title_smaller'
-                classList={{ disable: marker.lat === '' && marker.lng === '' }}
-                onclick={() => {
-                    setPopup({
-                        show: true,
-                        content: 'از ذخیره نقطه مطمعنید؟',
-                        Icon: SaveIcon,
-                        title: 'ذخیره نقشه',
-                        type: 'info',
-                    })
-                }}
-            >
-                <SaveIcon />
-                ذخیر نقطه
-            </button>
             <div
                 id='map'
                 style={{ height: '500px', width: 'clamp(0px,100%,1500px)' }}
             ></div>
-        </>
+        </div>
     )
 }
