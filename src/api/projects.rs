@@ -47,7 +47,7 @@ async fn projects_add(
     }
 
     let api_key = utils::get_random_string(
-        Config::TOKEN_ABC,
+        Config::API_KEY_ABC,
         rand::thread_rng().gen_range(42..69),
     );
     let now = utils::now();
@@ -126,7 +126,7 @@ async fn projects_update(
     if let Some(ak) = body.api_key {
         if ak {
             project.api_key = Some(utils::get_random_string(
-                Config::TOKEN_ABC,
+                Config::API_KEY_ABC,
                 rand::thread_rng().gen_range(42..69),
             ));
         } else {
