@@ -33,13 +33,13 @@ export const EditorEmptyBlock: Component<Props> = P => {
             label: string
         }
     } = {
-        image: { Component: ImageIcon, label: 'عکس' },
         heading: { Component: HeadingIcon, label: 'عنوان' },
         text: { Component: TextIcon, label: 'متن' },
-        break: { Component: LineIcon, label: 'خط افقی' },
+        image: { Component: ImageIcon, label: 'عکس' },
         audio: { Component: AudioIcon, label: 'صوت' },
         video: { Component: VideoIcon, label: 'ویدیو' },
         map: { Component: MapIcon, label: 'نقشه' },
+        break: { Component: LineIcon, label: 'خط افقی' },
     }
 
     return (
