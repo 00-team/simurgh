@@ -15,15 +15,7 @@ type Props = {
 export const EditorImageBlock: Component<Props> = P => {
     return (
         <div class='block-image'>
-            <Show
-                when={P.block.url}
-                fallback={
-                    // <button class='styled icon' onClick={upload_record}>
-                    //     <ImageIcon />
-                    // </button>
-                    <ImageUploader {...P} />
-                }
-            >
+            <Show when={P.block.url} fallback={<ImageUploader {...P} />}>
                 <img
                     decoding='async'
                     loading='lazy'
