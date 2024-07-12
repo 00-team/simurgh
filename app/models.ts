@@ -210,8 +210,8 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
     map: {
         align: 'center',
         kind: 'map',
-        latitude: 0,
-        longitude: 0,
+        latitude: 35.6997005458638,
+        longitude: 51.337867620465936,
     },
     video: {
         align: 'center',
