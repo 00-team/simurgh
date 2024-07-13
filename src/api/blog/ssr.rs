@@ -35,7 +35,7 @@ macro_rules! icon {
 }
 
 icon!(ReadtimeIcon, "read-time");
-icon!(CalendarDaysIcon, "calendar-days");
+icon!(CalendarDaysIcon, "calendar");
 
 #[utoipa::path(
     get,
