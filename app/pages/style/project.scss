@@ -114,17 +114,51 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1em;
-
-            padding: 1em;
-
-            border-radius: 0.8rem;
-            border: 1px solid var(--accent-color);
+            gap: 0.5em;
 
             cursor: pointer;
 
-            position: relative;
-            isolation: isolate;
+            .wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5em;
+
+                max-width: 500px;
+
+                border-radius: 0.8rem;
+                border: 1px solid var(--accent-color);
+                padding: 1em;
+
+                p {
+                    width: 100%;
+
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                    direction: ltr;
+                }
+            }
+
+            .re-gen {
+                height: 70px;
+                aspect-ratio: 1 / 1;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 0.8rem;
+
+                background-image: radial-gradient(
+                    transparent,
+                    var(--ten-percent) 100%
+                );
+
+                svg {
+                    width: 25px;
+                    height: 25px;
+                }
+            }
         }
 
         .n {
