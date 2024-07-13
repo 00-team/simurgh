@@ -89,12 +89,12 @@ async fn ssr_list(
 /// Get
 #[get("/{slug}/")]
 async fn ssr_get(
-    project: Project, path: Path<(String,)>, state: Data<AppState>,
+    project: Project, path: Path<(i64, String,)>, state: Data<AppState>,
 ) -> Response {
     let blog = sqlx::query_as! {
         Blog,
         "select * from blogs where project = ? AND slug = ?",
-        project.id, path.0
+        project.id, path.1
     }
     .fetch_one(&state.sql)
     .await?;
