@@ -110,6 +110,23 @@
             }
         }
 
+        .api {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1em;
+
+            padding: 1em;
+
+            border-radius: 0.8rem;
+            border: 1px solid var(--accent-color);
+
+            cursor: pointer;
+
+            position: relative;
+            isolation: isolate;
+        }
+
         .n {
             direction: ltr;
         }
