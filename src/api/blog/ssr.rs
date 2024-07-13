@@ -22,6 +22,21 @@ pub struct ApiDoc;
 
 type Response = Result<Html, AppErr>;
 
+macro_rules! icon {
+    ($name:ident, $path:literal) => {
+        #[component]
+        fn $name() -> Element {
+            let svg = VContent::new(
+                std::include_str!(std::concat!("icons/", $path, ".svg"))
+            ).raw(true);
+            rsx!(svg)
+        }
+    };
+}
+
+icon!(ReadtimeIcon, "read-time");
+icon!(CalendarDaysIcon, "calendar-days");
+
 #[utoipa::path(
     get,
     params(("pid" = i64, Path, example = 1), ListInput),
@@ -58,30 +73,14 @@ async fn ssr_list(
 
                     h2 {"{blog.title}"}
 
-                    div{
-                        span { 
-                            svg {
-                                width: 16,
-                                height: 16,
-                                image {
-                                    "xlink:href": "/simurgh-ssrs/icon/read-time.svg",
-                                    width: 16,
-                                    height: 16,
-                                }
-                            }
+                    div {
+                        span {
+                            ReadtimeIcon {}
                             "{blog.read_time}" 
                         }
                         span {
                             "{blog.created_at}"
-                            svg {
-                                width: 16,
-                                height: 16,
-                                image {
-                                    "xlink:href": "/simurgh-ssrs/icon/calendar-days.svg",
-                                    width: 16,
-                                    height: 16,
-                                }
-                            }
+                            CalendarDaysIcon {}
                         }
                     }
 
