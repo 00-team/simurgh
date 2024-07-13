@@ -1,6 +1,13 @@
 import { useNavigate, useParams } from '@solidjs/router'
 import { addAlert, Editable } from 'comps'
-import { ArrowLeftIcon, CopyIcon, FileIcon, ImageIcon, TrashIcon } from 'icons'
+import {
+    ArrowLeftIcon,
+    CopyIcon,
+    FileIcon,
+    ImageIcon,
+    RecycleIcon,
+    TrashIcon,
+} from 'icons'
 import { BlogModel, ProjectModel, RecordModel } from 'models'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
@@ -64,6 +71,25 @@ export default () => {
                     produce(s => {
                         s.project = x.response
                         s.edit_name = false
+                    })
+                )
+            },
+        })
+    }
+    function api_update() {
+        httpx({
+            url: `/api/projects/${state.project.id}/`,
+            method: 'PATCH',
+            json: {
+                api_key: true,
+                name: state.project.name,
+            },
+            onLoad(x) {
+                if (x.status != 200) return
+
+                setState(
+                    produce(s => {
+                        s.project = x.response
                     })
                 )
             },
@@ -189,32 +215,37 @@ export default () => {
                 </div>
                 <div class='row'>
                     <span>api key:</span>
-                    <div
-                        class='api'
-                        onclick={() => {
-                            try {
-                                navigator.clipboard.writeText(
-                                    state.project.api_key
-                                )
+                    <div class='api'>
+                        <div class='re-gen' onclick={api_update}>
+                            <RecycleIcon />
+                        </div>
+                        <div
+                            class='wrapper'
+                            onclick={() => {
+                                try {
+                                    navigator.clipboard.writeText(
+                                        state.project.api_key
+                                    )
 
-                                addAlert({
-                                    type: 'success',
-                                    content: 'با موفقیت کپی شد',
-                                    subject: 'موفق!',
-                                    timeout: 3,
-                                })
-                            } catch {
-                                addAlert({
-                                    type: 'error',
-                                    content: 'کپی کردن با مشکل مواجه شد',
-                                    subject: 'خطا!',
-                                    timeout: 3,
-                                })
-                            }
-                        }}
-                    >
-                        <CopyIcon />
-                        {state.project.api_key}
+                                    addAlert({
+                                        type: 'success',
+                                        content: 'با موفقیت کپی شد',
+                                        subject: 'موفق!',
+                                        timeout: 3,
+                                    })
+                                } catch {
+                                    addAlert({
+                                        type: 'error',
+                                        content: 'کپی کردن با مشکل مواجه شد',
+                                        subject: 'خطا!',
+                                        timeout: 3,
+                                    })
+                                }
+                            }}
+                        >
+                            <CopyIcon />
+                            <p>{state.project.api_key}</p>
+                        </div>
                     </div>
                 </div>
             </div>
