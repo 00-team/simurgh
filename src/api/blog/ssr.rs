@@ -57,19 +57,34 @@ async fn ssr_list(
                     }
 
                     h2 {"{blog.title}"}
-                    span { "read time: {blog.read_time}" }
-                    span {
-                        "date creation: {blog.created_at}"
-                        svg {
-                            width: 24,
-                            height: 24,
-                            image {
-                                "xlink:href": "/simurgh-ssrs/icon/calendar-days.svg",
-                                width: 24,
-                                height: 24,
+
+                    div{
+                        span { 
+                            svg {
+                                width: 16,
+                                height: 16,
+                                image {
+                                    "xlink:href": "/simurgh-ssrs/icon/read-time.svg",
+                                    width: 16,
+                                    height: 16,
+                                }
+                            }
+                            "{blog.read_time}" 
+                        }
+                        span {
+                            "{blog.created_at}"
+                            svg {
+                                width: 16,
+                                height: 16,
+                                image {
+                                    "xlink:href": "/simurgh-ssrs/icon/calendar-days.svg",
+                                    width: 16,
+                                    height: 16,
+                                }
                             }
                         }
                     }
+
                     figcaption {"{blog.detail}"}
                     a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
                 }
