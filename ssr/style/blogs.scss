@@ -33,7 +33,7 @@ section.simurgh--blogs {
         }
 
         h2 {
-            font-family: var(--simurgh--title-font);
+            font-family: var(--simurgh--font-title);
             margin-top: -2em;
         }
 
@@ -51,6 +51,8 @@ section.simurgh--blogs {
                 display: flex;
                 align-items: center;
                 gap: 1.5em;
+
+                font-family: var(--simurgh--font-title);
 
                 position: relative;
                 isolation: isolate;
@@ -93,6 +95,8 @@ section.simurgh--blogs {
                 }
 
                 &:nth-child(2) {
+                    font-family: var(--simurgh--font-number);
+
                     &:before {
                         right: unset;
                         left: 4px;
@@ -169,6 +173,8 @@ section.simurgh--blogs {
         figcaption {
             text-align: center;
             width: 90%;
+
+            font-family: var(--simurgh--font-description);
 
             display: -webkit-box;
             -webkit-line-clamp: 3;
