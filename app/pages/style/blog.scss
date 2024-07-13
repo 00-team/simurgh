@@ -150,13 +150,6 @@
             }
         }
 
-        span {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-
         .n {
             direction: ltr;
         }
@@ -165,9 +158,24 @@
             font-family: inherit;
         }
 
+        .project-name {
+            padding: 0.5rem;
+            border-radius: var(--radius);
+
+            width: clamp(0px, 100%, 300px);
+            text-align: left;
+            white-space: initial;
+
+            direction: rtl;
+        }
         .project-desc {
             padding: 0.5rem;
             border-radius: var(--radius);
+
+            max-width: 300px;
+            white-space: initial;
+
+            direction: rtl;
         }
 
         .read_time {
@@ -175,9 +183,8 @@
 
         .thumbnail {
             cursor: pointer;
-            width: 100%;
+            width: clamp(0px, 100%, 500px);
             aspect-ratio: 16/9;
-            max-height: 300px;
 
             display: grid;
             place-items: center;
