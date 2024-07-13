@@ -29,7 +29,6 @@ struct SitemapQuery {
     params(("pid" = i64, Path, example = 1), SitemapQuery),
     responses((status = 200, body = String, content_type = "text/xml"))
 )]
-/// List
 #[get("/")]
 async fn sitemap(
     project: Project, q: Query<SitemapQuery>, state: Data<AppState>,
