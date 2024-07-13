@@ -1,4 +1,4 @@
-use actix_web::web::{Data, Query};
+use actix_web::web::{Data, Query, Path};
 use actix_web::{get, Scope};
 use cercis::html::VContent;
 use cercis::prelude::*;
@@ -83,12 +83,22 @@ async fn ssr_list(
 
 #[utoipa::path(
     get,
-    params(("pid" = i64, Path, example = 1), ("bid" = i64, Path, example = 1)),
+    params(("pid" = i64, Path, example = 1), ("slug" = String, Path,)),
     responses((status = 200, body = String, content_type = "text/html"))
 )]
 /// Get
-#[get("/{bid}/")]
-async fn ssr_get(blog: Blog) -> Response {
+#[get("/{slug}/")]
+async fn ssr_get(
+    project: Project, path: Path<(String,)>, state: Data<AppState>,
+) -> Response {
+    let blog = sqlx::query_as! {
+        Blog,
+        "select * from blogs where project = ? AND slug = ?",
+        project.id, path.0
+    }
+    .fetch_one(&state.sql)
+    .await?;
+
     if blog.status != BlogStatus::Published {
         return Err(AppErrNotFound(None));
     }
