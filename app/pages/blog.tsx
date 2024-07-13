@@ -351,7 +351,7 @@ export default () => {
                         <Show
                             when={state.editing}
                             fallback={
-                                <span dir='auto'>
+                                <span class='project-name' dir='auto'>
                                     {state.blog.title || '---'}
                                 </span>
                             }
@@ -378,7 +378,10 @@ export default () => {
                         <Show
                             when={state.editing}
                             fallback={
-                                <p class='project-desc' dir='auto'>
+                                <p
+                                    class='project-desc title_smaller'
+                                    dir='auto'
+                                >
                                     {state.blog.detail
                                         .split('\n')
                                         .map((l, i, a) => (
