@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from '@solidjs/router'
-import { Editable } from 'comps'
-import { ArrowLeftIcon, FileIcon, ImageIcon, TrashIcon } from 'icons'
+import { addAlert, Editable } from 'comps'
+import { ArrowLeftIcon, CopyIcon, FileIcon, ImageIcon, TrashIcon } from 'icons'
 import { BlogModel, ProjectModel, RecordModel } from 'models'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
@@ -186,6 +186,36 @@ export default () => {
                     <span class='n'>
                         {fmt_datetime(state.project.updated_at)}
                     </span>
+                </div>
+                <div class='row'>
+                    <span>api key:</span>
+                    <div
+                        class='api'
+                        onclick={() => {
+                            try {
+                                navigator.clipboard.writeText(
+                                    state.project.api_key
+                                )
+
+                                addAlert({
+                                    type: 'success',
+                                    content: 'با موفقیت کپی شد',
+                                    subject: 'موفق!',
+                                    timeout: 3,
+                                })
+                            } catch {
+                                addAlert({
+                                    type: 'error',
+                                    content: 'کپی کردن با مشکل مواجه شد',
+                                    subject: 'خطا!',
+                                    timeout: 3,
+                                })
+                            }
+                        }}
+                    >
+                        <CopyIcon />
+                        {state.project.api_key}
+                    </div>
                 </div>
             </div>
 
