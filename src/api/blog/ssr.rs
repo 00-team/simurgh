@@ -71,7 +71,7 @@ async fn ssr_list(
                         }
                     }
                     figcaption {"{blog.detail}"}
-                    a { href: "/blogs/{blog.id}/", "دیدن بیشتر" }
+                    a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
                 }
             }
         }
