@@ -1,4 +1,5 @@
 use crate::docs::UpdatePaths;
+use crate::models::blog::BlogStatus;
 use crate::models::project::Project;
 use crate::AppState;
 use actix_web::http::header::ContentType;
@@ -34,8 +35,9 @@ async fn sitemap(
     project: Project, q: Query<SitemapQuery>, state: Data<AppState>,
 ) -> HttpResponse {
     let blogs = sqlx::query! {
-        "select slug, created_at, updated_at from blogs where project = ?",
-        project.id
+        "select slug, created_at, updated_at from blogs 
+        where project = ? and status = ?",
+        project.id, BlogStatus::Published
     }
     .fetch_all(&state.sql)
     .await

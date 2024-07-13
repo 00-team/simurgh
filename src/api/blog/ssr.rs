@@ -1,4 +1,4 @@
-use actix_web::web::{Data, Query, Path};
+use actix_web::web::{Data, Path, Query};
 use actix_web::{get, Scope};
 use cercis::html::VContent;
 use cercis::prelude::*;
@@ -7,7 +7,7 @@ use utoipa::OpenApi;
 use crate::docs::UpdatePaths;
 use crate::models::blog::{Blog, BlogStatus};
 use crate::models::project::Project;
-use crate::models::{AppErr, AppErrNotFound, Html, ListInput};
+use crate::models::{AppErr, Html, ListInput};
 use crate::AppState;
 
 #[derive(OpenApi)]
@@ -89,19 +89,15 @@ async fn ssr_list(
 /// Get
 #[get("/{slug}/")]
 async fn ssr_get(
-    project: Project, path: Path<(i64, String,)>, state: Data<AppState>,
+    project: Project, path: Path<(i64, String)>, state: Data<AppState>,
 ) -> Response {
     let blog = sqlx::query_as! {
         Blog,
-        "select * from blogs where project = ? AND slug = ?",
-        project.id, path.1
+        "select * from blogs where project = ? AND slug = ? AND status = ?",
+        project.id, path.1, BlogStatus::Published
     }
     .fetch_one(&state.sql)
     .await?;
-
-    if blog.status != BlogStatus::Published {
-        return Err(AppErrNotFound(None));
-    }
 
     let preview = VContent::new(&blog.html).raw(true);
 
