@@ -57,7 +57,7 @@ export default () => {
                     subject: 'موفق',
                     content: 'بلاگ شما با موفقیت ذخیره شد.',
                     type: 'success',
-                    timeout: 10,
+                    timeout: 3,
                 })
                 setStore({ blog: x.response })
             },
