@@ -216,8 +216,9 @@ pub fn router() -> Scope {
         .service(projects_update)
         .service(projects_delete)
         .service(super::blog::blogs::router())
-        .service(super::blog::ssr::router())
         .service(super::blog::categories::router())
+        .service(super::blog::sitemap::router())
+        .service(super::blog::ssr::router())
         .service(super::blog::tags::router())
         .service(super::records::router())
 }

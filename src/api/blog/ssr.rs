@@ -1,4 +1,4 @@
-use actix_web::web::{Data, Query};
+use actix_web::web::{Data, Path, Query};
 use actix_web::{get, Scope};
 use cercis::html::VContent;
 use cercis::prelude::*;
@@ -7,7 +7,7 @@ use utoipa::OpenApi;
 use crate::docs::UpdatePaths;
 use crate::models::blog::{Blog, BlogStatus};
 use crate::models::project::Project;
-use crate::models::{AppErr, AppErrNotFound, Html, ListInput};
+use crate::models::{AppErr, Html, ListInput};
 use crate::AppState;
 
 #[derive(OpenApi)]
@@ -71,7 +71,7 @@ async fn ssr_list(
                         }
                     }
                     figcaption {"{blog.detail}"}
-                    a { href: "/blogs/{blog.id}/", "دیدن بیشتر" }
+                    a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
                 }
             }
         }
@@ -83,15 +83,21 @@ async fn ssr_list(
 
 #[utoipa::path(
     get,
-    params(("pid" = i64, Path, example = 1), ("bid" = i64, Path, example = 1)),
+    params(("pid" = i64, Path, example = 1), ("slug" = String, Path,)),
     responses((status = 200, body = String, content_type = "text/html"))
 )]
 /// Get
-#[get("/{bid}/")]
-async fn ssr_get(blog: Blog) -> Response {
-    if blog.status != BlogStatus::Published {
-        return Err(AppErrNotFound(None));
+#[get("/{slug}/")]
+async fn ssr_get(
+    project: Project, path: Path<(i64, String)>, state: Data<AppState>,
+) -> Response {
+    let blog = sqlx::query_as! {
+        Blog,
+        "select * from blogs where project = ? AND slug = ? AND status = ?",
+        project.id, path.1, BlogStatus::Published
     }
+    .fetch_one(&state.sql)
+    .await?;
 
     let preview = VContent::new(&blog.html).raw(true);
 

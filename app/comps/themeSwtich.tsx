@@ -1,30 +1,21 @@
 import { LogoRaw } from 'icons'
-import { Component, onMount } from 'solid-js'
+import { Component } from 'solid-js'
 import { setTheme, theme } from 'store'
 
 import './style/themeswitch.scss'
 
-export const ThemeSwtich: Component<{}> = props => {
-    let themeswitch: HTMLElement
-
-    onMount(() => {
-        themeswitch = document.querySelector('.theme-switch')
-
-        themeswitch.addEventListener('change', switchTheme)
-    })
-
-    function switchTheme(e) {
-        if (e.target.checked) {
-            setTheme('dark')
-        } else {
-            setTheme('light')
-        }
-    }
-
+export const ThemeSwtich: Component = () => {
     return (
         <div class='theme-switch' classList={{ dark: theme() === 'dark' }}>
             <label for='theme-btn'>
-                <input type='checkbox' id='theme-btn' />
+                <input
+                    type='checkbox'
+                    id='theme-btn'
+                    onChange={e => {
+                        let checked = e.currentTarget.checked
+                        setTheme(checked ? 'dark' : 'light')
+                    }}
+                />
                 <div class='slider-wrapper'>
                     <div
                         class='theme-btn-slider'

@@ -33,20 +33,6 @@ const Dash: Component<RouteSectionProps> = P => {
 }
 
 const Root = () => {
-    const prefersDarkColorScheme = () =>
-        matchMedia && matchMedia('(prefers-color-scheme: dark)').matches
-
-    onMount(() => {
-        if (prefersDarkColorScheme()) {
-            // debug
-            // setTheme('dark')
-        }
-        setTheme('light')
-    })
-
-    createEffect(() => {
-        document.documentElement.setAttribute('data-theme', theme())
-    })
     return (
         <>
             <Show when={self.loged_in} fallback={<Login />}>
