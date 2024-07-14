@@ -129,8 +129,13 @@ async fn ssr_get(
 
             if let Some(t) = blog.thumbnail{
                 img{
+                    class:"thumbnail",
                     src: "/simurgh-record/bt-{blog.id}-{t}"
                 }
+            }
+
+            header{
+                "{blog.title}"
             }
 
             div {
