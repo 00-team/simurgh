@@ -125,7 +125,7 @@ async fn ssr_get(
     let preview = VContent::new(&blog.html).raw(true);
 
     let result = rsx! {
-        div {
+        main {
             class: "simurgh--blog-fnd",
 
             if let Some(t) = blog.thumbnail{
@@ -141,7 +141,7 @@ async fn ssr_get(
                 }
             }
 
-            div{
+            section{
                 class: "simurgh--blog-options",
 
                 div{
@@ -186,7 +186,7 @@ async fn ssr_get(
                 }
             }
 
-            div {
+            article {
                 class: "simurgh--blog-preview",
                 preview
             }
