@@ -127,6 +127,12 @@ async fn ssr_get(
         div {
             class: "simurgh--blog-fnd",
 
+            if let Some(t) = blog.thumbnail{
+                img{
+                    src: "/simurgh-record/bt-{blog.id}-{t}"
+                }
+            }
+
             div {
                 class: "simurgh--blog-preview",
                 preview
