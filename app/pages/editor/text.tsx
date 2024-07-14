@@ -7,6 +7,7 @@ import {
 } from 'models'
 import { Component, createSignal, onCleanup, onMount, Show } from 'solid-js'
 
+import { ColorPicker } from 'comps/color-picker'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
@@ -26,7 +27,6 @@ import {
 import { createStore, produce } from 'solid-js/store'
 import { setStore, store, unwrap_rec } from './store'
 import './style/text.scss'
-import { ColorPicker } from 'comps/color-picker'
 
 function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
     return {
@@ -367,9 +367,8 @@ const Actions: Component<ActionsProps> = P => {
                     classList={{ disable: !state.spliter }}
                 >
                     <button
-                        class='action icon title_small flex'
+                        class='action icon title_small flex active'
                         onClick={new_group}
-                        classList={{ active: P.block.align === 'left' }}
                     >
                         گروه جدید
                         <SplitIcon />
@@ -412,22 +411,22 @@ const Actions: Component<ActionsProps> = P => {
                 </div>
                 <div class='actions-wrapper directions'>
                     <button
-                        classList={{ active: P.block.dir === 'rtl' }}
+                        classList={{ active: P.block.dir === 'ltr' }}
                         class='action icon'
                         onClick={() => {
                             set_attr(b => ({
-                                dir: 'rtl',
+                                dir: 'ltr',
                             }))
                         }}
                     >
                         <PilcrowRightIcon />
                     </button>
                     <button
-                        classList={{ active: P.block.dir === 'ltr' }}
+                        classList={{ active: P.block.dir === 'rtl' }}
                         class='action icon'
                         onClick={() => {
                             set_attr(b => ({
-                                dir: 'ltr',
+                                dir: 'rtl',
                             }))
                         }}
                     >
