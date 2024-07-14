@@ -75,11 +75,19 @@ async fn ssr_list(
 
                     div {
                         span {
+                            class:"detail-container",
+
                             ReadtimeIcon {}
-                            "{blog.read_time}" 
+                            span{
+                                "{blog.read_time}" 
+                            }
                         }
                         span {
-                            "{blog.created_at}"
+                            class:"detail-container",
+
+                            span{
+                                "{blog.created_at}"
+                            }
                             CalendarDaysIcon {}
                         }
                     }
