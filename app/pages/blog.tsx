@@ -3,6 +3,7 @@ import {
     ArrowLeftIcon,
     ArrowUpLeftIcon,
     ImageIcon,
+    InfoIcon,
     RotateCcwIcon,
     SaveIcon,
     TextCursorIcon,
@@ -14,7 +15,7 @@ import { BlogModel } from 'models'
 import { createEffect, createMemo, on, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 
-import { addAlert, Confact } from 'comps'
+import { addAlert } from 'comps'
 import { fmt_datetime, fmt_hms, httpx } from 'shared'
 import { setPopup } from 'store/popup'
 import './style/blog.scss'
@@ -234,7 +235,26 @@ export default () => {
                     <button
                         class='cta title_smaller edit'
                         classList={{ active: state.editing }}
-                        onClick={() => setState(s => ({ editing: !s.editing }))}
+                        onClick={() => {
+                            if (state.editing && changed()) {
+                                setPopup({
+                                    show: true,
+                                    title: 'ذخیره نکردید!',
+                                    type: 'info',
+                                    Icon: InfoIcon,
+                                    content:
+                                        'از خروج بدونه ذخیره کردن مطمعنید؟',
+                                    onSubmit: () => {
+                                        reset()
+                                        setState(s => ({ editing: !s.editing }))
+                                    },
+                                })
+
+                                return
+                            }
+
+                            setState(s => ({ editing: !s.editing }))
+                        }}
                     >
                         {state.editing ? 'تایید ویرایش' : 'ویرایش مقاله'}
                         <WrenchIcon />
@@ -302,7 +322,7 @@ export default () => {
                                 maxLength={255}
                                 dir='auto'
                                 value={state.edit.slug}
-                                class='styled'
+                                class='styled title_small'
                                 placeholder='نشانه در لینک'
                                 onInput={e =>
                                     setState(
