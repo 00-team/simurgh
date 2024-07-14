@@ -25,11 +25,11 @@ export const Popup: Component = P => {
                 <p class='title_smaller'>{popup.content}</p>
 
                 <div class='ctas'>
-                    <button type={'reset'} class='cta reject title_smaller'>
-                        لغو
-                    </button>
                     <button class='cta submit title_smaller' type='submit'>
                         تایید
+                    </button>
+                    <button type={'reset'} class='cta reject title_smaller'>
+                        لغو
                     </button>
                 </div>
             </form>
