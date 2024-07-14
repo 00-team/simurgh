@@ -34,8 +34,9 @@ macro_rules! icon {
     };
 }
 
-icon!(ReadtimeIcon, "read-time");
+icon!(ReadtimeIcon, "reading-time");
 icon!(CalendarDaysIcon, "calendar");
+icon!(CalendarUpdateIcon, "calendar-update");
 
 #[utoipa::path(
     get,
@@ -129,13 +130,60 @@ async fn ssr_get(
 
             if let Some(t) = blog.thumbnail{
                 img{
-                    class:"thumbnail",
+                    class:"simurgh--blog-thumbnail",
                     src: "/simurgh-record/bt-{blog.id}-{t}"
                 }
             }
 
             header{
-                "{blog.title}"
+                span{
+                    "{blog.title}"
+                }
+            }
+
+            div{
+                class: "simurgh--blog-options",
+
+                div{
+                    class:"simurgh--blog-option",
+
+                    div{
+                        ReadtimeIcon {}
+                        "زمان مطالعه:"
+                    }
+
+                    span{
+                        "{blog.read_time}" 
+                    }
+
+                }
+
+                div{
+                    class:"simurgh--blog-option",
+
+                    div{
+                        CalendarDaysIcon {}
+                        "تاریخ ثبت:"
+                    }
+
+                    span{
+                        "{blog.created_at}" 
+                    }
+
+                }
+                div{
+                    class:"simurgh--blog-option",
+
+                    div{
+                        CalendarUpdateIcon {}
+                        "تاریخ به روز رسانی:"
+                    }
+
+                    span{
+                        "{blog.created_at}" 
+                    }
+
+                }
             }
 
             div {
