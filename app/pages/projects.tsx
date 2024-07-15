@@ -89,6 +89,10 @@ export default () => {
                                 <span>{p.name}</span>
                             </div>
                             <div class='row'>
+                                <span>شماره:</span>
+                                <span class='n'>{p.id}</span>
+                            </div>
+                            <div class='row'>
                                 <span>بلاگ ها:</span>
                                 <span class='n'>
                                     {p.blog_count.toLocaleString()}
