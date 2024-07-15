@@ -185,6 +185,10 @@ export default () => {
                 </div>
 
                 <div class='row'>
+                    <span>شماره:</span>
+                    <span class='n'>{state.project.id}</span>
+                </div>
+                <div class='row'>
                     <span>بلاگ ها:</span>
                     <span class='n'>
                         {state.project.blog_count.toLocaleString()}
