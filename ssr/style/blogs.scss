@@ -50,7 +50,7 @@ section.simurgh--blogs {
                 padding: 1em;
                 display: flex;
                 align-items: center;
-                gap: 1.5em;
+                gap: 1.2em;
 
                 font-family: var(--simurgh--font-title);
 
@@ -104,7 +104,9 @@ section.simurgh--blogs {
                 }
 
                 span {
-                    font-size: var(--simurgh--size-title-title-description);
+                    font-size: var(
+                        --simurgh--size-title-title-description-small
+                    );
                 }
             }
         }
@@ -178,6 +180,7 @@ section.simurgh--blogs {
             text-align: center;
             width: 90%;
 
+            font-size: var(--simurgh--size-title-title-description);
             font-family: var(--simurgh--font-description);
 
             display: -webkit-box;
