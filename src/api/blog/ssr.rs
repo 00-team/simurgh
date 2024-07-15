@@ -1,8 +1,10 @@
-use actix_web::web::{Data, Path, Query};
+use actix_web::web::{Data, Json, Path, Query};
 use actix_web::{get, Scope};
 use cercis::html::VContent;
 use cercis::prelude::*;
-use utoipa::OpenApi;
+use chrono::TimeZone;
+use serde::Serialize;
+use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
 use crate::models::blog::{Blog, BlogStatus};
@@ -14,7 +16,7 @@ use crate::AppState;
 #[openapi(
     tags((name = "api::blogs-ssr")),
     paths(ssr_list, ssr_get),
-    components(schemas()),
+    components(schemas(BlogSSRR)),
     servers((url = "/projects/{pid}/blogs-ssr")),
     modifiers(&UpdatePaths)
 )]
@@ -26,9 +28,10 @@ macro_rules! icon {
     ($name:ident, $path:literal) => {
         #[component]
         fn $name() -> Element {
-            let svg = VContent::new(
-                std::include_str!(std::concat!("icons/", $path, ".svg"))
-            ).raw(true);
+            let svg = VContent::new(std::include_str!(std::concat!(
+                "icons/", $path, ".svg"
+            )))
+            .raw(true);
             rsx!(svg)
         }
     };
@@ -37,6 +40,43 @@ macro_rules! icon {
 icon!(ReadtimeIcon, "reading-time");
 icon!(CalendarDaysIcon, "calendar");
 icon!(CalendarUpdateIcon, "calendar-update");
+
+#[component]
+fn ReadTime(value: i64) -> Element {
+    let rt = *value;
+    let hours = rt / 3600;
+    let rt = rt % 3600;
+    let minutes = rt / 60;
+    let seconds = rt % 60;
+    rsx! { "{hours} ساعت و {minutes} دقیقه و {seconds} ثانیه" }
+}
+
+#[component]
+fn DateTime(value: i64) -> Element {
+    let dt = chrono::Local
+        .timestamp_opt(*value, 0)
+        .latest()
+        .map(|v| v.format("%F").to_string())
+        .unwrap_or("---".to_string());
+
+    rsx! { "{dt}" }
+}
+
+#[component]
+fn Multiline(value: String) -> Element {
+    let value = value.split('\n').collect::<Vec<_>>();
+    let it = value.iter().enumerate().map(|(i, v)| {
+        let line = v.to_string();
+        rsx! {
+            line
+            if i != value.len() -1 {
+                br {}
+            }
+        }
+    });
+
+    rsx! { for item in it { item } }
+}
 
 #[utoipa::path(
     get,
@@ -72,28 +112,22 @@ async fn ssr_list(
                         }
                     }
 
-                    h2 {"{blog.title}"}
+                    h2 { "{blog.title}" }
 
                     div {
                         span {
                             class:"detail-container",
-
                             ReadtimeIcon {}
-                            span{
-                                "{blog.read_time}" 
-                            }
+                            span { ReadTime { value: blog.read_time } }
                         }
                         span {
                             class:"detail-container",
-
-                            span{
-                                "{blog.created_at}"
-                            }
+                            span { DateTime { value: blog.created_at } }
                             CalendarDaysIcon {}
                         }
                     }
 
-                    figcaption {"{blog.detail}"}
+                    figcaption { Multiline { value: blog.detail } }
                     a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
                 }
             }
@@ -104,16 +138,22 @@ async fn ssr_list(
     Ok(Html(result))
 }
 
+#[derive(Serialize, ToSchema)]
+struct BlogSSRR {
+    blog: Blog,
+    html: String,
+}
+
 #[utoipa::path(
     get,
     params(("pid" = i64, Path, example = 1), ("slug" = String, Path,)),
-    responses((status = 200, body = String, content_type = "text/html"))
+    responses((status = 200, body = BlogSSRR))
 )]
 /// Get
 #[get("/{slug}/")]
 async fn ssr_get(
     project: Project, path: Path<(i64, String)>, state: Data<AppState>,
-) -> Response {
+) -> Result<Json<BlogSSRR>, AppErr> {
     let blog = sqlx::query_as! {
         Blog,
         "select * from blogs where project = ? AND slug = ? AND status = ?",
@@ -124,65 +164,38 @@ async fn ssr_get(
 
     let preview = VContent::new(&blog.html).raw(true);
 
-    let result = rsx! {
+    let html = rsx! {
         main {
             class: "simurgh--blog-fnd",
 
-            if let Some(t) = blog.thumbnail{
-                img{
-                    class:"simurgh--blog-thumbnail",
+            if let Some(t) = &blog.thumbnail {
+                img {
+                    class: "simurgh--blog-thumbnail",
                     src: "/simurgh-record/bt-{blog.id}-{t}"
                 }
             }
 
-            header{
-                span{
-                    "{blog.title}"
-                }
-            }
+            header { span { "{blog.title}" } }
 
-            section{
+            section {
                 class: "simurgh--blog-options",
 
-                div{
-                    class:"simurgh--blog-option",
-
-                    div{
-                        ReadtimeIcon {}
-                        "زمان مطالعه:"
-                    }
-
-                    span{
-                        "{blog.read_time}" 
-                    }
-
+                div {
+                    class: "simurgh--blog-option",
+                    div { ReadtimeIcon {} "زمان مطالعه:" }
+                    span { ReadTime { value: blog.read_time } }
                 }
 
-                div{
-                    class:"simurgh--blog-option",
-
-                    div{
-                        CalendarDaysIcon {}
-                        "تاریخ ثبت:"
-                    }
-
-                    span{
-                        "{blog.created_at}" 
-                    }
-
+                div {
+                    class: "simurgh--blog-option",
+                    div { CalendarDaysIcon {} "تاریخ ثبت:" }
+                    span { DateTime { value: blog.created_at } }
                 }
-                div{
-                    class:"simurgh--blog-option",
 
-                    div{
-                        CalendarUpdateIcon {}
-                        "تاریخ به روز رسانی:"
-                    }
-
-                    span{
-                        "{blog.created_at}" 
-                    }
-
+                div {
+                    class: "simurgh--blog-option",
+                    div { CalendarUpdateIcon {} "تاریخ به روز رسانی:" }
+                    span { DateTime { value: blog.updated_at } }
                 }
             }
 
@@ -194,7 +207,7 @@ async fn ssr_get(
     }
     .render();
 
-    Ok(Html(result))
+    Ok(Json(BlogSSRR { blog, html }))
 }
 
 pub fn router() -> Scope {
