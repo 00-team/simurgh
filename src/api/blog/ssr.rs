@@ -78,6 +78,39 @@ fn Multiline(value: String) -> Element {
     rsx! { for item in it { item } }
 }
 
+#[component]
+fn BlogCard(blog: Blog) -> Element {
+    rsx! {
+        figure {
+            if let Some(t) = &blog.thumbnail {
+                img {
+                    decode: "async",
+                    loading: "lazy",
+                    src: "/simurgh-record/bt-{blog.id}-{t}"
+                }
+            }
+
+            h2 { "{blog.title}" }
+
+            div {
+                span {
+                    class:"detail-container",
+                    ReadtimeIcon {}
+                    span { ReadTime { value: blog.read_time } }
+                }
+                span {
+                    class:"detail-container",
+                    span { DateTime { value: blog.created_at } }
+                    CalendarDaysIcon {}
+                }
+            }
+
+            figcaption { Multiline { value: blog.detail.clone() } }
+            a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
+        }
+    }
+}
+
 #[utoipa::path(
     get,
     params(("pid" = i64, Path, example = 1), ListInput),
@@ -101,41 +134,63 @@ async fn ssr_list(
     let result = rsx! {
         section {
             class: "simurgh--blogs",
-
-            for blog in blogs {
-                figure {
-                    if let Some(t) = blog.thumbnail {
-                        img {
-                            decode: "async",
-                            loading: "lazy",
-                            src: "/simurgh-record/bt-{blog.id}-{t}"
-                        }
-                    }
-
-                    h2 { "{blog.title}" }
-
-                    div {
-                        span {
-                            class:"detail-container",
-                            ReadtimeIcon {}
-                            span { ReadTime { value: blog.read_time } }
-                        }
-                        span {
-                            class:"detail-container",
-                            span { DateTime { value: blog.created_at } }
-                            CalendarDaysIcon {}
-                        }
-                    }
-
-                    figcaption { Multiline { value: blog.detail } }
-                    a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
-                }
-            }
+            for blog in blogs { BlogCard { blog: blog } }
         }
     }
     .render();
 
     Ok(Html(result))
+}
+
+async fn get_releated<'a>(
+    blog: &'a Blog, state: &'a AppState,
+) -> Result<Element<'a>, AppErr> {
+    let next = sqlx::query_as! {
+        Blog,
+        "select * from blogs where id > ? order by id asc limit 1",
+        blog.id
+    }
+    .fetch_optional(&state.sql)
+    .await?;
+
+    let past = sqlx::query_as! {
+        Blog,
+        "select * from blogs where id < ? order by id desc limit 1",
+        blog.id
+    }
+    .fetch_optional(&state.sql)
+    .await?;
+
+    let related = sqlx::query_as! {
+        Blog,
+        "select * from blogs where id in (
+            select blog from blog_tag where tag in (
+                select tag from blog_tag where blog = ?
+            )
+        ) limit 3",
+        blog.id
+    }
+    .fetch_all(&state.sql)
+    .await?;
+
+    Ok(rsx! {
+        section {
+            class: "releated-blogs",
+            h3 { "مقاله های مشابه" }
+            div {
+                class: "releated-wrapper",
+                if let Some(blog) = past {
+                    BlogCard { blog: blog }
+                }
+
+                for blog in related { BlogCard { blog: blog } }
+
+                if let Some(blog) = next {
+                    BlogCard { blog: blog }
+                }
+            }
+        }
+    })
 }
 
 #[derive(Serialize, ToSchema)]
@@ -163,6 +218,7 @@ async fn ssr_get(
     .await?;
 
     let preview = VContent::new(&blog.html).raw(true);
+    let releated = get_releated(&blog, &state).await?;
 
     let html = rsx! {
         main {
@@ -203,11 +259,13 @@ async fn ssr_get(
                 class: "simurgh--blog-preview",
                 preview
             }
+
+            releated
         }
     }
     .render();
 
-    Ok(Json(BlogSSRR { blog, html }))
+    Ok(Json(BlogSSRR { blog: blog.clone(), html }))
 }
 
 pub fn router() -> Scope {
