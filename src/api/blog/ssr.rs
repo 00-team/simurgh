@@ -48,7 +48,15 @@ fn ReadTime(value: i64) -> Element {
     let rt = rt % 3600;
     let minutes = rt / 60;
     let seconds = rt % 60;
-    rsx! { "{hours} ساعت و {minutes} دقیقه و {seconds} ثانیه" }
+
+    let values = vec![(hours, "ساعت"), (minutes, "دقیقه"), (seconds, "ثانیه")]
+        .iter()
+        .filter(|(a, _)| *a > 0)
+        .map(|(a, b)| format!("{b} {a}"))
+        .collect::<Vec<_>>()
+        .join(" و ");
+
+    rsx! { "{values}" }
 }
 
 #[component]
@@ -142,7 +150,7 @@ async fn ssr_list(
     Ok(Html(result))
 }
 
-async fn get_releated<'a>(
+async fn get_related<'a>(
     blog: &'a Blog, state: &'a AppState,
 ) -> Result<Element<'a>, AppErr> {
     let next = sqlx::query_as! {
@@ -178,7 +186,7 @@ async fn get_releated<'a>(
             class: "related-blogs",
             h3 { "مقاله های مشابه" }
             div {
-                class: "releated-wrapper",
+                class: "related-wrapper",
                 if let Some(blog) = past {
                     BlogCard { blog: blog }
                 }
@@ -218,7 +226,7 @@ async fn ssr_get(
     .await?;
 
     let preview = VContent::new(&blog.html).raw(true);
-    let releated = get_releated(&blog, &state).await?;
+    let related = get_related(&blog, &state).await?;
 
     let html = rsx! {
         main {
@@ -260,7 +268,7 @@ async fn ssr_get(
                 preview
             }
 
-            releated
+            related
         }
     }
     .render();
