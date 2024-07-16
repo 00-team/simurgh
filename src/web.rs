@@ -9,6 +9,8 @@ use std::fs::read_to_string;
 #[get("/projects")]
 #[get("/projects/{pid}")]
 #[get("/projects/{pid}/records")]
+#[get("/projects/{pid}/blogs-categories")]
+#[get("/projects/{pid}/blogs-tags")]
 #[get("/projects/{pid}/blogs")]
 #[get("/projects/{pid}/blogs/{bid}")]
 #[get("/projects/{pid}/blogs/{bid}/editor")]

@@ -1,9 +1,9 @@
 import { Navigate, Route, Router, RouteSectionProps } from '@solidjs/router'
-import { Component, createEffect, lazy, onMount } from 'solid-js'
+import { Component, lazy } from 'solid-js'
 import { render, Show } from 'solid-js/web'
 
 import { Alert, Popup } from 'comps'
-import { self, setTheme, theme } from 'store'
+import { self } from 'store'
 
 import Sidebar from 'layout/sidebar'
 import NotFound from 'pages/404'
@@ -46,12 +46,12 @@ const Root = () => {
                         <Route path='/projects/:pid'>
                             <Route path='/' component={Project} />
                             <Route path='/records/' component={Records} />
-                            <Route path='/blogs' component={Blogs} />
                             <Route
                                 path='/blogs-categories/'
                                 component={Categories}
                             />
                             <Route path='/blogs-tags/' component={Tags} />
+                            <Route path='/blogs' component={Blogs} />
                             <Route path='/blogs/:bid'>
                                 <Route path='/' component={Blog} />
                                 <Route path='/editor/' component={Editor} />
