@@ -52,7 +52,7 @@ fn ReadTime(value: i64) -> Element {
     let values = vec![(hours, "ساعت"), (minutes, "دقیقه"), (seconds, "ثانیه")]
         .iter()
         .filter(|(a, _)| *a > 0)
-        .map(|(a, b)| format!("{b} {a}"))
+        .map(|(a, b)| format!("{a} {b}"))
         .collect::<Vec<_>>()
         .join(" و ");
 
