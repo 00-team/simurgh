@@ -175,7 +175,7 @@ async fn get_releated<'a>(
 
     Ok(rsx! {
         section {
-            class: "releated-blogs",
+            class: "related-blogs",
             h3 { "مقاله های مشابه" }
             div {
                 class: "releated-wrapper",
