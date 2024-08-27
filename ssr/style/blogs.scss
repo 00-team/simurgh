@@ -37,7 +37,11 @@ section.simurgh--blogs {
 
         h2 {
             font-family: var(--simurgh--font-title);
+            font-size: var(--simurgh--size-title-title);
             margin-top: -2em;
+
+            text-align: center;
+            padding: 1em;
         }
 
         > div {

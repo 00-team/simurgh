@@ -239,8 +239,6 @@ async fn ssr_get(
                 }
             }
 
-            header { span { "{blog.title}" } }
-
             section {
                 class: "simurgh--blog-options",
 
@@ -262,6 +260,8 @@ async fn ssr_get(
                     span { DateTime { value: blog.updated_at } }
                 }
             }
+
+            header { span { "{blog.title}" } }
 
             article {
                 class: "simurgh--blog-preview",
