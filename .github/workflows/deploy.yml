@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'Cargo.toml'
+      - VERSION
 
 jobs:
   deploy:
