@@ -18,10 +18,14 @@
         justify-content: center;
         flex-direction: column;
 
+        flex-wrap: wrap;
+
         .actions-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
+
+            flex-shrink: 0;
 
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             border-radius: 0.8rem;
@@ -98,12 +102,17 @@
             align-items: center;
             justify-content: center;
 
+            flex-wrap: wrap;
+
             gap: 3em;
+            row-gap: 2em;
         }
 
         .color-btn {
             position: relative;
             isolation: isolate;
+
+            z-index: 2;
 
             .color-picker {
                 position: absolute;
@@ -125,6 +134,8 @@
             display: flex;
             align-items: center;
             flex-direction: column;
+
+            z-index: 1;
 
             .action {
                 &.linked:not(.active) {
@@ -185,13 +196,14 @@
         display: inline-block;
         word-break: break-word;
 
+        font-family: 'iranSans';
+
         span {
             --c0: var(--red);
             --c1: var(--green);
             --c2: var(--blue);
 
             line-height: 1.8em;
-            font-family: 'iranSans';
 
             &:hover {
                 outline: 2px solid #fff3;
@@ -225,7 +237,7 @@
         }
 
         &.show_groups span {
-            outline: 2px solid var(--bc);
+            outline: 20px solid var(--bc);
         }
     }
 }
