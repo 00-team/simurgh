@@ -2,6 +2,8 @@
 SPACER="======================================"
 EG="🔷"
 
+PATH=$PATH:/root/.nvm/versions/node/v22.3.0/bin:/root/.cargo/bin
+
 cd /x/simurgh/
 
 OLD_COMMIT=$(git rev-parse HEAD)
