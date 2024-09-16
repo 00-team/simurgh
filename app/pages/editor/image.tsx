@@ -1,4 +1,10 @@
-import { BlogImage, DEFAULT_BLOCKS, RecordModel, RecordUsages } from 'models'
+import {
+    BlogImage,
+    BLOG_ALIGN,
+    DEFAULT_BLOCKS,
+    RecordModel,
+    RecordUsages,
+} from 'models'
 import { Component, Show } from 'solid-js'
 
 import { addAlert } from 'comps'
@@ -13,27 +19,82 @@ type Props = {
     block: BlogImage
 }
 export const EditorImageBlock: Component<Props> = P => {
+    function set_attr(
+        cb: (b: BlogImage) => Partial<Omit<BlogImage, 'kind' | 'groups'>>
+    ) {
+        setStore(
+            produce(s => {
+                let b = s.data[P.idx] as BlogImage
+                let v = cb(b)
+                s.data[P.idx] = { ...b, ...v }
+            })
+        )
+    }
+
     return (
         <div class='block-image'>
             <Show when={P.block.url} fallback={<ImageUploader {...P} />}>
-                <img
-                    decoding='async'
-                    loading='lazy'
-                    draggable={false}
-                    src={P.block.url}
-                />
-                <button
-                    class='styled icon remove'
-                    onClick={() => {
-                        setStore(
-                            produce(s => {
-                                s.data[P.idx] = DEFAULT_BLOCKS.image
-                            })
-                        )
-                    }}
+                <div class='image-actions'>
+                    <div class='actions-wrapper'>
+                        <button
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    align: 'left',
+                                }))
+                            }}
+                            classList={{ active: P.block.align === 'left' }}
+                        >
+                            {BLOG_ALIGN['left'][1]()}
+                        </button>
+                        <button
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    align: 'center',
+                                }))
+                            }}
+                            classList={{ active: P.block.align === 'center' }}
+                        >
+                            {BLOG_ALIGN['center'][1]()}
+                        </button>
+                        <button
+                            class='action icon'
+                            onClick={() => {
+                                set_attr(b => ({
+                                    align: 'right',
+                                }))
+                            }}
+                            classList={{ active: P.block.align === 'right' }}
+                        >
+                            {BLOG_ALIGN['right'][1]()}
+                        </button>
+                    </div>
+                    <button
+                        class='delete-image title_smaller'
+                        onclick={() => {
+                            setStore(
+                                produce(s => {
+                                    s.data[P.idx] = DEFAULT_BLOCKS.image
+                                })
+                            )
+                        }}
+                    >
+                        حذف عکس
+                        <XIcon />
+                    </button>
+                </div>
+                <div
+                    class='image-section'
+                    style={{ 'text-align': P.block.align }}
                 >
-                    <XIcon />
-                </button>
+                    <img
+                        decoding='async'
+                        loading='lazy'
+                        draggable={false}
+                        src={P.block.url}
+                    />
+                </div>
             </Show>
         </div>
     )
