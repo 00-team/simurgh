@@ -118,7 +118,7 @@ export const EditorTextBlock: Component<Props> = P => {
     })
 
     return (
-        <div class='block-text' onMouseLeave={pre_save}>
+        <div class='block-text'>
             <Actions
                 idx={P.idx}
                 block={P.block}
@@ -328,6 +328,7 @@ const Actions: Component<ActionsProps> = P => {
         }
 
         p.innerHTML = ''
+        P.onNewGroup()
         setStore(
             produce(s => {
                 let b = s.data[P.idx] as BlogText
