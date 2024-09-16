@@ -16,13 +16,21 @@
         gap: 1.5em;
 
         .actions-wrapper {
+            flex-shrink: 0;
+
             display: flex;
             align-items: center;
             justify-content: center;
 
+            height: 50px;
+
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             border-radius: 0.8rem;
             overflow: hidden;
+
+            @media screen and (max-width: 1200px) {
+                height: 70px;
+            }
 
             &.headings {
                 direction: rtl;
@@ -54,6 +62,8 @@
                 background-color: transparent;
                 padding: 10px 12px;
 
+                height: 100%;
+
                 svg {
                     width: 25px;
                     height: 25px;
@@ -71,6 +81,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+
+            flex-wrap: wrap;
 
             gap: 3em;
         }

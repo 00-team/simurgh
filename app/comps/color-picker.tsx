@@ -47,10 +47,6 @@ export const ColorPicker: Component<Props> = P => {
         setState({ active: false })
     }
 
-    createEffect(() => {
-        console.log(state.alpha)
-    })
-
     onMount(() => document.addEventListener('mouseup', inactive))
     onCleanup(() => document.removeEventListener('mouseup', inactive))
 

@@ -1,18 +1,85 @@
 .editor-fnd .editor .block-image {
     width: 100%;
     height: 100%;
+
     display: flex;
-    gap: 0.5rem;
+    gap: 2.5rem;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 
-    padding: 1em;
+    padding: 1.5rem 1rem;
 
-    img {
-        object-fit: contain;
-        height: 100%;
-        max-width: 400px;
-        border-radius: 0.5rem;
+    .image-actions {
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        gap: 2rem;
+
+        .actions-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            border-radius: 0.8rem;
+            overflow: hidden;
+            transition: opacity 0.3s;
+
+            .action {
+                background-color: transparent;
+                padding: 10px 20px;
+
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+
+                svg {
+                    width: 25px;
+                    height: 25px;
+                }
+
+                &:hover {
+                    color: white;
+                    background-color: var(--sixty-percent);
+                }
+            }
+        }
+
+        .delete-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+
+            width: clamp(0px, 100%, 200px);
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+
+            background-color: var(--alert-error);
+            color: white;
+
+            svg {
+                width: 25px;
+                height: 25px;
+            }
+        }
+    }
+
+    .image-section {
+        width: 100%;
+        min-height: 300px;
+
+        img {
+            object-fit: contain;
+            height: 100%;
+            max-width: 400px;
+            border-radius: 0.5rem;
+        }
     }
 }
 

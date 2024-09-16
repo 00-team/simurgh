@@ -64,6 +64,10 @@
             padding: 2rem;
             padding-bottom: 3rem;
 
+            @media screen and (max-width: 1200px) {
+                justify-content: center;
+            }
+
             .ctas {
                 display: flex;
                 align-items: center;
@@ -222,6 +226,10 @@
                 align-items: center;
 
                 min-height: 200px;
+
+                &.active {
+                    z-index: 2;
+                }
 
                 .block-actions {
                     display: flex;
