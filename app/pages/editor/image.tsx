@@ -88,12 +88,7 @@ export const EditorImageBlock: Component<Props> = P => {
                     class='image-section'
                     style={{ 'text-align': P.block.align }}
                 >
-                    <img
-                        decoding='async'
-                        loading='lazy'
-                        draggable={false}
-                        src={P.block.url}
-                    />
+                    <img draggable={false} src={P.block.url} />
                 </div>
             </Show>
         </div>
