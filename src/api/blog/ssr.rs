@@ -98,7 +98,7 @@ fn BlogCard(blog: Blog) -> Element {
                 }
             }
 
-            h2 { "{blog.title}" }
+            p { "{blog.title}" }
 
             div {
                 span {
