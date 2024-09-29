@@ -338,13 +338,12 @@ const Blogs: Component<BlogProps> = P => {
                             </Show>
                         </div>
                         <div class='blog-info title_smaller'>
+                            <div class="blog-title title_smaller">
+                            {b.title || '---'}
+                            </div>
                             <div class='row'>
                                 <span>شناسه:</span>
                                 <span class='n'>{b.id}</span>
-                            </div>
-                            <div class='row'>
-                                <span>عنوان:</span>
-                                <span>{b.title || '---'}</span>
                             </div>
                             {/*<span>نشانه:</span>
                             <span class='n'>{b.slug}</span>

@@ -293,6 +293,18 @@
                     white-space: nowrap;
                     transition: border-color 200ms ease-in-out;
 
+                    .blog-title {
+                        width: 100%;
+
+                        text-align: center;
+
+                        display: -webkit-box;
+                        -webkit-line-clamp: 1;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
                     .row {
                         width: 100%;
 
