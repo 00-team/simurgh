@@ -53,6 +53,12 @@ if check_diff "simple/*"; then
     echo $SPACER
 fi
 
+if check_diff "ssr/*"; then
+    echo "$EG ssr build"
+    npm run ssr
+    echo $SPACER
+fi
+
 if check_diff "src/*"; then
     echo "$EG cargo build"
     cargo build --release
