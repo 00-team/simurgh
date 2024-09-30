@@ -81,16 +81,18 @@ async fn verification(
     vdb.retain(|_, v| v.expires - now > 0);
 
     let code = utils::get_random_string(Config::CODE_ABC, 5);
+    log::info!("send code:\n{}:{code}", body.email);
 
+    #[cfg(not(debug_assertions))]
     utils::send_code(&body.email, code.as_str()).await?;
 
-    utils::send_webhook(
-        "Verificatin",
+    #[cfg(not(debug_assertions))]
+    utils::heimdall_message(
         &format!(
-            "act: {:?}\nemail: ||`{}`||\ncode: `{code}`",
+            "action: {:?}\nemail: {}\ncode: {code}",
             body.action, body.email
         ),
-        2017768,
+        "verificatin",
     )
     .await;
 

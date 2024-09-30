@@ -79,44 +79,24 @@ pub fn remove_record(name: &str) {
     let _ = std::fs::remove_file(Path::new(Config::RECORD_DIR).join(name));
 }
 
-pub async fn send_webhook(title: &str, desc: &str, color: u32) {
-    if cfg!(debug_assertions) {
-        log::info!("sending webhook:\n{title}\n-----------\n{desc}");
-        return;
-    }
-
+pub async fn heimdall_message(text: &str, tag: &str) {
     let client = awc::Client::new();
-    let request = client.post(&config().discord_webhook);
+    let request = client
+        .post(format!("https://heimdall.00-team.org/api/sites/messages/"))
+        .insert_header(("authorization", config().heimdall_token.as_str()));
 
-    #[derive(Serialize, Debug)]
-    struct Embed {
-        title: String,
-        description: String,
-        color: u32,
-    }
-
-    #[derive(Serialize, Debug)]
-    struct Data {
-        embeds: [Embed; 1],
+    #[derive(Serialize)]
+    struct Message {
+        text: String,
+        tag: String,
     }
 
     let _ = request
-        .send_json(&Data {
-            embeds: [Embed {
-                title: title.to_string(),
-                description: desc.to_string(),
-                color,
-            }],
-        })
+        .send_json(&Message { text: text.to_string(), tag: tag.to_string() })
         .await;
 }
 
 pub async fn send_code(email: &str, code: &str) -> Result<(), AppErr> {
-    if cfg!(debug_assertions) {
-        log::info!("send code:\n{email}:{code}");
-        return Ok(());
-    }
-
     let html = format!(
         r##"<h1>Simurgh Verification</h1>
         <p>your verification code: <code style='font-size: 24px'>{code}</code></p>"##
