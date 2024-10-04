@@ -94,7 +94,8 @@ fn BlogCard(blog: Blog) -> Element {
                 img {
                     decode: "async",
                     loading: "lazy",
-                    src: "/simurgh-record/bt-{blog.id}-{t}"
+                    src: "/simurgh-record/bt-{blog.id}-{t}",
+                    alt: "{blog.title}"
                 }
             }
 
