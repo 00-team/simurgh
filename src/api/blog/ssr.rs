@@ -89,7 +89,7 @@ fn Multiline(value: String) -> Element {
 #[component]
 fn BlogCard(blog: Blog) -> Element {
     rsx! {
-        figure {
+        article {
             if let Some(t) = &blog.thumbnail {
                 img {
                     decode: "async",
@@ -98,7 +98,7 @@ fn BlogCard(blog: Blog) -> Element {
                 }
             }
 
-            p { "{blog.title}" }
+            h2 { "{blog.title}" }
 
             div {
                 span {
@@ -113,7 +113,7 @@ fn BlogCard(blog: Blog) -> Element {
                 }
             }
 
-            figcaption { Multiline { value: blog.detail.clone() } }
+            p { Multiline { value: blog.detail.clone() } }
             a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
         }
     }
