@@ -62,6 +62,13 @@
                 position: relative;
                 isolation: isolate;
 
+                transition: opacity 0.3s ease;
+
+                &.disable {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                }
+
                 &.delete {
                     --bg-color: var(--alert-error);
                 }
