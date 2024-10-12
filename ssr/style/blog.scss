@@ -205,7 +205,7 @@
 
         padding: 4rem 2rem;
 
-        figure {
+        article {
             flex-shrink: 0;
 
             width: clamp(0px, 100%, 400px);
@@ -234,9 +234,24 @@
                 box-shadow: 0px 5px 20px -10px black;
             }
 
-            p {
+            h2 {
                 font-family: var(--simurgh--font-title);
+                font-size: var(--simurgh--size-title-title);
                 margin-top: -2em;
+                text-align: center;
+                padding: 1em;
+            }
+
+            p {
+                text-align: center;
+                width: 90%;
+                font-size: var(--simurgh--size-title-title-description);
+                font-family: var(--simurgh--font-description);
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                line-height: 1.8em;
+                overflow: hidden;
             }
 
             > div {
