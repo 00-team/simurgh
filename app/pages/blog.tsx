@@ -2,6 +2,7 @@ import { useNavigate, useParams } from '@solidjs/router'
 import {
     ArrowLeftIcon,
     ArrowUpLeftIcon,
+    CalculatorIcon,
     ImageIcon,
     RotateCcwIcon,
     SaveIcon,
@@ -18,6 +19,8 @@ import { addAlert } from 'comps'
 import { fmt_datetime, fmt_hms, httpx } from 'shared'
 import { setPopup } from 'store/popup'
 import './style/blog.scss'
+
+const WORD_PRE_SECONDS = 2.69
 
 export default () => {
     type State = {
@@ -192,6 +195,27 @@ export default () => {
                 setState({ blog: x.response })
             },
         })
+    }
+
+    function calculate_read_time() {
+        let total_words = 0
+        for (let block of state.blog.data) {
+            if (block.kind == 'text') {
+                for (let g of block.groups) {
+                    for (let line of g.content) {
+                        total_words += line.trim().split(/\s+/).length
+                    }
+                }
+            } else if (block.kind == 'heading') {
+                total_words += block.content.trim().split(/\s+/).length
+            }
+        }
+        setState(
+            produce(s => {
+                s.edit.read_time = ~~(total_words / WORD_PRE_SECONDS)
+                // s.edit.read_time = total_words
+            })
+        )
     }
 
     const STATUS_DPY: { [k in BlogModel['status']]: [string, string] } = {
@@ -445,28 +469,35 @@ export default () => {
                         <Show
                             when={state.editing}
                             fallback={
-                                <div class='read_time'>
+                                <div class='read-time'>
                                     {fmt_hms(state.blog.read_time)}
                                 </div>
                             }
                         >
-                            <input
-                                class='styled title_small'
-                                type='number'
-                                inputMode='numeric'
-                                value={state.edit.read_time}
-                                onInput={e => {
-                                    setState(
-                                        produce(s => {
-                                            s.edit.read_time =
-                                                parseInt(
-                                                    e.currentTarget.value
-                                                ) || 0
-                                        })
-                                    )
-                                }}
-                            />
-                            <button class='styled icon'>C</button>
+                            <div class='read-time-input'>
+                                <input
+                                    class='styled title_small'
+                                    type='number'
+                                    inputMode='numeric'
+                                    value={state.edit.read_time}
+                                    onInput={e => {
+                                        setState(
+                                            produce(s => {
+                                                s.edit.read_time =
+                                                    parseInt(
+                                                        e.currentTarget.value
+                                                    ) || 0
+                                            })
+                                        )
+                                    }}
+                                />
+                                <button
+                                    class='styled icon'
+                                    onclick={calculate_read_time}
+                                >
+                                    <CalculatorIcon />
+                                </button>
+                            </div>
                         </Show>
                     </div>
 

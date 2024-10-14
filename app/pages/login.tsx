@@ -1,5 +1,5 @@
 import { Timer } from 'comps'
-import { CodeSvg, EmailSvg, Logo } from 'icons'
+import { CodeIcon, EmailIcon, Logo } from 'icons'
 import { httpx } from 'shared'
 import { Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
@@ -89,7 +89,7 @@ export default () => {
                                 for='login-email'
                                 classList={{ disabled: state.stage != 'email' }}
                             >
-                                <EmailSvg />
+                                <EmailIcon />
                                 ایمیل:
                             </label>
                             <input
@@ -110,7 +110,7 @@ export default () => {
                                 classList={{ disabled: state.stage != 'code' }}
                                 for='login-code'
                             >
-                                <CodeSvg />
+                                <CodeIcon />
                                 کد:
                             </label>
                             <input

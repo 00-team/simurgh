@@ -152,7 +152,13 @@ export const EditorTextBlock: Component<Props> = P => {
                         })
                     }}
                     onFocus={() => setStore({ active: P.idx })}
-                    contenteditable={'plaintext-only'}
+                    // contenteditable={'plaintext-only'}
+                    contenteditable={
+                        // @ts-ignore
+                        typeof InstallTrigger !== 'undefined'
+                            ? true
+                            : 'plaintext-only'
+                    }
                 >
                     {P.block.groups.map((g, i) => (
                         <span
@@ -389,33 +395,21 @@ const Actions: Component<ActionsProps> = P => {
                 <div class='actions-wrapper'>
                     <button
                         class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                align: 'left',
-                            }))
-                        }}
+                        onClick={() => set_attr(_ => ({ align: 'left' }))}
                         classList={{ active: P.block.align === 'left' }}
                     >
                         {BLOG_ALIGN['left'][1]()}
                     </button>
                     <button
                         class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                align: 'center',
-                            }))
-                        }}
+                        onClick={() => set_attr(_ => ({ align: 'center' }))}
                         classList={{ active: P.block.align === 'center' }}
                     >
                         {BLOG_ALIGN['center'][1]()}
                     </button>
                     <button
                         class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                align: 'right',
-                            }))
-                        }}
+                        onClick={() => set_attr(_ => ({ align: 'right' }))}
                         classList={{ active: P.block.align === 'right' }}
                     >
                         {BLOG_ALIGN['right'][1]()}
@@ -425,22 +419,14 @@ const Actions: Component<ActionsProps> = P => {
                     <button
                         classList={{ active: P.block.dir === 'ltr' }}
                         class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                dir: 'ltr',
-                            }))
-                        }}
+                        onClick={() => set_attr(_ => ({ dir: 'ltr' }))}
                     >
                         <PilcrowRightIcon />
                     </button>
                     <button
                         classList={{ active: P.block.dir === 'rtl' }}
                         class='action icon'
-                        onClick={() => {
-                            set_attr(b => ({
-                                dir: 'rtl',
-                            }))
-                        }}
+                        onClick={() => set_attr(_ => ({ dir: 'rtl' }))}
                     >
                         <PilcrowLeftIcon />
                     </button>

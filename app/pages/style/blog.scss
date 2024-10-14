@@ -187,7 +187,10 @@
             direction: rtl;
         }
 
-        .read_time {
+        .read-time-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .thumbnail {
