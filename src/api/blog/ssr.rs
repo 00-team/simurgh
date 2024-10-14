@@ -156,28 +156,28 @@ async fn get_related<'a>(
 ) -> Result<Element<'a>, AppErr> {
     let next = sqlx::query_as! {
         Blog,
-        "select * from blogs where id > ? and status = ? order by id asc limit 1",
-        blog.id, BlogStatus::Published
+        "select * from blogs where project = ? and id > ? and status = ? order by id asc limit 1",
+        blog.project, blog.id, BlogStatus::Published
     }
     .fetch_optional(&state.sql)
     .await?;
 
     let past = sqlx::query_as! {
         Blog,
-        "select * from blogs where id < ? and status = ? order by id desc limit 1",
-        blog.id, BlogStatus::Published
+        "select * from blogs where project = ? and id < ? and status = ? order by id desc limit 1",
+        blog.project, blog.id, BlogStatus::Published
     }
     .fetch_optional(&state.sql)
     .await?;
 
     let related = sqlx::query_as! {
         Blog,
-        "select * from blogs where id in (
-            select blog from blog_tag where tag in (
-                select tag from blog_tag where blog = ?
+        "select * from blogs where project = ? and id in (
+            select blog from blog_tag where project = ? and tag in (
+                select tag from blog_tag where project = ? and blog = ?
             )
         ) and status = ? limit 3",
-        blog.id, BlogStatus::Published
+        blog.project, blog.project, blog.project, blog.id, BlogStatus::Published
     }
     .fetch_all(&state.sql)
     .await?;
