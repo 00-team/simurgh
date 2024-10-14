@@ -67,13 +67,12 @@ impl<T: Serialize> Serialize for JsonStr<T> {
 
 impl<'q, T: Serialize> sqlx::Encode<'q, Sqlite> for JsonStr<T> {
     fn encode_by_ref(
-        &self,
-        buf: &mut <Sqlite as sqlx::database::HasArguments<'q>>::ArgumentBuffer,
-    ) -> IsNull {
+        &self, buf: &mut <Sqlite as sqlx::Database>::ArgumentBuffer<'q>,
+    ) -> Result<IsNull, sqlx::error::BoxDynError> {
         let result = serde_json::to_string(&self.0).unwrap_or("{}".to_string());
         buf.push(SqliteArgumentValue::Text(result.into()));
 
-        IsNull::No
+        Ok(IsNull::No)
     }
 }
 
@@ -115,13 +114,13 @@ macro_rules! sql_enum {
 
         impl<'q> sqlx::Encode<'q, sqlx::Sqlite> for $name {
             fn encode_by_ref(
-                &self,
-                buf: &mut <sqlx::Sqlite as sqlx::database::HasArguments<'q>>::ArgumentBuffer,
-            ) -> sqlx::encode::IsNull {
+                &self, buf: &mut <sqlx::Sqlite as sqlx::Database>::ArgumentBuffer<'q>,
+            ) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
                 buf.push(sqlx::sqlite::SqliteArgumentValue::Int(self.clone() as i32));
-                sqlx::encode::IsNull::No
+                Ok(sqlx::encode::IsNull::No)
             }
         }
+
     };
 }
 

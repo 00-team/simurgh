@@ -9,8 +9,12 @@ use actix_web::{
     App, HttpResponse, HttpServer, Responder,
 };
 use config::Config;
+use core::str::FromStr;
 use models::AppErrBadRequest;
-use sqlx::{Pool, Sqlite, SqlitePool};
+use sqlx::{
+    sqlite::{SqliteConnectOptions, SqliteJournalMode},
+    Pool, Sqlite, SqlitePool,
+};
 use utoipa::OpenApi;
 
 mod api;
@@ -100,14 +104,23 @@ fn config_app(app: &mut ServiceConfig) {
     app.service(web::router());
 }
 
-#[cfg(unix)]
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
+async fn init() -> SqlitePool {
     dotenvy::from_path(".env").expect("could not read .env file");
     pretty_env_logger::init();
 
     let _ = std::fs::create_dir(Config::RECORD_DIR);
-    let pool = SqlitePool::connect("sqlite://main.db").await.unwrap();
+    let cpt = SqliteConnectOptions::from_str("sqlite://main.db")
+        .expect("could not init sqlite connection options")
+        .journal_mode(SqliteJournalMode::Off);
+
+    SqlitePool::connect_with(cpt).await.expect("sqlite connection")
+    // let pool = SqlitePool::connect("sqlite://main.db").await.unwrap();
+}
+
+#[cfg(unix)]
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    let pool = init().await;
 
     let server = HttpServer::new(move || {
         App::new()
@@ -132,11 +145,7 @@ async fn main() -> std::io::Result<()> {
 #[cfg(windows)]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenvy::from_path(".env").expect("could not read .env file");
-    pretty_env_logger::init();
-
-    let _ = std::fs::create_dir(Config::RECORD_DIR);
-    let pool = SqlitePool::connect("sqlite://main.db").await.unwrap();
+    let pool = init().await;
 
     HttpServer::new(move || {
         App::new()

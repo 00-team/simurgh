@@ -44,26 +44,28 @@ pub fn doc_add_prefix(
             let path = prefix.to_string() + path;
             let mut value = value.to_owned();
             if update_tags {
-                value.operations.iter_mut().for_each(|(_, op)| {
-                    if let Some(tags) = &openapi.tags {
-                        op.tags =
-                            Some(tags.iter().map(|t| t.name.clone()).collect());
-                    }
-                });
+                // value.get
+                // value.get.unwrap()
+                // value.operations.iter_mut().for_each(|(_, op)| {
+                //     if let Some(tags) = &openapi.tags {
+                //         op.tags =
+                //             Some(tags.iter().map(|t| t.name.clone()).collect());
+                //     }
+                // });
             }
 
-            value.operations.iter_mut().for_each(|(_, op)| {
-                let mut response = Response::new("app err");
-                response.content.insert(
-                    "application/json".to_string(),
-                    Content::new(openapi::RefOr::Ref(openapi::Ref::new(
-                        "#/components/schemas/AppErr",
-                    ))),
-                );
-                op.responses
-                    .responses
-                    .insert("xxx".to_string(), openapi::RefOr::T(response));
-            });
+            // value.operations.iter_mut().for_each(|(_, op)| {
+            //     let mut response = Response::new("app err");
+            //     response.content.insert(
+            //         "application/json".to_string(),
+            //         Content::new(openapi::RefOr::Ref(openapi::Ref::new(
+            //             "#/components/schemas/AppErr",
+            //         ))),
+            //     );
+            //     op.responses
+            //         .responses
+            //         .insert("xxx".to_string(), openapi::RefOr::T(response));
+            // });
 
             (path, value)
         })
