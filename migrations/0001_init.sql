@@ -4,7 +4,7 @@ create table if not exists users (
     email text not null,
     name text,
     photo text,
-    token text not null,
+    token text,
     admin boolean not null default false,
     client boolean not null default false,
     banned boolean not null default false
