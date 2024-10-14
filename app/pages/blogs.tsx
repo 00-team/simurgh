@@ -1,8 +1,10 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import {
     ArrowLeftIcon,
+    CalendarIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
+    IdIcon,
     ImageIcon,
 } from 'icons'
 import { BlogModel } from 'models'
@@ -112,6 +114,7 @@ const Blog: Component<BlogProps> = P => {
         <div
             class='blog'
             onClick={() => nav(`/projects/${P.pid}/blogs/${P.b.id}/`)}
+            classList={{ draft: P.b.status === 'draft' }}
         >
             <div class='thumbnail'>
                 <Show when={P.b.thumbnail} fallback={<ImageIcon />}>
@@ -123,18 +126,22 @@ const Blog: Component<BlogProps> = P => {
                     />
                 </Show>
             </div>
-            <div class='info title_smaller'>
-                <div class='row'>
-                    <span>شناسه:</span>
-                    <span class='n'>{P.b.id}</span>
+            <h1 class='title_smaller blog-title'>{P.b.title || '---'}</h1>
+            <p class='description blog-desc'>{P.b.detail}</p>
+            <div class='bottom-infos title_smaller'>
+                <div class='bottom-info'>
+                    <div class='holder'>
+                        <IdIcon />
+                    </div>
+                    <div class='data number'>{P.b.id}</div>
                 </div>
-                <div class='row'>
-                    <span>عنوان:</span>
-                    <span dir='auto'>{P.b.title || '---'}</span>
-                </div>
-                <div class='row'>
-                    <span>تاریخ شروع:</span>
-                    <span class='n'>{fmt_datetime(P.b.created_at)}</span>
+                <div class='bottom-info'>
+                    <div class='holder'>
+                        <CalendarIcon />
+                    </div>
+                    <div class='data'>
+                        {fmt_datetime(P.b.created_at).split(' ')[0]}
+                    </div>
                 </div>
             </div>
         </div>

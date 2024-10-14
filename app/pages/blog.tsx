@@ -3,7 +3,6 @@ import {
     ArrowLeftIcon,
     ArrowUpLeftIcon,
     ImageIcon,
-    InfoIcon,
     RotateCcwIcon,
     SaveIcon,
     TextCursorIcon,
@@ -220,85 +219,87 @@ export default () => {
                     </button>
                 </div>
                 <div class='ctas'>
-                    <button
-                        class='cta title_smaller editor'
-                        classList={{ active: state.editing }}
-                        onClick={() =>
-                            nav(
-                                `/projects/${pid}/blogs/${state.blog.id}/editor/`
-                            )
-                        }
-                    >
-                        باز کردن ادیتور
-                        <TextCursorIcon />
-                    </button>
-                    <button
-                        class='cta title_smaller edit'
-                        classList={{ active: state.editing }}
-                        onClick={() => {
-                            if (state.editing && changed()) {
-                                setPopup({
-                                    show: true,
-                                    title: 'ذخیره نکردید!',
-                                    type: 'info',
-                                    Icon: InfoIcon,
-                                    content:
-                                        'از خروج بدونه ذخیره کردن مطمعنید؟',
-                                    onSubmit: () => {
-                                        reset()
-                                        setState(s => ({ editing: !s.editing }))
-                                    },
-                                })
-
-                                return
-                            }
-
-                            setState(s => ({ editing: !s.editing }))
-                        }}
-                    >
-                        {state.editing ? 'تایید ویرایش' : 'ویرایش مقاله'}
-                        <WrenchIcon />
-                    </button>
-                    <button
-                        class='cta title_smaller delete '
-                        classList={{ active: state.editing }}
-                        onClick={() =>
-                            setPopup({
-                                show: true,
-                                content: 'از حذف مقاله مطمعنید؟',
-                                Icon: TrashIcon,
-                                onSubmit: () => blog_delete(),
-                                type: 'error',
-                                title: 'حذف مقاله',
-                            })
-                        }
-                    >
-                        حذف مقاله
-                        <TrashIcon />
-                    </button>
-
-                    <Show when={state.editing && changed()}>
+                    <Show when={!state.editing}>
                         <button
-                            class='cta title_smaller reset'
+                            class='cta title_smaller editor'
+                            classList={{ active: state.editing }}
+                            onClick={() =>
+                                nav(
+                                    `/projects/${pid}/blogs/${state.blog.id}/editor/`
+                                )
+                            }
+                        >
+                            باز کردن ادیتور
+                            <TextCursorIcon />
+                        </button>
+                        <button
+                            class='cta title_smaller edit'
+                            classList={{ active: state.editing }}
                             onClick={() => {
-                                setPopup({
-                                    show: true,
-                                    content: 'از ریست کردن مطمعنید؟',
-                                    Icon: RotateCcwIcon,
-                                    onSubmit: () => reset(),
-                                    type: 'warning',
-                                    title: 'ریست کردن',
-                                })
+                                setState({ editing: true })
                             }}
                         >
-                            ریست کردن
-                            <RotateCcwIcon />
+                            ویرایش مقاله
+                            <WrenchIcon />
+                        </button>
+                        <button
+                            class='cta title_smaller delete '
+                            classList={{ active: state.editing }}
+                            onClick={() =>
+                                setPopup({
+                                    show: true,
+                                    content: 'از حذف مقاله مطمعنید؟',
+                                    Icon: TrashIcon,
+                                    onSubmit: () => blog_delete(),
+                                    type: 'error',
+                                    title: 'حذف مقاله',
+                                })
+                            }
+                        >
+                            حذف مقاله
+                            <TrashIcon />
                         </button>
                     </Show>
-                    <Show when={state.editing && changed()}>
+                    <Show when={state.editing}>
+                        <button
+                            class='cta title_smaller delete'
+                            onClick={() => {
+                                if (changed())
+                                    return setPopup({
+                                        show: true,
+                                        type: 'warning',
+                                        title: 'دذخیره نکردید!',
+                                        content: 'از بستن بدون ذخیره مطمعنید؟',
+                                        Icon: RotateCcwIcon,
+                                        onSubmit: () => {
+                                            reset()
+                                            setState(
+                                                produce(
+                                                    s => (s.editing = false)
+                                                )
+                                            )
+                                        },
+                                    })
+                                setState(produce(s => (s.editing = false)))
+                            }}
+                        >
+                            بستن
+                            <XIcon />
+                        </button>
                         <button
                             class='cta title_smaller save'
-                            onClick={blog_update}
+                            classList={{ disable: !changed() }}
+                            onClick={() => {
+                                if (!changed())
+                                    return addAlert({
+                                        type: 'error',
+                                        subject: ' خطا!',
+                                        content: 'مطلبی رو عوض نکردید!',
+                                        timeout: 300,
+                                    })
+
+                                blog_update()
+                            }}
                         >
                             ذخیره
                             <SaveIcon />

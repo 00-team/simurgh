@@ -101,14 +101,12 @@ const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
             classList={{ [P.a.type]: true }}
             onMouseEnter={pbf_pause}
             onMouseLeave={pbf_play}
+            onclick={() => delAlert(P.i)}
         >
             <div class='head title'>
                 {ALERT_ICON[P.a.type]()}
                 <span>{P.a.subject}</span>
                 <div />
-                <button onclick={() => delAlert(P.i)}>
-                    <XIcon />
-                </button>
             </div>
             <Show when={P.a.content}>
                 <div class='body title_smaller'>

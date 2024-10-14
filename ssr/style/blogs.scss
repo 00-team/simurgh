@@ -8,7 +8,7 @@ section.simurgh--blogs {
     row-gap: calc(10vh + 10px);
     column-gap: calc(3vw + 5px);
 
-    figure {
+    article {
         width: clamp(0px, 100%, 400px);
         aspect-ratio: 0.8/1;
 
@@ -183,7 +183,7 @@ section.simurgh--blogs {
             } 
         } */
 
-        figcaption {
+        p {
             text-align: center;
             width: 90%;
 
