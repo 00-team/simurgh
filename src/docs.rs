@@ -1,11 +1,13 @@
 use utoipa::{
     openapi::{
         self,
-        security::{Http, HttpAuthScheme, SecurityScheme},
-        Components, SecurityRequirement,
+        security::{ApiKey, ApiKeyValue, SecurityScheme},
+        Components, Content, Response, SecurityRequirement,
     },
     Modify, OpenApi,
 };
+
+use crate::models::AppErr;
 
 pub struct AddSecurity;
 
@@ -17,13 +19,15 @@ impl Modify for AddSecurity {
 
         if let Some(schema) = openapi.components.as_mut() {
             schema.add_security_scheme(
-                "user_token",
-                SecurityScheme::Http(Http::new(HttpAuthScheme::Bearer)),
+                "auth",
+                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(
+                    "authorization",
+                ))),
             )
         }
 
         openapi.security =
-            Some(vec![SecurityRequirement::new("user_token", [] as [&str; 0])]);
+            Some(vec![SecurityRequirement::new("auth", [""; 0])]);
     }
 }
 
@@ -47,6 +51,19 @@ pub fn doc_add_prefix(
                     }
                 });
             }
+
+            value.operations.iter_mut().for_each(|(_, op)| {
+                let mut response = Response::new("app err");
+                response.content.insert(
+                    "application/json".to_string(),
+                    Content::new(openapi::RefOr::Ref(openapi::Ref::new(
+                        "#/components/schemas/AppErr",
+                    ))),
+                );
+                op.responses
+                    .responses
+                    .insert("xxx".to_string(), openapi::RefOr::T(response));
+            });
 
             (path, value)
         })
@@ -73,6 +90,6 @@ impl Modify for UpdatePaths {
 #[openapi(
     servers((url = "/")),
     modifiers(&AddSecurity),
-    components(schemas())
+    components(schemas(AppErr))
 )]
 pub struct ApiDoc;
