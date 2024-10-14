@@ -1,64 +1,81 @@
-use std::{future::Future, pin::Pin};
-
-use actix_web::{
-    dev::Payload,
-    http::header::{HeaderValue, AUTHORIZATION, COOKIE},
-    FromRequest, HttpMessage, HttpRequest,
-};
+use actix_web::HttpRequest;
 
 use super::{AppErr, AppErrBadAuth};
 
-#[derive(Debug, Clone)]
-pub struct Authorization {
-    pub prefix: String,
-    pub token: String,
+pub enum Authorization {
+    User { id: i64, token: String },
+    Project { id: i64, token: String },
 }
 
-fn cookie_auth(cookie: &HeaderValue) -> Option<String> {
-    cookie.as_bytes().split(|b| *b == b';').find_map(|cv| {
-        let mut s = cv.splitn(2, |bb| *bb == b'=');
-        let key = String::from_utf8(s.next()?.into()).ok()?;
-        if key.trim().to_lowercase() != "authorization" {
-            return None;
-        }
-        String::from_utf8(s.next()?.into()).ok()
-    })
+fn tokenizer<const N: usize>(value: Option<&str>) -> Result<[&str; N], AppErr> {
+    if value.is_none() {
+        return Err(AppErrBadAuth(None));
+    }
+    let result: [&str; N] = value
+        .unwrap()
+        .splitn(N, ':')
+        .collect::<Vec<&str>>()
+        .try_into()
+        .map_err(|_| AppErrBadAuth(None))?;
+
+    Ok(result)
 }
 
-impl FromRequest for Authorization {
+impl TryFrom<&str> for Authorization {
     type Error = AppErr;
-    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let mut tokens = value.splitn(2, ' ');
+        let key = tokens.next().map(|v| v.to_lowercase());
+        if key.is_none() {
+            return Err(AppErrBadAuth(None));
+        }
 
-    fn from_request(rq: &HttpRequest, _: &mut Payload) -> Self::Future {
-        let rq = rq.clone();
-        Box::pin(async move {
-            if let Some(auth) = rq.extensions().get::<Authorization>() {
-                return Ok(auth.clone());
+        match key.unwrap().as_str() {
+            "user" => {
+                let [id, token] = tokenizer(tokens.next())?;
+                Ok(Authorization::User {
+                    id: id.parse()?,
+                    token: token.to_string(),
+                })
             }
+            "project" => {
+                let [id, token] = tokenizer(tokens.next())?;
+                Ok(Authorization::Project {
+                    id: id.parse()?,
+                    token: token.to_string(),
+                })
+            }
+            key => {
+                Err(AppErrBadAuth(Some(&format!("unknown key in auth: {key}"))))
+            }
+        }
+    }
+}
 
-            let value = rq
-                .headers()
-                .get(AUTHORIZATION)
-                .map_or(None, |v| v.to_str().map(|v| v.to_string()).ok())
-                .or_else(|| rq.headers().get_all(COOKIE).find_map(cookie_auth))
-                .ok_or(AppErrBadAuth(None))?;
+impl TryFrom<&HttpRequest> for Authorization {
+    type Error = AppErr;
 
-            let mut tokens = value.splitn(2, ' ');
-            let prefix = tokens
-                .next()
-                .map(|v| v.to_string())
-                .ok_or(AppErrBadAuth(None))?
-                .to_lowercase();
+    fn try_from(rq: &HttpRequest) -> Result<Self, Self::Error> {
+        if let Some(value) = rq.headers().get("authorization") {
+            return Authorization::try_from(value.to_str()?);
+        }
 
-            let token = tokens
-                .next()
-                .map(|v| v.to_string())
-                .ok_or(AppErrBadAuth(None))?;
+        for hdr in rq.headers().get_all("cookie") {
+            for cookie in hdr.as_bytes().split(|v| *v == b';') {
+                let mut s = cookie.splitn(2, |v| *v == b'=');
 
-            let auth = Authorization { token, prefix };
-            let mut ext = rq.extensions_mut();
-            ext.insert(auth.clone());
-            Ok(auth)
-        })
+                let k = s.next().and_then(|v| String::from_utf8(v.into()).ok());
+                let v = s.next().and_then(|v| String::from_utf8(v.into()).ok());
+                if k.is_none() || v.is_none() {
+                    continue;
+                }
+
+                if k.unwrap().trim().to_lowercase() == "authorization" {
+                    return Authorization::try_from(v.unwrap().as_str());
+                }
+            }
+        }
+
+        Err(AppErrBadAuth(None))
     }
 }

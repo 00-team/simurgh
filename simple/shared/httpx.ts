@@ -61,7 +61,7 @@ function httpx(P: HttpxProps) {
     }
 
     if (P.bearer) {
-        http.setRequestHeader('Authorization', 'Bearer ' + P.bearer)
+        http.setRequestHeader('authorization', 'Bearer ' + P.bearer)
     }
 
     function cleanup(x: XMLHttpRequest) {

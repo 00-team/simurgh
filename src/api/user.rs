@@ -5,7 +5,6 @@ use actix_web::cookie::{Cookie, SameSite};
 use actix_web::web::{Data, Json};
 use actix_web::{delete, get, patch, post, put, HttpResponse, Scope};
 use serde::Deserialize;
-use sha2::{Digest, Sha512};
 use utoipa::{OpenApi, ToSchema};
 
 use crate::api::verification;
@@ -49,7 +48,6 @@ async fn user_login(
         .await?;
 
     let token = utils::get_random_string(Config::TOKEN_ABC, 69);
-    let token_hashed = hex::encode(Sha512::digest(&token));
 
     let result = sqlx::query_as! {
         User,
@@ -59,14 +57,14 @@ async fn user_login(
     .fetch_one(&state.sql)
     .await;
 
-    let mut user: User = match result {
+    let user: User = match result {
         Ok(mut v) => {
-            v.token = token;
+            v.token = Some(token.clone());
 
             let _ = sqlx::query_as! {
                 User,
                 "update users set token = ? where id = ?",
-                token_hashed, v.id
+                token, v.id
             }
             .execute(&state.sql)
             .await;
@@ -77,29 +75,28 @@ async fn user_login(
             let result = sqlx::query_as! {
                 User,
                 "insert into users (email, token) values(?, ?)",
-                body.email, token_hashed
+                body.email, token
             }
             .execute(&state.sql)
             .await;
 
             User {
                 email: body.email.clone(),
-                token,
+                token: Some(token.clone()),
                 id: result.unwrap().last_insert_rowid(),
                 ..Default::default()
             }
         }
     };
 
-    user.token = format!("{}:{}", user.id, user.token);
-
-    let cook = Cookie::build("Authorization", format!("Bearer {}", user.token))
-        .path("/")
-        .secure(true)
-        .same_site(SameSite::Strict)
-        .http_only(true)
-        .max_age(Duration::weeks(12))
-        .finish();
+    let cook =
+        Cookie::build("authorization", format!("user {}:{}", user.id, token))
+            .path("/")
+            .secure(true)
+            .same_site(SameSite::Strict)
+            .http_only(true)
+            .max_age(Duration::weeks(12))
+            .finish();
 
     Ok(HttpResponse::Ok().cookie(cook).json(user))
 }
@@ -109,13 +106,13 @@ async fn user_login(
 /// Logout
 async fn user_logout(user: User, state: Data<AppState>) -> HttpResponse {
     let _ = sqlx::query! {
-        "update users set token = 'X' where id = ?",
+        "update users set token = null where id = ?",
         user.id
     }
     .execute(&state.sql)
     .await;
 
-    let cook = Cookie::build("Authorization", "XXX")
+    let cook = Cookie::build("authorization", "deleted")
         .path("/")
         .secure(true)
         .same_site(SameSite::Lax)

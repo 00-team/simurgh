@@ -4,10 +4,9 @@ use actix_web::{
     dev::Payload, web::Data, FromRequest, HttpMessage, HttpRequest,
 };
 use serde::{Deserialize, Serialize};
-use sha2::Digest;
 use utoipa::ToSchema;
 
-use crate::{utils::CutOff, AppState};
+use crate::AppState;
 
 use super::{auth::Authorization, AppErr, AppErrBadAuth, AppErrForbidden};
 
@@ -19,7 +18,7 @@ pub struct User {
     pub email: String,
     pub name: Option<String>,
     pub photo: Option<String>,
-    pub token: String,
+    pub token: Option<String>,
     pub admin: bool,
     pub client: bool,
     pub banned: bool,
@@ -53,34 +52,31 @@ impl FromRequest for User {
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
     fn from_request(rq: &HttpRequest, _: &mut Payload) -> Self::Future {
+        let auth = Authorization::try_from(rq);
         let rq = rq.clone();
+
         Box::pin(async move {
             if let Some(user) = rq.extensions().get::<User>() {
                 return Ok(user.clone());
             }
 
-            let auth = Authorization::extract(&rq).await?;
-            if auth.prefix != "bearer" {
-                return Err(AppErrBadAuth(None));
-            }
-
-            let auth = parse_token(&auth.token).ok_or(AppErrBadAuth(None))?;
             let pool = &rq.app_data::<Data<AppState>>().unwrap().sql;
-            let token = hex::encode(sha2::Sha512::digest(&auth.1));
-
-            let mut user = sqlx::query_as! {
-                User,
-                "select * from users where id = ? and token = ?",
-                auth.0, token
-            }
-            .fetch_one(pool)
-            .await?;
+            let user = match auth? {
+                Authorization::User { id, token } => {
+                    sqlx::query_as! {
+                        User,
+                        "select * from users where id = ? and token = ?",
+                        id, token
+                    }
+                    .fetch_one(pool)
+                    .await?
+                }
+                _ => return Err(AppErrBadAuth(None)),
+            };
 
             if user.banned {
                 return Err(AppErrForbidden(Some("banned")));
             }
-
-            user.token.cut_off(32);
 
             let mut ext = rq.extensions_mut();
             ext.insert(user.clone());
