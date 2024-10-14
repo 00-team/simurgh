@@ -17,6 +17,7 @@ use sqlx::{
 };
 use utoipa::OpenApi;
 
+mod admin;
 mod api;
 mod config;
 mod docs;
