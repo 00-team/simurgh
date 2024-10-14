@@ -26,14 +26,14 @@ fi
 
 sha256sum main.db > $HASH_FILENAME
 
-send_msg "Starting the backup $(date +'%F %T')"
-tar czvf - main.db | split -d -b 40MB - .dbd/$BASE_NAME
+send_msg "starting the backup $(date +'%F %T')"
+tar czvf - main.db record | split -d -b 40MB - .dbd/$BASE_NAME
 cd .dbd
 for f in $BASE_NAME*; do
     send_file $f
-    sleep 2
+    sleep 1
 done
-send_msg "End of Backup 🐧"
+send_msg "end of backup 🐧"
 cd ..
 rm -rf .dbd
 
