@@ -71,7 +71,10 @@ impl TryFrom<&HttpRequest> for Authorization {
                 }
 
                 if k.unwrap().trim().to_lowercase() == "authorization" {
-                    return Authorization::try_from(v.unwrap().as_str());
+                    match Authorization::try_from(v.unwrap().as_str()) {
+                        Ok(v) => return Ok(v),
+                        Err(_) => {}
+                    }
                 }
             }
         }
