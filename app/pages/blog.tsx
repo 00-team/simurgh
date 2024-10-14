@@ -466,6 +466,7 @@ export default () => {
                                     )
                                 }}
                             />
+                            <button class='styled icon'>C</button>
                         </Show>
                     </div>
 

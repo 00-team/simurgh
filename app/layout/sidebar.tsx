@@ -15,7 +15,7 @@ export default () => {
             <div class='links title'>
                 <A href='/projects/'>
                     <div class='holder'>
-                        <ProjectIcon size={30} />
+                        <ProjectIcon />
                         پروژه ها
                     </div>
                     <ArrowIcon />

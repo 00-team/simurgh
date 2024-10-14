@@ -170,13 +170,11 @@ export const UserIcon = () => (
     </svg>
 )
 
-export const ChevronLeftIcon = P => (
+export const ChevronLeftIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
         fill='none'
-        width={P.size || 25}
-        height={P.size || 25}
         stroke='currentColor'
         stroke-width='2'
         stroke-linecap='round'
@@ -186,13 +184,11 @@ export const ChevronLeftIcon = P => (
     </svg>
 )
 
-export const ChevronRightIcon = P => (
+export const ChevronRightIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
         fill='none'
-        width={P.size || 25}
-        height={P.size || 25}
         stroke='currentColor'
         stroke-width='2'
         stroke-linecap='round'
@@ -336,13 +332,11 @@ export const Logo = () => (
     </svg>
 )
 
-export const LogoRaw = P => (
+export const LogoRaw = () => (
     <svg
         version='1.1'
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 1024 1024'
-        width={P.size || 25}
-        height={P.size || 25}
     >
         <path
             id='simurgh'
@@ -419,8 +413,6 @@ export const CopyIcon = () => (
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 448 512'
-        height='1em'
-        width='1em'
         xmlns='http://www.w3.org/2000/svg'
     >
         <path d='M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z'></path>
@@ -435,8 +427,6 @@ export const InfoIcon = () => (
         version='1.2'
         baseProfile='tiny'
         viewBox='0 0 24 24'
-        height='1em'
-        width='1em'
         xmlns='http://www.w3.org/2000/svg'
     >
         <path
@@ -452,28 +442,24 @@ export const InfoIcon = () => (
     </svg>
 )
 
-export const CalendarIcon = P => (
+export const CalendarIcon = () => (
     <svg
         stroke='currentColor'
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 448 512'
-        height={P.size || 25}
-        width={P.size || 25}
         xmlns='http://www.w3.org/2000/svg'
     >
         <path d='M436 160H12c-6.627 0-12-5.373-12-12v-36c0-26.51 21.49-48 48-48h48V12c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v52h128V12c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v52h48c26.51 0 48 21.49 48 48v36c0 6.627-5.373 12-12 12zM12 192h424c6.627 0 12 5.373 12 12v260c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V204c0-6.627 5.373-12 12-12zm333.296 95.947l-28.169-28.398c-4.667-4.705-12.265-4.736-16.97-.068L194.12 364.665l-45.98-46.352c-4.667-4.705-12.266-4.736-16.971-.068l-28.397 28.17c-4.705 4.667-4.736 12.265-.068 16.97l82.601 83.269c4.667 4.705 12.265 4.736 16.97.068l142.953-141.805c4.705-4.667 4.736-12.265.068-16.97z'></path>
     </svg>
 )
 
-export const IdIcon = P => (
+export const IdIcon = () => (
     <svg
         stroke='currentColor'
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 384 512'
-        height={P.size || 25}
-        width={P.size || 25}
         xmlns='http://www.w3.org/2000/svg'
     >
         <path d='M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zm96 320h64c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H96c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zm-32-96a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zM144 64h96c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z'></path>
@@ -486,8 +472,6 @@ export const RecycleIcon = () => (
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 24 24'
-        height='1em'
-        width='1em'
         xmlns='http://www.w3.org/2000/svg'
     >
         <path
@@ -573,22 +557,18 @@ export const EraseIcon = () => (
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 24 24'
-        height='25'
-        width='25'
         xmlns='http://www.w3.org/2000/svg'
     >
         <path d='M12.48 3 7.73 7.75 3 12.59a2 2 0 0 0 0 2.82l4.3 4.3A1 1 0 0 0 8 20h12v-2h-7l7.22-7.22a2 2 0 0 0 0-2.83L15.31 3a2 2 0 0 0-2.83 0zM8.41 18l-4-4 4.75-4.84.74-.75 4.95 4.95-4.56 4.56-.07.08z'></path>
     </svg>
 )
 
-export const ToggleIcon = P => (
+export const ToggleIcon = () => (
     <svg
         stroke='currentColor'
         fill='none'
         stroke-width='0'
         viewBox='0 0 24 24'
-        height={P.size || 25}
-        width={P.size || 25}
         xmlns='http://www.w3.org/2000/svg'
     >
         <path
@@ -602,7 +582,7 @@ export const ToggleIcon = P => (
     </svg>
 )
 
-export const ArrowLeftIcon = P => (
+export const ArrowLeftIcon = () => (
     <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 24 24'
@@ -611,36 +591,30 @@ export const ArrowLeftIcon = P => (
         stroke-width='2'
         stroke-linecap='round'
         stroke-linejoin='round'
-        width={P.size || 25}
-        height={P.size || 25}
     >
         <path d='m12 19-7-7 7-7' />
         <path d='M19 12H5' />
     </svg>
 )
 
-export const ArrowIcon = P => (
+export const ArrowIcon = () => (
     <svg
         stroke='currentColor'
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 512 512'
-        height={P.size || 25}
-        width={P.size || 25}
         xmlns='http://www.w3.org/2000/svg'
     >
         <path d='M217.9 256L345 129c9.4-9.4 9.4-24.6 0-33.9-9.4-9.4-24.6-9.3-34 0L167 239c-9.1 9.1-9.3 23.7-.7 33.1L310.9 417c4.7 4.7 10.9 7 17 7s12.3-2.3 17-7c9.4-9.4 9.4-24.6 0-33.9L217.9 256z'></path>
     </svg>
 )
 
-export const LogoutIcon = P => (
+export const LogoutIcon = () => (
     <svg
         stroke='currentColor'
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 512 512'
-        height={P.size || 30}
-        width={P.size || 30}
         xmlns='http://www.w3.org/2000/svg'
     >
         <path
@@ -994,29 +968,25 @@ export const AlignCenterIcon = () => (
     </svg>
 )
 
-export const EmailSvg = P => (
+export const EmailIcon = () => (
     <svg
         stroke='currentColor'
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 24 24'
-        height={P.size || 25}
-        width={P.size || 25}
         xmlns='http://www.w3.org/2000/svg'
     >
         <path fill='none' d='M0 0h24v24H0z'></path>
         <path d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z'></path>
     </svg>
 )
-export const ProjectIcon = P => (
+export const ProjectIcon = () => (
     <svg
         stroke='currentColor'
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 1024 1024'
         version='1.1'
-        height={P.size || 25}
-        width={P.size || 25}
         xmlns='http://www.w3.org/2000/svg'
     >
         <defs></defs>
@@ -1025,16 +995,38 @@ export const ProjectIcon = P => (
     </svg>
 )
 
-export const CodeSvg = P => (
+export const CodeIcon = () => (
     <svg
         stroke='currentColor'
         fill='currentColor'
         stroke-width='0'
         viewBox='0 0 512 512'
-        height={P.size || 25}
-        width={P.size || 25}
         xmlns='http://www.w3.org/2000/svg'
     >
         <path d='M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7 1.3 3 4.1 4.8 7.3 4.8 66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32zM128.2 304H116c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h12.3c6 0 10.4-3.5 10.4-6.6 0-1.3-.8-2.7-2.1-3.8l-21.9-18.8c-8.5-7.2-13.3-17.5-13.3-28.1 0-21.3 19-38.6 42.4-38.6H156c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8h-12.3c-6 0-10.4 3.5-10.4 6.6 0 1.3.8 2.7 2.1 3.8l21.9 18.8c8.5 7.2 13.3 17.5 13.3 28.1.1 21.3-19 38.6-42.4 38.6zm191.8-8c0 4.4-3.6 8-8 8h-16c-4.4 0-8-3.6-8-8v-68.2l-24.8 55.8c-2.9 5.9-11.4 5.9-14.3 0L224 227.8V296c0 4.4-3.6 8-8 8h-16c-4.4 0-8-3.6-8-8V192c0-8.8 7.2-16 16-16h16c6.1 0 11.6 3.4 14.3 8.8l17.7 35.4 17.7-35.4c2.7-5.4 8.3-8.8 14.3-8.8h16c8.8 0 16 7.2 16 16v104zm48.3 8H356c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h12.3c6 0 10.4-3.5 10.4-6.6 0-1.3-.8-2.7-2.1-3.8l-21.9-18.8c-8.5-7.2-13.3-17.5-13.3-28.1 0-21.3 19-38.6 42.4-38.6H396c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8h-12.3c-6 0-10.4 3.5-10.4 6.6 0 1.3.8 2.7 2.1 3.8l21.9 18.8c8.5 7.2 13.3 17.5 13.3 28.1.1 21.3-18.9 38.6-42.3 38.6z'></path>
+    </svg>
+)
+
+export const CalculatorIcon = () => (
+    <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+        class='lucide lucide-calculator'
+    >
+        <rect width='16' height='20' x='4' y='2' rx='2' />
+        <line x1='8' x2='16' y1='6' y2='6' />
+        <line x1='16' x2='16' y1='14' y2='18' />
+        <path d='M16 10h.01' />
+        <path d='M12 10h.01' />
+        <path d='M8 10h.01' />
+        <path d='M12 14h.01' />
+        <path d='M8 14h.01' />
+        <path d='M12 18h.01' />
+        <path d='M8 18h.01' />
     </svg>
 )
