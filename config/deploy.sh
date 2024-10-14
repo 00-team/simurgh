@@ -23,18 +23,6 @@ function check_diff {
     fi
 }
 
-if [ ! -f main.db ]; then
-    echo "$EG setup the database"
-    cargo sqlx db setup
-    echo $SPACER
-fi
-
-if check_diff "migrations/*"; then
-    echo "$EG run all pending migrations"
-    cargo sqlx mig run
-    echo $SPACER
-fi
-
 if check_diff "package.json"; then
     echo "$EG install npm packages"
     npm i
