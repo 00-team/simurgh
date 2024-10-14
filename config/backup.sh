@@ -3,16 +3,17 @@
 BASE_URL="https://api.telegram.org/bot$TELOXIDE_TOKEN"
 BASE_NAME=simurgh-db-$(date +%s).tgz.
 HASH_FILENAME=".ignore.last_hash"
+CHAT_INFO="chat_id=$TELOXIDE_GROUP_ID&message_thread_id=2"
 
-mkdir .dbd
+mkdir .dbd -p
 
 function send_file {
-    url="$BASE_URL/sendDocument?chat_id=$TELOXIDE_CHAT_ID"
+    url="$BASE_URL/sendDocument?$CHAT_INFO"
     curl -s -X POST $url -F "document=@$1" -F "caption=$1" -o /dev/null
 }
 
 function send_msg {
-    url="$BASE_URL/sendMessage?chat_id=$TELOXIDE_CHAT_ID"
+    url="$BASE_URL/sendMessage?$CHAT_INFO"
     curl -s -X GET $url --data-urlencode "text=$1" -o /dev/null
 }
 
