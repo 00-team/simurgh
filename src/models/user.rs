@@ -40,13 +40,6 @@ impl ops::DerefMut for Admin {
     }
 }
 
-fn parse_token(token: &str) -> Option<(i64, String)> {
-    let mut token = token.splitn(2, ':');
-    let id = token.next()?.parse::<i64>().ok()?;
-    let token = token.next()?.to_string();
-    Some((id, token))
-}
-
 impl FromRequest for User {
     type Error = AppErr;
     type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
