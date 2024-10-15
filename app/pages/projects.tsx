@@ -2,11 +2,12 @@ import { useNavigate, useSearchParams } from '@solidjs/router'
 import { ChevronLeftIcon, ChevronRightIcon } from 'icons'
 import { ProjectModel } from 'models'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
-import { createEffect, Show } from 'solid-js'
+import { Component, createEffect, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import './style/projects.scss'
 
-export default () => {
+type Props = { admin?: true }
+const Projects: Component<Props> = P => {
     type State = {
         page: number
         projects: ProjectModel[]
@@ -31,7 +32,7 @@ export default () => {
         setParams({ page })
         setState({ loading: true })
         httpx({
-            url: '/api/projects/',
+            url: P.admin ? '/api/admin/projects/' : '/api/projects/',
             method: 'GET',
             params: { page },
             onLoad(x) {
@@ -134,7 +135,7 @@ export default () => {
                         onClick={() => change_page(+1)}
                         disabled={state.projects.length < 31}
                     >
-                        <ChevronRightIcon size={30} />
+                        <ChevronRightIcon />
                     </button>
                     <button
                         class='icon'
@@ -142,10 +143,12 @@ export default () => {
                         classList={{ disable: state.projects.length < 31 }}
                         disabled={state.page == 0}
                     >
-                        <ChevronLeftIcon size={30} />
+                        <ChevronLeftIcon />
                     </button>
                 </div>
             </div>
         </div>
     )
 }
+
+export default Projects

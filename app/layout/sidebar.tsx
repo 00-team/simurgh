@@ -20,6 +20,15 @@ export default () => {
                     </div>
                     <ArrowIcon />
                 </A>
+                <Show when={self.user.admin}>
+                    <A href='/admin-projects/'>
+                        <div class='holder'>
+                            <ProjectIcon />
+                            همه پروژه ها
+                        </div>
+                        <ArrowIcon />
+                    </A>
+                </Show>
             </div>
             <div
                 class='logout title'

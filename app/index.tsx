@@ -42,7 +42,10 @@ const Root = () => {
                             path='/'
                             component={() => <Navigate href='/projects/' />}
                         />
-                        <Route path='/projects/' component={Projects} />
+                        <Route
+                            path='/projects/'
+                            component={() => <Projects />}
+                        />
                         <Route path='/projects/:pid'>
                             <Route path='/' component={Project} />
                             <Route path='/records/' component={Records} />
@@ -57,6 +60,13 @@ const Root = () => {
                                 <Route path='/editor/' component={Editor} />
                             </Route>
                         </Route>
+                        <Show when={self.user.admin}>
+                            <Route
+                                path='/admin-projects/'
+                                component={() => <Projects admin />}
+                            />
+                        </Show>
+
                         <Route path='*' component={NotFound} />
                     </Route>
                 </Router>
