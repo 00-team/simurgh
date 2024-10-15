@@ -11,6 +11,7 @@ use actix_web::{
     HttpResponse, ResponseError,
 };
 use awc::error::{JsonPayloadError, SendRequestError};
+use image::ImageError;
 use serde::Serialize;
 use tokio::io;
 use utoipa::ToSchema;
@@ -100,6 +101,12 @@ impl From<actix_web::error::Error> for AppErr {
     }
 }
 
+impl From<&str> for AppErr {
+    fn from(value: &str) -> Self {
+        Self::new(500, value)
+    }
+}
+
 macro_rules! impl_from_err {
     ($ty:path) => {
         impl From<$ty> for AppErr {
@@ -122,6 +129,7 @@ impl_from_err!(ParseIntError);
 impl_from_err!(JsonPayloadError);
 impl_from_err!(SendRequestError);
 impl_from_err!(FromUtf8Error);
+impl_from_err!(ImageError);
 impl_from_err!(serde_json::Error);
 impl_from_err!(tempfile::PersistError);
 impl_from_err!(ToStrError);
