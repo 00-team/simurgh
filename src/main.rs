@@ -134,7 +134,7 @@ async fn main() -> std::io::Result<()> {
         server.bind(("127.0.0.1", 7700)).unwrap()
     } else {
         use std::os::unix::fs::PermissionsExt;
-        const PATH: &str = "/usr/share/nginx/sockets/simurgh.sock";
+        const PATH: &str = "/usr/share/nginx/socks/simurgh.sock";
         let server = server.bind_uds(PATH).unwrap();
         std::fs::set_permissions(PATH, std::fs::Permissions::from_mode(0o777))?;
         server
