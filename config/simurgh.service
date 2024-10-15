@@ -9,8 +9,7 @@ WorkingDirectory=/x/simurgh/
 EnvironmentFile=/x/simurgh/.env
 ExecStart=/x/simurgh/target/release/simurgh
 KillSignal=SIGQUIT
-StandardError=file:/x/simurgh/logs/err.log
-StandardOutput=file:/x/simurgh/logs/out.log
+StandardError=file:/x/simurgh/log
 NotifyAccess=all
 
 [Install]
