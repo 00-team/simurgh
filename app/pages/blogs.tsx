@@ -68,7 +68,7 @@ export default () => {
                         style={{ '--color': 'var(--blue)' }}
                         onClick={() => nav('/projects/' + pid)}
                     >
-                        <ArrowLeftIcon size={25} />
+                        <ArrowLeftIcon />
                     </button>
                 </div>
             </div>
@@ -89,7 +89,7 @@ export default () => {
                     classList={{ disable: state.blogs.length < 31 }}
                     disabled={state.page == 0}
                 >
-                    <ChevronLeftIcon size={30} />
+                    <ChevronLeftIcon />
                 </button>
                 <button
                     class='icon'
@@ -97,7 +97,7 @@ export default () => {
                     onClick={() => blog_list(state.page + 1)}
                     disabled={state.blogs.length < 31}
                 >
-                    <ChevronRightIcon size={30} />
+                    <ChevronRightIcon />
                 </button>
             </div>
         </div>

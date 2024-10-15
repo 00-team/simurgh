@@ -51,7 +51,7 @@ export default () => {
                 }}
             >
                 <div class='holder'>
-                    <LogoutIcon size={30} />
+                    <LogoutIcon />
                     خروج
                 </div>
                 <ArrowIcon />

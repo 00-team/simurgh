@@ -73,7 +73,7 @@ export default () => {
                         class='go-back icon'
                         onClick={() => nav('/projects/' + pid)}
                     >
-                        <ArrowLeftIcon size={25} />
+                        <ArrowLeftIcon />
                     </button>
                 </div>
                 <div class='ctas'>

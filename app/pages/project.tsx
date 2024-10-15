@@ -116,7 +116,7 @@ export default () => {
                         style={{ '--color': 'var(--blue)' }}
                         onClick={() => nav('/projects/')}
                     >
-                        <ArrowLeftIcon size={25} />
+                        <ArrowLeftIcon />
                     </button>
                 </div>
             </div>
@@ -338,8 +338,8 @@ const Blogs: Component<BlogProps> = P => {
                             </Show>
                         </div>
                         <div class='blog-info title_smaller'>
-                            <div class="blog-title title_smaller">
-                            {b.title || '---'}
+                            <div class='blog-title title_smaller'>
+                                {b.title || '---'}
                             </div>
                             <div class='row'>
                                 <span>شناسه:</span>
