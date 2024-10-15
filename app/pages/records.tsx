@@ -310,7 +310,11 @@ const Record: Component<RecordProps> = P => {
                                     )
                                 }
                             }}
-                            oncontextmenu={() => remove_usage(ui)}
+                            oncontextmenu={e => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                remove_usage(ui)
+                            }}
                         >
                             {u.kind === 'free'
                                 ? 'آزاد: ' + u.reason
