@@ -7,6 +7,7 @@ use std::fs::read_to_string;
 #[routes]
 #[get("/")]
 #[get("/projects")]
+#[get("/admin-projects")]
 #[get("/projects/{pid}")]
 #[get("/projects/{pid}/records")]
 #[get("/projects/{pid}/blogs-categories")]
