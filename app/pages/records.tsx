@@ -7,6 +7,7 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
     FileIcon,
+    PlusIcon,
     TrashIcon,
 } from 'icons'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
@@ -301,11 +302,19 @@ const Record: Component<RecordProps> = P => {
                     {P.r.usages.map((u, ui) => (
                         <div
                             class='usage title_smaller'
-                            onclick={() => remove_usage(ui)}
+                            onclick={() => {
+                                if (u.kind == 'blog') {
+                                    open(
+                                        `/projects/${P.r.project}/blogs/${u.id}/`,
+                                        '_blank'
+                                    )
+                                }
+                            }}
+                            oncontextmenu={() => remove_usage(ui)}
                         >
                             {u.kind === 'free'
-                                ? u.reason || 'خالی'
-                                : u.kind + ' ' + u.id}
+                                ? 'آزاد: ' + u.reason
+                                : 'بلاگ: ' + u.id}
                         </div>
                     ))}
                 </div>
@@ -368,8 +377,8 @@ const AddUsage: Component<AddUsageProps> = P => {
                     class='usage-holder title_smaller'
                     classList={{ active: state.usage.kind === 'blog' }}
                 >
-                    <div class='holder '>آزاد</div>
-                    <div class='holder  blog'>بلاگ</div>
+                    <div class='holder'>آزاد</div>
+                    <div class='holder blog'>بلاگ</div>
                 </div>
             </div>
             <div class='input'>
@@ -418,7 +427,7 @@ const AddUsage: Component<AddUsageProps> = P => {
                 )}
             </div>
             <button class='add-btn' type='submit'>
-                <ArrowLeftIcon />
+                <PlusIcon />
             </button>
         </form>
     )
