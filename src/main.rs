@@ -33,6 +33,12 @@ pub struct AppState {
 #[get("/openapi.json")]
 async fn openapi() -> impl Responder {
     let mut doc = docs::ApiDoc::openapi();
+    let mut admin_doc = docs::ApiDoc::openapi();
+
+    admin_doc.merge(admin::projects::ApiDoc::openapi());
+    docs::doc_add_prefix(&mut admin_doc, "/admin", false);
+
+    doc.merge(admin_doc);
     doc.merge(api::user::ApiDoc::openapi());
     doc.merge(api::verification::ApiDoc::openapi());
     doc.merge(api::projects::ApiDoc::openapi());
@@ -43,15 +49,6 @@ async fn openapi() -> impl Responder {
     doc.merge(api::blog::ssr::ApiDoc::openapi());
     doc.merge(api::blog::tags::ApiDoc::openapi());
     doc.merge(api::records::ApiDoc::openapi());
-
-    // let mut admin_doc = ApiDoc::openapi();
-    // admin_doc.merge(admin::user::Doc::openapi());
-    // admin_doc.merge(admin::product::Doc::openapi());
-    //
-    // doc_add_prefix(&mut admin_doc, "/admin", false);
-    //
-    // doc.merge(admin_doc);
-
     docs::doc_add_prefix(&mut doc, "/api", false);
 
     HttpResponse::Ok().json(doc)
@@ -99,7 +96,8 @@ fn config_app(app: &mut ServiceConfig) {
         scope("/api")
             .service(api::user::router())
             .service(api::projects::router())
-            .service(api::verification::verification),
+            .service(api::verification::verification)
+            .service(scope("/admin").service(admin::projects::router())),
     );
 
     app.service(web::router());
