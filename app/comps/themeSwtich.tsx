@@ -22,7 +22,7 @@ export const ThemeSwtich: Component = () => {
                         classList={{ dark: theme() === 'dark' }}
                     >
                         {/* {theme() === 'dark' && <LogoRaw size={100} />} */}
-                        <LogoRaw size={50} />
+                        <LogoRaw />
                     </div>
                     <span class='star star-1'></span>
                     <span class='star star-2'></span>
