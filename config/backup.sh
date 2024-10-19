@@ -47,7 +47,7 @@ function record_change {
 
 function backup_record {
     if [ -f $RECORD_CHANGED]; then
-        if [[ $(cat $RECORD_CHANGED) == $c ]]; then
+        if [[ $(cat $RECORD_CHANGED) == $(record_change) ]]; then
             echo "record has not changed 🪐 $(date +'%F %T')"
             return;
         fi
