@@ -41,7 +41,7 @@ function backup_db {
 }
 
 function record_change {
-    du -sb recode
+    du -sb record
     # { ls record; du -sb record; } | sha256sum
 }
 
