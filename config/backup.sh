@@ -41,13 +41,12 @@ function backup_db {
 }
 
 function record_change {
-    { ls record; du -sb record; } | sha256sum
+    du -sb recode
+    # { ls record; du -sb record; } | sha256sum
 }
 
 function backup_record {
     if [ -f $RECORD_CHANGED]; then
-        local c = $(record_change);
-        echo $c
         if [[ $(cat $RECORD_CHANGED) == $c ]]; then
             echo "record has not changed 🪐 $(date +'%F %T')"
             return;
