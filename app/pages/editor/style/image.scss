@@ -47,6 +47,11 @@
                     color: white;
                     background-color: var(--sixty-percent);
                 }
+
+                &.active {
+                    color: #fff;
+                    background-color: var(--sixty-percent);
+                }
             }
         }
 
