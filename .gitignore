@@ -27,3 +27,4 @@ old/
 .env
 static/ssr/style/
 static/ssr/script/
+log
