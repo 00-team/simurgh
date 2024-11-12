@@ -249,6 +249,14 @@
                     border-color: var(--ca);
                 }
 
+                &.draft {
+                    background-image: linear-gradient(
+                        to bottom,
+                        rgb(255 214 0) -6%,
+                        transparent 50%
+                    );
+                }
+
                 .thumbnail {
                     display: flex;
                     align-items: center;
