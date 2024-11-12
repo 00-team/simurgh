@@ -91,8 +91,8 @@
                 &.draft {
                     background-image: linear-gradient(
                         to bottom,
-                        rgb(255 214 0 / 20%),
-                        transparent
+                        rgb(255 214 0) -6%,
+                        transparent 50%
                     );
                 }
 
