@@ -154,13 +154,23 @@ export default () => {
                         </button>
                         <button
                             class='cta title_smaller add'
-                            onClick={() =>
+                            onClick={() => {
                                 setStore(
                                     produce(s => {
                                         s.data.push({ kind: 'empty' })
                                     })
                                 )
-                            }
+
+                                let editor =
+                                    document.querySelector<HTMLElement>(
+                                        '.editor-wrapper'
+                                    )
+
+                                editor.scrollTo({
+                                    top: editor.scrollHeight,
+                                    behavior: 'smooth',
+                                })
+                            }}
                         >
                             <div class='holder'>اضافه بلاک</div>
                             <div class='icon'>
