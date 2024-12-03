@@ -443,8 +443,8 @@ const Actions: Component<ActionsProps> = P => {
                             color={P.group.style.color}
                             setColor={color => set_style({ color })}
                         />
-                        <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
                         <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
+                        <FontSizeButton idx={P.idx} ag={P.ag} dir={-1} />
                     </div>
                     {/* <Action
                         color={P.group.style.color}
