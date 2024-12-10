@@ -82,6 +82,7 @@
 
                 &.delete-project {
                     --bg-color: var(--alert-error);
+                    background-color: var(--primary-color);
                 }
 
                 svg {
