@@ -326,7 +326,11 @@ const Blogs: Component<BlogProps> = P => {
             </div>
             <div class='blog-list'>
                 {state.blogs.slice(0, 3).map(b => (
-                    <div class='blog' onClick={() => nav('blogs/' + b.id)}>
+                    <div
+                        class='blog'
+                        classList={{ draft: b.status === 'draft' }}
+                        onClick={() => nav('blogs/' + b.id)}
+                    >
                         <div class='thumbnail'>
                             <Show when={b.thumbnail} fallback={<ImageIcon />}>
                                 <img

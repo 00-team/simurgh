@@ -82,6 +82,7 @@
 
                 &.delete-project {
                     --bg-color: var(--alert-error);
+                    background-color: var(--primary-color);
                 }
 
                 svg {
@@ -247,6 +248,14 @@
 
                 &:hover {
                     border-color: var(--ca);
+                }
+
+                &.draft {
+                    background-image: linear-gradient(
+                        to bottom,
+                        rgb(255 214 0) -6%,
+                        transparent 50%
+                    );
                 }
 
                 .thumbnail {
