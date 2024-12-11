@@ -48,6 +48,8 @@ pub fn save_photo(
         .decode()?
         .thumbnail(size.0, size.1);
 
+    let img: image::DynamicImage = img.into_rgba8().into();
+
     let encoder = webp::Encoder::from_image(&img)?;
     let output = encoder.encode(60.0);
     let path = Path::new(Config::RECORD_DIR).join(name);
