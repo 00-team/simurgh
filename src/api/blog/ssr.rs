@@ -157,7 +157,9 @@ async fn ssr_list(
     if q.page > 1 {
         pvec.push(q.page - 1)
     }
-    pvec.push(q.page);
+    if pages > 0 {
+        pvec.push(q.page);
+    }
     if q.page + 1 < pages {
         pvec.push(q.page + 1)
     }
