@@ -40,6 +40,8 @@ macro_rules! icon {
 icon!(ReadtimeIcon, "reading-time");
 icon!(CalendarDaysIcon, "calendar");
 icon!(CalendarUpdateIcon, "calendar-update");
+icon!(PastIcon, "past");
+icon!(NextIcon, "next");
 
 #[component]
 fn ReadTime(value: i64) -> Element {
@@ -140,10 +142,60 @@ async fn ssr_list(
     .fetch_all(&state.sql)
     .await?;
 
+    let count = sqlx::query! {
+        "select count(1) as count from blogs where project = ? AND status = ?",
+        project.id, BlogStatus::Published
+    }
+    .fetch_one(&state.sql)
+    .await?;
+
+    let pages = (count.count / 32) as u32;
+    let mut pvec = Vec::<u32>::with_capacity(5);
+    if q.page > 2 {
+        pvec.push(q.page - 2)
+    }
+    if q.page > 1 {
+        pvec.push(q.page - 1)
+    }
+    pvec.push(q.page);
+    if q.page + 1 < pages {
+        pvec.push(q.page + 1)
+    }
+    if q.page + 2 < pages {
+        pvec.push(q.page + 2)
+    }
+
     let result = rsx! {
         section {
             class: "simurgh--blogs",
             for blog in blogs { BlogCard { blog: blog } }
+        }
+        section {
+            class: "simurgh--pagination",
+            if q.page > 0 {
+                a {
+                    class: "ends",
+                    href: "?page={q.page - 1}",
+                    PastIcon {}
+                }
+            }
+            div {
+                class: "jumps",
+                for p in pvec {
+                    if p == q.page {
+                        a { class: "active", href: "?page={p}", "{p}" }
+                    } else {
+                        a { href: "?page={p}", "{p}" }
+                    }
+                }
+            }
+            if q.page < pages {
+                a {
+                    class: "ends",
+                    href: "?page={q.page + 1}",
+                    NextIcon {}
+                }
+            }
         }
     }
     .render();
