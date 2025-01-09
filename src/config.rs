@@ -29,7 +29,8 @@ pub fn config() -> &'static Config {
     let mail = evar!("GMAIL");
     let mail_server = SmtpTransport::relay("smtp.gmail.com")
         .expect("smpt relay failed")
-        .port(465)
+        // .port(465)
+        .port(2525)
         .credentials((&mail, &evar!("GMAIL_PASS")).into())
         .build();
 
