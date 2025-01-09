@@ -118,11 +118,15 @@ pub async fn send_code(email: &str, code: &str) -> Result<(), AppErr> {
         )
         .map_err(|_| AppErr::new(500, "could not build the message"))?;
 
-    config()
-        .mail_server
-        .send(&message)
-        .map(|_| ())
-        .map_err(|_| AppErr::new(500, "send email failed"))
+    match config().mail_server.send(&message) {
+        Ok(v) => log::info!("res: {v:#?}"),
+        Err(e) => {
+            log::info!("email err: {e} - {e:#?}");
+            return Err(AppErr::new(500, "failed to send email"));
+        }
+    }
+
+    Ok(())
 }
 
 pub trait CutOff {

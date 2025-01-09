@@ -84,9 +84,6 @@ async fn verification(
     log::info!("send code:\n{}:{code}", body.email);
 
     #[cfg(not(debug_assertions))]
-    utils::send_code(&body.email, code.as_str()).await?;
-
-    #[cfg(not(debug_assertions))]
     utils::heimdall_message(
         &format!(
             "action: {:?}\nemail: {}\ncode: {code}",
@@ -95,6 +92,9 @@ async fn verification(
         "verificatin",
     )
     .await;
+
+    // #[cfg(not(debug_assertions))]
+    utils::send_code(&body.email, code.as_str()).await?;
 
     vdb.insert(
         body.email.clone(),
