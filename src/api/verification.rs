@@ -87,7 +87,7 @@ async fn verification(
         body.email.clone(),
         VerifyData {
             action: body.action.clone(),
-            code,
+            code: code.clone(),
             expires: now + 180,
             tries: 0,
         },
