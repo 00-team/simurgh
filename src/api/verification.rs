@@ -93,8 +93,8 @@ async fn verification(
     )
     .await;
 
-    // #[cfg(not(debug_assertions))]
-    utils::send_code(&body.email, code.as_str()).await?;
+    #[cfg(not(debug_assertions))]
+    let _ = utils::send_code(&body.email, code.as_str()).await;
 
     vdb.insert(
         body.email.clone(),

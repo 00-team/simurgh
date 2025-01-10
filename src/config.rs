@@ -26,16 +26,16 @@ macro_rules! evar {
 
 pub fn config() -> &'static Config {
     static STATE: OnceLock<Config> = OnceLock::new();
-    let mail = evar!("GMAIL");
-    let mail_server = SmtpTransport::relay("smtp.gmail.com")
+    let smtp_user = evar!("SMTP_USER");
+    let mail_server = SmtpTransport::relay(&evar!("SMTP_HOST"))
         .expect("smpt relay failed")
-        // .port(465)
-        .port(2525)
-        .credentials((&mail, &evar!("GMAIL_PASS")).into())
+        .port(465)
+        // .port(587)
+        .credentials((&smtp_user, &evar!("SMTP_PASS")).into())
         .build();
 
     STATE.get_or_init(|| Config {
-        mail_from: mail.parse().expect("could not parse GMAIL"),
+        mail_from: smtp_user.parse().expect("could not parse GMAIL"),
         mail_server,
         heimdall_token: evar!("HEIMDALL_TOKEN"),
     })
