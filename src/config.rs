@@ -1,5 +1,5 @@
 use lettre::{message::Mailbox, SmtpTransport};
-use std::sync::OnceLock;
+use std::{sync::OnceLock, time::Duration};
 
 #[derive(Debug)]
 pub struct Config {
@@ -30,7 +30,7 @@ pub fn config() -> &'static Config {
     let mail_server = SmtpTransport::relay(&evar!("SMTP_HOST"))
         .expect("smpt relay failed")
         .port(465)
-        // .port(587)
+        .timeout(Some(Duration::from_secs(5)))
         .credentials((&smtp_user, &evar!("SMTP_PASS")).into())
         .build();
 
