@@ -124,6 +124,7 @@ async fn blog_get(blog: Blog) -> Response<Blog> {
 struct BlogUpdateBody {
     slug: String,
     status: BlogStatus,
+    publish_at: Option<i64>,
     title: String,
     detail: String,
     read_time: i64,
@@ -158,12 +159,13 @@ async fn blog_update(
     blog.detail.cut_off(2047);
     blog.read_time = body.read_time.clone();
     blog.category = body.category;
+    blog.publish_at = body.publish_at;
 
     sqlx::query! {
         "update blogs set slug = ?, status = ?, updated_at = ?, title = ?,
-        detail = ?, read_time = ?, category = ? where id = ?",
+        detail = ?, read_time = ?, category = ?, publish_at = ? where id = ?",
         blog.slug, blog.status, blog.updated_at, blog.title,
-        blog.detail, blog.read_time, blog.category, blog.id
+        blog.detail, blog.read_time, blog.category, blog.publish_at, blog.id
     }
     .execute(&state.sql)
     .await?;

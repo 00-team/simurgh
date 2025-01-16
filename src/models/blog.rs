@@ -196,6 +196,7 @@ pub struct Blog {
     pub category: Option<i64>,
     pub created_at: i64,
     pub updated_at: i64,
+    pub publish_at: Option<i64>,
     pub title: String,
     pub detail: String,
     pub html: String,
