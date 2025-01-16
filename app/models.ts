@@ -229,6 +229,7 @@ export type BlogModel = {
     author: number | null
     created_at: number
     updated_at: number
+    publish_at: number | null
     title: string
     detail: string
     data: BlogData[]
@@ -262,6 +263,7 @@ export const DEFAULT_BLOG: BlogModel = {
     author: null,
     created_at: 0,
     updated_at: 0,
+    publish_at: null,
     title: '',
     detail: '',
     data: [],

@@ -10,7 +10,7 @@ use crate::docs::UpdatePaths;
 use crate::models::blog::{Blog, BlogStatus};
 use crate::models::project::Project;
 use crate::models::{AppErr, Html, ListInput};
-use crate::AppState;
+use crate::{utils, AppState};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -132,19 +132,22 @@ fn BlogCard(blog: Blog) -> Element {
 async fn ssr_list(
     project: Project, q: Query<ListInput>, state: Data<AppState>,
 ) -> Response {
+    let now = utils::now();
     let offset = q.page * 32;
     let blogs = sqlx::query_as! {
         Blog,
-        "select * from blogs where project = ? and status = ?
+        "select * from blogs where
+        project = ? AND status = ? AND (publish_at IS null OR publish_at < ?)
         order by id desc limit 32 offset ?",
-        project.id, BlogStatus::Published, offset
+        project.id, BlogStatus::Published, now, offset
     }
     .fetch_all(&state.sql)
     .await?;
 
     let count = sqlx::query! {
-        "select count(1) as count from blogs where project = ? AND status = ?",
-        project.id, BlogStatus::Published
+        "select count(1) as count from blogs where
+        project = ? AND status = ? AND (publish_at IS null OR publish_at < ?)",
+        project.id, BlogStatus::Published, now
     }
     .fetch_one(&state.sql)
     .await?;
@@ -206,20 +209,24 @@ async fn ssr_list(
 }
 
 async fn get_related<'a>(
-    blog: &'a Blog, state: &'a AppState,
+    blog: &'a Blog, state: &'a AppState, now: i64,
 ) -> Result<Element<'a>, AppErr> {
     let next = sqlx::query_as! {
         Blog,
-        "select * from blogs where project = ? and id > ? and status = ? order by id asc limit 1",
-        blog.project, blog.id, BlogStatus::Published
+        "select * from blogs where
+        project = ? AND id > ? AND status = ? AND (publish_at IS null OR publish_at < ?)
+        order by id asc limit 1",
+        blog.project, blog.id, now, BlogStatus::Published
     }
     .fetch_optional(&state.sql)
     .await?;
 
     let past = sqlx::query_as! {
         Blog,
-        "select * from blogs where project = ? and id < ? and status = ? order by id desc limit 1",
-        blog.project, blog.id, BlogStatus::Published
+        "select * from blogs where
+        project = ? AND id < ? AND status = ? AND (publish_at IS null OR publish_at < ?)
+        order by id desc limit 1",
+        blog.project, blog.id, BlogStatus::Published, now
     }
     .fetch_optional(&state.sql)
     .await?;
@@ -227,11 +234,12 @@ async fn get_related<'a>(
     let related = sqlx::query_as! {
         Blog,
         "select * from blogs where project = ? and id in (
-            select blog from blog_tag where project = ? and tag in (
-                select tag from blog_tag where project = ? and blog = ?
+            select blog from blog_tag where project = ? AND tag in (
+                select tag from blog_tag where project = ? AND blog = ?
             )
-        ) and status = ? limit 3",
-        blog.project, blog.project, blog.project, blog.id, BlogStatus::Published
+        ) AND status = ? AND (publish_at IS null OR publish_at < ?) limit 3",
+        blog.project, blog.project, blog.project, blog.id,
+        BlogStatus::Published, now
     }
     .fetch_all(&state.sql)
     .await?;
@@ -272,16 +280,18 @@ struct BlogSSRR {
 async fn ssr_get(
     project: Project, path: Path<(i64, String)>, state: Data<AppState>,
 ) -> Result<Json<BlogSSRR>, AppErr> {
+    let now = utils::now();
     let blog = sqlx::query_as! {
         Blog,
-        "select * from blogs where project = ? AND slug = ? AND status = ?",
-        project.id, path.1, BlogStatus::Published
+        "select * from blogs where project = ? AND slug = ? AND status = ?
+        AND (publish_at IS null OR publish_at < ?)",
+        project.id, path.1, BlogStatus::Published, now
     }
     .fetch_one(&state.sql)
     .await?;
 
     let preview = VContent::new(&blog.html).raw(true);
-    let related = get_related(&blog, &state).await?;
+    let related = get_related(&blog, &state, now).await?;
 
     let html = rsx! {
         main {
