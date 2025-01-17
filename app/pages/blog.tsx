@@ -382,33 +382,36 @@ export default () => {
                         </Show>
                     </div>
 
-                    <div class='row'>
-                        <span>منتشر بعد از: </span>
-                        <input
-                            type='date'
-                            value={
-                                state.edit.publish_at &&
-                                fmt_date_input(
-                                    new Date(state.edit.publish_at * 1e3)
-                                )
-                            }
-                            min={fmt_date_input(new Date())}
-                            onChange={e => {
-                                let v = e.currentTarget.value
-                                let t = new Date(v).getTime() / 1e3
-                                setState(produce(s => (s.edit.publish_at = t)))
-                            }}
-                        />
-                        <button
-                            onClick={() => {
-                                setState(
-                                    produce(s => (s.edit.publish_at = null))
-                                )
-                            }}
-                        >
-                            X
-                        </button>
-                    </div>
+                    <Show when={state.edit.status === 'draft'}>
+                        <div class='row'>
+                            <span>منتشر در تاریخ:</span>
+                            <input
+                                type='date'
+                                value={
+                                    state.edit.publish_at &&
+                                    fmt_date_input(
+                                        new Date(state.edit.publish_at * 1e3)
+                                    )
+                                }
+                                min={fmt_date_input(new Date())}
+                                onChange={e => {
+                                    let v = e.currentTarget.value
+                                    let t = new Date(v).getTime() / 1e3
+                                    setState(produce(s => (s.edit.publish_at = t)))
+                                }}
+                            />
+                            <button
+                                onClick={() => {
+                                    setState(
+                                        produce(s => (s.edit.publish_at = null))
+                                    )
+                                }}
+                            >
+                                X
+                            </button>
+                        </div>
+                    </Show>
+
 
                     <div class='row'>
                         <span>عنوان:</span>
