@@ -16,7 +16,7 @@ jobs:
         uses: appleboy/ssh-action@dce9d565de8d876c11d93fa4fe677c0285a66d78
         with:
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          username: ${{ secrets.USER }}
           command_timeout: 1h
           key: ${{ secrets.KEY }}
           script: bash /x/simurgh/config/deploy.sh
