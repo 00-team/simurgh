@@ -3,7 +3,7 @@
 SPACER="======================================"
 EG="🔷"
 
-PATH=$PATH:/root/.nvm/versions/node/v22.3.0/bin:/root/.cargo/bin
+PATH=/root/.nvm/versions/node/v23.5.0/bin:/root/.cargo/bin:$PATH
 
 cd /x/simurgh/
 
