@@ -1,6 +1,6 @@
 import {
-    BlogImage,
     BLOG_ALIGN,
+    BlogImage,
     DEFAULT_BLOCKS,
     RecordModel,
     RecordUsages,
@@ -88,6 +88,19 @@ export const EditorImageBlock: Component<Props> = P => {
                     class='image-section'
                     style={{ 'text-align': P.block.align }}
                 >
+                    <input
+                        type='text'
+                        placeholder='alt...'
+                        class='title_smaller'
+                        style={{
+                            padding: '1em',
+                            background: 'transparent',
+                            border: 'none',
+                            'border-bottom': '1px solid var(--accent-color)',
+                        }}
+                        value={P.block.alt || null}
+                        oninput={e => set_attr(b => ({ alt: e.target.value }))}
+                    />
                     <img draggable={false} src={P.block.url} />
                 </div>
             </Show>
