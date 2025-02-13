@@ -39,10 +39,6 @@ pub fn blog_render(data: &Vec<BlogData>) -> String {
                         draggable: false,
                     }
 
-                    span {
-                        class: "image-alt",
-                        "{alt}"
-                    }
                 }
             }
         }

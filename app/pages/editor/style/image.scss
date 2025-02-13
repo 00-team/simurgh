@@ -90,6 +90,8 @@
             border: none;
             border-bottom: 1px solid var(--accent-color);
             field-sizing: content;
+
+            min-width: 100px;
         }
 
         img {
