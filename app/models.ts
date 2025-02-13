@@ -185,20 +185,20 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
         kind: 'heading',
         level: 1,
         content: '',
-        dir: 'ltr',
-        align: 'left',
+        dir: 'rtl',
+        align: 'right',
     },
     text: {
         kind: 'text',
-        dir: 'ltr',
-        align: 'left',
+        dir: 'rtl',
+        align: 'right',
         groups: [],
     },
     image: {
         kind: 'image',
         record_id: 0,
         url: '',
-        align: 'left',
+        align: 'center',
         alt: '',
     },
     audio: {
@@ -219,7 +219,7 @@ export const DEFAULT_BLOCKS: { [T in BlogData as T['kind']]: T } = {
         record_id: 0,
         url: '',
     },
-} as const
+}
 
 export type BlogModel = {
     id: number
@@ -229,6 +229,7 @@ export type BlogModel = {
     author: number | null
     created_at: number
     updated_at: number
+    publish_at: number | null
     title: string
     detail: string
     data: BlogData[]
@@ -262,6 +263,7 @@ export const DEFAULT_BLOG: BlogModel = {
     author: null,
     created_at: 0,
     updated_at: 0,
+    publish_at: null,
     title: '',
     detail: '',
     data: [],

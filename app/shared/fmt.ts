@@ -79,3 +79,10 @@ export function fmt_hms(ts: number): string {
     hours = days * 24 + months * 720
     return `${hours} ساعت و ${minutes} دقیقه و ${seconds} ثانیه`
 }
+
+export function fmt_date_input(date: Date): string {
+    let day = date.getDate() + ''
+    let month = date.getMonth() + 1 + ''
+    let year = date.getFullYear()
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+}

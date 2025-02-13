@@ -44,6 +44,7 @@ create table if not exists blogs (
     author integer references users(id) on delete set null,
     created_at integer not null,
     updated_at integer not null default 0,
+    publish_at integer,
     title text not null default '',
     detail text not null default '',
     html text not null default '',

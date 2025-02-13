@@ -11,14 +11,15 @@ import {
     WrenchIcon,
     XIcon,
 } from 'icons'
-import { BlogModel } from 'models'
+import { BlogModel, DEFAULT_BLOG } from 'models'
 import { createEffect, createMemo, on, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 
 import { addAlert } from 'comps'
-import { fmt_datetime, fmt_hms, httpx } from 'shared'
+import { fmt_date_input, fmt_datetime, fmt_hms, httpx } from 'shared'
 import { setPopup } from 'store/popup'
 import './style/blog.scss'
+import { setSelf } from 'store'
 
 const WORD_PRE_SECONDS = 2.69
 
@@ -28,31 +29,18 @@ export default () => {
         editing: boolean
         edit: Pick<
             BlogModel,
-            'detail' | 'read_time' | 'slug' | 'status' | 'title'
+            'detail' | 'read_time' | 'slug' | 'status' | 'title' | 'publish_at'
         >
     }
     const [state, setState] = createStore<State>({
-        blog: {
-            id: 0,
-            slug: '',
-            status: 'draft',
-            project: null,
-            author: null,
-            created_at: 0,
-            updated_at: 0,
-            title: '',
-            detail: '',
-            data: [],
-            html: '',
-            thumbnail: null,
-            read_time: 0,
-        },
+        blog: DEFAULT_BLOG,
         editing: false,
         edit: {
             slug: '',
             status: 'draft',
             title: '',
             detail: '',
+            publish_at: null,
             read_time: 0,
         },
     })
@@ -77,6 +65,7 @@ export default () => {
                         s.edit.title = s.blog.title
                         s.edit.detail = s.blog.detail
                         s.edit.read_time = s.blog.read_time
+                        s.edit.publish_at = s.blog.publish_at
                     })
                 )
             },
@@ -90,7 +79,8 @@ export default () => {
             state.blog.status != state.edit.status ||
             state.blog.title != state.edit.title ||
             state.blog.detail != state.edit.detail ||
-            state.blog.read_time != state.edit.read_time
+            state.blog.read_time != state.edit.read_time ||
+            state.blog.publish_at != state.edit.publish_at
     )
 
     createEffect(() => {
@@ -146,6 +136,7 @@ export default () => {
                 s.edit.title = s.blog.title
                 s.edit.detail = s.blog.detail
                 s.edit.read_time = s.blog.read_time
+                s.edit.publish_at = s.blog.publish_at
             })
         )
     }
@@ -390,6 +381,37 @@ export default () => {
                             </button>
                         </Show>
                     </div>
+
+                    <Show when={state.edit.status === 'draft'}>
+                        <div class='row'>
+                            <span>منتشر در تاریخ:</span>
+                            <input
+                                type='date'
+                                value={
+                                    state.edit.publish_at &&
+                                    fmt_date_input(
+                                        new Date(state.edit.publish_at * 1e3)
+                                    )
+                                }
+                                min={fmt_date_input(new Date())}
+                                onChange={e => {
+                                    let v = e.currentTarget.value
+                                    let t = new Date(v).getTime() / 1e3
+                                    setState(produce(s => (s.edit.publish_at = t)))
+                                }}
+                            />
+                            <button
+                                onClick={() => {
+                                    setState(
+                                        produce(s => (s.edit.publish_at = null))
+                                    )
+                                }}
+                            >
+                                X
+                            </button>
+                        </div>
+                    </Show>
+
 
                     <div class='row'>
                         <span>عنوان:</span>

@@ -1,7 +1,7 @@
 use crate::docs::UpdatePaths;
 use crate::models::blog::BlogStatus;
 use crate::models::project::Project;
-use crate::AppState;
+use crate::{utils, AppState};
 use actix_web::http::header::ContentType;
 use actix_web::web::{Data, Query};
 use actix_web::{get, HttpResponse, Scope};
@@ -34,17 +34,18 @@ struct SitemapQuery {
 async fn sitemap(
     project: Project, q: Query<SitemapQuery>, state: Data<AppState>,
 ) -> HttpResponse {
+    let now = utils::now();
     let blogs = sqlx::query! {
         "select slug, created_at, updated_at from blogs 
-        where project = ? and status = ?",
-        project.id, BlogStatus::Published
+        where project = ? AND status = ? AND (publish_at IS null OR publish_at < ?)",
+        project.id, BlogStatus::Published, now
     }
     .fetch_all(&state.sql)
     .await
     .unwrap_or_default();
 
     // TODO: the max size of a sitemap is 50MG.
-    // in this function generate the sitemap and the split it into 
+    // in this function generate the sitemap and the split it into
     // 50MG chunks and put it into files under /record/sitemap/{pid}/...
     // and return the download url of the sitemap + hash
 

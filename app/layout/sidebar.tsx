@@ -12,7 +12,7 @@ export default () => {
         <div class='sidebar-fnd'>
             <User />
             <ThemeSwtich />
-            <div class='links title'>
+            <div class='links title_smaller'>
                 <A href='/projects/'>
                     <div class='holder'>
                         <ProjectIcon />

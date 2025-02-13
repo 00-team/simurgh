@@ -83,8 +83,16 @@ async fn verification(
     let code = utils::get_random_string(Config::CODE_ABC, 5);
     log::info!("send code:\n{}:{code}", body.email);
 
-    #[cfg(not(debug_assertions))]
-    utils::send_code(&body.email, code.as_str()).await?;
+    vdb.insert(
+        body.email.clone(),
+        VerifyData {
+            action: body.action.clone(),
+            code: code.clone(),
+            expires: now + 180,
+            tries: 0,
+        },
+    );
+    drop(vdb);
 
     #[cfg(not(debug_assertions))]
     utils::heimdall_message(
@@ -96,15 +104,8 @@ async fn verification(
     )
     .await;
 
-    vdb.insert(
-        body.email.clone(),
-        VerifyData {
-            action: body.action.clone(),
-            code,
-            expires: now + 180,
-            tries: 0,
-        },
-    );
+    #[cfg(not(debug_assertions))]
+    let _ = utils::send_code(&body.email, code.as_str()).await;
 
     Ok(Json(VerificationResponse {
         expires: 180,

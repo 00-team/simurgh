@@ -48,6 +48,8 @@ pub fn save_photo(
         .decode()?
         .thumbnail(size.0, size.1);
 
+    let img: image::DynamicImage = img.into_rgba8().into();
+
     let encoder = webp::Encoder::from_image(&img)?;
     let output = encoder.encode(60.0);
     let path = Path::new(Config::RECORD_DIR).join(name);
@@ -116,11 +118,15 @@ pub async fn send_code(email: &str, code: &str) -> Result<(), AppErr> {
         )
         .map_err(|_| AppErr::new(500, "could not build the message"))?;
 
-    config()
-        .mail_server
-        .send(&message)
-        .map(|_| ())
-        .map_err(|_| AppErr::new(500, "send email failed"))
+    match config().mail_server.send(&message) {
+        Ok(v) => log::info!("res: {v:#?}"),
+        Err(e) => {
+            log::info!("email err: {e} - {e:#?}");
+            return Err(AppErr::new(500, "failed to send email"));
+        }
+    }
+
+    Ok(())
 }
 
 pub trait CutOff {
