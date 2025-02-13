@@ -92,12 +92,6 @@ export const EditorImageBlock: Component<Props> = P => {
                         type='text'
                         placeholder='alt...'
                         class='title_smaller'
-                        style={{
-                            padding: '1em',
-                            background: 'transparent',
-                            border: 'none',
-                            'border-bottom': '1px solid var(--accent-color)',
-                        }}
                         value={P.block.alt || null}
                         onchange={e => set_attr(b => ({ alt: e.target.value }))}
                     />
