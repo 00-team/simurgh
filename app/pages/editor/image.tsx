@@ -99,7 +99,7 @@ export const EditorImageBlock: Component<Props> = P => {
                             'border-bottom': '1px solid var(--accent-color)',
                         }}
                         value={P.block.alt || null}
-                        oninput={e => set_attr(b => ({ alt: e.target.value }))}
+                        onchange={e => set_attr(b => ({ alt: e.target.value }))}
                     />
                     <img draggable={false} src={P.block.url} />
                 </div>
