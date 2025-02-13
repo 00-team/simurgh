@@ -76,8 +76,13 @@
     }
 
     .image-section {
-        width: 100%;
+        width: clamp(0px, 100%, 600px);
         min-height: 300px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
 
         img {
             object-fit: contain;
