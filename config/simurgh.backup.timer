@@ -2,8 +2,8 @@
 Description=Simurgh Backup Timer
 
 [Timer]
-OnUnitActiveSec=10m
-OnBootSec=10m
+OnUnitActiveSec=1h
+OnBootSec=1m
 
 [Install]
 WantedBy=timers.target
