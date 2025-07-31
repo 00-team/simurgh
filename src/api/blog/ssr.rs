@@ -51,7 +51,7 @@ fn ReadTime(value: i64) -> Element {
     let minutes = rt / 60;
     let seconds = rt % 60;
 
-    let values = vec![(hours, "ساعت"), (minutes, "دقیقه"), (seconds, "ثانیه")]
+    let values = [(hours, "ساعت"), (minutes, "دقیقه"), (seconds, "ثانیه")]
         .iter()
         .filter(|(a, _)| *a > 0)
         .map(|(a, b)| format!("{a} {b}"))
@@ -188,9 +188,9 @@ async fn ssr_list(
                 class: "jumps",
                 for p in pvec {
                     if p == q.page {
-                        a { class: "active", href: "?page={p}", "{p}" }
+                        a { class: "active", href: "?page={p}", "{p+1}" }
                     } else {
-                        a { href: "?page={p}", "{p}" }
+                        a { href: "?page={p}", "{p+1}" }
                     }
                 }
             }

@@ -94,18 +94,18 @@ async fn verification(
     );
     drop(vdb);
 
-    #[cfg(not(debug_assertions))]
-    utils::heimdall_message(
-        &format!(
-            "action: {:?}\nemail: {}\ncode: {code}",
-            body.action, body.email
-        ),
-        "verificatin",
-    )
-    .await;
+    if cfg!(not(debug_assertions)) {
+        utils::heimdall_message(
+            &format!(
+                "action: {:?}\nemail: {}\ncode: {code}",
+                body.action, body.email
+            ),
+            "verificatin",
+        )
+        .await;
 
-    #[cfg(not(debug_assertions))]
-    let _ = utils::send_code(&body.email, code.as_str()).await;
+        let _ = utils::send_code(&body.email, code.as_str()).await;
+    }
 
     Ok(Json(VerificationResponse {
         expires: 180,

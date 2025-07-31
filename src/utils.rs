@@ -70,7 +70,7 @@ pub fn save_record(path: &Path, id: i64, salt: &str) -> io::Result<()> {
         if res == 0 {
             break;
         }
-        new_file.write(&buffer[0..res])?;
+        new_file.write_all(&buffer[0..res])?;
     }
 
     Ok(())
@@ -83,7 +83,7 @@ pub fn remove_record(name: &str) {
 pub async fn heimdall_message(text: &str, tag: &str) {
     let client = awc::Client::new();
     let request = client
-        .post(format!("https://heimdall.00-team.org/api/sites/messages/"))
+        .post("https://heimdall.00-team.org/api/sites/messages/")
         .insert_header(("authorization", config().heimdall_token.as_str()));
 
     #[derive(Serialize)]

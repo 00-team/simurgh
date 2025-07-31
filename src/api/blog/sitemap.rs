@@ -51,10 +51,8 @@ async fn sitemap(
 
     let blogs = blogs.iter().map(|r| {
         let ts = if r.updated_at == 0 { r.created_at } else { r.updated_at };
-        let dt = chrono::Local
-            .timestamp_opt(ts, 0)
-            .latest()
-            .and_then(|v| Some(v.to_rfc3339()));
+        let dt =
+            chrono::Local.timestamp_opt(ts, 0).latest().map(|v| v.to_rfc3339());
         (r.slug.clone(), dt)
     });
 

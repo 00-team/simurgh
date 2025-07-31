@@ -157,7 +157,7 @@ async fn blog_update(
     blog.title.cut_off(255);
     blog.detail = body.detail.clone();
     blog.detail.cut_off(2047);
-    blog.read_time = body.read_time.clone();
+    blog.read_time = body.read_time;
     blog.category = body.category;
     blog.publish_at = body.publish_at;
 
@@ -203,12 +203,18 @@ async fn blog_update_data(
     let mut blog = blog;
     let mut data = data;
 
-    data.iter_mut().for_each(|b| match b {
-        BlogData::Heading { level, .. } => {
+    for bd in data.iter_mut() {
+        if let BlogData::Heading { level, .. } = bd {
             *level = (*level).clamp(1, 6);
         }
-        _ => (),
-    });
+    }
+
+    // data.iter_mut().for_each(|b| match b {
+    //     BlogData::Heading { level, .. } => {
+    //         *level = (*level).clamp(1, 6);
+    //     }
+    //     _ => (),
+    // });
 
     blog.updated_at = utils::now();
     blog.html = super::render::blog_render(&data);

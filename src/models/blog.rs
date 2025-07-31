@@ -61,7 +61,7 @@ impl BlogStyle {
             .iter()
             .filter_map(|(k, v)| {
                 if let Some(v) = v {
-                    if v.len() > 0 {
+                    if !v.is_empty() {
                         return Some(format!("{k}: {v}"));
                     }
                 }

@@ -66,14 +66,12 @@ impl TryFrom<&HttpRequest> for Authorization {
 
                 let k = s.next().and_then(|v| String::from_utf8(v.into()).ok());
                 let v = s.next().and_then(|v| String::from_utf8(v.into()).ok());
-                if k.is_none() || v.is_none() {
-                    continue;
-                }
+                let Some(k) = k else { continue };
+                let Some(v) = v else { continue };
 
-                if k.unwrap().trim().to_lowercase() == "authorization" {
-                    match Authorization::try_from(v.unwrap().as_str()) {
-                        Ok(v) => return Ok(v),
-                        Err(_) => {}
+                if k.trim().to_lowercase() == "authorization" {
+                    if let Ok(v) = Authorization::try_from(v.as_str()) {
+                        return Ok(v);
                     }
                 }
             }

@@ -4,7 +4,7 @@ use crate::models::blog::{
     BlogCheckListItem, BlogData, BlogListItem, BlogTextGroup,
 };
 
-pub fn blog_render(data: &Vec<BlogData>) -> String {
+pub fn blog_render(data: &[BlogData]) -> String {
     let elements = data.iter().map(|b| match b {
         BlogData::Text { dir, align, groups } => {
             rsx! {
@@ -154,7 +154,7 @@ fn BlogListOrder<'a>(
 #[component]
 fn ListItem<'a>(ordered: &'a bool, item: &'a BlogListItem) -> Element {
     let children = match &item.children {
-        Some(c) if c.len() != 0 => Some(c),
+        Some(c) if !c.is_empty() => Some(c),
         _ => None,
     };
 
@@ -178,7 +178,7 @@ fn CheckListItem<'a>(
     ordered: &'a bool, item: &'a BlogCheckListItem,
 ) -> Element {
     let children = match &item.children {
-        Some(c) if c.len() != 0 => Some(c),
+        Some(c) if !c.is_empty() => Some(c),
         _ => None,
     };
 
