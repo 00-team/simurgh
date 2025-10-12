@@ -34,7 +34,7 @@ function backup_data {
     tar czvf $BASE_NAME main.db record
     send_msg 'spliting and sending the data `'"$(du -sh $BASE_NAME)"'`
 `'"$(date +'%F %T')"'`'
-    split -d -b 49M $BASE_NAME "$OUT_DIR/$BASE_NAME."
+    split -d -b 45M $BASE_NAME "$OUT_DIR/$BASE_NAME."
 
     # tar czvf - data/ | split -d -b 45MB - $OUT_DIR/$BASE_NAME
     cd $OUT_DIR
