@@ -15,7 +15,7 @@ function send_file {
 `'"$h"'`'
     url="$BASE_URL/send-file/"
     curl -s -X POST $url -F "file=@$1" -F "text=$c" \
-        -F "channel=simurgh" -F "pass=$IRIS_PASS" -F "parse_mode=MarkdownV2" -o /dev/null
+        -F "channel=simurgh" -F "pass=$IRIS_PASS" -F "parse_mode=MarkdownV2" # -o /dev/null
     echo
 }
 
@@ -23,7 +23,7 @@ function send_msg {
     url="$BASE_URL/send-mp/"
     curl -s -X POST $url -F "channel=simurgh" \
         -F "pass=$IRIS_PASS" -F "text=$1" \
-        -F "parse_mode=MarkdownV2" -o /dev/null
+        -F "parse_mode=MarkdownV2" # -o /dev/null
 }
 
 
