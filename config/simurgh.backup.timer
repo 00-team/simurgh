@@ -2,7 +2,7 @@
 Description=Simurgh Backup Timer
 
 [Timer]
-OnUnitActiveSec=1h
+OnUnitActiveSec=3d
 OnBootSec=1m
 
 [Install]
