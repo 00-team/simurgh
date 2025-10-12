@@ -21,7 +21,7 @@ function send_file {
 
 function send_msg {
     url="$BASE_URL/send-mp/"
-    curl -s -X POST $url -F "channel=hamrah" \
+    curl -s -X POST $url -F "channel=simurgh" \
         -F "pass=$IRIS_PASS" -F "text=$1" \
         -F "parse_mode=MarkdownV2" -o /dev/null
 }
