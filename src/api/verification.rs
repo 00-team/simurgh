@@ -94,18 +94,17 @@ async fn verification(
     );
     drop(vdb);
 
-    if cfg!(not(debug_assertions)) {
-        utils::heimdall_message(
-            &format!(
-                "action: {:?}\nemail: {}\ncode: {code}",
-                body.action, body.email
-            ),
-            "verificatin",
-        )
-        .await;
+    utils::heimdall_message(
+        &format!(
+            "action: {:?}\nemail: {}\ncode: {code}",
+            body.action, body.email
+        ),
+        "verificatin",
+    )
+    .await;
 
-        let _ = utils::send_code(&body.email, code.as_str()).await;
-    }
+    #[cfg(not(debug_assertions))]
+    let _ = utils::send_code(&body.email, code.as_str()).await;
 
     Ok(Json(VerificationResponse {
         expires: 180,
@@ -130,6 +129,7 @@ pub async fn verify(
         return Err(AppErrBadRequest(Some("invalid action")));
     }
 
+    #[cfg(not(debug_assertions))]
     if v.code != code {
         if v.tries > 2 {
             return Err(AppErrBadRequest(Some("too many tries")));

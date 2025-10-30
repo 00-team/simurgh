@@ -4,10 +4,12 @@ use cercis::html::VContent;
 use cercis::prelude::*;
 use chrono::TimeZone;
 use serde::Serialize;
+use sqlx::{Sqlite, SqlitePool};
+use std::collections::{HashMap, HashSet};
 use utoipa::{OpenApi, ToSchema};
 
 use crate::docs::UpdatePaths;
-use crate::models::blog::{Blog, BlogStatus};
+use crate::models::blog::{Blog, BlogCategory, BlogStatus};
 use crate::models::project::Project;
 use crate::models::{AppErr, Html, ListInput};
 use crate::{utils, AppState};
@@ -89,7 +91,7 @@ fn Multiline(value: String) -> Element {
 }
 
 #[component]
-fn BlogCard(blog: Blog) -> Element {
+fn BlogCard(blog: Blog, cat: Option<Option<BlogCategory>>) -> Element {
     rsx! {
         article {
             if let Some(t) = &blog.thumbnail {
@@ -101,11 +103,15 @@ fn BlogCard(blog: Blog) -> Element {
                 }
             }
 
-            h2 { "{blog.title}" }
+            h2 { a { href: "/blogs/{blog.slug}/", "{blog.title}" } }
+
+            if let Some(Some(cat)) = cat {
+                a { href: "/blog-categories/{cat.slug}/", "{cat.label}" }
+            }
 
             div {
                 span {
-                    class:"detail-container",
+                    class: "detail-container",
                     ReadtimeIcon {}
                     span { ReadTime { value: blog.read_time } }
                 }
@@ -117,9 +123,42 @@ fn BlogCard(blog: Blog) -> Element {
             }
 
             p { Multiline { value: blog.detail.clone() } }
-            a { href: "/blogs/{blog.slug}/", "دیدن بیشتر" }
         }
     }
+}
+
+async fn get_cats(
+    pid: i64, blogs: &[Blog], pool: &SqlitePool,
+) -> HashMap<i64, BlogCategory> {
+    let cat_ids =
+        HashSet::<i64>::from_iter(blogs.iter().filter_map(|b| b.category));
+    if cat_ids.is_empty() {
+        return Default::default();
+    }
+
+    let mut s = String::with_capacity(1024);
+    s.push_str("select * from blog_categories where project = ");
+    s.push_str(&pid.to_string());
+    s.push_str(" AND id IN (");
+
+    for id in cat_ids.iter() {
+        s.push_str(&id.to_string());
+        s.push(',');
+    }
+    s.pop();
+    s.push(')');
+
+    let Ok(cats) =
+        sqlx::query_as::<Sqlite, BlogCategory>(&s).fetch_all(pool).await
+    else {
+        return Default::default();
+    };
+
+    let mut out = HashMap::with_capacity(cats.len());
+    for c in cats {
+        out.insert(c.id, c);
+    }
+    out
 }
 
 #[utoipa::path(
@@ -143,6 +182,8 @@ async fn ssr_list(
     }
     .fetch_all(&state.sql)
     .await?;
+
+    let cats = get_cats(project.id, blogs.as_slice(), &state.sql).await;
 
     let count = sqlx::query! {
         "select count(1) as count from blogs where
@@ -173,7 +214,9 @@ async fn ssr_list(
     let result = rsx! {
         section {
             class: "simurgh--blogs",
-            for blog in blogs { BlogCard { blog: blog } }
+            for blog in blogs {
+                BlogCard { cat: cats.get(&blog.id).cloned(), blog: blog }
+            }
         }
         section {
             class: "simurgh--pagination",
@@ -244,6 +287,9 @@ async fn get_related<'a>(
     .fetch_all(&state.sql)
     .await?;
 
+    let cats =
+        get_cats(blog.project.unwrap_or_default(), &related, &state.sql).await;
+
     Ok(rsx! {
         section {
             class: "related-blogs",
@@ -251,13 +297,15 @@ async fn get_related<'a>(
             div {
                 class: "related-wrapper",
                 if let Some(blog) = past {
-                    BlogCard { blog: blog }
+                    BlogCard { cat: cats.get(&blog.id).cloned(), blog: blog }
                 }
 
-                for blog in related { BlogCard { blog: blog } }
+                for blog in related {
+                    BlogCard { cat: cats.get(&blog.id).cloned(), blog: blog }
+                }
 
                 if let Some(blog) = next {
-                    BlogCard { blog: blog }
+                    BlogCard { cat: cats.get(&blog.id).cloned(), blog: blog }
                 }
             }
         }
