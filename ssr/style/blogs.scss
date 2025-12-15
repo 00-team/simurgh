@@ -9,6 +9,7 @@ section.simurgh--blogs {
     column-gap: calc(3vw + 5px);
 
     article {
+        padding-bottom: 2rem;
         width: clamp(0px, 100%, 400px);
         aspect-ratio: 0.8/1;
 
@@ -213,7 +214,7 @@ section.simurgh--blogs {
             width: 90%;
             margin: 1rem 0;
 
-            background: var(--sixty-percent);
+            // background: var(--sixty-percent);
         }
     }
 }
