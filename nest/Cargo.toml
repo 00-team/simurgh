@@ -1,0 +1,26 @@
+[package]
+name = "nest"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "nest"
+path = "lib.rs"
+
+[dependencies]
+potk.workspace = true
+serde.workspace = true
+# serde_json.workspace = true
+utoipa.workspace = true
+log.workspace = true
+# tokio.workspace = true
+rand.workspace = true
+# anbar.workspace = true
+
+# webp = "0.3.1"
+# md5 = "0.7.0"
+# image = "0.25.2"
+# infer = "0.16.0"
+
+[lints]
+workspace = true

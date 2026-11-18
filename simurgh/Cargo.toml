@@ -1,0 +1,79 @@
+[package]
+name = "simurgh"
+version.workspace = true
+edition.workspace = true
+
+
+[[bin]]
+name = "simurgh"
+path = "main.rs"
+
+[lints]
+workspace = true
+
+# [build-dependencies]
+# serde.workspace = true
+# serde_json.workspace = true
+# sabad.workspace = true
+# soil.workspace = true
+# shah.workspace = true
+# potk.workspace = true
+
+[dependencies]
+potk.workspace = true
+# sabad.workspace = true
+# soil.workspace = true
+# shah.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+# rstar.workspace = true
+log.workspace = true
+utoipa.workspace = true
+nest.workspace = true
+tokio.workspace = true
+rand.workspace = true
+
+media = { path = "../media" }
+
+
+chrono = "0.4"
+cercis = "1.2"
+actix-web = "4"
+actix-utils = "3"
+# actix-web-httpauth = "0.8.2"
+actix-files = "0.7"
+actix-multipart = "0.8"
+
+toml = "0.9.10"
+
+[dependencies.sqlx]
+version = "0.8"
+features = ["sqlite", "runtime-tokio", "chrono"]
+
+[dependencies.reqwest]
+version = "0.13"
+default-features = false
+features = ["rustls", "charset", "http2", "json", "gzip"]
+
+# # dotenvy.workspace = true
+# sauce.workspace = true
+# reqwest.workspace = true
+# tokio.workspace = true
+# mapack.workspace = true
+# # base64.workspace = true
+# faster-hex.workspace = true
+# zstd.workspace = true
+#
+# media = { path = "../media" }
+#
+# # ciborium = "0.2"
+# libloading = "0.9.0"
+# minijinja = { version = "2.12.0", features = ["loader"] }
+# indexmap = "2.9.0"
+# actix-files = "0.6.6"
+# actix-web = "4.10.2"
+# actix-multipart = "0.7.2"
+#
+#
+# [lints.clippy]
+# needless_return_with_question_mark = "allow"

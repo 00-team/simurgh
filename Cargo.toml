@@ -1,39 +1,39 @@
-[package]
-name = "simurgh"
+[workspace]
+members = ["simurgh", "media", "nest"]
+resolver = "2"
+
+[workspace.package]
 version = "1.0.0"
-edition = "2021"
+edition = "2024"
 
-[dependencies]
-log = "0.4.22"
-lettre = "0.11.9"
-cercis = "1.2.0"
-rand = "0.8.5"
-image = "0.25.2"
-webp = "0.3.0"
-tempfile = "3.13.0"
-hex = "0.4.3"
-lazy_static = "1.5.0"
-awc = { version =  "3.5.1", features = ["openssl"]}
-utoipa = { version = "4.2.3", features = ["actix_extras", "debug"] }
-actix-web = "4.9.0"
-actix-utils = "3.0.1"
-actix-web-httpauth = "0.8.2"
-actix-files = "0.6.6"
-actix-multipart = "0.7.2"
-dotenvy = "0.15.7"
-pretty_env_logger = "0.5.0"
-tokio = { version = "1.40.0", features = ["full"] }
-serde = "1.0.210"
-serde_tuple = "1.0.0"
-serde_json = "1.0.128"
-chrono = { version = "0.4.38", features = ["serde"] }
-sqlx-cli = { version = "0.8.2", features = ["sqlite", "completions"] }
+[workspace.dependencies]
+log = "0.4"
+rand = "0.10"
+potk = "1.2"
+nest = { path = "./nest" }
 
-[dependencies.sqlx]
-version = "0.8.2"
-features = [
-    "sqlite",
-    "runtime-tokio",
-    "tls-native-tls",
-    "chrono",
-]
+
+# color-backtrace = "0.7"
+# backtrace = "0.3"
+# cercis = "1.2"
+# image = "0.25"
+# webp = "0.3.0"
+# # tempfile = "3.13.0"
+# # hex = "0.4.3"
+# # lazy_static = "1.5.0"
+# # awc = { version = "3.5.1", features = ["openssl"] }
+utoipa = { version = "6.0.0", features = ["actix_extras", "indexmap"] }
+
+# dotenvy = "0.15.7"
+# pretty_env_logger = "0.5.0"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+# serde_tuple = "1.0.0"
+serde_json = "1"
+# chrono = { version = "0.4.38", features = ["serde"] }
+# sqlx-cli = { version = "0.8.2", features = ["sqlite", "completions"] }
+
+
+[workspace.lints.clippy]
+needless_return_with_question_mark = "allow"
+enum_variant_names = "allow"
