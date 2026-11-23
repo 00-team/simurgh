@@ -1,4 +1,4 @@
-import { Navigate, Route, Router, RouteSectionProps } from '@solidjs/router'
+import { Route, Router, RouteSectionProps } from '@solidjs/router'
 import { Component, lazy } from 'solid-js'
 import { render, Show } from 'solid-js/web'
 
@@ -16,6 +16,7 @@ const Tags = lazy(() => import('pages/tags'))
 const Blog = lazy(() => import('pages/blog'))
 const Blogs = lazy(() => import('pages/blogs'))
 const Editor = lazy(() => import('pages/editor'))
+const Home = lazy(() => import('pages/home'))
 
 import './style/base.scss'
 import './style/fonts/imports.scss'
@@ -37,16 +38,10 @@ const Root = () => {
         <>
             <Show when={self.loged_in} fallback={<Login />}>
                 <Router>
-                    <Route path='/' component={Dash}>
-                        <Route
-                            path='/'
-                            component={() => <Navigate href='/projects/' />}
-                        />
-                        <Route
-                            path='/projects/'
-                            component={() => <Projects />}
-                        />
-                        <Route path='/projects/:pid'>
+                    <Route path='/' component={() => <Home />} />
+                    <Route path='/projects' component={Dash}>
+                        <Route path='/' component={() => <Projects />} />
+                        <Route path='/:pid'>
                             <Route path='/' component={Project} />
                             <Route path='/records/' component={Records} />
                             <Route
