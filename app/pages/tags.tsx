@@ -1,15 +1,17 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { addAlert } from 'comps'
 import { ArrowLeftIcon, PencilIcon, PlusIcon, SaveIcon, TrashIcon } from 'icons'
-import { BlogTag } from 'models'
+// import { BlogTag } from 'models'
 import { httpx } from 'shared'
 import { Component, createEffect } from 'solid-js'
 import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import { setPopup } from 'store/popup'
 import './style/tags.scss'
 
+import * as a from 'abi'
+
 type State = {
-    tags: BlogTag[]
+    tags: a.BlogTag[]
     page: number
 }
 
@@ -20,7 +22,7 @@ export default () => {
 
     const [state, setState] = createStore<State>({
         tags: [],
-        page: parseInt(params.page) || 0,
+        page: parseInt(params.page || '0') || 0,
     })
 
     createEffect(() => {
@@ -120,7 +122,7 @@ export default () => {
 }
 
 interface TagProps {
-    tag: BlogTag
+    tag: a.BlogTag
     setState: SetStoreFunction<State>
 }
 const Tag: Component<TagProps> = P => {

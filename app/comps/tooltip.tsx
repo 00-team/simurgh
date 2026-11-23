@@ -8,8 +8,8 @@ type Props = {
     children: JSX.Element
 }
 export const Tooltip: Component<Props> = P => {
-    let decoy: HTMLDivElement
-    let tooltip: HTMLDivElement
+    let decoy!: HTMLDivElement
+    let tooltip!: HTMLDivElement
 
     type State = {
         show: boolean
@@ -23,8 +23,8 @@ export const Tooltip: Component<Props> = P => {
         pb: false,
     })
 
-    function enter(e: { currentTarget: HTMLElement } & MouseEvent) {
-        const p = e.currentTarget.getBoundingClientRect()
+    function enter(e: MouseEvent) {
+        const p = (e.currentTarget as HTMLElement).getBoundingClientRect()
         setState({ show: true, x: ~~p.left, p: ~~(p.width / 2) })
         if (!tooltip) return
         const c = tooltip.getBoundingClientRect()
@@ -40,13 +40,13 @@ export const Tooltip: Component<Props> = P => {
     }
 
     onMount(() => {
-        decoy.parentElement.addEventListener('mouseenter', enter)
-        decoy.parentElement.addEventListener('mouseleave', leave)
+        decoy.parentElement!.addEventListener('mouseenter', enter)
+        decoy.parentElement!.addEventListener('mouseleave', leave)
     })
 
     onCleanup(() => {
-        decoy.parentElement.removeEventListener('mouseenter', enter)
-        decoy.parentElement.removeEventListener('mouseleave', leave)
+        decoy.parentElement!.removeEventListener('mouseenter', enter)
+        decoy.parentElement!.removeEventListener('mouseleave', leave)
     })
 
     return (

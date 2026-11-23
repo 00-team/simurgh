@@ -1,15 +1,16 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { addAlert } from 'comps'
 import { ArrowLeftIcon, PencilIcon, PlusIcon, SaveIcon, TrashIcon } from 'icons'
-import { BlogCategory } from 'models'
 import { httpx } from 'shared'
 import { Component, createEffect } from 'solid-js'
 import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import { setPopup } from 'store/popup'
 import './style/categories.scss'
 
+import * as a from 'abi'
+
 type State = {
-    categories: BlogCategory[]
+    categories: a.BlogCategory[]
     page: number
 }
 
@@ -20,7 +21,7 @@ export default () => {
 
     const [state, setState] = createStore<State>({
         categories: [],
-        page: parseInt(params.page) || 0,
+        page: parseInt(params.page || '0') || 0,
     })
 
     createEffect(() => {
@@ -128,7 +129,7 @@ export default () => {
 }
 
 interface CategoryProps {
-    category: BlogCategory
+    category: a.BlogCategory
     setState: SetStoreFunction<State>
 }
 const Category: Component<CategoryProps> = P => {

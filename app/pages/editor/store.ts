@@ -1,20 +1,21 @@
-import { BlogData, BlogModel, BlogTextGroup, DEFAULT_BLOG } from 'models'
 import { createEffect, createRoot } from 'solid-js'
 import { createStore } from 'solid-js/store'
+
+import * as a from 'abi'
 
 export const pre_save = new CustomEvent('editor_pre_save')
 
 export type Store = {
-    blog: BlogModel
-    data: BlogData[]
+    blog: a.Blog
+    data: a.BlogData[]
     active: number
-    block: BlogData | undefined
+    block: a.BlogData | undefined
     tg: number // text group active index
-    tgroup: BlogTextGroup | undefined
+    tgroup: a.BlogTextGroup | undefined
     show_groups: boolean
 }
 export const [store, setStore] = createStore<Store>({
-    blog: DEFAULT_BLOG,
+    blog: a.BLOG_DEF,
     data: [],
     active: -1,
     tg: -1,
@@ -40,7 +41,7 @@ export function unwrap_rec<T>(value: T): T {
                 .reduce((obj, v) => {
                     obj[v[0]] = v[1]
                     return obj
-                }, {}) as T
+                }, {} as any) as T
         }
     }
     return value

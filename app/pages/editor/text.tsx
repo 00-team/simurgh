@@ -1,16 +1,12 @@
-import {
-    BlogStyle,
-    BlogText,
-    BlogTextGroup,
-    BLOG_ALIGN,
-    DEFAULT_TEXT_GROUP,
-} from 'models'
 import { Component, createSignal, onCleanup, onMount, Show } from 'solid-js'
 
 import { ColorPicker } from 'comps/color-picker'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
+    AlignCenterIcon,
+    AlignLeftIcon,
+    AlignRightIcon,
     BoldIcon,
     CodeXmlIcon,
     HighlighterIcon,
@@ -28,7 +24,10 @@ import { createStore, produce } from 'solid-js/store'
 import { setStore, store, unwrap_rec } from './store'
 import './style/text.scss'
 
-function group_data(span: HTMLSpanElement): Omit<BlogTextGroup, 'content'> {
+import * as a from 'abi'
+type BlogText = Extract<a.BlogData, { kind: 'text' }>
+
+function group_data(span: HTMLSpanElement): Omit<a.BlogTextGroup, 'content'> {
     return {
         style: {
             color: span.style.color,
@@ -52,7 +51,7 @@ export const EditorTextBlock: Component<Props> = P => {
     type State = {
         placeholder: boolean
         ag: number
-        group?: BlogTextGroup
+        group?: a.BlogTextGroup
         changed: boolean
     }
     const [state, setState] = createStore<State>({
@@ -66,10 +65,10 @@ export const EditorTextBlock: Component<Props> = P => {
         changed: false,
     })
 
-    let p: HTMLParagraphElement
+    let p!: HTMLParagraphElement
 
     function pre_save() {
-        let groups: BlogTextGroup[] = []
+        let groups: a.BlogTextGroup[] = []
         let texts = ''
         p.childNodes.forEach(n => {
             if (n.nodeType == Node.TEXT_NODE) {
@@ -77,7 +76,7 @@ export const EditorTextBlock: Component<Props> = P => {
             } else if (n instanceof HTMLSpanElement) {
                 if (texts) {
                     groups.push({
-                        ...DEFAULT_TEXT_GROUP,
+                        ...a.BLOG_TEXT_GROUP_DEF,
                         content: texts.split('\n'),
                     })
                     texts = ''
@@ -94,7 +93,7 @@ export const EditorTextBlock: Component<Props> = P => {
 
         if (texts) {
             groups.push({
-                ...DEFAULT_TEXT_GROUP,
+                ...a.BLOG_TEXT_GROUP_DEF,
                 content: texts.split('\n'),
             })
             texts = ''
@@ -164,11 +163,11 @@ export const EditorTextBlock: Component<Props> = P => {
                         <span
                             data-url={g.url}
                             style={{
-                                color: g.style.color,
+                                color: g.style.color || void 0,
                                 'font-size':
                                     g.style.font_size &&
                                     g.style.font_size + 'px',
-                                'font-family': g.style.font_family,
+                                'font-family': g.style.font_family || void 0,
                                 '--bc': 'var(--c' + (i % 3) + ')',
                             }}
                             classList={{
@@ -200,7 +199,7 @@ export const EditorTextBlock: Component<Props> = P => {
 }
 
 type ActionsProps = Props & {
-    group?: BlogTextGroup
+    group?: a.BlogTextGroup
     ag: number
     onNewGroup(): void
 }
@@ -212,7 +211,7 @@ const Actions: Component<ActionsProps> = P => {
 
     function selection_change() {
         let show = false
-        let selection = document.getSelection()
+        let selection = document.getSelection()!
         let p = document.getElementById('block_paragraph_' + P.idx)
 
         if (p && !selection.isCollapsed && selection.rangeCount) {
@@ -237,7 +236,7 @@ const Actions: Component<ActionsProps> = P => {
 
     function new_group() {
         setState({ spliter: false })
-        let selection = document.getSelection()
+        let selection = document.getSelection()!
         let p = document.getElementById('block_paragraph_' + P.idx)
         if (!p || selection.rangeCount == 0) return
 
@@ -261,7 +260,7 @@ const Actions: Component<ActionsProps> = P => {
 
         let content = ''
         let groups: number[] = []
-        let data: Map<number, BlogTextGroup> = new Map()
+        let data: Map<number, a.BlogTextGroup> = new Map()
         let outrange = -1
 
         for (let n of p.childNodes) {
@@ -280,7 +279,7 @@ const Actions: Component<ActionsProps> = P => {
             } else if (n.nodeName == 'BR') {
                 content += '\n'
             } else if (n instanceof HTMLSpanElement) {
-                let tgd: BlogTextGroup = { content: [], ...group_data(n) }
+                let tgd: a.BlogTextGroup = { content: [], ...group_data(n) }
                 if (outrange) {
                     groups.push(content.length)
                     data.set(content.length, tgd)
@@ -313,14 +312,14 @@ const Actions: Component<ActionsProps> = P => {
             }
         }
 
-        let grouped_content: BlogTextGroup[] = []
+        let grouped_content: a.BlogTextGroup[] = []
 
         let last_g = 0
         for (let [i, g] of groups.entries()) {
             let cstr = content.slice(last_g, g)
             if (!cstr) continue
             let c = cstr.split('\n')
-            let d = data.get(last_g) || DEFAULT_TEXT_GROUP
+            let d = data.get(last_g) || a.BLOG_TEXT_GROUP_DEF
             grouped_content.push({ ...d, content: c })
 
             last_g = g
@@ -328,7 +327,7 @@ const Actions: Component<ActionsProps> = P => {
                 let cstr = content.slice(last_g)
                 if (!cstr) continue
                 let c = cstr.split('\n')
-                let d = data.get(last_g) || DEFAULT_TEXT_GROUP
+                let d = data.get(last_g) || a.BLOG_TEXT_GROUP_DEF
                 grouped_content.push({ ...d, content: c })
             }
         }
@@ -343,7 +342,7 @@ const Actions: Component<ActionsProps> = P => {
         )
     }
 
-    function set_style(v: Partial<BlogStyle>) {
+    function set_style(v: Partial<a.BlogStyle>) {
         setStore(
             produce(s => {
                 let g = (s.data[P.idx] as BlogText).groups[P.ag]
@@ -358,7 +357,7 @@ const Actions: Component<ActionsProps> = P => {
                 let b = s.data[P.idx] as BlogText
                 let g = b.groups[P.ag]
                 b.groups[P.ag] = {
-                    ...DEFAULT_TEXT_GROUP,
+                    ...a.BLOG_TEXT_GROUP_DEF,
                     content: [...g.content],
                 }
             })
@@ -398,21 +397,21 @@ const Actions: Component<ActionsProps> = P => {
                         onClick={() => set_attr(_ => ({ align: 'left' }))}
                         classList={{ active: P.block.align === 'left' }}
                     >
-                        {BLOG_ALIGN['left'][1]()}
+                        <AlignLeftIcon />
                     </button>
                     <button
                         class='action icon'
                         onClick={() => set_attr(_ => ({ align: 'center' }))}
                         classList={{ active: P.block.align === 'center' }}
                     >
-                        {BLOG_ALIGN['center'][1]()}
+                        <AlignCenterIcon />
                     </button>
                     <button
                         class='action icon'
                         onClick={() => set_attr(_ => ({ align: 'right' }))}
                         classList={{ active: P.block.align === 'right' }}
                     >
-                        {BLOG_ALIGN['right'][1]()}
+                        <AlignRightIcon />
                     </button>
                 </div>
                 <div class='actions-wrapper directions'>
@@ -440,7 +439,7 @@ const Actions: Component<ActionsProps> = P => {
                 <div class='actions-row'>
                     <div class='actions-wrapper no-overflow'>
                         <ColorButton
-                            color={P.group.style.color}
+                            color={P.group!.style.color || void 0}
                             setColor={color => set_style({ color })}
                         />
                         <FontSizeButton idx={P.idx} ag={P.ag} dir={1} />
@@ -462,9 +461,9 @@ const Actions: Component<ActionsProps> = P => {
                         <button
                             class='action icon title_smaller '
                             // style={{ color: P.group.style.color }}
-                            classList={{ active: P.group.style.bold }}
+                            classList={{ active: P.group!.style.bold }}
                             onclick={() =>
-                                set_style({ bold: !P.group.style.bold })
+                                set_style({ bold: !P.group!.style.bold })
                             }
                         >
                             <BoldIcon />
@@ -472,9 +471,9 @@ const Actions: Component<ActionsProps> = P => {
                         <button
                             class='action icon title_smaller '
                             // style={{ color: P.group.style.color }}
-                            classList={{ active: P.group.style.italic }}
+                            classList={{ active: P.group!.style.italic }}
                             onclick={() =>
-                                set_style({ italic: !P.group.style.italic })
+                                set_style({ italic: !P.group!.style.italic })
                             }
                         >
                             <ItalicIcon />
@@ -482,10 +481,10 @@ const Actions: Component<ActionsProps> = P => {
                         <button
                             class='action icon title_smaller '
                             // style={{ color: P.group.style.color }}
-                            classList={{ active: P.group.style.underline }}
+                            classList={{ active: P.group!.style.underline }}
                             onclick={() =>
                                 set_style({
-                                    underline: !P.group.style.underline,
+                                    underline: !P.group!.style.underline,
                                 })
                             }
                         >
@@ -496,9 +495,9 @@ const Actions: Component<ActionsProps> = P => {
                     <div class='actions-wrapper no-overflow'>
                         <button
                             class='action icon'
-                            classList={{ active: P.group.style.code }}
+                            classList={{ active: P.group!.style.code }}
                             onclick={() =>
-                                set_style({ code: !P.group.style.code })
+                                set_style({ code: !P.group!.style.code })
                             }
                         >
                             <CodeXmlIcon />
@@ -506,15 +505,15 @@ const Actions: Component<ActionsProps> = P => {
 
                         <button
                             class='action icon'
-                            classList={{ active: P.group.style.mark }}
+                            classList={{ active: P.group!.style.mark }}
                             onclick={() =>
-                                set_style({ mark: !P.group.style.mark })
+                                set_style({ mark: !P.group!.style.mark })
                             }
                         >
                             <HighlighterIcon />
                         </button>
 
-                        <LinkButton idx={P.idx} ag={P.ag} group={P.group} />
+                        <LinkButton idx={P.idx} ag={P.ag} group={P.group!} />
 
                         <button
                             class='action flex title_smaller'
@@ -643,7 +642,7 @@ const FontSizeButton: Component<FontSizeButtonProps> = P => {
 
 type LinkButtonProps = {
     idx: number
-    group: BlogTextGroup
+    group: a.BlogTextGroup
     ag: number
 }
 const LinkButton: Component<LinkButtonProps> = P => {
@@ -669,7 +668,7 @@ const LinkButton: Component<LinkButtonProps> = P => {
                 class='action icon'
                 classList={{
                     active: state.show,
-                    linked: P.group.url && P.group.url.length >= 1,
+                    linked: !!(P.group.url && P.group.url.length >= 1),
                 }}
                 onclick={() => setState(s => ({ show: !s.show }))}
             >

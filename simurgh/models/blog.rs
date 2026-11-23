@@ -4,16 +4,20 @@ use utoipa::ToSchema;
 
 use super::JsonStr;
 
-super::sql_enum! {
-    pub enum BlogStatus {
-        Draft,
-        Published,
-    }
+#[potk::enum_int(i64)]
+#[derive(PartialEq, Eq, Default, Clone, Copy, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum BlogStatus {
+    #[default]
+    Draft,
+    Published,
 }
 
-#[derive(
-    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
-)]
+crate::sql_enum!(BlogStatus);
+
+#[derive(Debug, sqlx::FromRow, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct BlogCategory {
     pub id: i64,
     pub slug: String,
@@ -23,9 +27,8 @@ pub struct BlogCategory {
     pub count: i64,
 }
 
-#[derive(
-    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
-)]
+#[derive(Debug, sqlx::FromRow, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct BlogTag {
     pub id: i64,
     pub slug: String,
@@ -35,7 +38,8 @@ pub struct BlogTag {
     pub count: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+#[derive(Debug, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct BlogStyle {
     pub color: Option<String>,
     pub bold: bool,
@@ -60,10 +64,10 @@ impl BlogStyle {
         style
             .iter()
             .filter_map(|(k, v)| {
-                if let Some(v) = v {
-                    if !v.is_empty() {
-                        return Some(format!("{k}: {v}"));
-                    }
+                if let Some(v) = v
+                    && !v.is_empty()
+                {
+                    return Some(format!("{k}: {v}"));
                 }
                 None
             })
@@ -110,29 +114,33 @@ impl fmt::Display for BlogAlign {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+#[derive(Debug, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct BlogTextGroup {
     pub content: Vec<String>,
     pub url: Option<String>,
     pub style: BlogStyle,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+#[derive(Debug, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct BlogListItem {
     pub text: String,
-    #[schema(example = json!([]))]
+    #[schema(no_recursion, example = json!([]))]
     pub children: Option<Vec<Self>>,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+#[derive(Debug, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct BlogCheckListItem {
     pub checked: bool,
     pub text: String,
-    #[schema(example = json!([]))]
+    #[schema(no_recursion, example = json!([]))]
     pub children: Option<Vec<Self>>,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Default, Clone)]
+#[derive(Debug, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 #[serde(rename_all = "snake_case", tag = "kind")]
 pub enum BlogData {
     Heading {
@@ -184,9 +192,8 @@ pub enum BlogData {
     Empty,
 }
 
-#[derive(
-    Debug, Serialize, Deserialize, sqlx::FromRow, ToSchema, Default, Clone,
-)]
+#[derive(Debug, sqlx::FromRow, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct Blog {
     pub id: i64,
     pub slug: String,
@@ -203,7 +210,8 @@ pub struct Blog {
     #[schema(value_type = Vec<BlogData>)]
     pub data: JsonStr<Vec<BlogData>>,
     pub read_time: i64,
-    pub thumbnail: Option<String>,
+    pub thumbnail: Option<i64>,
+    pub thumbnail_url: Option<String>,
 }
 
 super::from_request_under_project!(Blog, "blogs");

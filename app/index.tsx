@@ -76,4 +76,4 @@ const Root = () => {
     )
 }
 
-render(Root, document.getElementById('root'))
+render(Root, document.getElementById('root')!)

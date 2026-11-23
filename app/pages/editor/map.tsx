@@ -1,21 +1,23 @@
-import { BlogMap } from 'models'
 import { Component, createEffect, onCleanup, onMount } from 'solid-js'
 
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-import { DEFAULT_BLOCKS } from 'models'
-
 import { createStore, produce } from 'solid-js/store'
 import { setStore } from './store'
 import './style/map.scss'
+
+import * as a from 'abi'
+import { DEFAULT_BLOCKS } from 'shared/def'
+
+type BlogMap = Extract<a.BlogData, { kind: 'map' }>
 
 type Props = {
     idx: number
     block: BlogMap
 }
 
-delete L.Icon.Default.prototype._getIconUrl
+// delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
     iconRetinaUrl:
         'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
@@ -25,12 +27,12 @@ L.Icon.Default.mergeOptions({
 
 export const EditorMapBlock: Component<Props> = P => {
     const [marker, setMarker] = createStore({
-        lat: P.block.latitude || DEFAULT_BLOCKS['map'].latitude,
-        lng: P.block.longitude || DEFAULT_BLOCKS['map'].longitude,
+        lat: P.block.latitude || DEFAULT_BLOCKS.map.latitude,
+        lng: P.block.longitude || DEFAULT_BLOCKS.map.longitude,
     })
 
-    let map
-    let oldMarker
+    let map: L.Map
+    let oldMarker: L.Marker
 
     onMount(() => {
         map = L.map('map').setView([marker.lat, marker.lng], 15)

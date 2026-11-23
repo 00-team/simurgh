@@ -1,7 +1,7 @@
 pub struct MediaConfig;
 
 impl MediaConfig {
-    pub const RECORD_URL: &str = "/record/";
+    pub const RECORD_URL: &str = "/simurgh-record/";
     pub const RECORD_BASE: &str = "record";
     pub const RECORD_TMP: &str = "record/tmp";
     pub const RECORD_DEL: &str = "record/del";

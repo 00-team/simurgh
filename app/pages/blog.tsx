@@ -11,7 +11,6 @@ import {
     WrenchIcon,
     XIcon,
 } from 'icons'
-import { BlogModel, DEFAULT_BLOG } from 'models'
 import { createEffect, createMemo, on, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 
@@ -19,21 +18,22 @@ import { addAlert } from 'comps'
 import { fmt_date_input, fmt_datetime, fmt_hms, httpx } from 'shared'
 import { setPopup } from 'store/popup'
 import './style/blog.scss'
-import { setSelf } from 'store'
+
+import * as a from 'abi'
 
 const WORD_PRE_SECONDS = 2.69
 
 export default () => {
     type State = {
-        blog: BlogModel
+        blog: a.Blog
         editing: boolean
         edit: Pick<
-            BlogModel,
+            a.Blog,
             'detail' | 'read_time' | 'slug' | 'status' | 'title' | 'publish_at'
         >
     }
     const [state, setState] = createStore<State>({
-        blog: DEFAULT_BLOG,
+        blog: { ...a.BLOG_DEF },
         editing: false,
         edit: {
             slug: '',
@@ -47,7 +47,7 @@ export default () => {
     const nav = useNavigate()
     const { pid, bid } = useParams()
 
-    let preview: HTMLDivElement
+    let preview!: HTMLDivElement
     createEffect(() => {
         preview.innerHTML = state.blog.html
     })
@@ -209,7 +209,7 @@ export default () => {
         )
     }
 
-    const STATUS_DPY: { [k in BlogModel['status']]: [string, string] } = {
+    const STATUS_DPY: { [k in a.Blog['status']]: [string, string] } = {
         draft: ['پیش نویس', 'var(--yellow)'],
         published: ['منتشر شده', 'var(--green)'],
     }
@@ -388,16 +388,21 @@ export default () => {
                             <input
                                 type='date'
                                 value={
-                                    state.edit.publish_at &&
-                                    fmt_date_input(
-                                        new Date(state.edit.publish_at * 1e3)
-                                    )
+                                    state.edit.publish_at
+                                        ? fmt_date_input(
+                                              new Date(
+                                                  state.edit.publish_at * 1e3
+                                              )
+                                          )
+                                        : void 0
                                 }
                                 min={fmt_date_input(new Date())}
                                 onChange={e => {
                                     let v = e.currentTarget.value
                                     let t = new Date(v).getTime() / 1e3
-                                    setState(produce(s => (s.edit.publish_at = t)))
+                                    setState(
+                                        produce(s => (s.edit.publish_at = t))
+                                    )
                                 }}
                             />
                             <button
@@ -411,7 +416,6 @@ export default () => {
                             </button>
                         </div>
                     </Show>
-
 
                     <div class='row'>
                         <span>عنوان:</span>

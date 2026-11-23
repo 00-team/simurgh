@@ -91,24 +91,9 @@ impl<T: DeserializeOwned + Default> From<String> for JsonStr<T> {
     }
 }
 
+#[macro_export]
 macro_rules! sql_enum {
-    ($vis:vis enum $name:ident { $($member:ident,)* }) => {
-        #[derive(PartialEq, Default, Clone, Debug, serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
-        #[serde(rename_all = "snake_case")]
-        $vis enum $name {
-            #[default]
-            $($member,)*
-        }
-
-        impl From<i64> for $name {
-            fn from(value: i64) -> Self {
-                match value {
-                    $(x if x == $name::$member as i64 => $name::$member,)*
-                    _ => $name::default()
-                }
-            }
-        }
-
+    ($name: ident) => {
         impl sqlx::Type<sqlx::Sqlite> for $name {
             fn type_info() -> sqlx::sqlite::SqliteTypeInfo {
                 <i64 as sqlx::Type<sqlx::Sqlite>>::type_info()
@@ -117,13 +102,25 @@ macro_rules! sql_enum {
 
         impl<'q> sqlx::Encode<'q, sqlx::Sqlite> for $name {
             fn encode_by_ref(
-                &self, buf: &mut <sqlx::Sqlite as sqlx::Database>::ArgumentBuffer<'q>,
+                &self,
+                buf: &mut <sqlx::Sqlite as sqlx::Database>::ArgumentBuffer<'q>,
             ) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
-                buf.push(sqlx::sqlite::SqliteArgumentValue::Int(self.clone() as i32));
+                buf.push(sqlx::sqlite::SqliteArgumentValue::Int(
+                    self.clone() as i32
+                ));
                 Ok(sqlx::encode::IsNull::No)
             }
         }
 
+        impl sqlx::Decode<'_, sqlx::Sqlite> for $name {
+            fn decode(
+                value: <sqlx::Sqlite as sqlx::Database>::ValueRef<'_>,
+            ) -> Result<Self, sqlx::error::BoxDynError> {
+                Ok(Self::from(<i64 as sqlx::Decode<sqlx::Sqlite>>::decode(
+                    value,
+                )?))
+            }
+        }
     };
 }
 
@@ -165,7 +162,6 @@ impl actix_web::FromRequest for $name {
 }
 
 pub(crate) use from_request_under_project;
-pub(crate) use sql_enum;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
 pub struct ClientIp {
@@ -208,22 +204,31 @@ impl FromRequest for ClientIp {
     }
 }
 
-pub const PAGE_SIZE: u32 = 32;
+// pub const PAGE_SIZE: u32 = 32;
+//
+// #[derive(Debug, Clone, Copy)]
+// #[derive(serde::Serialize, utoipa::ToSchema)]
+// pub struct Count {
+//     total: u32,
+//     max_page: u32,
+// }
+//
+// impl Count {
+//     pub fn new(total: u32) -> Self {
+//         let mut max_page = 0u32;
+//         if total > 0 {
+//             max_page = (total - 1) / PAGE_SIZE;
+//         }
+//
+//         Self { total, max_page }
+//     }
+// }
+//
 
-#[derive(Debug, Clone, Copy)]
-#[derive(serde::Serialize, utoipa::ToSchema)]
-pub struct Count {
-    total: u32,
-    max_page: u32,
-}
-
-impl Count {
-    pub fn new(total: u32) -> Self {
-        let mut max_page = 0u32;
-        if total > 0 {
-            max_page = (total - 1) / PAGE_SIZE;
-        }
-
-        Self { total, max_page }
-    }
-}
+// pub trait RefToSelf {
+//     type Ref: RefToSelf;
+// }
+//
+// impl<T> RefToSelf for T {
+//     type Ref = T;
+// }

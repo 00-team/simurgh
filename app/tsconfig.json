@@ -7,10 +7,50 @@
         "esModuleInterop": true,
         "jsx": "preserve",
         "jsxImportSource": "solid-js",
-        "types": ["vite/client"],
+        // "types": ["vite/client"],
         "noEmit": true,
         "isolatedModules": true,
+        "resolveJsonModule": true,
+        "allowUnreachableCode": true,
+        "allowUnusedLabels": true,
+        "downlevelIteration": true,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ESNext",
+            "WebWorker"
+        ],
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "outDir": "./dist/",
+        "rootDir": "./",
         "baseUrl": "./",
-        "rootDir": "./"
-    }
+        "removeComments": true,
+        "noEmitOnError": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": false,
+        "noImplicitOverride": true,
+        "typeRoots": [
+            "./@types",
+            "node_modules/@types"
+        ],
+        "experimentalDecorators": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "./"
+    ],
+    "exclude": [
+        "*.js",
+        "node_modules"
+    ]
 }

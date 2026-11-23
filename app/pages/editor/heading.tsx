@@ -1,9 +1,11 @@
 import { Component, JSX } from 'solid-js'
 import { PilcrowLeftIcon, PilcrowRightIcon } from 'icons'
-import { BlogHeading, BLOG_ALIGN } from 'models'
 import { produce } from 'solid-js/store'
 import { setStore } from './store'
 import './style/heading.scss'
+
+import * as a from 'abi'
+import { LOCALE } from 'locale'
 
 const HEADERS = [
     'عنوان',
@@ -13,6 +15,8 @@ const HEADERS = [
     'عنوان کوچک',
     'عنوان کوچک تر',
 ]
+
+type BlogHeading = Extract<a.BlogData, { kind: 'heading' }>
 
 type Props = {
     idx: number
@@ -68,15 +72,15 @@ export const EditorHeadingBlock: Component<Props> = P => {
                         ))}
                     </div>
                     <div class='actions-wrapper aligns'>
-                        {Object.entries(BLOG_ALIGN).map(([key, val]) => (
+                        {a.BLOG_ALIGN.map(align => (
                             <button
                                 class='action icon'
                                 onClick={() => {
-                                    set_attr(_ => ({ align: key as 'left' }))
+                                    set_attr(_ => ({ align }))
                                 }}
-                                classList={{ active: P.block.align === key }}
+                                classList={{ active: P.block.align === align }}
                             >
-                                {val[1]()}
+                                {LOCALE.blog_align(align)}
                             </button>
                         ))}
                     </div>

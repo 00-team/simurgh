@@ -1,16 +1,17 @@
 import { useNavigate, useSearchParams } from '@solidjs/router'
 import { ChevronLeftIcon, ChevronRightIcon } from 'icons'
-import { ProjectModel } from 'models'
 import { fmt_bytes, fmt_datetime, httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import './style/projects.scss'
 
+import * as a from 'abi'
+
 type Props = { admin?: true }
 const Projects: Component<Props> = P => {
     type State = {
         page: number
-        projects: ProjectModel[]
+        projects: a.Project[]
         loading: boolean
     }
     const [state, setState] = createStore<State>({

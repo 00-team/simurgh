@@ -1,26 +1,23 @@
 use actix_web::web::{Data, Json, Query};
 use actix_web::{HttpResponse, Scope, delete, get, patch, post};
+use media::{RecordPath, RecordPathKind};
 use nest::utils::random_string;
 use serde::Deserialize;
 use utoipa::{OpenApi, ToSchema};
 
 use crate::config::Config;
 use crate::docs::UpdatePaths;
-use crate::models::blog::Blog;
 use crate::models::project::Project;
-use crate::models::record::Record;
+use crate::models::record::{Record, RecordKind};
 use crate::models::user::User;
 use crate::models::{AppErr, ListInput, Response};
 use crate::state::SimurghDb;
-use crate::utils::{self, CutOff};
+use crate::utils::CutOff;
 
 #[derive(OpenApi)]
 #[openapi(
     tags((name = "api::projects")),
-    paths(
-        projects_add, projects_list, projects_get, projects_update,
-        projects_delete
-    ),
+    paths(r_add, r_list, r_get, r_update, r_delete),
     components(schemas(Project, ProjectAddBody, ProjectUpdateBody)),
     servers((url = "/projects")),
     modifiers(&UpdatePaths)
@@ -39,7 +36,7 @@ struct ProjectAddBody {
 )]
 /// Add
 #[post("/")]
-async fn projects_add(
+async fn r_add(
     user: User, body: Json<ProjectAddBody>, db: Data<SimurghDb>,
 ) -> Response<Project> {
     if !cfg!(debug_assertions) && !user.client {
@@ -50,14 +47,14 @@ async fn projects_add(
 
     let now = nest::sys_now() as i64;
     sqlx::query! {
-        "insert into projects(user, name, created_at, api_key) values(?,?,?,?)",
+        "insert into projects(owner, name, created_at, api_key) values(?,?,?,?)",
         user.id, body.name, now, api_key
     }
     .execute(&db.sql)
     .await?;
 
     Ok(Json(Project {
-        user: Some(user.id),
+        owner: Some(user.id),
         name: body.name.clone(),
         created_at: now,
         api_key: Some(api_key),
@@ -72,13 +69,13 @@ async fn projects_add(
 )]
 /// List
 #[get("/")]
-async fn projects_list(
+async fn r_list(
     user: User, q: Query<ListInput>, db: Data<SimurghDb>,
 ) -> Response<Vec<Project>> {
     let offset = q.page * 32;
     let result = sqlx::query_as! {
         Project,
-        "select * from projects where user = ? order by id desc limit 32 offset ?",
+        "select * from projects where owner = ? order by id desc limit 32 offset ?",
         user.id, offset
     }
     .fetch_all(&db.sql)
@@ -94,7 +91,7 @@ async fn projects_list(
 )]
 /// Get
 #[get("/{id}/")]
-async fn projects_get(project: Project) -> Response<Project> {
+async fn r_get(project: Project) -> Response<Project> {
     Ok(Json(project))
 }
 
@@ -112,7 +109,7 @@ struct ProjectUpdateBody {
 )]
 /// Update
 #[patch("/{id}/")]
-async fn projects_update(
+async fn r_update(
     project: Project, body: Json<ProjectUpdateBody>, db: Data<SimurghDb>,
 ) -> Response<Project> {
     let mut project = project;
@@ -146,52 +143,62 @@ async fn projects_update(
 )]
 /// Delete
 #[delete("/{id}/")]
-async fn projects_delete(
+async fn r_delete(
     project: Project, db: Data<SimurghDb>,
 ) -> Result<HttpResponse, AppErr> {
     {
         let records = sqlx::query_as! {
             Record,
-            "select * from records where project = ? OR project = null",
+            "select * from records where project = ?",
             project.id,
         }
         .fetch_all(&db.sql)
         .await?;
 
         for r in records {
-            utils::remove_record(&format!("r-{}-{}", r.id, r.salt));
+            use RecordPathKind::*;
+            let pid = project.id;
+            match r.kind {
+                RecordKind::Video => {
+                    RecordPath::new(r.id, r.salt.clone(), Mp4, pid).delete();
+                    RecordPath::new(r.id, r.salt, M3u8, pid).delete();
+                }
+                RecordKind::Photo => {
+                    RecordPath::new(r.id, r.salt, Webp, pid).delete();
+                }
+            };
         }
 
         sqlx::query! {
-            "delete from records where project = ? OR project = null",
+            "delete from records where project = ?",
             project.id,
         }
         .execute(&db.sql)
         .await?;
     }
 
-    {
-        let blogs = sqlx::query_as! {
-            Blog,
-            "select * from blogs where project = ? OR project = null",
-            project.id,
-        }
-        .fetch_all(&db.sql)
-        .await?;
-
-        for b in blogs {
-            if let Some(t) = b.thumbnail {
-                utils::remove_record(&format!("bt-{}-{t}", b.id));
-            }
-        }
-
-        sqlx::query! {
-            "delete from blogs where project = ? OR project = null",
-            project.id,
-        }
-        .execute(&db.sql)
-        .await?;
-    }
+    // {
+    //     let blogs = sqlx::query_as! {
+    //         Blog,
+    //         "select * from blogs where project = ?",
+    //         project.id,
+    //     }
+    //     .fetch_all(&db.sql)
+    //     .await?;
+    //
+    //     // for b in blogs {
+    //     //     if let Some(t) = b.thumbnail {
+    //     //         utils::remove_record(&format!("bt-{}-{t}", b.id));
+    //     //     }
+    //     // }
+    //
+    //     sqlx::query! {
+    //         "delete from blogs where project = ?",
+    //         project.id,
+    //     }
+    //     .execute(&db.sql)
+    //     .await?;
+    // }
 
     sqlx::query! {
         "delete from projects where id = ?",
@@ -205,11 +212,11 @@ async fn projects_delete(
 
 pub fn router() -> Scope {
     Scope::new("/projects")
-        .service(projects_add)
-        .service(projects_list)
-        .service(projects_get)
-        .service(projects_update)
-        .service(projects_delete)
+        .service(r_add)
+        .service(r_list)
+        .service(r_get)
+        .service(r_update)
+        .service(r_delete)
         .service(super::blog::blogs::router())
         .service(super::blog::categories::router())
         .service(super::blog::sitemap::router())

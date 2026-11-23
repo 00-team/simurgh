@@ -12,7 +12,7 @@ import {
     SaveIcon,
     TrashIcon,
 } from 'icons'
-import { BlogData } from 'models'
+
 import { httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { produce } from 'solid-js/store'
@@ -26,6 +26,8 @@ import { pre_save, setStore, store, unwrap_rec } from './store'
 import './style/index.scss'
 import { EditorTextBlock } from './text'
 import { EditorVideoBlock } from './video'
+
+import * as a from 'abi'
 
 export default () => {
     const nav = useNavigate()
@@ -164,7 +166,7 @@ export default () => {
                                 let editor =
                                     document.querySelector<HTMLElement>(
                                         '.editor-wrapper'
-                                    )
+                                    )!
 
                                 editor.scrollTo({
                                     top: editor.scrollHeight,
@@ -212,11 +214,17 @@ export default () => {
 
 type EditorBlockProps = {
     idx: number
-    block: BlogData
+    block: a.BlogData
 }
 
 const EditorBlock: Component<EditorBlockProps> = P => {
-    const BLOCKS: { [k in BlogData['kind']]: Component<EditorBlockProps> } = {
+    // { [T in a.BlogData as T['kind']]: T }
+
+    const BLOCKS: {
+        [T in a.BlogData as T['kind']]: Component<{ idx: number; block: T }>
+    } = {
+        check_list: () => 'todo',
+        list: () => 'todo',
         heading: EditorHeadingBlock,
         text: EditorTextBlock,
         image: EditorImageBlock,
@@ -242,7 +250,11 @@ const EditorBlock: Component<EditorBlockProps> = P => {
             onMouseDown={() => setStore({ active: P.idx })}
         >
             <div class='content'>
-                {BLOCKS[P.block.kind]({ idx: P.idx, block: P.block })}
+                {BLOCKS[P.block.kind]({
+                    idx: P.idx,
+                    // @ts-ignore
+                    block: P.block,
+                })}
             </div>
             <div class='block-actions'>
                 <button

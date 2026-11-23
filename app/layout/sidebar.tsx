@@ -1,9 +1,9 @@
 import { A } from '@solidjs/router'
 import { Editable, ThemeSwtich } from 'comps'
-import { ArrowIcon, LogoutIcon, ProjectIcon, UserIcon } from 'icons'
+import { ArrowIcon, LogoutIcon, ProjectIcon } from 'icons'
 import { httpx } from 'shared'
 import { createEffect, Show } from 'solid-js'
-import { createStore, produce } from 'solid-js/store'
+import { createStore } from 'solid-js/store'
 import { self, setSelf } from 'store'
 import './style/sidebar.scss'
 
@@ -67,59 +67,11 @@ const User = () => {
     const [state, setState] = createStore<State>({
         edit_name: false,
     })
-    let input_name: HTMLInputElement
+    let input_name!: HTMLInputElement
     createEffect(() => {
         if (!state.edit_name) return
         input_name.focus()
     })
-
-    function update_photo() {
-        let input = document.createElement('input')
-        input.setAttribute('type', 'file')
-        input.setAttribute('accept', 'image/*')
-        input.onchange = () => {
-            let file = input.files[0]
-            if (!file || file.size > 8e6 || !file.type.startsWith('image/')) {
-                input.remove()
-                return
-            }
-
-            let data = new FormData()
-            data.set('photo', file)
-
-            httpx({
-                url: '/api/user/photo/',
-                method: 'PUT',
-                data,
-                onLoad(x) {
-                    if (x.status == 200) {
-                        setSelf({ user: x.response })
-                    }
-                },
-            })
-        }
-        // @ts-ignore
-        input.oncancel = () => input.remove()
-        input.click()
-    }
-
-    function delete_photo() {
-        if (!self.user.photo) return
-
-        httpx({
-            url: '/api/user/photo/',
-            method: 'DELETE',
-            onLoad(x) {
-                if (x.status == 200) {
-                    setSelf(
-                        produce(s => {
-                            s.user.photo = null
-                        })
-                    )
-                }
-            },
-        })
-    }
 
     function update_name(name: string) {
         httpx({
@@ -137,24 +89,6 @@ const User = () => {
 
     return (
         <div class='user'>
-            <div
-                class='img'
-                onclick={update_photo}
-                onContextMenu={e => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    delete_photo()
-                }}
-            >
-                <Editable img>
-                    <Show when={self.user.photo} fallback={<UserIcon />}>
-                        <img
-                            src={`/simurgh-record/up-${self.user.id}-${self.user.photo}?r=${~~performance.now()}`}
-                            draggable={false}
-                        />
-                    </Show>
-                </Editable>
-            </div>
             <div class='name'>
                 <Show
                     when={state.edit_name}

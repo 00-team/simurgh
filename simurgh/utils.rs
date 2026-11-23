@@ -10,7 +10,7 @@ use crate::{config::Config, models::AppErr};
 // use std::path::Path;
 
 pub fn verify_slug(slug: &str) -> Result<(), AppErr> {
-    if slug.len() < 3 {
+    if slug.len() < 3 || slug.len() > 255 {
         return nest::err!(BadSlug);
     }
 

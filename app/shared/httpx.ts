@@ -45,7 +45,7 @@ function httpx(P: HttpxProps) {
         throw new Error(`request with method: ${P.method} cannot have any body`)
     }
 
-    let body: XMLHttpRequestBodyInit = null
+    let body: XMLHttpRequestBodyInit | null = null
 
     if (P.json) {
         http.setRequestHeader('Content-Type', 'application/json')

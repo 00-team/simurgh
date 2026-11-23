@@ -1,7 +1,7 @@
-import { RecordModel, RecordUsages } from 'models'
+import * as a from 'abi'
 
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
-import { addAlert, Editable } from 'comps'
+import { addAlert } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronLeftIcon,
@@ -10,30 +10,22 @@ import {
     PlusIcon,
     TrashIcon,
 } from 'icons'
-import { fmt_bytes, fmt_datetime, httpx } from 'shared'
-import {
-    Component,
-    createEffect,
-    createMemo,
-    createSignal,
-    Match,
-    Show,
-    Switch,
-} from 'solid-js'
+import { fmt_bytes, fmt_datetime, httpx, record_url } from 'shared'
+import { Component, createEffect, Match, Switch } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import { setPopup } from 'store/popup'
 import './style/records.scss'
 
 export default () => {
     type State = {
-        records: RecordModel[]
+        records: a.Record[]
         page: number
         edit_name: boolean
     }
     const [params, setParams] = useSearchParams()
     const [state, setState] = createStore<State>({
         records: [],
-        page: parseInt(params.page) || 0,
+        page: parseInt(params.page || '0') || 0,
         edit_name: false,
     })
     const { pid } = useParams()
@@ -44,19 +36,10 @@ export default () => {
         setParams({ page: state.page })
     })
 
-    function record_list(page: number) {
-        httpx({
-            url: `/api/projects/${pid}/records/`,
-            method: 'GET',
-            params: { page },
-            exclude_status: [404],
-            onLoad(x) {
-                if (x.status == 404) return nav('/projects/')
-                if (x.status != 200) return
-
-                setState({ records: x.response, page })
-            },
-        })
+    async function record_list(page: number) {
+        let r = await a.api_projects_records_list({ pid: parseInt(pid), page })
+        if (r.err()) return
+        setState({ records: r.body, page })
     }
 
     function record_add() {
@@ -123,10 +106,12 @@ export default () => {
                 <div class='records-wrapper'>
                     {state.records.map((r, i) => (
                         <Record
-                            pid={pid}
+                            pid={parseInt(pid)}
                             r={r}
-                            update={record => {
-                                if (!record) return record_list(state.page)
+                            update={async record => {
+                                if (!record) {
+                                    return await record_list(state.page)
+                                }
 
                                 setState(
                                     produce(s => {
@@ -150,7 +135,7 @@ export default () => {
                 <button
                     class='icon'
                     onClick={() => record_list(state.page - 1)}
-                    classList={{ disable: state.records.length < 31 }}
+                    classList={{ disable: state.page == 0 }}
                     disabled={state.page == 0}
                 >
                     <ChevronLeftIcon />
@@ -161,31 +146,36 @@ export default () => {
 }
 
 type RecordProps = {
-    pid: string
-    r: RecordModel
-    update(record?: RecordModel): void
+    pid: number
+    r: a.Record
+    update(record?: a.Record): void
 }
 const Record: Component<RecordProps> = P => {
-    const [edit_name, setEditName] = createSignal(false)
+    // const [edit_name, setEditName] = createSignal(false)
 
-    let input_name: HTMLInputElement
-    createEffect(() => {
-        if (!edit_name()) return
-        input_name.focus()
-    })
+    // let input_name!: HTMLInputElement
+    // createEffect(() => {
+    //     if (!edit_name()) return
+    //     input_name.focus()
+    // })
 
-    function record_update(
-        data: Partial<Pick<RecordModel, 'name' | 'usages'>>
-    ) {
-        httpx({
-            url: `/api/projects/${P.pid}/records/${P.r.id}/`,
-            method: 'PATCH',
-            json: { name: P.r.name, usages: P.r.usages, ...data },
-            onLoad(x) {
-                if (x.status != 200) return
-                P.update(x.response)
-            },
-        })
+    async function record_update(data: Partial<Pick<a.Record, 'usages'>>) {
+        // httpx({
+        //     url: `/api/projects/${P.pid}/records/${P.r.id}/`,
+        //     method: 'PATCH',
+        //     json: { name: P.r.name, usages: P.r.usages, ...data },
+        //     onLoad(x) {
+        //         if (x.status != 200) return
+        //         P.update(x.response)
+        //     },
+        // })
+
+        let r = await a.api_projects_records_patch(
+            { pid: P.pid, rid: P.r.id },
+            { usages: data.usages || P.r.usages }
+        )
+        if (r.err()) return
+        P.update(r.body)
     }
 
     function remove_usage(idx: number) {
@@ -194,21 +184,21 @@ const Record: Component<RecordProps> = P => {
         record_update({ usages })
     }
 
-    function update_name(name: string) {
-        setEditName(false)
-        name = name.slice(0, 255)
-        if (name == P.r.name) return
-
-        httpx({
-            url: `/api/projects/${P.pid}/records/${P.r.id}/`,
-            method: 'PATCH',
-            json: { name },
-            onLoad(x) {
-                if (x.status != 200) return
-                P.update(x.response)
-            },
-        })
-    }
+    // function update_name(name: string) {
+    //     setEditName(false)
+    //     name = name.slice(0, 255)
+    //     if (name == P.r.name) return
+    //
+    //     httpx({
+    //         url: `/api/projects/${P.pid}/records/${P.r.id}/`,
+    //         method: 'PATCH',
+    //         json: { name },
+    //         onLoad(x) {
+    //             if (x.status != 200) return
+    //             P.update(x.response)
+    //         },
+    //     })
+    // }
 
     function record_delete() {
         httpx({
@@ -246,46 +236,12 @@ const Record: Component<RecordProps> = P => {
             <div class='line' />
             <div class='info title_smaller'>
                 <div class='row'>
-                    <span>نام:</span>
-                    <div class='name'>
-                        <Show
-                            when={edit_name()}
-                            fallback={
-                                <Editable onClick={() => setEditName(true)}>
-                                    <span class='name' dir='auto'>
-                                        {P.r.name}
-                                    </span>
-                                </Editable>
-                            }
-                        >
-                            <input
-                                ref={input_name}
-                                value={P.r.name}
-                                dir='auto'
-                                placeholder='record name'
-                                class='name styled'
-                                maxLength={255}
-                                onChange={e =>
-                                    update_name(e.currentTarget.value)
-                                }
-                                onBlur={() => setEditName(false)}
-                                onContextMenu={e => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setEditName(false)
-                                }}
-                            />
-                        </Show>
-                    </div>
-                </div>
-
-                <div class='row'>
                     <span>شناسه:</span>
                     <span class='n'>{P.r.id}</span>
                 </div>
                 <div class='row'>
                     <span>نوع:</span>
-                    <span class='n'>{P.r.mime}</span>
+                    <span class='n'>{P.r.kind}</span>
                 </div>
                 <div class='row'>
                     <span>حجم:</span>
@@ -329,12 +285,12 @@ const Record: Component<RecordProps> = P => {
 }
 
 type AddUsageProps = {
-    record: RecordModel
-    update(record: RecordModel): void
+    record: a.Record
+    update(record: a.Record): void
 }
 const AddUsage: Component<AddUsageProps> = P => {
     type State = {
-        usage: RecordUsages
+        usage: a.RecordUsage
     }
 
     const [state, setstate] = createStore<State>({
@@ -347,7 +303,6 @@ const AddUsage: Component<AddUsageProps> = P => {
             url: `/api/projects/${P.record.project}/records/${P.record.id}/`,
             method: 'PATCH',
             json: {
-                name: P.record.name,
                 usages,
             },
             onLoad(x) {
@@ -437,93 +392,83 @@ const AddUsage: Component<AddUsageProps> = P => {
     )
 }
 
-type RecordDpyProps = { r: RecordModel }
+type RecordDpyProps = { r: a.Record }
 const RecordDpy: Component<RecordDpyProps> = P => {
-    const url = createMemo(() => `/simurgh-record/r-${P.r.id}-${P.r.salt}`)
-
     return (
         <Switch fallback={<FileIcon />}>
-            <Match when={P.r.mime.startsWith('image/')}>
-                <Show
-                    when={!P.r.mime.includes('svg')}
-                    fallback={<DynamicSvg url={url()} />}
-                >
-                    <img
-                        draggable={false}
-                        loading='lazy'
-                        decoding='async'
-                        src={url()}
-                        // onClick={e => e.currentTarget.requestFullscreen()}
-                    />
-                </Show>
+            <Match when={P.r.kind == 'photo'}>
+                <img
+                    draggable={false}
+                    loading='lazy'
+                    decoding='async'
+                    src={record_url(P.r)}
+                    // onClick={e => e.currentTarget.requestFullscreen()}
+                />
             </Match>
-            <Match when={P.r.mime.startsWith('text/')}>
-                <DpyText url={url()} />
-            </Match>
-            <Match when={P.r.mime.startsWith('video/')}>
-                <video src={url()} controls draggable={false}></video>
+            <Match when={P.r.kind == 'video'}>
+                <video src={record_url(P.r)} controls draggable={false}></video>
             </Match>
         </Switch>
     )
 }
 
-const DynamicSvg: Component<{ url: string }> = P => {
-    let ref: HTMLDivElement
+// const DynamicSvg: Component<{ url: string }> = P => {
+//     let ref: HTMLDivElement
+//
+//     createEffect(() => {
+//         httpx({
+//             url: P.url,
+//             method: 'GET',
+//             type: 'text',
+//             show_messages: false,
+//             onLoad(x) {
+//                 if (x.status != 200) {
+//                     ref.parentElement.append(FileIcon() as Node)
+//                     ref.remove()
+//                     return
+//                 }
+//
+//                 ref.innerHTML = x.response
+//             },
+//         })
+//     })
+//
+//     return (
+//         <div
+//             class='dpy-svg'
+//             ref={ref}
+//             onClick={e => e.currentTarget.requestFullscreen()}
+//         />
+//     )
+// }
 
-    createEffect(() => {
-        httpx({
-            url: P.url,
-            method: 'GET',
-            type: 'text',
-            show_messages: false,
-            onLoad(x) {
-                if (x.status != 200) {
-                    ref.parentElement.append(FileIcon() as Node)
-                    ref.remove()
-                    return
-                }
-
-                ref.innerHTML = x.response
-            },
-        })
-    })
-
-    return (
-        <div
-            class='dpy-svg'
-            ref={ref}
-            onClick={e => e.currentTarget.requestFullscreen()}
-        />
-    )
-}
-
-const DpyText: Component<{ url: string }> = P => {
-    let ref: HTMLTextAreaElement
-
-    createEffect(() => {
-        httpx({
-            url: P.url,
-            method: 'GET',
-            type: 'text',
-            show_messages: false,
-            onLoad(x) {
-                if (x.status != 200) {
-                    ref.parentElement.append(FileIcon() as Node)
-                    ref.remove()
-                    return
-                }
-
-                ref.value = x.response
-            },
-        })
-    })
-
-    return (
-        <textarea
-            ref={ref}
-            class='styled'
-            dir='auto'
-            onClick={e => e.currentTarget.requestFullscreen()}
-        />
-    )
-}
+// const DpyText: Component<{ url: string }> = P => {
+//     let ref: HTMLTextAreaElement
+//
+//     createEffect(() => {
+//         httpx({
+//             url: P.url,
+//             method: 'GET',
+//             type: 'text',
+//             show_messages: false,
+//             onLoad(x) {
+//                 if (x.status != 200) {
+//                     ref.parentElement.append(FileIcon() as Node)
+//                     ref.remove()
+//                     return
+//                 }
+//
+//                 ref.value = x.response
+//             },
+//         })
+//     })
+//
+//     return (
+//         <textarea
+//             ref={ref}
+//             class='styled'
+//             dir='auto'
+//             onClick={e => e.currentTarget.requestFullscreen()}
+//         />
+//     )
+// }

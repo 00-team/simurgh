@@ -1,32 +1,23 @@
-import { UserModel } from 'models'
-import { httpx } from 'shared'
+// import { UserModel } from 'models'
 import { createEffect, createRoot } from 'solid-js'
 
 import { createStore } from 'solid-js/store'
 
+import * as a from 'abi'
+
 type SelfModel = {
-    user: UserModel
+    user: a.User
     loged_in: boolean
     fetch: boolean
 }
 
 async function get_default(): Promise<SelfModel> {
     try {
-        const result: any = await new Promise((resolve, reject) => {
-            httpx({
-                url: '/api/user/',
-                method: 'GET',
-                reject,
-                show_messages: false,
-                onLoad(x) {
-                    if (x.status != 200) return reject()
-                    resolve(x.response)
-                },
-            })
-        })
+        let r = await a.api_user_get({ show_alert: false })
+        if (r.err()) throw new Error()
 
         return {
-            user: result,
+            user: r.body,
             loged_in: true,
             fetch: false,
         }
@@ -35,16 +26,7 @@ async function get_default(): Promise<SelfModel> {
     return {
         loged_in: false,
         fetch: true,
-        user: {
-            id: 0,
-            name: '',
-            token: '',
-            photo: null,
-            admin: false,
-            banned: false,
-            client: false,
-            email: '',
-        },
+        user: a.USER_DEF,
     }
 }
 

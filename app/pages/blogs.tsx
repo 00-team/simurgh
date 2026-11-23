@@ -7,22 +7,24 @@ import {
     IdIcon,
     ImageIcon,
 } from 'icons'
-import { BlogModel } from 'models'
+
 import { fmt_datetime, httpx } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import './style/blogs.scss'
 
+import * as a from 'abi'
+
 export default () => {
     type State = {
-        blogs: BlogModel[]
+        blogs: a.Blog[]
         page: number
     }
 
     const [params, setParams] = useSearchParams()
     const [state, setState] = createStore<State>({
         blogs: [],
-        page: parseInt(params.page) || 0,
+        page: parseInt(params.page || '0') || 0,
     })
 
     const { pid } = useParams()
@@ -106,7 +108,7 @@ export default () => {
 
 type BlogProps = {
     pid: string
-    b: BlogModel
+    b: a.Blog
 }
 const Blog: Component<BlogProps> = P => {
     const nav = useNavigate()

@@ -1,18 +1,22 @@
-import {
-    BLOG_ALIGN,
-    BlogImage,
-    DEFAULT_BLOCKS,
-    RecordModel,
-    RecordUsages,
-} from 'models'
 import { Component, Show } from 'solid-js'
 
 import { addAlert } from 'comps'
-import { ImageIcon, XIcon } from 'icons'
+import {
+    AlignCenterIcon,
+    AlignLeftIcon,
+    AlignRightIcon,
+    ImageIcon,
+    XIcon,
+} from 'icons'
 import { httpx } from 'shared'
 import { produce } from 'solid-js/store'
 import { setStore, store } from './store'
 import './style/image.scss'
+
+import * as a from 'abi'
+import { DEFAULT_BLOCKS } from 'shared/def'
+
+type BlogImage = Extract<a.BlogData, { kind: 'image' }>
 
 type Props = {
     idx: number
@@ -39,35 +43,29 @@ export const EditorImageBlock: Component<Props> = P => {
                         <button
                             class='action icon'
                             onClick={() => {
-                                set_attr(b => ({
-                                    align: 'left',
-                                }))
+                                set_attr(_ => ({ align: 'left' }))
                             }}
                             classList={{ active: P.block.align === 'left' }}
                         >
-                            {BLOG_ALIGN['left'][1]()}
+                            <AlignLeftIcon />
                         </button>
                         <button
                             class='action icon'
                             onClick={() => {
-                                set_attr(b => ({
-                                    align: 'center',
-                                }))
+                                set_attr(_ => ({ align: 'center' }))
                             }}
                             classList={{ active: P.block.align === 'center' }}
                         >
-                            {BLOG_ALIGN['center'][1]()}
+                            <AlignCenterIcon />
                         </button>
                         <button
                             class='action icon'
                             onClick={() => {
-                                set_attr(b => ({
-                                    align: 'right',
-                                }))
+                                set_attr(_ => ({ align: 'right' }))
                             }}
                             classList={{ active: P.block.align === 'right' }}
                         >
-                            {BLOG_ALIGN['right'][1]()}
+                            <AlignRightIcon />
                         </button>
                     </div>
                     <button
@@ -92,8 +90,8 @@ export const EditorImageBlock: Component<Props> = P => {
                         type='text'
                         placeholder='alt...'
                         class='title_smaller'
-                        value={P.block.alt || null}
-                        onchange={e => set_attr(b => ({ alt: e.target.value }))}
+                        value={P.block.alt}
+                        onchange={e => set_attr(_ => ({ alt: e.target.value }))}
                     />
                     <img draggable={false} src={P.block.url} />
                 </div>
@@ -121,7 +119,7 @@ const ImageUploader: Component<Props> = P => {
             return
         }
 
-        let usage: RecordUsages = { kind: 'blog', id: store.blog.id }
+        let usage: a.RecordUsage = { kind: 'blog', id: store.blog.id }
         let data = new FormData()
         data.set(
             'record',
@@ -141,7 +139,7 @@ const ImageUploader: Component<Props> = P => {
             data,
             onLoad(x) {
                 if (x.status != 200) return
-                let r: RecordModel = x.response
+                let r: a.Record = x.response
                 setStore(
                     produce(s => {
                         let b = s.data[P.idx] as BlogImage
@@ -160,6 +158,7 @@ const ImageUploader: Component<Props> = P => {
             ondragover={e => e.preventDefault()}
             ondrop={e => {
                 e.preventDefault()
+                if (!e.dataTransfer) return
                 const files = e.dataTransfer.files
 
                 Array.from(files).forEach(file => {
@@ -192,7 +191,7 @@ const ImageUploader: Component<Props> = P => {
                                 data,
                                 onLoad(x) {
                                     if (x.status != 200) return
-                                    let r: RecordModel = x.response
+                                    let r: a.Record = x.response
                                     setStore(
                                         produce(s => {
                                             let b = s.data[P.idx] as BlogImage

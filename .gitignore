@@ -30,3 +30,7 @@ static/ssr/script/
 log
 
 argon-data/
+move-records.sh
+koch-records.py
+*.tgz
+env.toml

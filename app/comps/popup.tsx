@@ -1,9 +1,9 @@
-import { Component, createEffect } from 'solid-js'
+import { Component } from 'solid-js'
 import { DEFAULT_POPUP, popup, setPopup } from 'store/popup'
 
 import './style/popup.scss'
 
-export const Popup: Component = P => {
+export const Popup: Component = () => {
     return (
         <div class={`popup ${popup.type}`} classList={{ show: popup.show }}>
             <form

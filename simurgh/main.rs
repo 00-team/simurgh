@@ -12,6 +12,7 @@ use media::MediaConfig;
 pub use models::AppErr;
 use nest::NestError;
 
+mod dar;
 mod admin;
 mod api;
 mod config;

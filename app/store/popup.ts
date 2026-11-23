@@ -8,7 +8,7 @@ type PopupProps = {
     show: boolean
 
     type: popupTypes
-    Icon: () => JSX.Element | null
+    Icon: (() => JSX.Element) | null
     title: string
     content: string
 

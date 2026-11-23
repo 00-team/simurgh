@@ -34,7 +34,7 @@ export const ColorPicker: Component<Props> = P => {
             v: 100,
         },
     })
-    let ref: HTMLDivElement
+    let ref!: HTMLDivElement
 
     const rgb = createMemo(() => HSVtoRGB(state.hsv))
     const rgb_str = createMemo(() => RGBToStr(rgb()))
@@ -50,7 +50,7 @@ export const ColorPicker: Component<Props> = P => {
     onMount(() => document.addEventListener('mouseup', inactive))
     onCleanup(() => document.removeEventListener('mouseup', inactive))
 
-    function move(e: { currentTarget: HTMLDivElement } & MouseEvent) {
+    function move(e: MouseEvent) {
         const { left, right, top, bottom } = ref.getBoundingClientRect()
         let x = 0
         let y = 0
@@ -165,7 +165,7 @@ const Silinder: Component<SilinderProps> = P => {
     const [state, setState] = createStore<State>({
         active: false,
     })
-    let ref: HTMLDivElement
+    let ref!: HTMLDivElement
 
     onMount(() => document.addEventListener('mouseup', inactive))
     onCleanup(() => document.removeEventListener('mouseup', inactive))
@@ -174,7 +174,7 @@ const Silinder: Component<SilinderProps> = P => {
         setState({ active: false })
     }
 
-    function move(e: { currentTarget: HTMLDivElement } & MouseEvent) {
+    function move(e: MouseEvent) {
         const { left, right } = ref.getBoundingClientRect()
         if (e.clientX < left) return P.onChange(0)
         if (e.clientX > right) return P.onChange(100)
@@ -189,7 +189,7 @@ const Silinder: Component<SilinderProps> = P => {
     return (
         <div
             ref={ref}
-            classList={{ [P.class]: !!P.class }}
+            classList={{ [P.class || '']: !!P.class }}
             class='ccp-silinder'
             onClick={move}
             onMouseDown={() => setState({ active: true })}
@@ -372,11 +372,15 @@ function HexToRGB(hex: string): [RGB, number] {
     if (hex.length == 5 || hex.length == 7) return [rgb, alpha]
 
     if (hex.length < 6) {
-        let [r, g, b, a] = hex.match(/.{1}/g).map(c => parseInt(c + c, 16))
+        let m = hex.match(/.{1}/g)
+        if (!m) throw new Error('invalid hex color')
+        let [r, g, b, a] = m.map(c => parseInt(c + c, 16))
         rgb = { r, g, b }
         alpha = a || 255
     } else {
-        let [r, g, b, a] = hex.match(/.{2}/g).map(c => parseInt(c, 16))
+        let m = hex.match(/.{2}/g)
+        if (!m) throw new Error('invalid hex color')
+        let [r, g, b, a] = m.map(c => parseInt(c, 16))
         rgb = { r, g, b }
         alpha = a || 255
     }

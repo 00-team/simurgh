@@ -1,71 +1,65 @@
 import { Timer } from 'comps'
-import { CodeIcon, EmailIcon, Logo } from 'icons'
-import { httpx } from 'shared'
+import { CodeIcon, Logo, PhoneIcon } from 'icons'
 import { Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { setSelf } from 'store'
 import './style/login.scss'
 
+import * as a from 'abi'
+
 export default () => {
     type State = {
-        stage: 'email' | 'code'
-        email: string
+        stage: 'phone' | 'code'
+        phone: string
         code: string
         loading: boolean
         expires: number
     }
     const [state, setState] = createStore<State>({
-        stage: 'email',
-        email: '',
+        stage: 'phone',
+        phone: '',
         code: '',
         loading: false,
         expires: 0,
     })
 
-    function verification() {
-        if (state.email.length < 3) return
-        if (!state.email.includes('@')) return
+    async function verification() {
+        if (state.phone.length != 11) return
+        if (!state.phone.startsWith('09')) return
 
         setState({ loading: true })
 
-        httpx({
-            url: '/api/verification/',
-            method: 'POST',
-            json: {
-                action: 'login',
-                email: state.email,
-            },
-            onLoad(x) {
-                setState({ loading: false })
-                if (x.status == 200 && x.response.expires > 0) {
-                    setState({ stage: 'code', expires: x.response.expires })
-                }
-            },
+        let r = await a.api_verification_post({
+            phone: state.phone,
+            action: 'login',
+        })
+        if (r.err()) return
+
+        setState({ loading: false })
+
+        setState({
+            stage: 'code',
+            expires: r.body.next_resend || r.body.verify_expires,
         })
     }
 
-    function user_login() {
+    async function user_login() {
         if (state.code.length != 5) return
 
         setState({ loading: true })
 
-        httpx({
-            url: '/api/user/login/',
-            method: 'POST',
-            json: {
-                email: state.email,
-                code: state.code,
-            },
-            onLoad(x) {
-                setState({ loading: false })
-                if (x.status == 200) {
-                    setSelf({
-                        loged_in: true,
-                        fetch: false,
-                        user: x.response,
-                    })
-                }
-            },
+        let r = await a.api_user_login_post({
+            phone: state.phone,
+            code: state.code,
+        })
+        if (r.err()) return
+
+        setState({ loading: false })
+
+        setSelf({
+            loged_in: true,
+            fetch: false,
+            user: r.body.user,
         })
     }
 
@@ -74,11 +68,11 @@ export default () => {
             <div class='login-card'>
                 <form
                     action={''}
-                    onsubmit={e => {
+                    onsubmit={async e => {
                         e.preventDefault()
 
-                        if (state.stage == 'email') return verification()
-                        user_login()
+                        if (state.stage == 'phone') return await verification()
+                        await user_login()
                     }}
                     class='login-form title_small'
                     classList={{ loading: state.loading }}
@@ -86,21 +80,21 @@ export default () => {
                     <div class='inputs'>
                         <div class='input'>
                             <label
-                                for='login-email'
-                                classList={{ disabled: state.stage != 'email' }}
+                                for='login-phone'
+                                classList={{ disabled: state.stage != 'phone' }}
                             >
-                                <EmailIcon />
-                                ایمیل:
+                                <PhoneIcon />
+                                شماره:
                             </label>
                             <input
-                                disabled={state.stage != 'email'}
-                                id='login-email'
-                                type='email'
+                                disabled={state.stage != 'phone'}
+                                id='login-phone'
+                                type='phone'
                                 class='title_small'
-                                placeholder='simurgh@example.com'
-                                value={state.email}
+                                placeholder='09120004444'
+                                value={state.phone}
                                 onInput={e =>
-                                    setState({ email: e.currentTarget.value })
+                                    setState({ phone: e.currentTarget.value })
                                 }
                             />
                         </div>
@@ -134,7 +128,7 @@ export default () => {
                     </Show>
                     <button class='cta title_smaller' type='submit'>
                         <Show
-                            when={state.stage == 'email'}
+                            when={state.stage == 'phone'}
                             fallback={<>تایید کد</>}
                         >
                             دریافت کد

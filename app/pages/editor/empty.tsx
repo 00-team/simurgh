@@ -7,19 +7,24 @@ import {
     TextIcon,
     VideoIcon,
 } from 'icons'
-import { BlogData, BlogEmpty, DEFAULT_BLOCKS } from 'models'
+
 import { Component, JSXElement } from 'solid-js'
 import { produce } from 'solid-js/store'
 import { setStore } from './store'
 
+import * as a from 'abi'
+
 import './style/empty.scss'
+import { DEFAULT_BLOCKS } from 'shared/def'
+
+type BlogEmpty = Extract<a.BlogData, { kind: 'empty' }>
 
 type Props = {
     idx: number
     block: BlogEmpty
 }
 export const EditorEmptyBlock: Component<Props> = P => {
-    function update(kind: BlogData['kind']) {
+    function update(kind: a.BlogData['kind']) {
         setStore(
             produce(s => {
                 s.data[P.idx] = { ...DEFAULT_BLOCKS[kind] }
@@ -28,11 +33,13 @@ export const EditorEmptyBlock: Component<Props> = P => {
     }
 
     const BLOCKS: {
-        [k in Exclude<BlogData['kind'], 'empty'>]: {
+        [k in Exclude<a.BlogData['kind'], 'empty'>]: {
             Component: () => JSXElement
             label: string
         }
     } = {
+        check_list: { Component: () => 'todo', label: 'چک لیست' },
+        list: { Component: () => 'todo', label: 'لیست' },
         heading: { Component: HeadingIcon, label: 'عنوان' },
         text: { Component: TextIcon, label: 'متن' },
         image: { Component: ImageIcon, label: 'عکس' },
@@ -50,7 +57,7 @@ export const EditorEmptyBlock: Component<Props> = P => {
                     .map(([k, V]) => (
                         <button
                             class='cta title_smaller'
-                            onClick={() => update(k as BlogData['kind'])}
+                            onClick={() => update(k as a.BlogData['kind'])}
                         >
                             <V.Component />
                             {V.label}
@@ -63,7 +70,7 @@ export const EditorEmptyBlock: Component<Props> = P => {
                     .map(([k, V]) => (
                         <button
                             class='cta title_smaller'
-                            onClick={() => update(k as BlogData['kind'])}
+                            onClick={() => update(k as a.BlogData['kind'])}
                         >
                             <V.Component />
                             {V.label}
@@ -76,7 +83,7 @@ export const EditorEmptyBlock: Component<Props> = P => {
                     .map(([k, V]) => (
                         <button
                             class='cta title_smaller'
-                            onClick={() => update(k as BlogData['kind'])}
+                            onClick={() => update(k as a.BlogData['kind'])}
                         >
                             <V.Component />
                             {V.label}

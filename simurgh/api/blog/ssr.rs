@@ -18,7 +18,7 @@ use crate::state::SimurghDb;
 #[openapi(
     tags((name = "api::blogs-ssr")),
     paths(ssr_list, ssr_get),
-    components(schemas(BlogSSRR)),
+    // components(schemas(BlogSSRR)),
     servers((url = "/projects/{pid}/blogs-ssr")),
     modifiers(&UpdatePaths)
 )]

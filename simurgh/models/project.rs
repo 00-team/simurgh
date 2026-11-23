@@ -7,7 +7,7 @@ use crate::{models::auth::AuthProject, state::SimurghDb};
 #[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema)]
 pub struct Project {
     pub id: i64,
-    pub user: Option<i64>,
+    pub owner: Option<i64>,
     pub name: String,
     pub storage: i64,
     pub blog_count: i64,
@@ -48,10 +48,11 @@ impl actix_web::FromRequest for Project {
                 if ap.id != project.id || project.api_key != Some(ap.token) {
                     return nest::err!(NotFound);
                 }
-            } else if let Ok(user) = super::user::User::extract(&rq).await {
-                if !user.admin && project.user != Some(user.id) {
-                    return nest::err!(NotFound);
-                }
+            } else if let Ok(user) = super::user::User::extract(&rq).await
+                && !user.admin
+                && project.owner != Some(user.id)
+            {
+                return nest::err!(NotFound);
             }
 
             let mut ext = rq.extensions_mut();

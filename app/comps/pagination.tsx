@@ -60,7 +60,7 @@ export const Pagination: Component<Props> = P => {
                     for (let i = 0; i <= K + 2; ++i) {
                         s.pages.push(i)
                     }
-                    if (s.pages.at(-1) + 1 != s.total) s.pages.push(-1)
+                    if (s.pages.at(-1)! + 1 != s.total) s.pages.push(-1)
                     s.pages.push(s.total)
                     return
                 }

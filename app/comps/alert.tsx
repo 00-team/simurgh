@@ -1,8 +1,10 @@
-import { CircleAlertIcon, CircleCheckIcon, CircleXIcon, XIcon } from 'icons'
+import { CircleAlertIcon, CircleCheckIcon, CircleXIcon } from 'icons'
 import { Component, JSX, Show, onCleanup, onMount } from 'solid-js'
 import './style/alert.scss'
 
 import { createStore, produce } from 'solid-js/store'
+import { NestError } from 'abi'
+import { LOCALE } from 'locale'
 
 type AlertModel = {
     type: 'info' | 'error' | 'success'
@@ -48,7 +50,7 @@ const ALERT_ICON: {
 
 const AlertCard: Component<{ a: AlertModel; i: number }> = P => {
     let interval: number
-    let timer: HTMLDivElement
+    let timer!: HTMLDivElement
     const INTERVAL = 50 // ms
 
     function do_timeout() {
@@ -139,4 +141,16 @@ export const Alert = () => {
             ))}
         </div>
     )
+}
+
+export function alert_code(code: NestError) {
+    let msg = LOCALE.nest_error(code)
+
+    addAlert({
+        type: 'error',
+        timeout: 3,
+        subject: msg,
+        content: ''
+        // content: '',
+    })
 }

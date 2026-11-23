@@ -1,4 +1,4 @@
-const CRTABLE = {
+const CRTABLE: { [k: string]: string } = {
     '۰': '0',
     '۱': '1',
     '۲': '2',

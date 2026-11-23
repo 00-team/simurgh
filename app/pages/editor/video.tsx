@@ -1,12 +1,15 @@
 import { addAlert } from 'comps'
 import { VideoIcon, XIcon } from 'icons'
-import { BlogVideo, DEFAULT_BLOCKS, RecordModel, RecordUsages } from 'models'
 import { httpx } from 'shared'
 import { Component, Show } from 'solid-js'
 import { produce } from 'solid-js/store'
 import { setStore, store } from './store'
 
 import './style/video.scss'
+
+import * as a from 'abi'
+import { DEFAULT_BLOCKS } from 'shared/def'
+type BlogVideo = Extract<a.BlogData, { kind: 'video' }>
 
 type Props = {
     idx: number
@@ -61,7 +64,7 @@ const VideoUploader: Component<Props> = P => {
             return
         }
 
-        let usage: RecordUsages = { kind: 'blog', id: store.blog.id }
+        let usage: a.RecordUsage = { kind: 'blog', id: store.blog.id }
         let data = new FormData()
         data.set(
             'record',
@@ -80,7 +83,7 @@ const VideoUploader: Component<Props> = P => {
             data,
             onLoad(x) {
                 if (x.status != 200) return
-                let r: RecordModel = x.response
+                let r: a.Record = x.response
                 setStore(
                     produce(s => {
                         let b = s.data[P.idx] as BlogVideo
@@ -99,6 +102,7 @@ const VideoUploader: Component<Props> = P => {
             ondragover={e => e.preventDefault()}
             ondrop={e => {
                 e.preventDefault()
+                if (!e.dataTransfer) return
                 const files = e.dataTransfer.files
 
                 Array.from(files).forEach(file => {
@@ -126,7 +130,7 @@ const VideoUploader: Component<Props> = P => {
                             return
                         }
 
-                        let usage: RecordUsages = {
+                        let usage: a.RecordUsage = {
                             kind: 'blog',
                             id: store.blog.id,
                         }
@@ -149,7 +153,7 @@ const VideoUploader: Component<Props> = P => {
                             data,
                             onLoad(x) {
                                 if (x.status != 200) return
-                                let r: RecordModel = x.response
+                                let r: a.Record = x.response
                                 setStore(
                                     produce(s => {
                                         let b = s.data[P.idx] as BlogVideo

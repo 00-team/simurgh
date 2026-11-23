@@ -8,23 +8,26 @@ import {
     RecycleIcon,
     TrashIcon,
 } from 'icons'
-import { BlogModel, ProjectModel, RecordModel } from 'models'
-import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import { fmt_bytes, fmt_datetime, httpx, record_url } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import { setPopup } from 'store/popup'
 import './style/project.scss'
 
+import * as a from 'abi'
+
 export default () => {
     type State = {
         edit_name: boolean
-        project: ProjectModel
+        project: a.Project
     }
     const [state, setState] = createStore<State>({
         edit_name: false,
         project: {
             id: 0,
-            user: 0,
+            owner: null,
+            blog_category_count: 0,
+            blog_tag_count: 0,
             name: '',
             storage: 0,
             blog_count: 0,
@@ -36,7 +39,7 @@ export default () => {
     })
     const params = useParams()
     const nav = useNavigate()
-    let input_name: HTMLInputElement
+    let input_name!: HTMLInputElement
     createEffect(() => {
         if (!state.edit_name) return
         input_name.focus()
@@ -56,7 +59,7 @@ export default () => {
         })
     })
 
-    function project_update(data: Pick<ProjectModel, 'name'>) {
+    function project_update(data: Pick<a.Project, 'name'>) {
         httpx({
             url: `/api/projects/${state.project.id}/`,
             method: 'PATCH',
@@ -228,7 +231,7 @@ export default () => {
                             onclick={() => {
                                 try {
                                     navigator.clipboard.writeText(
-                                        state.project.api_key
+                                        state.project.api_key || 'no api key'
                                     )
 
                                     addAlert({
@@ -262,11 +265,11 @@ export default () => {
     )
 }
 type BlogProps = {
-    project: ProjectModel
+    project: a.Project
 }
 const Blogs: Component<BlogProps> = P => {
     type State = {
-        blogs: BlogModel[]
+        blogs: a.Blog[]
     }
     const [state, setState] = createStore<State>({
         blogs: [],
@@ -332,12 +335,12 @@ const Blogs: Component<BlogProps> = P => {
                         onClick={() => nav('blogs/' + b.id)}
                     >
                         <div class='thumbnail'>
-                            <Show when={b.thumbnail} fallback={<ImageIcon />}>
+                            <Show when={b.thumbnail && b.thumbnail_url} fallback={<ImageIcon />}>
                                 <img
                                     draggable={false}
                                     loading='lazy'
                                     decoding='async'
-                                    src={`/simurgh-record/bt-${b.id}-${b.thumbnail}`}
+                                    src={b.thumbnail_url!}
                                 />
                             </Show>
                         </div>
@@ -369,11 +372,11 @@ const Blogs: Component<BlogProps> = P => {
 }
 
 type RecordProps = {
-    project: ProjectModel
+    project: a.Project
 }
 const Records: Component<RecordProps> = P => {
     type State = {
-        records: RecordModel[]
+        records: a.Record[]
     }
     const [state, setState] = createStore<State>({
         records: [],
@@ -438,14 +441,14 @@ const Records: Component<RecordProps> = P => {
                     <div class='record' onClick={() => nav('records/')}>
                         <div class='dpy'>
                             <Show
-                                when={r.mime && r.mime.startsWith('image/')}
+                                when={r.kind == 'photo'}
                                 fallback={<FileIcon />}
                             >
                                 <img
                                     draggable={false}
                                     loading='lazy'
                                     decoding='async'
-                                    src={`/simurgh-record/r-${r.id}-${r.salt}`}
+                                    src={record_url(r)}
                                 />
                             </Show>
                         </div>
@@ -460,7 +463,7 @@ const Records: Component<RecordProps> = P => {
                             </div>
                             <div class='row'>
                                 <span>نوع:</span>
-                                <span class='n'>{r.mime}</span>
+                                <span class='n'>{r.kind}</span>
                             </div>
                             {/*
                             <span>تاریخ بارگزاری:</span>

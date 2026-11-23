@@ -7,7 +7,7 @@ export const Timer: Component<Props> = P => {
     const [seconds, setSeconds] = createSignal(P.seconds)
     let timer: number
 
-    function convertSectoMin(seconds) {
+    function convertSectoMin(seconds: number) {
         const mins = Math.floor(seconds / 60)
         const secs = seconds % 60
         return mins + ':' + (secs < 10 ? '0' : '') + secs
