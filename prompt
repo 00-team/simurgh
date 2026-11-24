@@ -1,0 +1,31 @@
+i want you to write me a blog in a json format this is my own custom format
+for a blog editor. each section is a block and a block can be a text. image. audio
+etc etc. then i just render these json blocks into a html format my self
+so i want you to write me the blog in this format.
+this is the types for it:
+
+```typescript
+
+type BlogDirection = "ltr"|"rtl";
+type BlogStyle = { bold:(boolean),code:(boolean),color?:(((string) | null)),font_family?:(((string) | null)),font_size:(number),italic:(boolean),mark:(boolean),underline:(boolean), };
+type BlogTextGroup = { content:(((string)[])),style:BlogStyle,url?:(((string) | null)), };
+type BlogListItem = { children?:((((BlogListItem[])) | null)),text:(string), };
+type BlogCheckListItem = { checked:(boolean),children?:((((BlogCheckListItem[])) | null)),text:(string), };
+type BlogData = ({ align:BlogAlign,content:(string),dir:BlogDirection,kind:("heading"),level:(number), })|({ align:BlogAlign,dir:BlogDirection,groups:((BlogTextGroup[])),kind:("text"), })|({ align:BlogAlign,alt:(string),kind:("image"),record_id?:(((number) | null)),url:(string), })|({ align:BlogAlign,kind:("audio"),record_id?:(((number) | null)),url:(string), })|({ align:BlogAlign,kind:("video"),record_id?:(((number) | null)),url:(string), })|({ align:BlogAlign,kind:("map"),latitude:(number),longitude:(number), })|({ align:BlogAlign,dir:BlogDirection,items:((BlogListItem[])),kind:("list"),ordered:(boolean), })|({ align:BlogAlign,dir:BlogDirection,items:((BlogCheckListItem[])),kind:("check_list"),ordered:(boolean), })|({ kind:("break"), })|({ kind:("empty"), });
+```
+
+return me a list of BlogData in a json format. and only output json nothing else
+in blog text group each item in `content` is a line and list blocks can have a nested lists as children optinally
+
+use placeholder images if you cant find any actually images or media
+for images and video if you can give external image links if not just use place holder images but 
+write the alt so i can undersant what to search for
+
+
+====
+
+
+
+this is all the blogs that i have written as of now 
+
+give me more idea that is not duplicate

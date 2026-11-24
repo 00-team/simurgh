@@ -8,6 +8,21 @@
 
     z-index: 1;
 
+    .raw-data {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        height: 100%;
+        gap: 1rem;
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            resize: none;
+            font-family: monospace;
+        }
+    }
+
     .go-back {
         margin-bottom: 1em;
 
@@ -93,11 +108,9 @@
                     background-color: var(--thirty-percent);
                     padding: 0.5em 2em;
                     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-                    background-image: linear-gradient(
-                        304deg,
-                        var(--bg-color),
-                        transparent 50%
-                    );
+                    background-image: linear-gradient(304deg,
+                            var(--bg-color),
+                            transparent 50%);
 
                     position: relative;
                     isolation: isolate;
@@ -109,9 +122,11 @@
                     &.reset {
                         --bg-color: var(--alert-error);
                     }
+
                     &.add {
                         --bg-color: var(--alert-success);
                     }
+
                     &.see {
                         --bg-color: #5600ff;
                     }
@@ -181,12 +196,9 @@
                 &.add-block {
                     border-radius: 1rem;
                     background-color: var(--thirty-percent);
-                    box-shadow: color-mix(
-                            in srgb,
+                    box-shadow: color-mix(in srgb,
                             var(--accent-color) 30%,
-                            transparent
-                        )
-                        0px 5px 15px;
+                            transparent) 0px 5px 15px;
 
                     .add-cta {
                         padding: 0.7em 2em;
@@ -249,11 +261,9 @@
                         }
 
                         &.delete {
-                            background-color: color-mix(
-                                in srgb,
-                                var(--alert-error) 80%,
-                                white
-                            );
+                            background-color: color-mix(in srgb,
+                                    var(--alert-error) 80%,
+                                    white);
                             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
                         }
 

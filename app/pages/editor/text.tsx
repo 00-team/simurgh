@@ -27,6 +27,18 @@ import './style/text.scss'
 import * as a from 'abi'
 type BlogText = Extract<a.BlogData, { kind: 'text' }>
 
+const BLOG_TEXT_GROUP_DEF: a.BlogTextGroup = {
+    style: {
+        bold: false,
+        italic: false,
+        underline: false,
+        code: false,
+        font_size: 16,
+        mark: false,
+    },
+    content: [],
+}
+
 function group_data(span: HTMLSpanElement): Omit<a.BlogTextGroup, 'content'> {
     return {
         style: {
@@ -76,7 +88,7 @@ export const EditorTextBlock: Component<Props> = P => {
             } else if (n instanceof HTMLSpanElement) {
                 if (texts) {
                     groups.push({
-                        ...a.BLOG_TEXT_GROUP_DEF,
+                        ...BLOG_TEXT_GROUP_DEF,
                         content: texts.split('\n'),
                     })
                     texts = ''
@@ -93,7 +105,7 @@ export const EditorTextBlock: Component<Props> = P => {
 
         if (texts) {
             groups.push({
-                ...a.BLOG_TEXT_GROUP_DEF,
+                ...BLOG_TEXT_GROUP_DEF,
                 content: texts.split('\n'),
             })
             texts = ''
@@ -319,7 +331,7 @@ const Actions: Component<ActionsProps> = P => {
             let cstr = content.slice(last_g, g)
             if (!cstr) continue
             let c = cstr.split('\n')
-            let d = data.get(last_g) || a.BLOG_TEXT_GROUP_DEF
+            let d = data.get(last_g) || BLOG_TEXT_GROUP_DEF
             grouped_content.push({ ...d, content: c })
 
             last_g = g
@@ -327,7 +339,7 @@ const Actions: Component<ActionsProps> = P => {
                 let cstr = content.slice(last_g)
                 if (!cstr) continue
                 let c = cstr.split('\n')
-                let d = data.get(last_g) || a.BLOG_TEXT_GROUP_DEF
+                let d = data.get(last_g) || BLOG_TEXT_GROUP_DEF
                 grouped_content.push({ ...d, content: c })
             }
         }
@@ -357,7 +369,7 @@ const Actions: Component<ActionsProps> = P => {
                 let b = s.data[P.idx] as BlogText
                 let g = b.groups[P.ag]
                 b.groups[P.ag] = {
-                    ...a.BLOG_TEXT_GROUP_DEF,
+                    ...BLOG_TEXT_GROUP_DEF,
                     content: [...g.content],
                 }
             })

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from '@solidjs/router'
-import { addAlert } from 'comps'
+import { addAlert, Fanel } from 'comps'
 import {
     ArrowLeftIcon,
     ChevronDownIcon,
@@ -66,8 +66,28 @@ export default () => {
         setStore({ blog: r.body })
     }
 
+    let taraw!: HTMLTextAreaElement
+    function save_raw() {
+        setStore({ data: JSON.parse(taraw.value) })
+    }
+
     return (
         <div class='editor-fnd'>
+            <Fanel
+                open={store.show_raw}
+                onClose={() => setStore({ show_raw: false })}
+            >
+                <div class='raw-data'>
+                    <textarea
+                        ref={taraw}
+                        class='styled'
+                        value={JSON.stringify(store.data, null, 4)}
+                    />
+                    <button class='styled' onclick={save_raw}>
+                        save
+                    </button>
+                </div>
+            </Fanel>
             <div class='go-back'>
                 <button
                     class='go-back-btn icon'
@@ -133,6 +153,12 @@ export default () => {
                         </button>
                     </div>
                     <div class='ctas right'>
+                        <button
+                            class='cta title_smaller see'
+                            onclick={() => setStore({ show_raw: true })}
+                        >
+                            raw
+                        </button>
                         <button
                             class='cta title_smaller see'
                             onclick={() =>
@@ -202,7 +228,7 @@ export default () => {
                         {store.data.map((block, i, a) => (
                             <>
                                 <EditorBlock block={block} idx={i} />
-                                {i != a.length - 1 && <div class='line' />}
+                                {/* {i != a.length - 1 && <div class='line' />} */}
                             </>
                         ))}
                     </div>

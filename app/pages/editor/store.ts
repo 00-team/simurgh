@@ -13,6 +13,7 @@ export type Store = {
     tg: number // text group active index
     tgroup: a.BlogTextGroup | undefined
     show_groups: boolean
+    show_raw: boolean
 }
 export const [store, setStore] = createStore<Store>({
     blog: a.BLOG_DEF,
@@ -20,6 +21,7 @@ export const [store, setStore] = createStore<Store>({
     active: -1,
     tg: -1,
     show_groups: false,
+    show_raw: false,
     get block() {
         return this.data[this.active]
     },
