@@ -8,7 +8,6 @@ import {
     ImageIcon,
     XIcon,
 } from 'icons'
-import { httpx } from 'shared'
 import { produce } from 'solid-js/store'
 import { setStore, store } from './store'
 import './style/image.scss'

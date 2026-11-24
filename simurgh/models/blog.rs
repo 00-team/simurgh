@@ -199,7 +199,7 @@ pub struct Blog {
     pub slug: String,
     pub status: BlogStatus,
     pub author: Option<i64>,
-    pub project: Option<i64>,
+    pub project: i64,
     pub category: Option<i64>,
     pub created_at: i64,
     pub updated_at: i64,

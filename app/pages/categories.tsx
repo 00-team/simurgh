@@ -1,8 +1,7 @@
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { addAlert } from 'comps'
 import { ArrowLeftIcon, PencilIcon, PlusIcon, SaveIcon, TrashIcon } from 'icons'
-import { httpx } from 'shared'
-import { Component, createEffect } from 'solid-js'
+import { Component, createEffect, createMemo } from 'solid-js'
 import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import { setPopup } from 'store/popup'
 import './style/categories.scss'
@@ -15,13 +14,15 @@ type State = {
 }
 
 export default () => {
-    const { pid } = useParams()
+    const params = useParams()
+    const pidm = createMemo(() => Number(params.pid))
+
     const nav = useNavigate()
-    const [params, setParams] = useSearchParams()
+    const [search, setParams] = useSearchParams()
 
     const [state, setState] = createStore<State>({
         categories: [],
-        page: parseInt(params.page || '0') || 0,
+        page: parseInt(search.page || '0') || 0,
     })
 
     createEffect(() => {
@@ -29,41 +30,28 @@ export default () => {
         setParams({ page: state.page })
     })
 
-    function category_list(page: number) {
-        httpx({
-            url: `/api/projects/${pid}/blog-categories/`,
-            method: 'GET',
-            params: { page },
-            onLoad(x) {
-                if (x.status != 200) return
-
-                setState({ categories: x.response, page })
-            },
-        })
+    async function category_list(page: number) {
+        let r = await a.api_projects_blog_categories_list({ pid: pidm(), page })
+        if (r.err()) return
+        setState({ categories: r.body, page })
     }
 
-    function add_category() {
-        httpx({
-            url: `/api/projects/${pid}/blog-categories/`,
-            method: 'POST',
-            params: { pid },
-            onLoad(x) {
-                if (x.status != 200) return
+    async function add_category() {
+        let r = await a.api_projects_blog_categories_post({ pid: pidm() })
+        if (r.err()) return
 
-                addAlert({
-                    type: 'success',
-                    content: 'دسته بندی شما با موفقیت اضافه شد',
-                    subject: 'موفق!',
-                    timeout: 3,
-                })
-
-                setState(
-                    produce(s => {
-                        s.categories = [...s.categories, x.response]
-                    })
-                )
-            },
+        addAlert({
+            type: 'success',
+            content: 'دسته بندی شما با موفقیت اضافه شد',
+            subject: 'موفق!',
+            timeout: 3,
         })
+
+        setState(
+            produce(s => {
+                s.categories = [...s.categories, r.body]
+            })
+        )
     }
 
     return (
@@ -72,7 +60,7 @@ export default () => {
                 <div class='ctas'>
                     <button
                         class='go-back icon'
-                        onClick={() => nav('/projects/' + pid)}
+                        onClick={() => nav('/projects/' + pidm())}
                     >
                         <ArrowLeftIcon />
                     </button>
@@ -114,6 +102,7 @@ export default () => {
                                         <Category
                                             setState={setState}
                                             category={C}
+                                            pid={pidm()}
                                         />
                                     )
                                 })}
@@ -131,6 +120,7 @@ export default () => {
 interface CategoryProps {
     category: a.BlogCategory
     setState: SetStoreFunction<State>
+    pid: number
 }
 const Category: Component<CategoryProps> = P => {
     const [editable, seteditable] = createStore({
@@ -140,67 +130,58 @@ const Category: Component<CategoryProps> = P => {
         slug: '',
     })
 
-    const { pid } = useParams()
-
-    function delete_category(category_id: number) {
-        httpx({
-            url: `/api/projects/${pid}/blog-categories/${category_id}/`,
-            method: 'DELETE',
-            params: { pid, bcid: category_id },
-            onLoad(x) {
-                if (x.status != 200) return
-
-                addAlert({
-                    type: 'success',
-                    content: 'دسته بندی شما با موفقیت حذف شد',
-                    subject: 'موفق!',
-                    timeout: 3,
-                })
-
-                P.setState(
-                    produce(s => {
-                        s.categories = s.categories.filter(
-                            s => s.id !== category_id
-                        )
-                    })
-                )
-            },
+    async function delete_category(id: number) {
+        let r = await a.api_projects_blog_categories_del({
+            pid: P.pid,
+            bcid: id,
         })
+
+        if (r.err()) return
+
+        addAlert({
+            type: 'success',
+            content: 'دسته بندی شما با موفقیت حذف شد',
+            subject: 'موفق!',
+            timeout: 3,
+        })
+
+        P.setState(
+            produce(s => {
+                s.categories = s.categories.filter(s => s.id !== id)
+            })
+        )
     }
 
-    function update_category(category_id: number) {
-        httpx({
-            url: `/api/projects/${pid}/blog-categories/${category_id}/`,
-            method: 'PATCH',
-            params: { pid, bcid: category_id },
-            json: {
+    async function update_category(id: number) {
+        let r = await a.api_projects_blog_categories_patch(
+            {
+                pid: P.pid,
+                bcid: id,
+            },
+            {
                 detail: editable.detail,
                 label: editable.label,
                 slug: editable.slug,
-            },
-            onLoad(x) {
-                if (x.status != 200) return
+            }
+        )
+        if (r.err()) return
 
-                addAlert({
-                    type: 'success',
-                    content: 'دسته بندی شما با موفقیت به روز شد',
-                    subject: 'موفق!',
-                    timeout: 3,
-                })
-
-                P.setState(
-                    produce(s => {
-                        let categoryIndex = s.categories.findIndex(
-                            c => c.id == category_id
-                        )
-
-                        if (categoryIndex === -1) return
-
-                        s.categories[categoryIndex] = x.response
-                    })
-                )
-            },
+        addAlert({
+            type: 'success',
+            content: 'دسته بندی شما با موفقیت به روز شد',
+            subject: 'موفق!',
+            timeout: 3,
         })
+
+        P.setState(
+            produce(s => {
+                let idx = s.categories.findIndex(c => c.id == id)
+
+                if (idx === -1) return
+
+                s.categories[idx] = r.body
+            })
+        )
     }
 
     return (

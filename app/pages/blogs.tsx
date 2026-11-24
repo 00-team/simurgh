@@ -8,8 +8,8 @@ import {
     ImageIcon,
 } from 'icons'
 
-import { fmt_datetime, httpx } from 'shared'
-import { Component, createEffect, Show } from 'solid-js'
+import { fmt_datetime } from 'shared'
+import { Component, createEffect, createMemo, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import './style/blogs.scss'
 
@@ -21,13 +21,14 @@ export default () => {
         page: number
     }
 
-    const [params, setParams] = useSearchParams()
+    const [search, setParams] = useSearchParams()
     const [state, setState] = createStore<State>({
         blogs: [],
-        page: parseInt(params.page || '0') || 0,
+        page: parseInt(search.page || '0') || 0,
     })
 
-    const { pid } = useParams()
+    const params = useParams()
+    const pidm = createMemo(() => Number(params.pid))
     const nav = useNavigate()
 
     createEffect(() => {
@@ -35,30 +36,21 @@ export default () => {
         setParams({ page: state.page })
     })
 
-    function blog_list(page: number) {
-        httpx({
-            url: `/api/projects/${pid}/blogs/`,
-            method: 'GET',
-            params: { page },
-            exclude_status: [404],
-            onLoad(x) {
-                if (x.status == 404) return nav('/projects/')
-                if (x.status != 200) return
+    async function blog_list(page: number) {
+        let r = await a.api_projects_blogs_list(
+            { pid: pidm(), page },
+            { exclude_status: [404] }
+        )
+        if (r.err()) return nav('/projects/')
 
-                setState({ blogs: x.response, page })
-            },
-        })
+        setState({ blogs: r.body, page })
     }
 
-    function blog_add() {
-        httpx({
-            url: `/api/projects/${pid}/blogs/`,
-            method: 'POST',
-            onLoad(x) {
-                if (x.status != 200) return
-                blog_list(0)
-            },
-        })
+    async function blog_add() {
+        let r = await a.api_projects_blogs_post({ pid: pidm() })
+        if (r.err()) return
+
+        await blog_list(0)
     }
 
     return (
@@ -68,7 +60,7 @@ export default () => {
                     <button
                         class='  go-back icon'
                         style={{ '--color': 'var(--blue)' }}
-                        onClick={() => nav('/projects/' + pid)}
+                        onClick={() => nav('/projects/' + pidm())}
                     >
                         <ArrowLeftIcon />
                     </button>
@@ -80,7 +72,7 @@ export default () => {
                 </button>
                 <div class='blog-wrapper'>
                     {state.blogs.map(b => (
-                        <Blog b={b} pid={pid} />
+                        <Blog b={b} pid={pidm()} />
                     ))}
                 </div>
             </div>
@@ -107,7 +99,7 @@ export default () => {
 }
 
 type BlogProps = {
-    pid: string
+    pid: number
     b: a.Blog
 }
 const Blog: Component<BlogProps> = P => {

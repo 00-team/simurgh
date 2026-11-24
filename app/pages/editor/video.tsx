@@ -1,6 +1,5 @@
 import { addAlert } from 'comps'
 import { VideoIcon, XIcon } from 'icons'
-import { httpx } from 'shared'
 import { Component, Show } from 'solid-js'
 import { produce } from 'solid-js/store'
 import { setStore, store } from './store'

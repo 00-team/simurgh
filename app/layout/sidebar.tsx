@@ -1,15 +1,18 @@
 import { A } from '@solidjs/router'
 import { Editable, ThemeSwtich } from 'comps'
-import { ArrowIcon, LogoutIcon, ProjectIcon } from 'icons'
-import { httpx } from 'shared'
+import { ArrowIcon, LogoGood, LogoutIcon, ProjectIcon } from 'icons'
 import { createEffect, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { self, setSelf } from 'store'
 import './style/sidebar.scss'
+import * as a from 'abi'
 
 export default () => {
     return (
         <div class='sidebar-fnd'>
+            <A class='logo' href='/'>
+                <LogoGood />
+            </A>
             <User />
             <ThemeSwtich />
             <div class='links title_smaller'>
@@ -21,7 +24,7 @@ export default () => {
                     <ArrowIcon />
                 </A>
                 <Show when={self.user.admin}>
-                    <A href='/admin-projects/'>
+                    <A href='/admin/projects/'>
                         <div class='holder'>
                             <ProjectIcon />
                             همه پروژه ها
@@ -32,22 +35,9 @@ export default () => {
             </div>
             <div
                 class='logout title'
-                onclick={() => {
-                    httpx({
-                        url: '/api/user/logout/',
-                        method: 'POST',
-                        onLoad(x) {
-                            if (x.status == 200) {
-                                location.reload()
-
-                                setSelf({
-                                    loged_in: true,
-                                    fetch: false,
-                                    user: x.response,
-                                })
-                            }
-                        },
-                    })
+                onclick={async () => {
+                    let r = await a.api_user_logout_post()
+                    if (r.ok()) location.reload()
                 }}
             >
                 <div class='holder'>
@@ -73,18 +63,11 @@ const User = () => {
         input_name.focus()
     })
 
-    function update_name(name: string) {
-        httpx({
-            url: '/api/user/',
-            method: 'PATCH',
-            json: { name },
-            onLoad(x) {
-                if (x.status == 200) {
-                    setSelf({ user: x.response })
-                    setState({ edit_name: false })
-                }
-            },
-        })
+    async function update_name(name: string) {
+        let r = await a.api_user_patch({ name })
+        if (r.err()) return
+        setSelf({ user: r.body })
+        setState({ edit_name: false })
     }
 
     return (

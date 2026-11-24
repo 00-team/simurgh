@@ -39,9 +39,18 @@ const Root = () => {
             <Show when={self.loged_in} fallback={<Login />}>
                 <Router>
                     <Route path='/' component={() => <Home />} />
+                    <Show when={self.user.admin}>
+                        <Route path='/admin' component={Dash}>
+                            <Route
+                                path='/projects'
+
+                                component={() => <Projects admin />}
+                            />
+                        </Route>
+                    </Show>
                     <Route path='/projects' component={Dash}>
                         <Route path='/' component={() => <Projects />} />
-                        <Route path='/:pid'>
+                        <Route path='/:pid' matchFilters={{ pid: /^\d+$/ }}>
                             <Route path='/' component={Project} />
                             <Route path='/records/' component={Records} />
                             <Route
@@ -50,20 +59,16 @@ const Root = () => {
                             />
                             <Route path='/blogs-tags/' component={Tags} />
                             <Route path='/blogs' component={Blogs} />
-                            <Route path='/blogs/:bid'>
+                            <Route
+                                path='/blogs/:bid'
+                                matchFilters={{ bid: /^\d+$/ }}
+                            >
                                 <Route path='/' component={Blog} />
                                 <Route path='/editor/' component={Editor} />
                             </Route>
                         </Route>
-                        <Show when={self.user.admin}>
-                            <Route
-                                path='/admin-projects/'
-                                component={() => <Projects admin />}
-                            />
-                        </Show>
-
-                        <Route path='*' component={NotFound} />
                     </Route>
+                    <Route path='*' component={NotFound} />
                 </Router>
             </Show>
             <Alert />

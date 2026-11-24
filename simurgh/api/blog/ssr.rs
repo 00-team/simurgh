@@ -287,8 +287,7 @@ async fn get_related<'a>(
     .fetch_all(&db.sql)
     .await?;
 
-    let cats =
-        get_cats(blog.project.unwrap_or_default(), &related, &db.sql).await;
+    let cats = get_cats(blog.project, &related, &db.sql).await;
 
     Ok(rsx! {
         section {

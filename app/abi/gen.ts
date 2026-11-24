@@ -47,8 +47,8 @@ export function is_blog_status(value: string): value is BlogStatus {
 }
 ;
 export const BLOG_STATUS_DEF: BlogStatus = 'draft';
-export type Blog = { author?:(((number) | null)),category?:(((number) | null)),created_at:(number),data:((BlogData[])),detail:(string),html:(string),id:(number),project?:(((number) | null)),publish_at?:(((number) | null)),read_time:(number),slug:(string),status:BlogStatus,thumbnail?:(((number) | null)),thumbnail_url?:(((string) | null)),title:(string),updated_at:(number), };
-export const BLOG_DEF: Blog = {created_at:(0),data:([]),detail:(''),html:(''),id:(0),read_time:(0),slug:(''),status:BLOG_STATUS_DEF,title:(''),updated_at:(0),};
+export type Blog = { author?:(((number) | null)),category?:(((number) | null)),created_at:(number),data:((BlogData[])),detail:(string),html:(string),id:(number),project:(number),publish_at?:(((number) | null)),read_time:(number),slug:(string),status:BlogStatus,thumbnail?:(((number) | null)),thumbnail_url?:(((string) | null)),title:(string),updated_at:(number), };
+export const BLOG_DEF: Blog = {created_at:(0),data:([]),detail:(''),html:(''),id:(0),project:(0),read_time:(0),slug:(''),status:BLOG_STATUS_DEF,title:(''),updated_at:(0),};
 export type BlogCategory = { count:(number),detail:(string),id:(number),label:(string),project:(number),slug:(string), };
 export const BLOG_CATEGORY_DEF: BlogCategory = {count:(0),detail:(''),id:(0),label:(''),project:(0),slug:(''),};
 export type BlogCategoryUpdateBody = { detail:(string),label:(string),slug:(string), };

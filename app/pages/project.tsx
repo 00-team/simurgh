@@ -8,7 +8,7 @@ import {
     RecycleIcon,
     TrashIcon,
 } from 'icons'
-import { fmt_bytes, fmt_datetime, httpx, record_url } from 'shared'
+import { fmt_bytes, fmt_datetime, record_url } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import { setPopup } from 'store/popup'
@@ -49,65 +49,28 @@ export default () => {
         let id = parseInt(params.pid)
         if (isNaN(id)) nav('/projects/')
 
-        httpx({
-            url: `/api/projects/${id}/`,
-            method: 'GET',
-            onLoad(x) {
-                if (x.status != 200) return nav('/projects/')
-                setState({ project: x.response })
-            },
+        a.api_projects_get({ id }).then(r => {
+            if (r.err()) return nav('/projects/')
+            setState({ project: r.body })
         })
     })
 
-    function project_update(data: Pick<a.Project, 'name'>) {
-        httpx({
-            url: `/api/projects/${state.project.id}/`,
-            method: 'PATCH',
-            json: data,
-            onLoad(x) {
-                if (x.status != 200) {
-                    setState({ edit_name: false })
-                    return
-                }
+    async function project_update(data: a.ProjectUpdateBody) {
+        let r = await a.api_projects_patch({ id: state.project.id }, data)
+        if (r.err()) return
 
-                setState(
-                    produce(s => {
-                        s.project = x.response
-                        s.edit_name = false
-                    })
-                )
-            },
-        })
-    }
-    function api_update() {
-        httpx({
-            url: `/api/projects/${state.project.id}/`,
-            method: 'PATCH',
-            json: {
-                api_key: true,
-                name: state.project.name,
-            },
-            onLoad(x) {
-                if (x.status != 200) return
-
-                setState(
-                    produce(s => {
-                        s.project = x.response
-                    })
-                )
-            },
-        })
+        setState(
+            produce(s => {
+                s.project = r.body
+                s.edit_name = false
+            })
+        )
     }
 
-    function project_delete() {
-        httpx({
-            url: `/api/projects/${state.project.id}/`,
-            method: 'DELETE',
-            onLoad(x) {
-                if (x.status != 200) return
-                nav('/projects/')
-            },
-        })
+    async function project_delete() {
+        let r = await a.api_projects_del({ id: state.project.id })
+        if (r.err()) return
+        nav('/projects/')
     }
 
     return (
@@ -223,7 +186,15 @@ export default () => {
                 <div class='row'>
                     <span>api key:</span>
                     <div class='api'>
-                        <div class='re-gen' onclick={api_update}>
+                        <div
+                            class='re-gen'
+                            onclick={() =>
+                                project_update({
+                                    name: state.project.name,
+                                    api_key: true,
+                                })
+                            }
+                        >
                             <RecycleIcon />
                         </div>
                         <div
@@ -279,27 +250,20 @@ const Blogs: Component<BlogProps> = P => {
 
     createEffect(() => {
         if (!P.project.id) return
-        httpx({
-            url: `/api/projects/${P.project.id}/blogs/`,
-            method: 'GET',
-            params: { page: 0 },
-            show_messages: false,
-            onLoad(x) {
-                if (x.status != 200) return
-                setState({ blogs: x.response })
-            },
+
+        a.api_projects_blogs_list(
+            { pid: P.project.id, page: 0 },
+            { show_alert: false }
+        ).then(r => {
+            if (r.err()) return
+            setState({ blogs: r.body })
         })
     })
 
-    function blog_add() {
-        httpx({
-            url: `/api/projects/${P.project.id}/blogs/`,
-            method: 'POST',
-            onLoad(x) {
-                if (x.status != 200) return
-                nav(`/projects/${P.project.id}/blogs/${x.response.id}`)
-            },
-        })
+    async function blog_add() {
+        let r = await a.api_projects_blogs_post({ pid: P.project.id })
+        if (r.err()) return
+        nav(`/projects/${P.project.id}/blogs/${r.body.id}`)
     }
 
     return (
@@ -335,7 +299,10 @@ const Blogs: Component<BlogProps> = P => {
                         onClick={() => nav('blogs/' + b.id)}
                     >
                         <div class='thumbnail'>
-                            <Show when={b.thumbnail && b.thumbnail_url} fallback={<ImageIcon />}>
+                            <Show
+                                when={b.thumbnail && b.thumbnail_url}
+                                fallback={<ImageIcon />}
+                            >
                                 <img
                                     draggable={false}
                                     loading='lazy'
@@ -386,15 +353,13 @@ const Records: Component<RecordProps> = P => {
 
     createEffect(() => {
         if (!P.project.id) return
-        httpx({
-            url: `/api/projects/${P.project.id}/records/`,
-            method: 'GET',
-            params: { page: 0 },
-            show_messages: false,
-            onLoad(x) {
-                if (x.status != 200) return
-                setState({ records: x.response })
-            },
+
+        a.api_projects_records_list(
+            { pid: P.project.id, page: 0 },
+            { show_alert: false }
+        ).then(r => {
+            if (r.err()) return
+            setState({ records: r.body })
         })
     })
 
@@ -404,18 +369,24 @@ const Records: Component<RecordProps> = P => {
         el.onchange = () => {
             if (!el.files || !el.files[0]) return
 
-            let data = new FormData()
-            data.set('record', el.files[0])
+            for (let f of el.files) {
+                alert(f.type)
+            }
 
-            httpx({
-                url: `/api/projects/${P.project.id}/records/`,
-                method: 'POST',
-                data,
-                onLoad(x) {
-                    if (x.status != 200) return
-                    nav('records/')
-                },
-            })
+            // let data = new FormData()
+            // data.set('record', el.files[0])
+            //
+            // a.api_projects_records_photo_post()
+            //
+            // httpx({
+            //     url: `/api/projects/${P.project.id}/records/`,
+            //     method: 'POST',
+            //     data,
+            //     onLoad(x) {
+            //         if (x.status != 200) return
+            //         nav('records/')
+            //     },
+            // })
         }
         el.click()
     }

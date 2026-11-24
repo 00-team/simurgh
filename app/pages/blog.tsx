@@ -15,7 +15,7 @@ import { createEffect, createMemo, on, Show } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 
 import { addAlert } from 'comps'
-import { fmt_date_input, fmt_datetime, fmt_hms, httpx } from 'shared'
+import { fmt_date_input, fmt_datetime, fmt_hms } from 'shared'
 import { setPopup } from 'store/popup'
 import './style/blog.scss'
 
@@ -27,10 +27,7 @@ export default () => {
     type State = {
         blog: a.Blog
         editing: boolean
-        edit: Pick<
-            a.Blog,
-            'detail' | 'read_time' | 'slug' | 'status' | 'title' | 'publish_at'
-        >
+        edit: a.BlogUpdateBody
     }
     const [state, setState] = createStore<State>({
         blog: { ...a.BLOG_DEF },
@@ -42,10 +39,14 @@ export default () => {
             detail: '',
             publish_at: null,
             read_time: 0,
+            category: null,
+            thumbnail: null,
         },
     })
     const nav = useNavigate()
-    const { pid, bid } = useParams()
+    const params = useParams()
+    const pidm = createMemo(() => Number(params.pid))
+    const bid = createMemo(() => Number(params.bid))
 
     let preview!: HTMLDivElement
     createEffect(() => {
@@ -60,12 +61,7 @@ export default () => {
             () => {
                 setState(
                     produce(s => {
-                        s.edit.slug = s.blog.slug
-                        s.edit.status = s.blog.status
-                        s.edit.title = s.blog.title
-                        s.edit.detail = s.blog.detail
-                        s.edit.read_time = s.blog.read_time
-                        s.edit.publish_at = s.blog.publish_at
+                        s.edit = { ...s.blog }
                     })
                 )
             },
@@ -80,63 +76,48 @@ export default () => {
             state.blog.title != state.edit.title ||
             state.blog.detail != state.edit.detail ||
             state.blog.read_time != state.edit.read_time ||
-            state.blog.publish_at != state.edit.publish_at
+            state.blog.publish_at != state.edit.publish_at ||
+            state.blog.thumbnail != state.edit.thumbnail ||
+            state.blog.category != state.edit.category
     )
 
     createEffect(() => {
-        let id = parseInt(bid)
-        if (isNaN(id)) return nav(`/projects/${pid}/blogs/`)
-
-        httpx({
-            url: `/api/projects/${pid}/blogs/${id}/`,
-            method: 'GET',
-            exclude_status: [404],
-            onLoad(x) {
-                if (x.status == 404) return nav('/projects/')
-                if (x.status != 200) return
-                setState({ blog: x.response })
-            },
+        a.api_projects_blogs_get(
+            { pid: pidm(), bid: bid() },
+            { exclude_status: [404] }
+        ).then(r => {
+            if (r.err()) return nav('/projects/')
+            setState({ blog: r.body })
         })
     })
 
-    function blog_delete() {
+    async function blog_delete() {
         if (!state.blog.id) return
 
-        httpx({
-            url: `/api/projects/${pid}/blogs/${state.blog.id}/`,
-            method: 'DELETE',
-            onLoad(x) {
-                if (x.status != 200) return
-                nav(`/projects/${pid}/blogs/`)
-            },
-        })
+        let pid = state.blog.project
+        let r = await a.api_projects_blogs_del({ pid, bid: state.blog.id })
+        if (r.err()) return
+        nav(`/projects/${pid}/blogs/`)
     }
 
-    function blog_update() {
+    async function blog_update() {
         if (!state.blog.id) return
 
-        httpx({
-            url: `/api/projects/${pid}/blogs/${state.blog.id}/`,
-            method: 'PATCH',
-            json: {
-                ...state.edit,
+        let r = await a.api_projects_blogs_patch(
+            {
+                pid: state.blog.project,
+                bid: state.blog.id,
             },
-            onLoad(x) {
-                if (x.status != 200) return
-                setState({ blog: x.response, editing: false })
-            },
-        })
+            state.edit
+        )
+        if (r.err()) return
+        setState({ blog: r.body, editing: false })
     }
 
     function reset() {
         setState(
             produce(s => {
-                s.edit.slug = s.blog.slug
-                s.edit.status = s.blog.status
-                s.edit.title = s.blog.title
-                s.edit.detail = s.blog.detail
-                s.edit.read_time = s.blog.read_time
-                s.edit.publish_at = s.blog.publish_at
+                s.edit = { ...s.blog }
             })
         )
     }
@@ -175,19 +156,6 @@ export default () => {
         el.click()
     }
 
-    function blog_thumbnail_delete() {
-        if (!state.blog.id) return
-
-        httpx({
-            url: `/api/projects/${pid}/blogs/${state.blog.id}/thumbnail/`,
-            method: 'DELETE',
-            onLoad(x) {
-                if (x.status != 200) return
-                setState({ blog: x.response })
-            },
-        })
-    }
-
     function calculate_read_time() {
         let total_words = 0
         for (let block of state.blog.data) {
@@ -221,14 +189,14 @@ export default () => {
                     <button
                         class='go-back icon'
                         style={{ '--color': 'var(--blue)' }}
-                        onClick={() => nav(`/projects/${pid}/`)}
+                        onClick={() => nav(`/projects/${pidm()}/`)}
                     >
                         <ArrowUpLeftIcon />
                     </button>
                     <button
                         class='go-back icon'
                         style={{ '--color': 'var(--blue)' }}
-                        onClick={() => nav(`/projects/${pid}/blogs/`)}
+                        onClick={() => nav(`/projects/${pidm()}/blogs/`)}
                     >
                         <ArrowLeftIcon />
                     </button>
@@ -240,7 +208,7 @@ export default () => {
                             classList={{ active: state.editing }}
                             onClick={() =>
                                 nav(
-                                    `/projects/${pid}/blogs/${state.blog.id}/editor/`
+                                    `/projects/${pidm()}/blogs/${state.blog.id}/editor/`
                                 )
                             }
                         >
@@ -562,7 +530,7 @@ export default () => {
                                         onClick={e => {
                                             e.stopPropagation()
                                             e.preventDefault()
-                                            blog_thumbnail_delete()
+                                            setState('edit', 'thumbnail', null)
                                         }}
                                     >
                                         <XIcon />

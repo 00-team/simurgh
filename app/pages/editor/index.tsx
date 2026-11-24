@@ -13,8 +13,7 @@ import {
     TrashIcon,
 } from 'icons'
 
-import { httpx } from 'shared'
-import { Component, createEffect, Show } from 'solid-js'
+import { Component, createEffect, createMemo, Show } from 'solid-js'
 import { produce } from 'solid-js/store'
 import { setPopup } from 'store/popup'
 import { EditorAudioBlock } from './audio'
@@ -31,39 +30,40 @@ import * as a from 'abi'
 
 export default () => {
     const nav = useNavigate()
-    const { pid, bid } = useParams()
+    const params = useParams()
+    const pidm = createMemo(() => Number(params.pid))
+    const bidm = createMemo(() => Number(params.bid))
 
     createEffect(() => {
-        httpx({
-            url: `/api/projects/${pid}/blogs/${bid}/`,
-            method: 'GET',
-            exclude_status: [404],
-            onLoad(x) {
-                if (x.status == 404) return nav('/projects/')
-                if (x.status != 200) return
-                setStore({ blog: x.response })
-            },
+        a.api_projects_blogs_get(
+            { pid: pidm(), bid: bidm() },
+            { exclude_status: [404] }
+        ).then(r => {
+            if (r.err()) return nav('/projects/')
+            setStore({ blog: r.body })
         })
     })
 
-    function blog_update_data() {
+    async function blog_update_data() {
         if (!store.blog.id) return
 
-        httpx({
-            url: `/api/projects/${pid}/blogs/${bid}/data/`,
-            method: 'PUT',
-            json: store.data,
-            onLoad(x) {
-                if (x.status != 200) return
-                addAlert({
-                    subject: 'موفق',
-                    content: 'بلاگ شما با موفقیت ذخیره شد.',
-                    type: 'success',
-                    timeout: 3,
-                })
-                setStore({ blog: x.response })
+        let r = await a.api_projects_blogs_data_put(
+            {
+                pid: store.blog.project,
+                bid: store.blog.id,
             },
+            store.data
+        )
+
+        if (r.err()) return
+
+        addAlert({
+            subject: 'موفق',
+            content: 'بلاگ شما با موفقیت ذخیره شد.',
+            type: 'success',
+            timeout: 3,
         })
+        setStore({ blog: r.body })
     }
 
     return (
@@ -71,7 +71,7 @@ export default () => {
             <div class='go-back'>
                 <button
                     class='go-back-btn icon'
-                    onClick={() => nav(`/projects/${pid}/blogs/${bid}/`)}
+                    onClick={() => nav(`/projects/${pidm()}/blogs/${bidm()}/`)}
                 >
                     <ArrowLeftIcon />
                 </button>

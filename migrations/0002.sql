@@ -41,8 +41,41 @@ PRAGMA foreign_key_check;
 
 COMMIT;
 
-alter table blogs rename column thumbnail to thumbnail_url;
-alter table blogs add column thumbnail integer references records(id) on delete set null;
+
+create table blogs_new (
+    id integer primary key not null,
+    slug text not null,
+    status integer not null default 0,
+    category integer references blog_categories(id) on delete set null,
+    project integer not null references projects(id) on delete cascade,
+    author integer references users(id) on delete set null,
+    created_at integer not null,
+    updated_at integer not null default 0,
+    publish_at integer,
+    title text not null default '',
+    detail text not null default '',
+    html text not null default '',
+    data text not null default '[]',
+    read_time integer not null default 0,
+    thumbnail integer references records(id) on delete set null,
+    thumbnail_url text,
+    unique(slug, project)
+);
+
+delete from blogs where project is null;
+
+INSERT INTO blogs_new (
+    id, slug, status, category, project, author, created_at, updated_at,
+    publish_at, title, detail, html, data, read_time, thumbnail_url
+) SELECT 
+    id, slug, status, category, project, author, created_at, updated_at,
+    publish_at, title, detail, html, data, read_time, thumbnail
+FROM blogs;
+
+DROP TABLE blogs;
+ALTER TABLE blogs_new RENAME TO blogs;
+
+PRAGMA foreign_key_check;
 
 CREATE TRIGGER blogs_clear_thumbnail_url
 BEFORE DELETE ON records

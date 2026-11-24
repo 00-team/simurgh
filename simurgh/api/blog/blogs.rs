@@ -99,7 +99,7 @@ async fn blog_add(
     Ok(Json(Blog {
         id,
         slug,
-        project: Some(project.id),
+        project: project.id,
         author: Some(user.id),
         created_at: now,
         ..Default::default()
@@ -354,14 +354,12 @@ async fn blog_delete(
     .execute(&db.sql)
     .await?;
 
-    if let Some(pid) = blog.project {
-        sqlx::query! {
-            "update projects set blog_count = blog_count - 1 where id = ?",
-            pid
-        }
-        .execute(&db.sql)
-        .await?;
+    sqlx::query! {
+        "update projects set blog_count = blog_count - 1 where id = ?",
+        blog.project
     }
+    .execute(&db.sql)
+    .await?;
 
     Ok(HttpResponse::Ok().finish())
 }

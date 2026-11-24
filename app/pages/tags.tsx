@@ -2,13 +2,13 @@ import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 import { addAlert } from 'comps'
 import { ArrowLeftIcon, PencilIcon, PlusIcon, SaveIcon, TrashIcon } from 'icons'
 // import { BlogTag } from 'models'
-import { httpx } from 'shared'
 import { Component, createEffect } from 'solid-js'
 import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import { setPopup } from 'store/popup'
 import './style/tags.scss'
 
 import * as a from 'abi'
+import { createMemo } from 'solid-js'
 
 type State = {
     tags: a.BlogTag[]
@@ -16,55 +16,43 @@ type State = {
 }
 
 export default () => {
-    const { pid } = useParams()
+    const params = useParams()
+    const pidm = createMemo(() => Number(params.pid))
     const nav = useNavigate()
-    const [params, setParams] = useSearchParams()
+    const [search, setSearch] = useSearchParams()
 
     const [state, setState] = createStore<State>({
         tags: [],
-        page: parseInt(params.page || '0') || 0,
+        page: parseInt(search.page || '0') || 0,
     })
 
     createEffect(() => {
         tag_list(state.page)
-        setParams({ page: state.page })
+        setSearch({ page: state.page })
     })
 
-    function tag_list(page: number) {
-        httpx({
-            url: `/api/projects/${pid}/blog-tags/`,
-            method: 'GET',
-            params: { page },
-            onLoad(x) {
-                if (x.status != 200) return
-
-                setState({ tags: x.response, page })
-            },
-        })
+    async function tag_list(page: number) {
+        let r = await a.api_projects_blog_tags_list({ pid: pidm(), page })
+        if (r.err()) return
+        setState({ tags: r.body, page })
     }
 
-    function add_tag() {
-        httpx({
-            url: `/api/projects/${pid}/blog-tags/`,
-            method: 'POST',
-            params: { pid },
-            onLoad(x) {
-                if (x.status != 200) return
+    async function add_tag() {
+        let r = await a.api_projects_blog_tags_post({ pid: pidm() })
+        if (r.err()) return
 
-                addAlert({
-                    type: 'success',
-                    content: 'تگ شما با موفقیت اضافه شد',
-                    subject: 'موفق!',
-                    timeout: 3,
-                })
-
-                setState(
-                    produce(s => {
-                        s.tags = [...s.tags, x.response]
-                    })
-                )
-            },
+        addAlert({
+            type: 'success',
+            content: 'تگ شما با موفقیت اضافه شد',
+            subject: 'موفق!',
+            timeout: 3,
         })
+
+        setState(
+            produce(s => {
+                s.tags = [...s.tags, r.body]
+            })
+        )
     }
 
     return (
@@ -73,7 +61,7 @@ export default () => {
                 <div class='ctas'>
                     <button
                         class='go-back icon'
-                        onClick={() => nav('/projects/' + pid)}
+                        onClick={() => nav('/projects/' + pidm())}
                     >
                         <ArrowLeftIcon />
                     </button>
@@ -133,63 +121,55 @@ const Tag: Component<TagProps> = P => {
         slug: '',
     })
 
-    const { pid } = useParams()
-
-    function delete_tag(tag_id: number) {
-        httpx({
-            url: `/api/projects/${pid}/blog-tags/${tag_id}/`,
-            method: 'DELETE',
-            params: { pid, btid: tag_id },
-            onLoad(x) {
-                if (x.status != 200) return
-
-                addAlert({
-                    type: 'success',
-                    content: 'نگ شما با موفقیت حذف شد',
-                    subject: 'موفق!',
-                    timeout: 3,
-                })
-
-                P.setState(
-                    produce(s => {
-                        s.tags = s.tags.filter(s => s.id !== tag_id)
-                    })
-                )
-            },
+    async function delete_tag(tag_id: number) {
+        let r = await a.api_projects_blog_tags_del({
+            pid: P.tag.project,
+            btid: P.tag.id,
         })
+        if (r.err()) return
+
+        addAlert({
+            type: 'success',
+            content: 'نگ شما با موفقیت حذف شد',
+            subject: 'موفق!',
+            timeout: 3,
+        })
+
+        P.setState(
+            produce(s => {
+                s.tags = s.tags.filter(s => s.id !== tag_id)
+            })
+        )
     }
 
-    function update_tag(tag_id: number) {
-        httpx({
-            url: `/api/projects/${pid}/blog-tags/${tag_id}/`,
-            method: 'PATCH',
-            params: { pid, btid: tag_id },
-            json: {
+    async function update_tag(tag_id: number) {
+        let r = await a.api_projects_blog_tags_patch(
+            {
+                pid: P.tag.project,
+                btid: P.tag.id,
+            },
+            {
                 detail: editable.detail,
                 label: editable.label,
                 slug: editable.slug,
-            },
-            onLoad(x) {
-                if (x.status != 200) return
+            }
+        )
+        if (r.err()) return
 
-                addAlert({
-                    type: 'success',
-                    content: 'نگ شما با موفقیت به روز شد',
-                    subject: 'موفق!',
-                    timeout: 3,
-                })
-
-                P.setState(
-                    produce(s => {
-                        let TagIndex = s.tags.findIndex(c => c.id == tag_id)
-
-                        if (TagIndex === -1) return
-
-                        s.tags[TagIndex] = x.response
-                    })
-                )
-            },
+        addAlert({
+            type: 'success',
+            content: 'نگ شما با موفقیت به روز شد',
+            subject: 'موفق!',
+            timeout: 3,
         })
+
+        P.setState(
+            produce(s => {
+                let idx = s.tags.findIndex(c => c.id == tag_id)
+                if (idx === -1) return
+                s.tags[idx] = r.body
+            })
+        )
     }
 
     return (

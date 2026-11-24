@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from '@solidjs/router'
 import { ChevronLeftIcon, ChevronRightIcon } from 'icons'
-import { fmt_bytes, fmt_datetime, httpx } from 'shared'
+import { fmt_bytes, fmt_datetime } from 'shared'
 import { Component, createEffect, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import './style/projects.scss'
@@ -27,32 +27,27 @@ const Projects: Component<Props> = P => {
         projects_list(page)
     })
 
-    function projects_list(page: number) {
+    async function projects_list(page: number) {
         if (page < 0) page = 0
 
         setParams({ page })
         setState({ loading: true })
-        httpx({
-            url: P.admin ? '/api/admin/projects/' : '/api/projects/',
-            method: 'GET',
-            params: { page },
-            onLoad(x) {
-                if (x.status != 200) return
-                setState({ projects: x.response, page, loading: false })
-            },
-        })
+
+        let r
+        if (P.admin) {
+            r = await a.api_admin_projects_list({ page })
+        } else {
+            r = await a.api_projects_list({ page })
+        }
+
+        if (r.err()) return
+        setState({ projects: r.body, page, loading: false })
     }
 
-    function projects_new() {
-        httpx({
-            url: '/api/projects/',
-            method: 'POST',
-            json: { name: 'پروژه جدید' },
-            onLoad(x) {
-                if (x.status != 200) return
-                projects_list(state.page)
-            },
-        })
+    async function projects_new() {
+        let r = await a.api_projects_post({ name: 'پروژه جدید' })
+        if (r.err()) return
+        projects_list(state.page)
     }
 
     function change_page(update: number) {

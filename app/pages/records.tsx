@@ -10,7 +10,7 @@ import {
     PlusIcon,
     TrashIcon,
 } from 'icons'
-import { fmt_bytes, fmt_datetime, httpx, record_url } from 'shared'
+import { fmt_bytes, fmt_datetime, record_url } from 'shared'
 import { Component, createEffect, Match, Switch } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import { setPopup } from 'store/popup'
@@ -200,15 +200,10 @@ const Record: Component<RecordProps> = P => {
     //     })
     // }
 
-    function record_delete() {
-        httpx({
-            url: `/api/projects/${P.pid}/records/${P.r.id}/`,
-            method: 'DELETE',
-            onLoad(x) {
-                if (x.status != 200) return
-                P.update()
-            },
-        })
+    async function record_delete() {
+        let r = await a.api_projects_records_del({ pid: P.pid, rid: P.r.id })
+        if (r.err()) return
+        P.update()
     }
 
     return (
@@ -297,19 +292,14 @@ const AddUsage: Component<AddUsageProps> = P => {
         usage: { kind: 'free', reason: '' },
     })
 
-    function record_update() {
+    async function record_update() {
         let usages = [...P.record.usages, state.usage]
-        httpx({
-            url: `/api/projects/${P.record.project}/records/${P.record.id}/`,
-            method: 'PATCH',
-            json: {
-                usages,
-            },
-            onLoad(x) {
-                if (x.status != 200) return
-                P.update(x.response)
-            },
-        })
+        let r = await a.api_projects_records_patch(
+            { pid: P.record.project, rid: P.record.id },
+            { usages }
+        )
+        if (r.err()) return
+        P.update(r.body)
     }
 
     return (
