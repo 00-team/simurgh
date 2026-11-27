@@ -166,6 +166,9 @@ async fn r_delete(
                 RecordKind::Photo => {
                     RecordPath::new(r.id, r.salt, Webp, pid).delete();
                 }
+                RecordKind::Audio => {
+                    RecordPath::new(r.id, r.salt, Opus, pid).delete();
+                }
             };
         }
 

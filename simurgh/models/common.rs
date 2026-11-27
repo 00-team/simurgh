@@ -2,12 +2,7 @@ use actix_web::body::BoxBody;
 use actix_web::web::Json;
 use actix_web::{FromRequest, HttpRequest, Responder};
 use actix_web::{HttpResponse, http::header::ContentType};
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
-use sqlx::{
-    Sqlite,
-    encode::IsNull,
-    sqlite::{SqliteArgumentValue, SqliteTypeInfo},
-};
+use serde::Deserialize;
 use std::ops;
 use std::pin::Pin;
 use utoipa::IntoParams;
@@ -42,54 +37,54 @@ impl Responder for Html {
     }
 }
 
-#[derive(Debug, Deserialize, Default, Clone)]
-pub struct JsonStr<T>(pub T);
-
-impl<T> ops::Deref for JsonStr<T> {
-    type Target = T;
-
-    fn deref(&self) -> &T {
-        &self.0
-    }
-}
-
-impl<T> ops::DerefMut for JsonStr<T> {
-    fn deref_mut(&mut self) -> &mut T {
-        &mut self.0
-    }
-}
-
-impl<T: Serialize> Serialize for JsonStr<T> {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-
-impl<'q, T: Serialize> sqlx::Encode<'q, Sqlite> for JsonStr<T> {
-    fn encode_by_ref(
-        &self, buf: &mut <Sqlite as sqlx::Database>::ArgumentBuffer<'q>,
-    ) -> Result<IsNull, sqlx::error::BoxDynError> {
-        let result = serde_json::to_string(&self.0).unwrap_or("{}".to_string());
-        buf.push(SqliteArgumentValue::Text(result.into()));
-
-        Ok(IsNull::No)
-    }
-}
-
-impl<T> sqlx::Type<Sqlite> for JsonStr<T> {
-    fn type_info() -> SqliteTypeInfo {
-        <&str as sqlx::Type<Sqlite>>::type_info()
-    }
-}
-
-impl<T: DeserializeOwned + Default> From<String> for JsonStr<T> {
-    fn from(value: String) -> Self {
-        Self(serde_json::from_str::<T>(&value).unwrap_or_default())
-    }
-}
+// #[derive(Debug, Deserialize, Default, Clone)]
+// pub struct JsonStr<T>(pub T);
+//
+// impl<T> ops::Deref for JsonStr<T> {
+//     type Target = T;
+//
+//     fn deref(&self) -> &T {
+//         &self.0
+//     }
+// }
+//
+// impl<T> ops::DerefMut for JsonStr<T> {
+//     fn deref_mut(&mut self) -> &mut T {
+//         &mut self.0
+//     }
+// }
+//
+// impl<T: Serialize> Serialize for JsonStr<T> {
+//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+//     where
+//         S: serde::Serializer,
+//     {
+//         self.0.serialize(serializer)
+//     }
+// }
+//
+// impl<'q, T: Serialize> sqlx::Encode<'q, Sqlite> for JsonStr<T> {
+//     fn encode_by_ref(
+//         &self, buf: &mut <Sqlite as sqlx::Database>::ArgumentBuffer<'q>,
+//     ) -> Result<IsNull, sqlx::error::BoxDynError> {
+//         let result = serde_json::to_string(&self.0).unwrap_or("{}".to_string());
+//         buf.push(SqliteArgumentValue::Text(result.into()));
+//
+//         Ok(IsNull::No)
+//     }
+// }
+//
+// impl<T> sqlx::Type<Sqlite> for JsonStr<T> {
+//     fn type_info() -> SqliteTypeInfo {
+//         <&str as sqlx::Type<Sqlite>>::type_info()
+//     }
+// }
+//
+// impl<T: DeserializeOwned + Default> From<String> for JsonStr<T> {
+//     fn from(value: String) -> Self {
+//         Self(serde_json::from_str::<T>(&value).unwrap_or_default())
+//     }
+// }
 
 #[macro_export]
 macro_rules! sql_enum {

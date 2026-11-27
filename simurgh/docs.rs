@@ -31,6 +31,7 @@ pub async fn openapi_json() -> impl Responder {
     let mut admin_doc = ApiDoc::openapi();
 
     admin_doc.merge(admin::projects::ApiDoc::openapi());
+    admin_doc.merge(admin::records::ApiDoc::openapi());
     doc_add_prefix(&mut admin_doc, "/admin", false);
     doc.merge(admin_doc);
 

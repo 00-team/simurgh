@@ -17,6 +17,8 @@ pub struct Project {
     pub created_at: i64,
     pub updated_at: i64,
     pub api_key: Option<String>,
+    pub storage_limit_mg: i64,
+    pub subscription_until: i64,
 }
 
 impl actix_web::FromRequest for Project {

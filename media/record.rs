@@ -172,6 +172,7 @@ pub enum RecordPathKind {
     Webp,
     Mp4,
     M3u8,
+    Opus,
 }
 
 impl RecordPathKind {
@@ -180,6 +181,7 @@ impl RecordPathKind {
             Self::Webp => ".webp",
             Self::Mp4 => ".mp4",
             Self::M3u8 => "-m3u8",
+            Self::Opus => ".opus",
         }
     }
 }

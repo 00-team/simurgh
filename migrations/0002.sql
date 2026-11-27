@@ -19,6 +19,8 @@ insert into users(phone, name, client) values ('2', 'saied', true);
 insert into users(phone, name, admin) values ('3', 'sadra', true);
 
 alter table projects rename column user to owner;
+alter table projects add column storage_limit_mg integer not null default 1024;
+alter table projects add column subscription_until integer not null default 0;
 
 
 CREATE TABLE records_new (
@@ -26,16 +28,53 @@ CREATE TABLE records_new (
     project integer not null references projects(id) on delete cascade,
     salt text not null,
     size integer not null,
-    created_at integer not null,
     kind integer not null,
-    usages text not null default '[]'
+
+    tag text not null default 'none',
+    duration double not null default 0,
+    has_m3u8 boolean not null default false,
+    width integer not null default 0,
+    height integer not null default 0,
+
+    usage_count integer not null default 0,
+
+    created_at integer not null
 );
 
-INSERT INTO records_new (id, project, salt, size, created_at, kind, usages)
-    SELECT id, project, salt, size, created_at, 0, usages FROM records;
+INSERT INTO records_new (id, project, salt, size, created_at, kind)
+    SELECT id, project, salt, size, created_at, 0 FROM records;
 
 DROP TABLE records;
 ALTER TABLE records_new RENAME TO records;
+
+create index idx_records_tags on records(tag);
+create index idx_records_project on records(project);
+
+create table record_blog_usage (
+    record integer not null references records(id) on delete cascade,
+    blog integer not null references blogs(id) on delete cascade,
+    primary key(blog, record)
+) without rowid;
+
+create index idx_blog_tag_tag on blog_tag(tag);
+
+-- Increment when a usage is added
+CREATE TRIGGER record_blog_usage_ai
+AFTER INSERT ON record_blog_usage
+BEGIN
+    UPDATE records
+    SET usage_count = usage_count + 1
+    WHERE id = NEW.record;
+END;
+
+-- Decrement when a usage is removed
+CREATE TRIGGER record_blog_usage_ad
+AFTER DELETE ON record_blog_usage
+BEGIN
+    UPDATE records
+    SET usage_count = usage_count - 1
+    WHERE id = OLD.record;
+END;
 
 PRAGMA foreign_key_check;
 

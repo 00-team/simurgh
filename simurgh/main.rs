@@ -3,8 +3,7 @@ use crate::state::VerificationState;
 use actix_files as af;
 use actix_multipart::form::MultipartFormConfig;
 use actix_web::{
-    App,  HttpServer, 
-    middleware as mw,
+    App, HttpServer, middleware as mw,
     web::{Data, JsonConfig, PathConfig, QueryConfig, ServiceConfig, scope},
 };
 use config::Config;
@@ -12,10 +11,10 @@ use media::MediaConfig;
 pub use models::AppErr;
 use nest::NestError;
 
-mod dar;
 mod admin;
 mod api;
 mod config;
+mod dar;
 mod docs;
 // mod general;
 mod models;
@@ -55,7 +54,11 @@ fn config_app(app: &mut ServiceConfig) {
             .service(api::user::router())
             .service(api::projects::router())
             .service(api::verification::verification)
-            .service(scope("/admin").service(admin::projects::router())),
+            .service(
+                scope("/admin")
+                    .service(admin::projects::router())
+                    .service(admin::records::router()),
+            ),
     );
 
     app.service(web::router());

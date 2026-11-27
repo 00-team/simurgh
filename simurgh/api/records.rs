@@ -1,5 +1,5 @@
 use actix_multipart::form::MultipartForm;
-use actix_multipart::form::json::Json as MPJson;
+// use actix_multipart::form::json::Json as MPJson;
 use actix_multipart::form::tempfile::TempFile;
 use actix_web::web::{Data, Json, Query};
 use actix_web::{HttpResponse, Scope, delete, get, patch, post};
@@ -10,7 +10,7 @@ use utoipa::{OpenApi, ToSchema};
 use crate::docs::UpdatePaths;
 use crate::models::project::Project;
 use crate::models::record::{Record, RecordKind, RecordUsage};
-use crate::models::{Horp, Jorp, JsonStr, ListInput, Response};
+use crate::models::{Horp, Jorp, ListInput, Response};
 use crate::state::SimurghDb;
 
 #[derive(OpenApi)]
@@ -52,8 +52,8 @@ pub struct RecordUpload {
     #[schema(value_type = String, format = Binary)]
     #[multipart(limit = "200MB")]
     pub record: TempFile,
-    #[schema(value_type = Vec<RecordUsage>)]
-    pub usages: MPJson<Vec<RecordUsage>>,
+    // #[schema(value_type = Vec<RecordUsage>)]
+    // pub usages: MPJson<Vec<RecordUsage>>,
 }
 
 #[utoipa::path(
@@ -72,7 +72,7 @@ async fn r_photo_add(
     // let size = form.record.size as i64;
     // let mime = form.record.content_type.map(|c| c.to_string());
 
-    let usages = JsonStr(form.usages.0.clone());
+    // let usages = JsonStr(form.usages.0.clone());
 
     let pp = form.record.file.path();
     let (temp, info) = MediaPhoto::new(pp, form.record.file_name.clone())?
@@ -81,9 +81,9 @@ async fn r_photo_add(
 
     let record = sqlx::query_as! {
         Record,
-        "insert into records(project, salt, size, created_at, kind, usages)
-        values(?,?,?,?,?,?) returning *",
-        project.id, salt, info.size, now, RecordKind::Photo, usages
+        "insert into records(project, salt, size, created_at, kind)
+        values(?,?,?,?,?) returning *",
+        project.id, salt, info.size, now, RecordKind::Photo
     }
     .fetch_one(&db.sql)
     .await?;
@@ -129,7 +129,7 @@ async fn r_get(record: Record) -> Response<Record> {
 
 #[derive(serde::Deserialize, utoipa::ToSchema)]
 struct RecordUpdateBody {
-    usages: Vec<RecordUsage>,
+    tag: String,
 }
 
 #[utoipa::path(
@@ -143,17 +143,15 @@ struct RecordUpdateBody {
 async fn r_update(
     record: Record, body: Json<RecordUpdateBody>, db: Data<SimurghDb>,
 ) -> Jorp<Record> {
-    let mut record = record;
-    record.usages = JsonStr(body.usages.clone());
-
-    sqlx::query! {
-        "update records set usages = ? where id = ?",
-        record.usages, record.id
+    let rnew = sqlx::query_as! {
+        Record,
+        "update records set tag = ? where id = ? returning *",
+        body.tag, record.id
     }
-    .execute(&db.sql)
+    .fetch_one(&db.sql)
     .await?;
 
-    Ok(Json(record))
+    Ok(Json(rnew))
 }
 
 #[utoipa::path(

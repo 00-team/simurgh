@@ -16,6 +16,7 @@ pub enum RecordKind {
     #[default]
     Photo,
     Video,
+    Audio,
 }
 
 crate::sql_enum!(RecordKind);
@@ -26,11 +27,17 @@ pub struct Record {
     pub id: i64,
     pub project: i64,
     pub salt: String,
+    pub tag: String,
     pub size: i64,
     pub created_at: i64,
     pub kind: RecordKind,
-    #[schema(value_type = Vec<RecordUsage>)]
-    pub usages: super::JsonStr<Vec<RecordUsage>>,
+    // #[schema(value_type = Vec<RecordUsage>)]
+    // pub usages: super::JsonStr<Vec<RecordUsage>>,
+    pub duration: f64,
+    pub has_m3u8: bool,
+    pub width: i64,
+    pub height: i64,
+    pub usage_count: i64,
 }
 
 impl Record {
@@ -41,6 +48,7 @@ impl Record {
             match self.kind {
                 RecordKind::Photo => RecordPathKind::Webp,
                 RecordKind::Video => RecordPathKind::Mp4,
+                RecordKind::Audio => RecordPathKind::Opus,
             },
             self.project,
         )
